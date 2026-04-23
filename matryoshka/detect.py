@@ -289,7 +289,7 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
     outdir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         ["pixi", "run", "-e", "isescan", "isescan.py",
-         "--seqfile", str(fasta), "--outputDir", str(outdir), "--nthread", "4"],
+         "--seqfile", str(fasta), "--output", str(outdir), "--nthread", "4"],
         check=True,
     )
     tsv = outdir / fasta.name / (fasta.name + ".tsv")

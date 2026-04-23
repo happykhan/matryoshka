@@ -24,6 +24,7 @@ from .detect import (
 )
 from .hierarchy import build_hierarchy
 from .output import to_gff3, to_json, to_wolvercote
+from .transposon import infer_transposons
 
 
 @click.group()
@@ -70,6 +71,11 @@ def annotate(
         all_features.extend(parse_mobsuite(mobsuite))
 
     click.echo(f"Loaded {len(all_features)} features", err=True)
+
+    inferred = infer_transposons(all_features)
+    if inferred:
+        click.echo(f"Inferred {len(inferred)} composite transposons", err=True)
+    all_features = all_features + inferred
 
     if not no_boundaries:
         # Only run on IS elements — boundaries.py skips families with no TSD definition
