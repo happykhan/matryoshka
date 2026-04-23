@@ -97,7 +97,11 @@ def parse_isescan(tsv_path: str | Path) -> list[MGEFeature]:
                 ir_left=ir_left,
                 ir_right=ir_right,
                 score=score,
-                attributes={"type": row.get("type", ""), "ncopy": row.get("ncopy4is", "")},
+                attributes={
+                    "seqid": row.get("seqID", ""),
+                    "type": row.get("type", ""),
+                    "ncopy": row.get("ncopy4is", ""),
+                },
             )
             features.append(f)
     return features
@@ -129,6 +133,7 @@ def parse_amrfinder(tsv_path: str | Path) -> list[MGEFeature]:
                 end=int(row["Stop"]),
                 strand=strand,
                 attributes={
+                    "seqid": row.get("Contig id", ""),
                     "full_name": row.get("Element name", ""),
                     "subclass": row.get("Subclass", ""),
                     "method": row.get("Method", ""),
@@ -182,6 +187,7 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
                 int_strand = _if_strand(r["strand"])
                 break
 
+        integron_seqid = members[0].get("ID_replicon", "")
         integron_feat = MGEFeature(
             element_type="integron",
             family=family,
@@ -189,6 +195,7 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
             start=int_start,
             end=int_end,
             strand=int_strand,
+            attributes={"seqid": integron_seqid},
         )
 
         for r in members:

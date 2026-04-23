@@ -65,11 +65,12 @@ class TestInferIS26Composite:
         composites = infer_is26_composites(feats)
         assert len(composites) == 1
 
-    def test_composite_name_contains_cargo(self):
+    def test_island_cargo_recorded(self):
         feats = pKpQIL_features()
         comp = infer_is26_composites(feats)[0]
-        assert "blaOXA" in comp.name
-        assert "blaTEM" in comp.name
+        cargo = comp.attributes.get("cargo", "")
+        assert "blaOXA" in cargo
+        assert "blaTEM" in cargo
 
     def test_composite_span(self):
         feats = pKpQIL_features()
@@ -82,6 +83,6 @@ class TestInferIS26Composite:
         from matryoshka.hierarchy import build_hierarchy
         composites = infer_is26_composites(feats)
         roots = build_hierarchy(feats + composites)
-        comp_node = next(r for r in roots if r.family == "IS26_composite")
+        comp_node = next(r for r in roots if r.family == "IS26_island")
         amr_children = [c for c in comp_node.children if c.element_type == "AMR"]
         assert len(amr_children) == 2

@@ -37,11 +37,29 @@ _DEFAULT = "#95a5a6"
 TSD_COLOR = "#f1c40f"   # gold
 
 # ── Canvas ───────────────────────────────────────────────────────────────────
-W   = 1400
+# Width is recomputed per-render based on seq_len so chromosomes get enough
+# px-per-bp to remain legible. Module-level names stay so helper functions
+# can reference them without threading a config through every call.
+_WIDTH_MIN  = 1400           # px for anything up to ~150 kb
+_WIDTH_MAX  = 6000           # cap so huge chromosomes don't blow up SVG size
+_PX_PER_KB  = 8              # target resolution once past _WIDTH_MIN
+
+W   = _WIDTH_MIN
 ML  = 60
 MR  = 40
 DW  = W - ML - MR
 FONT = "monospace"
+
+
+def _set_canvas_width(seq_len: int, override: int | None = None) -> None:
+    """Recompute module-level W / DW based on sequence length."""
+    global W, DW
+    if override is not None:
+        W = max(400, int(override))
+    else:
+        scaled = int(seq_len / 1000 * _PX_PER_KB) + ML + MR
+        W = max(_WIDTH_MIN, min(_WIDTH_MAX, scaled))
+    DW = W - ML - MR
 
 # ── Layout constants ─────────────────────────────────────────────────────────
 LEAF_H      = 34    # height of a leaf element (IS, AMR, etc.)
@@ -158,9 +176,13 @@ def _draw_any(f: MGEFeature, y: float, h: float, seq_len: int,
     fill = _c(f.element_type)
     mid_x = (x1 + x2) / 2
 
+    tooltip_extra = ""
+    if f.tsd_seq:
+        tooltip_extra += f" TSD={f.tsd_seq}"
+    if f.ir_left:
+        tooltip_extra += f" IR={f.ir_left[:10]}"
     parts: list[str] = [
-        f'<g><title>{f.element_type}: {_esc(f.name)} ({f.start}–{f.end})'
-        + (f' TSD={f.tsd_seq}' if f.tsd_seq else '') + '</title>'
+        f'<g><title>{f.element_type}: {_esc(f.name)} ({f.start}–{f.end}){tooltip_extra}</title>'
     ]
 
     if not f.children:
@@ -176,6 +198,16 @@ def _draw_any(f: MGEFeature, y: float, h: float, seq_len: int,
             if w >= 18:
                 parts.append(_text(mid_x, y + h / 2 + 4,
                                    _trunc(f.name, w - 4), size=8))
+            # IR tick marks at both ends when inverted repeats confirmed
+            if f.ir_left:
+                ir_h = h * 0.7
+                ir_y = y + (h - ir_h) / 2
+                parts.append(f'<line x1="{x1+2:.2f}" y1="{ir_y:.2f}" '
+                              f'x2="{x1+2:.2f}" y2="{ir_y+ir_h:.2f}" '
+                              f'stroke="white" stroke-width="2" opacity="0.9"/>')
+                parts.append(f'<line x1="{x2-2:.2f}" y1="{ir_y:.2f}" '
+                              f'x2="{x2-2:.2f}" y2="{ir_y+ir_h:.2f}" '
+                              f'stroke="white" stroke-width="2" opacity="0.9"/>')
         else:
             parts.append(_rect(x1, y, w, h, fill, stroke="white", sw=1.0))
             if w >= 22:
@@ -253,10 +285,17 @@ def _legend(y: float) -> list[str]:
 # ── Main entry point ──────────────────────────────────────────────────────────
 
 def to_linear_svg(roots: list[MGEFeature], seq_len: int,
-                  sample_name: str = "") -> str:
-    """Scale-accurate linear SVG of the MGE hierarchy."""
+                  sample_name: str = "", width: int | None = None) -> str:
+    """Scale-accurate linear SVG of the MGE hierarchy.
+
+    Canvas width auto-scales with sequence length unless `width` is given
+    explicitly. A 60 kb plasmid renders at _WIDTH_MIN; a 5 Mb chromosome
+    expands up to _WIDTH_MAX so dense feature clusters remain legible.
+    """
+    _set_canvas_width(seq_len, width)
     compounds  = sorted([r for r in roots if r.children], key=lambda r: r.start)
-    singletons = sorted([r for r in roots if not r.children], key=lambda r: r.start)
+    singletons = sorted([r for r in roots if not r.children and r.start > 0],
+                        key=lambda r: r.start)
 
     # ── Vertical layout ───────────────────────────────────────────────────────
     backbone_y = TITLE_H + SCALEBAR_H + BACKBONE_BELOW_SCALE
