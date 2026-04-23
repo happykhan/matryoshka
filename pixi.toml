@@ -17,6 +17,9 @@ pyyaml = ">=6.0"
 click = ">=8.1"
 pytest = ">=8.0"
 
+[pypi-dependencies]
+wolvercote = { path = "../cell-format/python", editable = true }
+
 # Detection tools
 isescan = ">=1.7.2"
 integron_finder = ">=2.0"
