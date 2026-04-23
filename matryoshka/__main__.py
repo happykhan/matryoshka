@@ -18,6 +18,7 @@ import click
 from Bio import SeqIO
 
 from .boundaries import confirm_boundaries
+from .confidence import assign_confidence
 from .detect import (
     MGEFeature,
     parse_amrfinder,
@@ -109,6 +110,7 @@ def _annotate_contig(
                      if f.element_type in ("IS", "transposon")]
         confirm_boundaries(seq, checkable)
 
+    assign_confidence(all_feats)
     roots = build_hierarchy(all_feats)
     return roots, all_feats
 

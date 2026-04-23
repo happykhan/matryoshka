@@ -1,0 +1,8 @@
+>terIS91 element_type=ter_site family=IS91 name=terIS91 note=IS91_family_ter_consensus_Mendiola1994
+TCACCCCAAATAGCACTCGGCACCTCTACCCA
+>terISCR1 element_type=ter_site family=ISCR1 name=terISCR1 note=Toleman2006_3prime_end
+TCAGCAGCGTCCCGGCGGGCCTGCAGTCCGC
+>terISCR2 element_type=ter_site family=ISCR2 name=terISCR2 note=ISCR2_3prime_end
+TCAGCAGAGTCCCGGCGGGCCTGCAGACCGT
+>oriIS91 element_type=ori_site family=IS91 name=oriIS91 note=IS91_family_oriV_consensus
+GCAGGATCAGGCCTAACTCAGCTGCAGCGT

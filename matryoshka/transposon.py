@@ -416,6 +416,61 @@ def infer_is26_islands(features: list[MGEFeature]) -> list[MGEFeature]:
     return _merge_overlapping_islands(candidates, amr)
 
 
+# Max distance for single-IS26 translocatable unit detection
+IS26_TU_MAX_GAP = 1_000
+
+
+def infer_is26_translocatable_units(features: list[MGEFeature]) -> list[MGEFeature]:
+    """Detect single-IS26 translocatable units.
+
+    Partridge 2018 emphasises that the *unit of mobility* for IS26 is one
+    IS26 copy plus an adjacent region — the "translocatable unit" (TU) —
+    which inserts preferentially next to an existing IS26 (~50× random).
+    This rule emits a low-confidence TU feature when a complete IS26 is
+    within IS26_TU_MAX_GAP bp of AMR cargo that is NOT already enclosed
+    by a two-IS26 island.
+    """
+    is26 = _complete_is_of(features, "IS6")
+    amr = [f for f in features if f.element_type == "AMR"]
+    islands = [f for f in features
+               if f.element_type == "transposon" and f.family == "IS26_island"]
+
+    def _inside_island(s: int, e: int) -> bool:
+        return any(isl.start <= s and e <= isl.end for isl in islands)
+
+    emitted: list[MGEFeature] = []
+    used_pairs: set[tuple[int, int]] = set()
+    for i in is26:
+        for a in amr:
+            if _inside_island(a.start, a.end):
+                continue
+            if i.end <= a.start and a.start - i.end <= IS26_TU_MAX_GAP:
+                span = (i.start, a.end)
+            elif a.end <= i.start and i.start - a.end <= IS26_TU_MAX_GAP:
+                span = (a.start, i.end)
+            else:
+                continue
+            key = (span[0], span[1])
+            if key in used_pairs:
+                continue
+            used_pairs.add(key)
+            emitted.append(MGEFeature(
+                element_type="transposon",
+                family="IS26_TU",
+                name=f"IS26_TU::{a.name}",
+                start=span[0],
+                end=span[1],
+                strand=".",
+                attributes={
+                    "cargo": a.name,
+                    "mediator_is": i.name,
+                    "confidence": "low",
+                    "note": "single-IS26 translocatable unit (Partridge 2018)",
+                },
+            ))
+    return emitted
+
+
 def infer_is26_composites(features: list[MGEFeature]) -> list[MGEFeature]:
     return infer_is26_islands(features)
 
@@ -510,4 +565,7 @@ def infer_transposons(features: list[MGEFeature]) -> list[MGEFeature]:
     for srule in SIGNATURE_RULES:
         _extend(infer_signature(srule, features))
     _extend(infer_is26_islands(features))
+    # Single-IS26 translocatable units: low-confidence, emitted only for
+    # cargo not already covered by an island
+    _extend(infer_is26_translocatable_units(features + out))
     return out

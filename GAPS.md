@@ -26,7 +26,7 @@ Legend
 
 | Element | Accession | Covered? | Mechanism | Notes |
 |---------|-----------|----------|-----------|-------|
-| Tn4401 (blaKPC) | EU176011 | ✅ | BLAST + IS-flanked rule | Variant a–h: only Tn4401b reference shipped. Non-b variants flagged with `variant=unknown` and deletion_bp |
+| Tn4401 (blaKPC) | EU176011, CP069050, GU386376 | ✅ | BLAST + IS-flanked rule | Variants **a** and **b** shipped (clean Tn4401 sub-regions extracted from GenBank). Best-variant picker discriminates by subject coverage + HSP count. Variants c/d/e/f/g/h flagged `variant=unknown` with deletion_bp |
 | Tn1999 (blaOXA-48) | — | ✅ | IS4-flanked rule | Composite transposon — no res site |
 | Tn1546 (vanA) | M97297 | ✅ | vanA signature + BLAST | |
 | Tn21 (class 1 integron + mer) | AF071413 | ⚠️ | BLAST only | No signature rule (needs mer/Hg gene calls not in AMRFinder) |
@@ -64,7 +64,7 @@ Legend
 | Mechanism | Covered? | Notes |
 |-----------|----------|-------|
 | Composite transposon (two-IS flanked) | ✅ | FLANKED_RULES + IS26_island |
-| Translocatable unit (single-IS26 TU) | ❌ | Partridge's "50×-preferred" targeting not modelled |
+| Translocatable unit (single-IS26 TU) | ⚠️ | `infer_is26_translocatable_units` emits low-confidence TUs for cargo not covered by an IS26 island. Confidence=0.40. Partridge's "50×-preferred" targeting bias not modelled |
 | One-ended transposition (ISEcp1) | ✅ | ONE_ENDED_RULES |
 | Rolling-circle (IS91 / ISCR) | ✅ | ROLLING_CIRCLE_RULES |
 | Cointegrate formation & resolution | ❌ | Not inferrable from structural snapshots |
@@ -86,8 +86,8 @@ Legend
 
 | Feature | Covered? | Notes |
 |---------|----------|-------|
-| Replicon typing (PlasmidFinder-style) | ❌ | mobsuite stub remains (OOM on VM) |
-| Inc group nomenclature | ❌ | |
+| Replicon typing (PlasmidFinder-style) | ✅ | PlasmidFinder Enterobacteriales DB (159 replicons) shipped — BLAST at ≥95% identity, ≥60% coverage |
+| Inc group nomenclature | ✅ | Via PlasmidFinder (IncF/IncHI1/IncHI2/IncN/IncP/IncQ/ColE1 etc.) |
 | Replication mode (RC / theta / strand-displacement) | ❌ | |
 | Conjugation system (T4SS, MPF types) | ❌ | |
 | Relaxase / MOB typing | ❌ | Needs mob_recon (skipped — OOM) |
@@ -122,8 +122,9 @@ Legend
 | Wolvercote cell-format (circular schematic) | ✅ |
 | Scale-accurate linear SVG / PNG | ✅ |
 | Per-contig output on multi-FASTA input | ✅ |
-| Confidence scores per element | ❌ |
-| HTML / Markdown batch report | ❌ |
+| Confidence scores per element | ✅ | 0.0–1.0 scalar + label (high/medium/low/speculative) in `attributes.confidence` |
+| HTML / Markdown batch report | ❌ | |
+| Rolling-circle ter-site motif library | ⚠️ | `rolling_circle_ter_sites.fasta` scaffolded (terIS91, terISCR1, terISCR2, oriIS91) — experimental, needs refined consensus |
 
 ## Known false-positive / false-negative modes
 

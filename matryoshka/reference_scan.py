@@ -56,9 +56,31 @@ def blast_available() -> bool:
 
 
 def _parse_header(header: str) -> dict[str, str]:
-    """Parse 'name ...key=val key=val...' style FASTA headers."""
+    """Parse 'name ...key=val key=val...' style FASTA headers.
+
+    Also handles PlasmidFinder-style headers
+    (``>RepName_variant__accession``) by synthesising element_type,
+    family and name fields.
+    """
     parts = header.split()
     meta: dict[str, str] = {"_id": parts[0]}
+
+    # PlasmidFinder-style: no key=value metadata, seq id encodes it
+    if len(parts) == 1 and "__" in parts[0]:
+        seq_id = parts[0]
+        # e.g. "IncHI1B(R27)_1_R27_AF250878" or "pKPC-CAV1321_1__CP011611"
+        name_part, _, accession = seq_id.rpartition("__")
+        # Strip trailing _N variant number
+        canonical = name_part.rsplit("_", 1)[0] if name_part.rsplit("_", 1)[-1].isdigit() else name_part
+        meta.update({
+            "element_type": "replicon",
+            "family": canonical,
+            "name": canonical,
+            "source_accession": accession,
+            "source": "reference_scan",
+        })
+        return meta
+
     for p in parts[1:]:
         if "=" in p:
             k, v = p.split("=", 1)
@@ -139,6 +161,63 @@ def blastn_hits(
     return hits
 
 
+def _score_variant_hits(hits: list[BlastHit]) -> dict[str, dict]:
+    """Aggregate per-subject coverage across multiple HSPs.
+
+    Returns a dict keyed by sseqid with:
+        {total_align, slen, coverage_pct, hsp_count, max_pident, span_start,
+         span_end, qstart_min, qend_max}
+
+    Used for variant discrimination (Tn4401 a/b/c/d/…) where variants
+    differ by short internal deletions. A single-HSP full-length match
+    is the cleanest signal that query matches a given variant exactly.
+    """
+    by_sub: dict[str, dict] = {}
+    for h in hits:
+        entry = by_sub.setdefault(h.sseqid, {
+            "total_align": 0,
+            "slen": h.slen,
+            "hsp_count": 0,
+            "max_pident": 0.0,
+            "qseqid": h.qseqid,
+            "qstart_min": h.qstart,
+            "qend_max": h.qend,
+        })
+        entry["total_align"] += h.length
+        entry["hsp_count"] += 1
+        entry["max_pident"] = max(entry["max_pident"], h.pident)
+        entry["qstart_min"] = min(entry["qstart_min"], h.qstart, h.qend)
+        entry["qend_max"] = max(entry["qend_max"], h.qstart, h.qend)
+    for v in by_sub.values():
+        v["coverage_pct"] = 100.0 * v["total_align"] / max(v["slen"], 1)
+    return by_sub
+
+
+def _pick_best_variant(hits: list[BlastHit]) -> BlastHit | None:
+    """Given hits that all target Tn4401 variants overlapping the same query
+    region, pick the best-fitting variant.
+
+    Best = highest coverage, tie-break by fewest HSPs (cleaner match),
+    then highest identity.
+    """
+    if not hits:
+        return None
+    scores = _score_variant_hits(hits)
+    best_sub = max(
+        scores,
+        key=lambda s: (
+            scores[s]["coverage_pct"],
+            -scores[s]["hsp_count"],
+            scores[s]["max_pident"],
+        ),
+    )
+    # Return the top HSP for the winning subject (boundary annotation)
+    return max(
+        (h for h in hits if h.sseqid == best_sub),
+        key=lambda h: h.length,
+    )
+
+
 def _hit_to_feature(hit: BlastHit, meta: dict[str, str]) -> MGEFeature:
     start, end = sorted((hit.qstart, hit.qend))
     strand = "+" if hit.qstart <= hit.qend else "-"
@@ -152,18 +231,21 @@ def _hit_to_feature(hit: BlastHit, meta: dict[str, str]) -> MGEFeature:
         "blast_coverage": round(hit.qcovs, 2),
         "source": "reference_scan",
     }
-    # Tn4401: if coverage is < 98% of the Tn4401b reference, a known
-    # variant-specific internal deletion is likely — flag that we can't
-    # disambiguate a/b/c/d/e/f/g/h without the full variant set.
-    if family == "Tn4401" and hit.qcovs < 98.0:
-        deletion_bp = max(0, hit.slen - hit.length)
-        attrs["variant"] = "unknown"
-        attrs["deletion_bp"] = deletion_bp
-        attrs["note"] = (
-            "coverage <98% of Tn4401b — possible variant a/c/d/e/f/g/h "
-            f"with ~{deletion_bp}bp internal deletion"
-        )
-        name = "Tn4401"  # drop the 'b' since we can't confirm
+    # Tn4401: when the best-matching variant still has < 98% subject
+    # coverage we're looking at an unseen variant (c/d/e/f/g/h) with an
+    # internal deletion not represented in the bundled reference set.
+    if family == "Tn4401":
+        sub_cov_s = meta.get("blast_subject_coverage")
+        sub_cov = float(sub_cov_s) if sub_cov_s else hit.qcovs
+        if sub_cov < 98.0:
+            deletion_bp = max(0, hit.slen - hit.length)
+            attrs["variant"] = "unknown"
+            attrs["deletion_bp"] = deletion_bp
+            attrs["note"] = (
+                f"best-match coverage {sub_cov:.1f}% of known variants — "
+                f"likely uncatalogued variant with ~{deletion_bp}bp deletion"
+            )
+            name = "Tn4401"
 
     for k, v in meta.items():
         if k.startswith("_") or k in ("element_type", "family", "name"):
@@ -212,14 +294,55 @@ def _dedupe_overlapping(hits: list[BlastHit]) -> list[BlastHit]:
     return kept
 
 
+def _group_by_query_region(
+    hits: list[BlastHit],
+    overlap_frac: float = 0.5,
+) -> list[list[BlastHit]]:
+    """Cluster hits that overlap on the query, regardless of subject.
+
+    Tn4401 variants are highly similar to each other, so one Tn4401 in
+    the query produces near-identical hits against multiple variant
+    references. We want to pick the *best* matching variant for each
+    query region, not emit all of them.
+    """
+    if not hits:
+        return []
+    normed = [
+        (min(h.qstart, h.qend), max(h.qstart, h.qend), h)
+        for h in hits
+    ]
+    normed.sort()
+    groups: list[list[BlastHit]] = []
+    current: list[tuple[int, int, BlastHit]] = [normed[0]]
+    cur_start, cur_end = normed[0][0], normed[0][1]
+    for s, e, h in normed[1:]:
+        ovl = max(0, min(cur_end, e) - max(cur_start, s))
+        short = min(cur_end - cur_start, e - s)
+        if short > 0 and ovl / short > overlap_frac:
+            current.append((s, e, h))
+            cur_end = max(cur_end, e)
+        else:
+            groups.append([t[2] for t in current])
+            current = [(s, e, h)]
+            cur_start, cur_end = s, e
+    groups.append([t[2] for t in current])
+    return groups
+
+
 def scan(
     query_fasta: Path | str,
     reference_fasta: Path | str,
     min_identity: float = 85.0,
     min_length: int = 500,
     min_subject_coverage: float = 0.0,
+    pick_best_variant: bool = False,
 ) -> list[MGEFeature]:
-    """Run a BLAST reference scan and return emitted MGEFeatures."""
+    """Run a BLAST reference scan and return emitted MGEFeatures.
+
+    If `pick_best_variant` is True (used for Tn4401 a/b/c/d/e/f/g/h),
+    hits that overlap on the query are clustered and only the best-
+    fitting variant is emitted per cluster.
+    """
     reference_fasta = Path(reference_fasta)
     if not reference_fasta.exists():
         return []
@@ -230,6 +353,22 @@ def scan(
         min_length=min_length,
         min_subject_coverage=min_subject_coverage,
     )
+
+    if pick_best_variant:
+        features: list[MGEFeature] = []
+        for group in _group_by_query_region(hits):
+            best = _pick_best_variant(group)
+            if best is None:
+                continue
+            group_meta = dict(meta.get(best.sseqid, {"_id": best.sseqid}))
+            # Enrich with aggregate variant stats for downstream reporting
+            scores = _score_variant_hits(group)[best.sseqid]
+            group_meta["blast_subject_coverage"] = f"{scores['coverage_pct']:.1f}"
+            group_meta["blast_hsp_count"] = str(scores["hsp_count"])
+            features.append(_hit_to_feature(best, group_meta))
+        return features
+
+    # Default path: per-HSP dedup (good for distinct non-homologous references)
     hits = _dedupe_overlapping(hits)
     return [_hit_to_feature(h, meta.get(h.sseqid, {"_id": h.sseqid})) for h in hits]
 
@@ -238,7 +377,8 @@ def scan(
 # min_length; whole-plasmid exemplars use moderate length thresholds.
 REFERENCE_PARAMS: dict[str, dict] = {
     "tn3_res_site.fasta":       {"min_identity": 75.0, "min_length": 80},
-    "tn4401.fasta":             {"min_identity": 95.0, "min_length": 4_000},
+    "tn4401.fasta":             {"min_identity": 95.0, "min_length": 1_000,
+                                 "pick_best_variant": True},
     "tn1546.fasta":             {"min_identity": 95.0, "min_length": 8_000},
     "tn21.fasta":               {"min_identity": 90.0, "min_length": 5_000},
     "tn1331.fasta":             {"min_identity": 95.0, "min_length": 5_000},
@@ -250,6 +390,18 @@ REFERENCE_PARAMS: dict[str, dict] = {
     "isecp1.fasta":             {"min_identity": 90.0, "min_length": 1_000},
     "tn7.fasta":                {"min_identity": 90.0, "min_length": 3_000},
     "tn552.fasta":              {"min_identity": 95.0, "min_length": 2_000},
+    # PlasmidFinder replicon sequences are ~500-900bp per record.
+    # Identity ≥95% is the standard PlasmidFinder cutoff.
+    "plasmidfinder_enterobacteriales.fasta": {
+        "min_identity": 95.0, "min_length": 200,
+        "min_subject_coverage": 60.0,
+    },
+    # ter-site motifs for IS91 / ISCR rolling-circle elements.
+    # Short consensus (~30bp) — needs a broad min_identity tolerance.
+    # Marked as experimental pending a validated motif library.
+    "rolling_circle_ter_sites.fasta": {
+        "min_identity": 85.0, "min_length": 20,
+    },
 }
 
 
