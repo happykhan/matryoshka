@@ -20,6 +20,13 @@ from .detect import MGEFeature
 # Wolvercote output
 # ---------------------------------------------------------------------------
 
+_WOL_UNSAFE = str.maketrans({c: " " for c in "(){}[],;=\"'"})
+
+def _wol_name(s: str) -> str:
+    """Sanitise a feature name for use as a Wolvercote label."""
+    return s.translate(_WOL_UNSAFE).strip()
+
+
 def _feature_to_wolvercote(f: MGEFeature) -> str:
     """Recursively convert an MGEFeature to a Wolvercote { } block."""
     inner = ", ".join(_feature_to_wolvercote(c) for c in f.children)
@@ -34,7 +41,7 @@ def _feature_to_wolvercote(f: MGEFeature) -> str:
     if attrs:
         pairs = ", ".join(f'{k}="{v}"' for k, v in attrs.items())
         attr_str = f"[{pairs}]"
-    return f"{{{inner}}}{f.name}{attr_str}"
+    return f"{{{inner}}}{_wol_name(f.name)}{attr_str}"
 
 
 def to_wolvercote(

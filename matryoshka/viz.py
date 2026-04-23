@@ -1,26 +1,28 @@
 """
 viz.py — Scale-accurate linear SVG map of the MGE hierarchy.
 
-Each element is drawn at its exact genomic coordinate. Nesting levels are shown
-as vertical tracks: compound elements (transposons, integrons) occupy a taller
-outer row; their children are drawn as arrows inside them. Singletons sit on a
-thin baseline track.
+Elements are drawn at their exact genomic coordinates (bp-scaled). Compound
+elements (transposons, integrons) are nested visually: each compound occupies
+a rounded box with its children drawn inside. Nesting is recursive so pEK499's
+IS26-within-IS26 structure renders correctly.
 
-Element style:
-  - IS elements: directional pentagon arrows (strand + / -)
-  - AMR genes: filled rectangles, bold label
-  - Transposons/integrons: open rounded box with children inside
-  - attC sites: thin tick mark
-  - Cassettes: plain rectangle
+TSD annotation: when a TSD sequence is confirmed on a compound element, two
+small gold rectangles flank its boundaries with the TSD sequence labelled.
 
-Colour coding matches the wolvercote palette.
+Colour coding:
+  IS          #4a90d9  blue arrow
+  AMR         #e74c3c  red rect
+  transposon  #27ae60  green box
+  integron    #8e44ad  purple box
+  cassette    #f39c12  orange rect
+  attC        #7f8c8d  grey tick
+  integrase   #7f8c8d  grey rect
 """
 
 from __future__ import annotations
-import math
 from .detect import MGEFeature
 
-# ── Colours ─────────────────────────────────────────────────────────────────
+# ── Colours ──────────────────────────────────────────────────────────────────
 COLORS: dict[str, str] = {
     "IS":         "#4a90d9",
     "AMR":        "#e74c3c",
@@ -32,21 +34,24 @@ COLORS: dict[str, str] = {
     "replicon":   "#16a085",
 }
 _DEFAULT = "#95a5a6"
+TSD_COLOR = "#f1c40f"   # gold
 
-# ── Layout ───────────────────────────────────────────────────────────────────
-W        = 1400   # total canvas width
-ML       = 80     # left margin (room for labels)
-MR       = 40     # right margin
-DW       = W - ML - MR
-
-COMPOUND_OUTER_H = 90    # height of transposon/integron outer box
-COMPOUND_INNER_H = 36    # height of child arrows inside compound box
-SINGLETON_H      = 36    # height of standalone elements
-TRACK_GAP        = 18    # vertical gap between compound rows / singleton row
-SCALEBAR_H       = 28    # height of scale bar area
-TITLE_H          = 34
-
+# ── Canvas ───────────────────────────────────────────────────────────────────
+W   = 1400
+ML  = 60
+MR  = 40
+DW  = W - ML - MR
 FONT = "monospace"
+
+# ── Layout constants ─────────────────────────────────────────────────────────
+LEAF_H      = 34    # height of a leaf element (IS, AMR, etc.)
+LABEL_TOP   = 20    # px reserved for compound label above child area
+BOT_PAD     = 8     # padding below child area inside compound box
+INNER_PAD   = 6     # horizontal pad inside compound box
+TRACK_GAP   = 14    # gap between compound rows and singleton row
+TITLE_H     = 32
+SCALEBAR_H  = 26
+BACKBONE_BELOW_SCALE = 12   # gap from scale bar bottom to backbone line
 
 
 def _c(et: str) -> str:
@@ -57,163 +62,172 @@ def _x(pos: int, seq_len: int) -> float:
     return ML + (pos / seq_len) * DW
 
 
-def _px(start: int, end: int, seq_len: int) -> tuple[float, float]:
-    return _x(start, seq_len), _x(end, seq_len)
+def _px(s: int, e: int, seq_len: int) -> tuple[float, float]:
+    return _x(s, seq_len), _x(e, seq_len)
 
 
 def _esc(s: str) -> str:
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _trunc(s: str, px_width: float, char_px: float = 7.0) -> str:
-    max_c = max(1, int(px_width / char_px))
-    return s if len(s) <= max_c else s[:max_c - 1] + "…"
+def _trunc(s: str, px_w: float, ch: float = 7.0) -> str:
+    n = max(1, int(px_w / ch))
+    return s if len(s) <= n else s[:n - 1] + "…"
 
 
-# ── Primitive helpers ────────────────────────────────────────────────────────
+# ── Height calculation (recursive) ───────────────────────────────────────────
+
+def _elem_h(f: MGEFeature) -> float:
+    """Height needed to render f and all its descendants."""
+    if not f.children:
+        return LEAF_H
+    max_child_h = max(_elem_h(c) for c in f.children)
+    return LABEL_TOP + max_child_h + BOT_PAD
+
+
+# ── SVG primitives ───────────────────────────────────────────────────────────
 
 def _rect(x: float, y: float, w: float, h: float, fill: str,
           stroke: str = "none", sw: float = 1.5, rx: float = 3,
           opacity: float = 1.0) -> str:
     return (
         f'<rect x="{x:.2f}" y="{y:.2f}" width="{max(w,1):.2f}" height="{h:.2f}" '
-        f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}" rx="{rx}" opacity="{opacity}"/>'
+        f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}" rx="{rx}" '
+        f'opacity="{opacity}"/>'
     )
 
 
 def _text(x: float, y: float, s: str, size: int = 11,
-          anchor: str = "middle", fill: str = "white", bold: bool = False,
-          italic: bool = False) -> str:
-    style = ""
-    if bold:
-        style += "font-weight:bold;"
-    if italic:
-        style += "font-style:italic;"
-    style_attr = f' style="{style}"' if style else ""
+          anchor: str = "middle", fill: str = "white",
+          bold: bool = False) -> str:
+    weight = ' font-weight="bold"' if bold else ""
     return (
         f'<text x="{x:.2f}" y="{y:.2f}" font-size="{size}" font-family="{FONT}" '
-        f'text-anchor="{anchor}" fill="{fill}"{style_attr}>{_esc(s)}</text>'
+        f'text-anchor="{anchor}" fill="{fill}"{weight}>{_esc(s)}</text>'
     )
 
 
 def _arrow(x: float, y: float, w: float, h: float,
-           strand: str, fill: str, stroke: str = "white") -> str:
-    """Pentagon arrow for IS elements / directional genes."""
-    tip = min(h * 0.55, max(w * 0.22, 6.0))
+           strand: str, fill: str) -> str:
+    tip = min(h * 0.55, max(w * 0.22, 5.0))
     if w < 3:
         return _rect(x, y, w, h, fill)
-
     if strand == "+":
-        pts = (f"{x:.2f},{y:.2f} "
-               f"{x+w-tip:.2f},{y:.2f} "
-               f"{x+w:.2f},{y+h/2:.2f} "
-               f"{x+w-tip:.2f},{y+h:.2f} "
-               f"{x:.2f},{y+h:.2f}")
+        pts = (f"{x:.2f},{y:.2f} {x+w-tip:.2f},{y:.2f} "
+               f"{x+w:.2f},{y+h/2:.2f} {x+w-tip:.2f},{y+h:.2f} {x:.2f},{y+h:.2f}")
     elif strand == "-":
-        pts = (f"{x+tip:.2f},{y:.2f} "
-               f"{x+w:.2f},{y:.2f} "
-               f"{x+w:.2f},{y+h:.2f} "
-               f"{x+tip:.2f},{y+h:.2f} "
-               f"{x:.2f},{y+h/2:.2f}")
+        pts = (f"{x+tip:.2f},{y:.2f} {x+w:.2f},{y:.2f} "
+               f"{x+w:.2f},{y+h:.2f} {x+tip:.2f},{y+h:.2f} {x:.2f},{y+h/2:.2f}")
     else:
-        return _rect(x, y, w, h, fill, stroke=stroke)
-
-    return f'<polygon points="{pts}" fill="{fill}" stroke="{stroke}" stroke-width="0.8"/>'
-
-
-def _tick(x1: float, x2: float, y: float, h: float, fill: str) -> str:
-    mid = (x1 + x2) / 2
-    return (
-        f'<line x1="{mid:.2f}" y1="{y:.2f}" x2="{mid:.2f}" y2="{y+h:.2f}" '
-        f'stroke="{fill}" stroke-width="2"/>'
-    )
+        return _rect(x, y, w, h, fill)
+    return f'<polygon points="{pts}" fill="{fill}" stroke="white" stroke-width="0.8"/>'
 
 
-# ── Element renderers ────────────────────────────────────────────────────────
+# ── TSD annotation ───────────────────────────────────────────────────────────
 
-def _draw_element(f: MGEFeature, y: float, h: float, seq_len: int,
-                  label_outside: bool = False) -> list[str]:
-    """Render a single leaf element (IS arrow, AMR rect, attC tick, cassette rect)."""
+def _draw_tsd(x_left: float, x_right: float, y: float, h: float,
+              tsd: str) -> list[str]:
+    """Draw gold TSD rectangles flanking element at x_left / x_right."""
+    tw = max(len(tsd) * 5.5, 6.0)
+    th = h * 0.55
+    ty = y + (h - th) / 2
+    label_y = y + h + 10
+
+    parts = [
+        # left TSD box
+        _rect(x_left - tw - 1, ty, tw, th, TSD_COLOR, rx=1),
+        _text(x_left - tw / 2 - 1, label_y, tsd, size=8, fill=TSD_COLOR),
+        # right TSD box
+        _rect(x_right + 1, ty, tw, th, TSD_COLOR, rx=1),
+        _text(x_right + tw / 2 + 1, label_y, tsd, size=8, fill=TSD_COLOR),
+    ]
+    return parts
+
+
+# ── Recursive element renderer ────────────────────────────────────────────────
+
+def _draw_any(f: MGEFeature, y: float, h: float, seq_len: int,
+              depth: int = 0) -> list[str]:
+    """
+    Render f at vertical position y with total height h.
+    Recursively renders compound elements and their children.
+    depth controls label size / padding.
+    """
     x1, x2 = _px(f.start, f.end, seq_len)
     w = max(x2 - x1, 1.0)
     fill = _c(f.element_type)
     mid_x = (x1 + x2) / 2
-    label_y = y + h / 2 + 4
-    parts: list[str] = [f'<g><title>{f.element_type}: {_esc(f.name)} ({f.start}–{f.end})</title>']
 
-    if f.element_type == "attC":
-        parts.append(_tick(x1, x2, y, h, fill))
-    elif f.element_type in ("IS",):
-        parts.append(_arrow(x1, y, w, h, f.strand, fill))
-        if w >= 20:
-            label = _trunc(f.name, w - 6)
-            parts.append(_text(mid_x, label_y, label, size=9))
+    parts: list[str] = [
+        f'<g><title>{f.element_type}: {_esc(f.name)} ({f.start}–{f.end})'
+        + (f' TSD={f.tsd_seq}' if f.tsd_seq else '') + '</title>'
+    ]
+
+    if not f.children:
+        # ── Leaf element ──────────────────────────────────────────────────────
+        if f.element_type == "attC":
+            mid = (x1 + x2) / 2
+            parts.append(
+                f'<line x1="{mid:.2f}" y1="{y:.2f}" x2="{mid:.2f}" y2="{y+h:.2f}" '
+                f'stroke="{fill}" stroke-width="2"/>'
+            )
+        elif f.element_type == "IS":
+            parts.append(_arrow(x1, y, w, h, f.strand, fill))
+            if w >= 18:
+                parts.append(_text(mid_x, y + h / 2 + 4,
+                                   _trunc(f.name, w - 4), size=8))
+        else:
+            parts.append(_rect(x1, y, w, h, fill, stroke="white", sw=1.0))
+            if w >= 22:
+                parts.append(_text(mid_x, y + h / 2 + 4,
+                                   _trunc(f.name, w - 4), size=8,
+                                   bold=(f.element_type == "AMR")))
     else:
-        # AMR, cassette, integrase, replicon → filled rect
-        sw = 1.5 if f.element_type == "AMR" else 0.5
-        parts.append(_rect(x1, y, w, h, fill, stroke="white", sw=sw))
-        if w >= 24:
-            label = _trunc(f.name, w - 6)
-            parts.append(_text(mid_x, label_y, label,
-                               size=9, bold=(f.element_type == "AMR")))
+        # ── Compound element ──────────────────────────────────────────────────
+        label_size = max(8, 11 - depth)
+        # Outer box
+        parts.append(_rect(x1, y, w, h, fill, stroke=fill,
+                           sw=max(1.5, 2.5 - depth * 0.5),
+                           rx=4, opacity=0.10))
+        parts.append(_rect(x1, y, w, h, "none", stroke=fill,
+                           sw=max(1.5, 2.5 - depth * 0.5), rx=4))
 
-    if label_outside and w < 24:
-        parts.append(_text(x1 + w / 2, y - 3, _trunc(f.name, 12),
-                           size=8, fill="#444", anchor="middle"))
+        # Name label top-left
+        span_kb = (f.end - f.start) / 1000
+        name_label = f"{f.name}  ({span_kb:.1f} kb)"
+        parts.append(_text(x1 + 4, y + label_size + 2, name_label,
+                           size=label_size, fill=fill, anchor="start", bold=True))
 
-    parts.append("</g>")
-    return parts
+        # TSD flanking marks (below the box)
+        if f.tsd_seq:
+            parts.extend(_draw_tsd(x1, x2, y, h, f.tsd_seq))
 
-
-def _draw_compound(f: MGEFeature, y: float, seq_len: int) -> list[str]:
-    """Render a compound element (transposon / integron) with children inside."""
-    x1, x2 = _px(f.start, f.end, seq_len)
-    w = max(x2 - x1, 2.0)
-    fill = _c(f.element_type)
-    parts: list[str] = [f'<g><title>{f.element_type}: {_esc(f.name)} ({f.start}–{f.end})</title>']
-
-    # Outer rounded box — semi-transparent fill, solid stroke
-    parts.append(_rect(x1, y, w, COMPOUND_OUTER_H, fill,
-                       stroke=fill, sw=2.0, rx=5, opacity=0.12))
-    parts.append(_rect(x1, y, w, COMPOUND_OUTER_H, "none",
-                       stroke=fill, sw=2.0, rx=5))
-
-    # Top label (name + span)
-    span_kb = (f.end - f.start) / 1000
-    label = f"{f.name}  ({span_kb:.1f} kb)"
-    parts.append(_text(x1 + 6, y + 13, label, size=10,
-                       fill=fill, anchor="start", bold=True))
-
-    # Children — centred vertically inside the outer box
-    child_y = y + COMPOUND_OUTER_H - COMPOUND_INNER_H - 8
-    for child in sorted(f.children, key=lambda c: c.start):
-        parts.extend(_draw_element(child, child_y, COMPOUND_INNER_H, seq_len))
+        # Children — all share the same row inside the box
+        child_y = y + LABEL_TOP
+        child_h = h - LABEL_TOP - BOT_PAD
+        for child in sorted(f.children, key=lambda c: c.start):
+            parts.extend(_draw_any(child, child_y, child_h, seq_len, depth + 1))
 
     parts.append("</g>")
     return parts
 
 
-# ── Scale bar ────────────────────────────────────────────────────────────────
+# ── Scale bar ─────────────────────────────────────────────────────────────────
 
 def _scale_bar(y: float, seq_len: int) -> list[str]:
-    parts = [
-        f'<line x1="{ML}" y1="{y+8}" x2="{ML+DW}" y2="{y+8}" '
-        f'stroke="#aaa" stroke-width="1.5"/>',
-    ]
-    n = 5
-    for i in range(n + 1):
-        pos = int(i * seq_len / n)
+    parts = [f'<line x1="{ML}" y1="{y+8}" x2="{ML+DW}" y2="{y+8}" '
+             f'stroke="#bbb" stroke-width="1.5"/>']
+    for i in range(6):
+        pos = int(i * seq_len / 5)
         sx = _x(pos, seq_len)
-        parts.append(
-            f'<line x1="{sx:.2f}" y1="{y+3}" x2="{sx:.2f}" y2="{y+13}" '
-            f'stroke="#aaa" stroke-width="1.5"/>'
-        )
+        parts.append(f'<line x1="{sx:.2f}" y1="{y+4}" x2="{sx:.2f}" y2="{y+12}" '
+                     f'stroke="#bbb" stroke-width="1.5"/>')
         label = f"{pos // 1000}k" if pos else "0"
-        parts.append(_text(sx, y + 24, label, size=9, fill="#666"))
+        parts.append(_text(sx, y + 22, label, size=9, fill="#888"))
     return parts
 
 
-# ── Legend ───────────────────────────────────────────────────────────────────
+# ── Legend ────────────────────────────────────────────────────────────────────
 
 def _legend(y: float) -> list[str]:
     items = [
@@ -223,59 +237,50 @@ def _legend(y: float) -> list[str]:
         ("Integron",    "integron"),
         ("Cassette",    "cassette"),
         ("attC site",   "attC"),
+        ("TSD",         "__tsd__"),
     ]
     parts: list[str] = []
     lx = ML
     for label, et in items:
-        c = _c(et)
+        c = TSD_COLOR if et == "__tsd__" else _c(et)
         parts.append(_rect(lx, y, 14, 14, c, rx=2))
         parts.append(_text(lx + 18, y + 11, label, size=10,
                            fill="#444", anchor="start"))
-        lx += 130
+        lx += 120
     return parts
 
 
-# ── Main entry point ─────────────────────────────────────────────────────────
+# ── Main entry point ──────────────────────────────────────────────────────────
 
 def to_linear_svg(roots: list[MGEFeature], seq_len: int,
                   sample_name: str = "") -> str:
-    """
-    Render the MGE hierarchy as a scale-accurate linear SVG map.
-
-    roots    — output of build_hierarchy()
-    seq_len  — total sequence length in bp
-    """
+    """Scale-accurate linear SVG of the MGE hierarchy."""
     compounds  = sorted([r for r in roots if r.children], key=lambda r: r.start)
     singletons = sorted([r for r in roots if not r.children], key=lambda r: r.start)
 
-    # ── Vertical layout ──────────────────────────────────────────────────────
-    cursor = TITLE_H + SCALEBAR_H
+    # ── Vertical layout ───────────────────────────────────────────────────────
+    backbone_y = TITLE_H + SCALEBAR_H + BACKBONE_BELOW_SCALE
+    cursor = backbone_y + 10
 
-    # Backbone at top of element section
-    backbone_y = cursor
-    cursor += 10
-
-    compound_rows: list[tuple[float, MGEFeature]] = []
+    compound_rows: list[tuple[float, float, MGEFeature]] = []
     for f in compounds:
-        compound_rows.append((cursor, f))
-        cursor += COMPOUND_OUTER_H + TRACK_GAP
+        h = _elem_h(f)
+        compound_rows.append((cursor, h, f))
+        tsd_extra = 16 if f.tsd_seq else 0
+        cursor += h + tsd_extra + TRACK_GAP
 
     singleton_y = cursor
-    cursor += SINGLETON_H + TRACK_GAP
-    legend_y = cursor + 6
+    legend_y = singleton_y + LEAF_H + TRACK_GAP + 8
     total_h = legend_y + 30
 
     parts: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" '
-        f'width="{W}" height="{total_h}" '
+        f'width="{W}" height="{total_h:.0f}" '
         f'style="background:#fff;font-family:{FONT};">',
-
-        # Title
-        _text(W / 2, TITLE_H - 6, sample_name or "MGE linear map",
+        _text(W / 2, TITLE_H - 4, sample_name or "MGE linear map",
               size=15, fill="#222", bold=True),
     ]
 
-    # Scale bar
     parts.extend(_scale_bar(TITLE_H, seq_len))
 
     # Backbone line
@@ -284,28 +289,24 @@ def to_linear_svg(roots: list[MGEFeature], seq_len: int,
         f'stroke="#ccc" stroke-width="3"/>'
     )
 
-    # Connector lines from backbone down to compound elements
-    for (y, f) in compound_rows:
+    # Dashed connector lines from backbone to compound elements
+    for (y, h, f) in compound_rows:
         x1, x2 = _px(f.start, f.end, seq_len)
         c = _c(f.element_type)
         for sx in (x1, x2):
             parts.append(
-                f'<line x1="{sx:.2f}" y1="{backbone_y}" '
-                f'x2="{sx:.2f}" y2="{y:.2f}" '
-                f'stroke="{c}" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>'
+                f'<line x1="{sx:.2f}" y1="{backbone_y}" x2="{sx:.2f}" y2="{y:.2f}" '
+                f'stroke="{c}" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>'
             )
 
-    # Compound element rows
-    for (y, f) in compound_rows:
-        parts.extend(_draw_compound(f, y, seq_len))
+    # Draw compound rows (recursive)
+    for (y, h, f) in compound_rows:
+        parts.extend(_draw_any(f, y, h, seq_len))
 
-    # Singletons on backbone track
+    # Singletons on baseline
     for f in singletons:
-        parts.extend(_draw_element(f, singleton_y, SINGLETON_H, seq_len,
-                                   label_outside=True))
-
-    # Backbone element markers (small ticks above backbone for singletons)
-    for f in singletons:
+        parts.extend(_draw_any(f, singleton_y, LEAF_H, seq_len))
+        # Small tick above backbone
         x1, x2 = _px(f.start, f.end, seq_len)
         mid = (x1 + x2) / 2
         c = _c(f.element_type)
@@ -315,8 +316,6 @@ def to_linear_svg(roots: list[MGEFeature], seq_len: int,
             f'stroke="{c}" stroke-width="2"/>'
         )
 
-    # Legend
     parts.extend(_legend(legend_y))
-
     parts.append("</svg>")
     return "\n".join(parts)
