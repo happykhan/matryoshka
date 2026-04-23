@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ruff + mypy
+        run: pip install ruff mypy
+      - name: ruff check
+        run: ruff check matryoshka tests scripts
+      - name: mypy
+        run: mypy matryoshka
+        continue-on-error: true
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package + test deps
+        run: pip install -e ".[dev,viz]"
+      - name: Install BLAST+
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ncbi-blast+
+      - name: Run tests
+        run: pytest --cov=matryoshka --cov-report=xml -q
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+        continue-on-error: true

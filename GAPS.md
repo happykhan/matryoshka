@@ -135,10 +135,62 @@ Legend
 - **Plasmid features (MOB, oriT, ICE)** are entirely uncovered pending a memory-safe plasmid-backbone caller. mobsuite crashed the VM and is intentionally disabled.
 - **Promoter / regulatory calls** (hybrid promoters, P2 class-1-integron variants, SOS-responsive intI1 expression) are out of scope: matryoshka annotates structural elements, not regulatory behaviour.
 
-## Next-session priorities
+## Additional transposon coverage (from 2026-04 paper re-read)
 
-1. Ship Tn4401 a–h references (download the known variants from NCBI / ISfinder).
-2. Model the IS26 single-copy translocatable unit as a low-confidence alongside the pair-merged island.
-3. Investigate a lightweight plasmid replicon caller (PlasmidFinder FASTA vs BLAST) as a drop-in replacement for mobsuite.
-4. Add a confidence-score field per element based on evidence stack (BLAST + TSD + IR + inference rule).
-5. Add ter-site / origin-of-transfer motif library for rolling-circle elements.
+| Element | Accession | Status | Rule / reference |
+|---|---|---|---|
+| Tn3 (archetype) | V00613 | ✅ | BLAST (`tn3_family_extras.fasta`) |
+| Tn2 (blaTEM) | AY123253 | ✅ | BLAST |
+| Tn1696 (Tn21 subfamily + mer) | U12338 | ✅ | BLAST |
+| Tn1721 (tet(A)) | X61367 | ✅ | BLAST |
+| Tn6452 (mcr-5) | KY807920 | ✅ | BLAST |
+| Tn6330 (ISApl1-mcr-1, canonical name) | CP016184 | ✅ | Flanked rule (renamed from Tn_mcr1) |
+| Tn2006 (ISAba1-blaOXA-23) | — | ✅ | Flanked rule (IS4 + blaOXA-23, 9bp TSD) |
+| Tn125 (ISAba125-blaNDM) | — | ✅ | Flanked rule (IS30 + NDM, 3bp TSD) |
+| Tn402 / Tn5053 (class-1 integron progenitor) | — | ❌ | Needs tniA/B/Q/R profile — medium complexity |
+| Tn916 family (tet(M), vanB2, erm(B)) | — | ❌ | Needs backbone BLAST; Gram+ |
+| SXT/R391 ICE (attB in prfC) | — | ❌ | Needs integrase HMM — hard |
+| SCCmec (ccr + mecA) | — | ❌ | Needs ccr typing — hard |
+| SGI1 / SGI2 (Salmonella) | — | ❌ | attB at 3' trmE — medium |
+
+## Additional IS / IS-family coverage
+
+| Family | Status | Notes |
+|---|---|---|
+| ISCR1 specifically (vs generic ISCR) | ⚠️ | BLAST finds it, but no 3'-CS-adjacent rule for complex class-1 detection |
+| ISCR3/4/5/6/14/15/27 | ❌ | Table 2 AMR associations (blaSPM-1, blaAIM-1, rmtB/D, floR, blaOXA-45) |
+| ISAba1 / ISAba125 / ISAba14 / ISAba3 | ⚠️ | ISEScan catches them; specific rules added for Tn2006 (OXA-23), Tn125 (NDM) |
+| IS1326, IS1353 | ❌ | Diagnostic keys for In2-like vs In4-like integron subtyping |
+| IS1111 / IS4321 / IS5075 | ❌ | attC / IRt interruption — needed for broken-integron detection |
+| IS256 (erm(B), cfr) | ❌ | Gram+ |
+| IS257/IS431 (Staph IS6 subfamily) | ⚠️ | Matched by generic IS6 rule |
+| TSD_LENGTHS table expanded | ✅ | Now covers Tn2/Tn21/Tn1696/Tn1721/Tn1546/Tn1331/Tn5393/Tn6452/Tn4401/Tn1999/Tn6330/Tn2006/Tn125/Tn402/Tn5053/Tn552 |
+
+## Integron enhancements
+
+- **Canonical cassette-array string output** ✅ — `attributes.cassette_array` emits `|gene1|gene2|gene3|` on every integron feature. `attributes.cassette_count` gives the count.
+- **In2-like vs In4-like vs complex class-1 subtyping** ❌ — requires IS1326/IS1353/ISCR1/IS6100 position analysis
+- **Class 4 / 5 mobile integrons** ❌ — rare, low priority
+
+## ICE / Genomic islands entirely uncovered
+
+| Family | Status | Complexity |
+|---|---|---|
+| SXT/R391 (Vibrio-cholerae-origin, floR/sulII) | ❌ | hard — integrase + attB HMM |
+| Tn4371 family ICE (IncP-like T4SS) | ❌ | hard |
+| pKLC102 / PAPI-1 / PAGI-n (tRNA-Lys integrators) | ❌ | hard |
+| Tn916 family (Tn1549 vanB2 ICE) | ❌ | medium — conserved backbone BLAST |
+| SCCmec (MRSA) | ❌ | hard — ccr typing |
+| SGI1 / SGI2 | ❌ | medium — attB at trmE |
+| ICEberg resource integration | ❌ | would unlock all of the above |
+
+## Future-session priorities
+
+1. **Tn402/Tn5053 tni module detection** — enables class-1 integron subtype discrimination (In2-like vs In4-like vs complex).
+2. **ISAba1 / ISAba125 / ISAba14 specific rules** beyond Tn2006/Tn125 — add a-family-specific TSD table + reference library for Acinetobacter IS types.
+3. **Tn916-family backbone BLAST** — tet(M) / vanB2 / erm(B) Gram+ ICE coverage.
+4. **Shufflon detection for IncI1/I2 plasmids** — invertible pilV region needs a special representation in MGEFeature.
+5. **attB catalogue (prfC, glmS, tRNA-Lys, tRNA-Gly, comM, trmE)** — detect *where* an ICE/island integrated.
+6. **SCCmec ccr-complex typing** — highest-cited MRSA MGE, fully missing.
+7. **Pull CP012005** once storage budget allows — unlocks Tn6021 / Tn6164 AbaR variants.
+8. **ICEberg integration** — mirror / ship a subset of ICEberg as a BLAST reference.

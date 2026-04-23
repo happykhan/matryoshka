@@ -36,12 +36,12 @@ def amr(name, start, end):
 
 
 # ---------------------------------------------------------------------------
-# Tn_mcr1 (ISApl1 composite)
+# Tn6330 (ISApl1 composite)
 # ---------------------------------------------------------------------------
 
 class TestTnMcr1:
     def _rule(self):
-        return next(r for r in FLANKED_RULES if r.family == "Tn_mcr1")
+        return next(r for r in FLANKED_RULES if r.family == "Tn6330")
 
     def test_two_isapl1_flanking_mcr1(self):
         feats = [
@@ -51,7 +51,7 @@ class TestTnMcr1:
         ]
         out = infer_flanked(self._rule(), feats)
         assert len(out) == 1
-        assert out[0].family == "Tn_mcr1"
+        assert out[0].family == "Tn6330"
         assert out[0].start == 1000 and out[0].end == 4700
 
     def test_only_one_isapl1_no_composite(self):
@@ -68,6 +68,44 @@ class TestTnMcr1:
             is_elem("IS30", 3700, 4700, "ISApl1_b"),
         ]
         assert infer_flanked(self._rule(), feats) == []
+
+
+# ---------------------------------------------------------------------------
+# Tn2006 (ISAba1 + blaOXA-23) — Acinetobacter carbapenem resistance
+# ---------------------------------------------------------------------------
+
+class TestTn2006:
+    def _rule(self):
+        return next(r for r in FLANKED_RULES if r.family == "Tn2006")
+
+    def test_isaba1_flanking_oxa23(self):
+        feats = [
+            is_elem("IS4", 1000, 2300, "ISAba1_a"),
+            amr("blaOXA-23", 2500, 3400),
+            is_elem("IS4", 3500, 4800, "ISAba1_b"),
+        ]
+        out = infer_flanked(self._rule(), feats)
+        assert len(out) == 1
+        assert out[0].family == "Tn2006"
+
+
+# ---------------------------------------------------------------------------
+# Tn125 (ISAba125 + blaNDM) — Acinetobacter NDM
+# ---------------------------------------------------------------------------
+
+class TestTn125:
+    def _rule(self):
+        return next(r for r in FLANKED_RULES if r.family == "Tn125")
+
+    def test_isaba125_flanking_ndm(self):
+        feats = [
+            is_elem("IS30", 1000, 2000, "ISAba125_a"),
+            amr("blaNDM-1", 2500, 3300),
+            is_elem("IS30", 3800, 4800, "ISAba125_b"),
+        ]
+        out = infer_flanked(self._rule(), feats)
+        assert len(out) == 1
+        assert out[0].family == "Tn125"
 
 
 # ---------------------------------------------------------------------------

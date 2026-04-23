@@ -390,6 +390,8 @@ REFERENCE_PARAMS: dict[str, dict] = {
     "isecp1.fasta":             {"min_identity": 90.0, "min_length": 1_000},
     "tn7.fasta":                {"min_identity": 90.0, "min_length": 3_000},
     "tn552.fasta":              {"min_identity": 95.0, "min_length": 2_000},
+    # Tn3-family extras — Tn3, Tn2, Tn1696, Tn1721, Tn6452
+    "tn3_family_extras.fasta":  {"min_identity": 90.0, "min_length": 3_000},
     # PlasmidFinder replicon sequences are ~500-900bp per record.
     # Identity ≥95% is the standard PlasmidFinder cutoff.
     "plasmidfinder_enterobacteriales.fasta": {

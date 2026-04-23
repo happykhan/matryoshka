@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a bug in Matryoshka
+labels: ["bug"]
+body:
+  - type: textarea
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including the exact command you ran.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What did you expect?
+      description: What output or behaviour did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Minimal reproducer
+      description: |
+        Ideally a tiny FASTA / feature file or a synthetic test case.
+        At minimum, include the input file sizes and a brief description.
+      render: shell
+  - type: input
+    attributes:
+      label: Matryoshka version
+      description: Output of `matryoshka --version` (or commit hash)
+  - type: input
+    attributes:
+      label: Python version
+      description: Output of `python --version`
+  - type: input
+    attributes:
+      label: BLAST version (if BLAST-dependent)
+      description: Output of `blastn -version`
+  - type: textarea
+    attributes:
+      label: Relevant logs
+      description: Paste stderr output, tracebacks, or the problematic JSON/GFF3 fragment.
+      render: shell

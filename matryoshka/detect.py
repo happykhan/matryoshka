@@ -37,19 +37,38 @@ class MGEFeature:
     children: list = field(default_factory=list)
 
 
-# Expected TSD lengths by IS superfamily or transposon family
+# Expected TSD lengths by IS superfamily or transposon family.
+# Values per Partridge et al. 2018 (PMC6148190) Tables 1-2.
 TSD_LENGTHS = {
     # IS families
-    "IS6":    8,   # IS26
-    "IS1380": 5,   # ISEcp1
-    "IS30":   2,
-    "IS91":   None,  # rolling circle — no TSD
-    "ISCR":   None,  # rolling circle — no TSD
-    # Transposon families (Tn3 superfamily all generate 5bp TSDs)
-    "Tn3":    5,
-    "Tn7":    5,
-    "Tn4401": 5,   # Tn3 superfamily, ISKpn7-bounded
-    "Tn1999": 5,   # Tn3 superfamily, IS1999-bounded
+    "IS6":    8,      # IS26, IS257, IS1216
+    "IS1380": 5,      # ISEcp1 (5-6bp, 6 occasional), ISKpn23
+    "IS30":   2,      # ISApl1, ISAba125
+    "IS91":   None,   # rolling circle — no TSD
+    "ISCR":   None,   # rolling circle — no TSD (generic prefix)
+    "ISCR1":  None,
+    "ISCR2":  None,
+    # Transposon families (most Tn3 superfamily = 5bp TSD)
+    "Tn3":     5,
+    "Tn2":     5,
+    "Tn21":    5,
+    "Tn1696":  5,
+    "Tn1721":  5,
+    "Tn1546":  5,
+    "Tn1331":  5,
+    "Tn5393":  5,
+    "Tn6452":  5,
+    "Tn7":     5,
+    "Tn4401":  5,     # ISKpn7-bounded Tn3 variant
+    "Tn1999":  5,
+    "Tn6330":  2,     # ISApl1-mcr-1-ISApl1 (IS30 TSD)
+    "Tn2006":  9,     # ISAba1-blaOXA-23 (IS4 TSD)
+    "Tn125":   3,     # ISAba125-blaNDM
+    # Tn402 / Tn5053 family (class-1 integron progenitor)
+    "Tn402":   5,
+    "Tn5053":  5,
+    # Tn552 (Staph; 6-7bp TSD)
+    "Tn552":   6,
 }
 
 
@@ -188,6 +207,12 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
                 break
 
         integron_seqid = members[0].get("ID_replicon", "")
+        # Build a canonical cassette-array string (e.g. "|dfrA17|aadA5|")
+        # by ordering protein cassettes along the integron and joining names.
+        protein_rows = [r for r in members if r.get("type_elt") == "protein"
+                        and r.get("annotation") != "intI"]
+        protein_rows.sort(key=lambda r: int(r["pos_beg"]))
+        cassette_array = "|".join(r["element"] for r in protein_rows)
         integron_feat = MGEFeature(
             element_type="integron",
             family=family,
@@ -195,7 +220,11 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
             start=int_start,
             end=int_end,
             strand=int_strand,
-            attributes={"seqid": integron_seqid},
+            attributes={
+                "seqid": integron_seqid,
+                "cassette_array": f"|{cassette_array}|" if cassette_array else "",
+                "cassette_count": str(len(protein_rows)),
+            },
         )
 
         for r in members:

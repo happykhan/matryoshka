@@ -102,12 +102,29 @@ FLANKED_RULES: list[FlankedRule] = [
         upstream_max=2000, downstream_max=200,
     ),
     # mcr-1 colistin resistance composite — ISApl1 (IS30 family) pair.
-    # Partridge 2018 accession: CP016184 (single IS), KY689635 (both IS).
+    # Canonical Tn number: Tn6330. Partridge 2018: CP016184 (single IS),
+    # KY689635 (both IS).
     FlankedRule(
-        family="Tn_mcr1", name="Tn_mcr1",
+        family="Tn6330", name="Tn6330",
         cargo_match="mcr-1",
         left_family="IS30", right_family="IS30",
         upstream_max=500, downstream_max=500,
+    ),
+    # Tn2006 — ISAba1 flanking blaOXA-23 (A. baumannii carbapenem resistance).
+    # ISAba1 is IS4-family; we match on the family (ISEScan classification).
+    FlankedRule(
+        family="Tn2006", name="Tn2006",
+        cargo_match="OXA-23",
+        left_family="IS4", right_family="IS4",
+        upstream_max=500, downstream_max=500,
+    ),
+    # Tn125 — ISAba125 flanking blaNDM (A. baumannii NDM metallo-beta-lactamase).
+    # ISAba125 is IS30-family.
+    FlankedRule(
+        family="Tn125", name="Tn125",
+        cargo_match="NDM",
+        left_family="IS30", right_family="IS30",
+        upstream_max=1000, downstream_max=1000,
     ),
 ]
 

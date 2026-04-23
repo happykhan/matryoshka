@@ -63,6 +63,32 @@ REFERENCES: list[tuple[str, list[tuple[str, tuple[int, int] | None, dict[str, st
               "family": "Tn5393", "cargo": "strAB"}),
         ],
     ),
+    # Additional Tn3-family references called out in Partridge 2018 Fig 3 legend.
+    (
+        "tn3_family_extras.fasta",
+        [
+            # Tn3 archetype — Tn3 itself
+            ("V00613", None,
+             {"name": "Tn3", "element_type": "transposon",
+              "family": "Tn3"}),
+            # Tn2 — blaTEM progenitor (hybrid of Tn1/Tn2/Tn3 family)
+            ("AY123253", None,
+             {"name": "Tn2", "element_type": "transposon",
+              "family": "Tn3", "cargo": "blaTEM"}),
+            # Tn1696 — Tn21 subfamily
+            ("U12338", None,
+             {"name": "Tn1696", "element_type": "transposon",
+              "family": "Tn3", "cargo": "mer+integron"}),
+            # Tn1721 — Tn3 family tet(A) composite
+            ("X61367", None,
+             {"name": "Tn1721", "element_type": "transposon",
+              "family": "Tn3", "cargo": "tetA"}),
+            # Tn6452 — mcr-5 on Tn21 subfamily
+            ("KY807920", None,
+             {"name": "Tn6452", "element_type": "transposon",
+              "family": "Tn3", "cargo": "mcr-5"}),
+        ],
+    ),
     (
         "acinetobacter_islands.fasta",
         [
@@ -78,6 +104,12 @@ REFERENCES: list[tuple[str, list[tuple[str, tuple[int, int] | None, dict[str, st
             ("FJ172370", None,
              {"name": "Tn6019", "element_type": "transposon",
               "family": "Tn6019"}),
+            # Tn6021 / Tn6164 — AbaR variants on CP012005 (large A. baumannii chromosome)
+            ("CP012005", None,
+             {"name": "Tn6021_Tn6164_context",
+              "element_type": "transposon",
+              "family": "Tn6021",
+              "note": "A_baumannii_chromosome"}),
         ],
     ),
     (

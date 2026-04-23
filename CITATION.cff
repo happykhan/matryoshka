@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use Matryoshka in your research, please cite this software and the Partridge et al. 2018 review whose framework it implements."
+title: "Matryoshka: Nested mobile genetic element annotation for bacterial genomes"
+authors:
+  - family-names: Alikhan
+    given-names: Nabil-Fareed
+    email: nabil@happykhan.com
+    affiliation: Centre for Genomic Pathogen Surveillance, University of Oxford
+repository-code: "https://github.com/happykhan/matryoshka"
+license: MIT
+version: 0.1.0
+date-released: "2026-04-23"
+keywords:
+  - bioinformatics
+  - antimicrobial-resistance
+  - mobile-genetic-elements
+  - transposon
+  - plasmid
+  - insertion-sequence
+  - integron
+  - annotation
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Partridge
+      given-names: Sally R.
+    - family-names: Kwong
+      given-names: Stephen M.
+    - family-names: Firth
+      given-names: Neville
+    - family-names: Jensen
+      given-names: Slade O.
+  title: "Mobile Genetic Elements Associated with Antimicrobial Resistance"
+  journal: "Clinical Microbiology Reviews"
+  volume: 31
+  issue: 4
+  year: 2018
+  pages: "e00088-17"
+  doi: "10.1128/CMR.00088-17"

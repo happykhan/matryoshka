@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest a new detection rule, reference, output format, or enhancement
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    attributes:
+      label: Category
+      options:
+        - New transposon / integron / IS rule
+        - New reference sequence
+        - New output format
+        - CLI / API enhancement
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: What are you proposing? Why is it useful?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Biological rationale (for new rules/references)
+      description: |
+        Paper reference, accession numbers, structural description of the element.
+        Link to the canonical publication that defines the element.
+  - type: textarea
+    attributes:
+      label: Acceptance criteria
+      description: What does "done" look like — what will the annotation output show?
