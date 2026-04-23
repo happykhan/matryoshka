@@ -3,6 +3,7 @@ output.py — Write Matryoshka results in multiple formats.
 
 Formats:
   - Wolvercote (cell format) — compact nested notation
+  - SVG — schematic circular diagram via wolvercote renderer
   - GFF3
   - JSON hierarchy
 """
@@ -107,3 +108,25 @@ def _feature_to_dict(f: MGEFeature) -> dict:
 
 def to_json(features: list[MGEFeature], indent: int = 2) -> str:
     return json.dumps([_feature_to_dict(f) for f in features], indent=indent)
+
+
+# ---------------------------------------------------------------------------
+# SVG / PNG output via wolvercote renderer
+# ---------------------------------------------------------------------------
+
+def to_svg(features: list[MGEFeature], sample_name: str = "") -> str:
+    """Render MGE hierarchy as a schematic SVG via the wolvercote renderer."""
+    from wolvercote import parse
+    from wolvercote.renderer import render_svg
+    wol = to_wolvercote(features, [], sample_name)
+    cell_set = parse(wol)
+    return render_svg(cell_set)
+
+
+def to_png(features: list[MGEFeature], sample_name: str = "", dpi: int = 200) -> bytes:
+    """Render MGE hierarchy as a PNG image via the wolvercote matplotlib renderer."""
+    from wolvercote import parse
+    from wolvercote.render_png import render_png
+    wol = to_wolvercote(features, [], sample_name)
+    cell_set = parse(wol)
+    return render_png(cell_set, dpi=dpi)

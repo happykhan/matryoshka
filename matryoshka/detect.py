@@ -37,15 +37,19 @@ class MGEFeature:
     children: list = field(default_factory=list)
 
 
-# Expected TSD lengths by IS superfamily
+# Expected TSD lengths by IS superfamily or transposon family
 TSD_LENGTHS = {
+    # IS families
     "IS6":    8,   # IS26
     "IS1380": 5,   # ISEcp1
-    "Tn3":    5,
-    "Tn7":    5,
     "IS30":   2,
     "IS91":   None,  # rolling circle — no TSD
     "ISCR":   None,  # rolling circle — no TSD
+    # Transposon families (Tn3 superfamily all generate 5bp TSDs)
+    "Tn3":    5,
+    "Tn7":    5,
+    "Tn4401": 5,   # Tn3 superfamily, ISKpn7-bounded
+    "Tn1999": 5,   # Tn3 superfamily, IS1999-bounded
 }
 
 

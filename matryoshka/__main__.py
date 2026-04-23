@@ -23,7 +23,7 @@ from .detect import (
     parse_mobsuite,
 )
 from .hierarchy import build_hierarchy
-from .output import to_gff3, to_json, to_wolvercote
+from .output import to_gff3, to_json, to_png, to_svg, to_wolvercote
 from .transposon import infer_transposons
 
 
@@ -38,7 +38,8 @@ def cli() -> None:
 @click.option("--amrfinder",  type=click.Path(exists=True), help="AMRFinder+ .tsv output")
 @click.option("--integrons",  type=click.Path(exists=True), help="IntegronFinder .integrons file")
 @click.option("--mobsuite",   type=click.Path(exists=True), help="MOBsuite mob_typer results (optional)")
-@click.option("--format", "fmt", default="json", type=click.Choice(["json", "gff3", "wolvercote"]),
+@click.option("--format", "fmt", default="json",
+              type=click.Choice(["json", "gff3", "wolvercote", "svg", "png"]),
               show_default=True, help="Output format")
 @click.option("--no-boundaries", is_flag=True, help="Skip TSD/IR confirmation step")
 @click.option("--out", "-o", default="-", help="Output file (default: stdout)")
@@ -78,19 +79,33 @@ def annotate(
     all_features = all_features + inferred
 
     if not no_boundaries:
-        # Only run on IS elements — boundaries.py skips families with no TSD definition
-        is_feats = [f for f in all_features if f.element_type == "IS"]
-        confirm_boundaries(seq, is_feats)
-        confirmed = sum(1 for f in is_feats if f.tsd_seq or f.ir_left)
-        click.echo(f"Boundary evidence on {confirmed}/{len(is_feats)} IS elements", err=True)
+        # IS elements + inferred transposons (Tn3 superfamily have 5bp TSDs)
+        checkable = [f for f in all_features
+                     if f.element_type in ("IS", "transposon")]
+        confirm_boundaries(seq, checkable)
+        confirmed = sum(1 for f in checkable if f.tsd_seq or f.ir_left)
+        click.echo(
+            f"Boundary evidence on {confirmed}/{len(checkable)} elements", err=True
+        )
 
     roots = build_hierarchy(all_features)
     click.echo(f"Root-level elements: {len(roots)}", err=True)
+
+    if fmt == "png":
+        data = to_png(roots, sample_name)
+        if out == "-":
+            sys.stdout.buffer.write(data)
+        else:
+            Path(out).write_bytes(data)
+            click.echo(f"Written to {out}", err=True)
+        return
 
     if fmt == "json":
         output = to_json(roots)
     elif fmt == "gff3":
         output = to_gff3(roots, seqid=sample_name)
+    elif fmt == "svg":
+        output = to_svg(roots, sample_name)
     else:
         output = to_wolvercote(roots, [], sample_name)
 

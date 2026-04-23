@@ -4,7 +4,13 @@ transposon.py — Infer composite transposons from IS element + cargo patterns.
 Tn4401 (ISKpn7 + blaKPC + ISKpn6):
   - ISKpn7 = IS21 family, upstream of blaKPC
   - ISKpn6 = IS1182 family, downstream of blaKPC
-  - Total span: ~10 kb; promoter gap (ISKpn7 end → blaKPC start) ≤ 200bp
+  - Total span: ~10 kb; promoter gap (ISKpn7 end → blaKPC start) ≤ 500bp
+
+Tn1999 / Tn1999.2 (IS1999 + blaOXA-48 + IS1999):
+  - IS1999 = IS4 family in ISEScan's nomenclature (ISfinder: IS66 superfamily)
+  - Two IS4-family copies flanking blaOXA-48
+  - Upstream gap (IS end → blaOXA start) ≤ 2000bp (Tn1999.2 has partial IS copy in linker)
+  - Downstream gap (blaOXA end → IS start) ≤ 200bp
 
 IS26 composite transposons:
   - Two IS26 (IS6 family) copies flanking one or more cargo genes
@@ -117,6 +123,54 @@ def infer_is26_composites(features: list[MGEFeature]) -> list[MGEFeature]:
     return composites
 
 
+def infer_tn1999(features: list[MGEFeature]) -> list[MGEFeature]:
+    """
+    Detect Tn1999 / Tn1999.2: IS4-family (IS1999) elements flanking blaOXA-48.
+
+    ISEScan classifies IS1999 as IS4 family. In Tn1999.2, the upstream linker
+    region contains a partial IS1999 copy (~1.4 kb gap), hence the generous
+    upstream threshold.
+    """
+    _UPSTREAM_MAX   = 2000   # IS4 end → blaOXA start
+    _DOWNSTREAM_MAX = 200    # blaOXA end → IS4 start
+
+    is4 = [f for f in features if f.family == "IS4"]
+    oxa48 = [
+        f for f in features
+        if f.element_type == "AMR" and "OXA-48" in f.name.upper()
+    ]
+
+    transposons: list[MGEFeature] = []
+    for oxa in oxa48:
+        upstream = [
+            f for f in is4
+            if f.end <= oxa.start and oxa.start - f.end <= _UPSTREAM_MAX
+        ]
+        if not upstream:
+            continue
+        up = max(upstream, key=lambda f: f.end)
+
+        downstream = [
+            f for f in is4
+            if f.start >= oxa.end and f.start - oxa.end <= _DOWNSTREAM_MAX
+        ]
+        if not downstream:
+            continue
+        down = min(downstream, key=lambda f: f.start)
+
+        tn = MGEFeature(
+            element_type="transposon",
+            family="Tn1999",
+            name="Tn1999",
+            start=up.start,
+            end=down.end,
+            strand=oxa.strand,
+        )
+        transposons.append(tn)
+
+    return transposons
+
+
 def infer_transposons(features: list[MGEFeature]) -> list[MGEFeature]:
     """Run all transposon inference rules and return the new features."""
-    return infer_tn4401(features) + infer_is26_composites(features)
+    return infer_tn4401(features) + infer_tn1999(features) + infer_is26_composites(features)
