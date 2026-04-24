@@ -1,12 +1,14 @@
 """Tests for Tn1999 inference and TSD detection on pOXA-48a."""
 
 from pathlib import Path
+
 import pytest
 from Bio import SeqIO
-from matryoshka.detect import parse_isescan, parse_amrfinder
+
 from matryoshka.boundaries import confirm_boundaries
-from matryoshka.transposon import infer_tn1999, infer_transposons
+from matryoshka.detect import parse_amrfinder, parse_isescan
 from matryoshka.hierarchy import build_hierarchy
+from matryoshka.transposon import infer_tn1999
 
 DATA = Path(__file__).parent.parent / "data"
 ISESCAN_TSV  = DATA / "isescan_test/reference_plasmids/pOXA-48a.fasta.tsv"

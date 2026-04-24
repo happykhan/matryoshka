@@ -256,7 +256,7 @@ def fetch_tn4401_variants(force: bool = False) -> None:
     """Extract clean Tn4401 regions from GenBank records."""
     out_path = REFERENCES_DIR / "tn4401.fasta"
     if out_path.exists() and not force:
-        print(f"  skip tn4401.fasta (exists — use --force to refresh)")
+        print("  skip tn4401.fasta (exists — use --force to refresh)")
         return
 
     blocks: list[str] = []
@@ -331,10 +331,10 @@ def fetch_records(email: str, force: bool = False) -> None:
                     continue
                 # Rewrite header with our metadata
                 header_line, *seq_lines = raw.splitlines()
-                seq_lines = [l for l in seq_lines if not l.startswith(">")]
+                seq_lines = [s for s in seq_lines if not s.startswith(">")]
                 new_header = ">" + format_header(acc, meta)
                 blocks.append(new_header + "\n" + "\n".join(seq_lines))
-                print(f"{sum(len(l) for l in seq_lines):,} bp")
+                print(f"{sum(len(s) for s in seq_lines):,} bp")
                 time.sleep(0.34)  # NCBI rate limit
             except Exception as e:
                 print(f"FAILED: {e}")

@@ -1,8 +1,7 @@
 """Tests for boundaries.py TSD and IR detection."""
 
-import pytest
+from matryoshka.boundaries import confirm_boundaries, find_ir, find_tsd
 from matryoshka.detect import MGEFeature
-from matryoshka.boundaries import find_tsd, find_ir, confirm_boundaries
 
 
 def make_feature(family, start, end, strand="+") -> MGEFeature:

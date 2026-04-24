@@ -1,8 +1,10 @@
 """Tests for detect.py parsers against real tool outputs."""
 
 from pathlib import Path
+
 import pytest
-from matryoshka.detect import parse_isescan, parse_amrfinder, parse_integron_finder
+
+from matryoshka.detect import parse_amrfinder, parse_integron_finder, parse_isescan
 
 DATA = Path(__file__).parent.parent / "data"
 ISESCAN_TSV = DATA / "isescan_test/reference_plasmids/pEK499.fasta.tsv"

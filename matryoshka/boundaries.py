@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from Bio.Seq import Seq
 
-from .detect import MGEFeature, TSD_LENGTHS
+from .detect import TSD_LENGTHS, MGEFeature
 
 # How many bp either side of the predicted boundary the TSD search may drift
 OFFSET_WINDOW = 3
@@ -99,7 +99,7 @@ def find_ir(
         return None
     irr_rc = str(Seq(irr_region).reverse_complement())
 
-    mismatches = sum(a != b for a, b in zip(irl, irr_rc))
+    mismatches = sum(a != b for a, b in zip(irl, irr_rc, strict=True))
     if mismatches <= mismatch:
         return irl, irr_region
     return None

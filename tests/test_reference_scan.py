@@ -23,10 +23,15 @@ SKIP_REFS = pytest.mark.skipif(
     not TN4401_REF.exists(),
     reason="reference sequences not downloaded — run scripts/fetch_mge_references.py",
 )
+SKIP_QUERY = pytest.mark.skipif(
+    not (PKPQIL.exists() and POXA48A.exists()),
+    reason="query plasmid FASTAs not present (data/ is gitignored)",
+)
 
 
 @SKIP_BLAST
 @SKIP_REFS
+@SKIP_QUERY
 class TestScan:
     def test_tn4401_detected_on_pkpqil(self):
         hits = scan(PKPQIL, TN4401_REF, min_identity=95.0, min_length=4_000)

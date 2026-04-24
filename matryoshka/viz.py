@@ -20,6 +20,7 @@ Colour coding:
 """
 
 from __future__ import annotations
+
 from .detect import MGEFeature
 
 # ── Colours ──────────────────────────────────────────────────────────────────
@@ -329,7 +330,7 @@ def to_linear_svg(roots: list[MGEFeature], seq_len: int,
     )
 
     # Dashed connector lines from backbone to compound elements
-    for (y, h, f) in compound_rows:
+    for (y, _h, f) in compound_rows:
         x1, x2 = _px(f.start, f.end, seq_len)
         c = _c(f.element_type)
         for sx in (x1, x2):

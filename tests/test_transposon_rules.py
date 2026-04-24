@@ -8,15 +8,15 @@ composite, and the res-site annotator.
 from matryoshka.detect import MGEFeature
 from matryoshka.transposon import (
     FLANKED_RULES,
+    ONE_ENDED_RULES,
+    ROLLING_CIRCLE_RULES,
+    SIGNATURE_RULES,
+    TN3_FAMILY_MEMBERS,
     annotate_res_sites,
     infer_flanked,
     infer_one_ended,
     infer_signature,
     infer_transposons,
-    ONE_ENDED_RULES,
-    ROLLING_CIRCLE_RULES,
-    SIGNATURE_RULES,
-    TN3_FAMILY_MEMBERS,
 )
 
 

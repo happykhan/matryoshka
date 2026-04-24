@@ -179,7 +179,7 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
     rows: list[dict] = []
     with open(integrons_path) as fh:
         # Skip comment lines, then use the first non-comment line as header
-        lines = [l for l in fh if not l.startswith("#")]
+        lines = [line for line in fh if not line.startswith("#")]
     reader = csv.DictReader(io.StringIO("".join(lines)), delimiter="\t")
     for row in reader:
         rows.append(dict(row))

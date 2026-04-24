@@ -53,9 +53,7 @@ def contains(parent: MGEFeature, child: MGEFeature) -> bool:
         return False
     if (parent.start, parent.end) == (child.start, child.end):
         return False
-    if (parent.element_type, child.element_type) in _FORBIDDEN_NESTING:
-        return False
-    return True
+    return (parent.element_type, child.element_type) not in _FORBIDDEN_NESTING
 
 
 def build_hierarchy(features: list[MGEFeature]) -> list[MGEFeature]:

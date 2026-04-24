@@ -27,7 +27,6 @@ from Bio import SeqIO
 
 from .detect import MGEFeature
 
-
 REFERENCES_DIR = Path(__file__).parent / "references"
 
 

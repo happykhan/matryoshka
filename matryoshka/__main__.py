@@ -11,7 +11,8 @@ Usage:
 from __future__ import annotations
 
 import sys
-from importlib.metadata import version as _pkg_version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
 from pathlib import Path
 
 import click
@@ -30,7 +31,6 @@ from .output import to_genbank, to_gff3, to_json, to_png, to_svg, to_wolvercote
 from .reference_scan import blast_available, scan_all
 from .transposon import annotate_res_sites, infer_transposons
 from .viz import to_linear_svg
-
 
 try:
     _VERSION = _pkg_version("matryoshka")
@@ -83,9 +83,9 @@ def _suppress_redundant_inference(features: list[MGEFeature]) -> list[MGEFeature
             f.element_type == "transposon"
             and f.attributes.get("source") != "reference_scan"
             and f.family in blast_by_family
+            and any(_overlap(f, b) for b in blast_by_family[f.family])
         ):
-            if any(_overlap(f, b) for b in blast_by_family[f.family]):
-                continue
+            continue
         kept.append(f)
     return kept
 

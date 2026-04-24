@@ -1,9 +1,11 @@
 """Tests for transposon inference against pKpQIL data."""
 
 from pathlib import Path
+
 import pytest
-from matryoshka.detect import parse_isescan, parse_amrfinder, MGEFeature
-from matryoshka.transposon import infer_tn4401, infer_is26_composites, infer_transposons
+
+from matryoshka.detect import parse_amrfinder, parse_isescan
+from matryoshka.transposon import infer_is26_composites, infer_tn4401
 
 DATA = Path(__file__).parent.parent / "data"
 ISESCAN_TSV = DATA / "isescan_test/reference_plasmids/pKpQIL.fasta.tsv"
