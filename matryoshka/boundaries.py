@@ -105,8 +105,36 @@ def find_ir(
     return None
 
 
-def confirm_boundaries(seq: str, features: list[MGEFeature]) -> list[MGEFeature]:
-    """Annotate TSD and IR evidence on each feature in-place."""
+def confirm_boundaries(
+    seq: str,
+    features: list[MGEFeature],
+    ml_refine: bool = True,
+) -> list[MGEFeature]:
+    """Annotate TSD and IR evidence on each feature in-place.
+
+    When ml_refine=True (default), BLAST-sourced features with boundaries
+    off by more than OFFSET_WINDOW are first corrected by the ML boundary
+    refinement model before TSD/IR confirmation runs. This improves recall
+    on elements where BLAST alignment truncates before the true IS boundary.
+    """
+    if ml_refine:
+        try:
+            from .boundary_refine import refine_boundaries
+            for f in features:
+                if (
+                    f.start > 0 and f.end > 0
+                    and f.attributes.get("source") == "reference_scan"
+                    and f.end - f.start > 100
+                ):
+                    new_start, new_end = refine_boundaries(
+                        seq, f.start, f.end, search_window=80, step=3
+                    )
+                    if new_start != f.start or new_end != f.end:
+                        f.start = new_start
+                        f.end = new_end
+        except Exception:
+            pass  # model absent or error — continue without refinement
+
     for f in features:
         if f.start <= 0 or f.end <= 0:
             continue
