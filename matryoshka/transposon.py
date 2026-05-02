@@ -155,6 +155,19 @@ FLANKED_RULES: list[FlankedRule] = [
         left_family="IS4", right_family="IS4",
         upstream_max=1500, downstream_max=2000,
     ),
+    # Tn4001 — IS256/IS256 flanking AAC(6')-Ie-APH(2'')-Ia bifunctional
+    # aminoglycoside resistance gene. Staphylococcal composite transposon.
+    # Canonical Tn4001 is 4.5kb. IS256 copies are ~1.3kb each.
+    # upstream_max=500: gap from left IS256 end to aac(6') start is ~393bp
+    # downstream_max=500: gap from aac(6') end to right IS256 start is ~87bp
+    # cargo_match uses "aac(6')" to match the bifunctional gene name reported
+    # by AMRFinder (aac(6')-Ie/aph(2'')-Ia).
+    FlankedRule(
+        family="Tn4001", name="Tn4001",
+        cargo_match="aac(6')",
+        left_family="IS256", right_family="IS256",
+        upstream_max=500, downstream_max=500,
+    ),
 ]
 
 

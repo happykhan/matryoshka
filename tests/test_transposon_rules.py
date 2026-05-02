@@ -71,6 +71,41 @@ class TestTnMcr1:
 
 
 # ---------------------------------------------------------------------------
+# Tn4001 (IS256 + AAC(6')-Ie/APH(2'')-Ia) — Staphylococcal aminoglycoside
+# ---------------------------------------------------------------------------
+
+class TestTn4001Composite:
+    def _rule(self):
+        return next(r for r in FLANKED_RULES if r.family == "Tn4001")
+
+    def test_is256_flanking_aac6(self):
+        feats = [
+            is_elem("IS256", 5, 1319, "IS256_a"),
+            amr("aac(6')-Ie/aph(2'')-Ia", 1712, 3148),
+            is_elem("IS256", 3235, 4550, "IS256_b"),
+        ]
+        out = infer_flanked(self._rule(), feats)
+        assert len(out) == 1
+        assert out[0].family == "Tn4001"
+        assert out[0].start == 5 and out[0].end == 4550
+
+    def test_partial_is256_excluded(self):
+        feats = [
+            is_elem("IS256", 5, 1319, "IS256_a", complete=False),
+            amr("aac(6')-Ie/aph(2'')-Ia", 1712, 3148),
+            is_elem("IS256", 3235, 4550, "IS256_b"),
+        ]
+        assert infer_flanked(self._rule(), feats) == []
+
+    def test_only_one_is256_no_composite(self):
+        feats = [
+            is_elem("IS256", 5, 1319, "IS256_a"),
+            amr("aac(6')-Ie/aph(2'')-Ia", 1712, 3148),
+        ]
+        assert infer_flanked(self._rule(), feats) == []
+
+
+# ---------------------------------------------------------------------------
 # Tn2006 (ISAba1 + blaOXA-23) — Acinetobacter carbapenem resistance
 # ---------------------------------------------------------------------------
 

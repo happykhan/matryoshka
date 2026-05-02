@@ -28,6 +28,8 @@ NCBI_EMAIL=you@example.org pixi run python scripts/fetch_mge_references.py --for
 | `isecp1.fasta` | ISEcp1 reference | FJ621588 |
 | `plasmidfinder_enterobacteriales.fasta` | PlasmidFinder Enterobacteriales replicon DB (159 records) | [PlasmidFinder DB](https://bitbucket.org/genomicepidemiology/plasmidfinder_db/) (Apache-2.0) |
 | `isaba125.fasta` | ISAba125 (IS30 family) reference — ISEScan fails to detect this element | AY751533 |
+| `is26.fasta` | IS26 (IS6 family) reference — ISEScan fails at sequence boundaries | X00011 (via KC964607) |
+| `tn3_family_extras.fasta` | Tn3-family extras — Tn3, Tn2, Tn1696, Tn1721, Tn6452, Tn1412 | V00613, AY123253, U12338, X61367, KY807920, L36547 |
 | `rolling_circle_ter_sites.fasta` | terIS91, terISCR1, terISCR2, oriIS91 consensus motifs (~30bp) | Local motif (experimental) |
 
 All accessions are cited from Partridge et al. 2018 (Clin Microbiol Rev,

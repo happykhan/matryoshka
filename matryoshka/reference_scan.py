@@ -400,6 +400,10 @@ REFERENCE_PARAMS: dict[str, dict] = {
     # ISAba125 (IS30 family) — ISEScan fails to detect this element.
     # ~1087bp; high identity needed to avoid spurious IS30 hits.
     "isaba125.fasta":               {"min_identity": 90.0, "min_length": 800},
+    # IS26 (IS6 family) — ISEScan fails to detect IS26 at sequence boundaries
+    # (positions 1 or seq_length) due to insufficient flanking context.
+    # ~820bp; high identity to avoid spurious IS6 family hits.
+    "is26.fasta":                   {"min_identity": 95.0, "min_length": 600},
     # ter-site motifs for IS91 / ISCR rolling-circle elements.
     # Short consensus (~30bp) — needs a broad min_identity tolerance.
     # Marked as experimental pending a validated motif library.

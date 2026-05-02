@@ -44,6 +44,7 @@ TSD_LENGTHS = {
     "IS6":    8,      # IS26, IS257, IS1216
     "IS1380": 5,      # ISEcp1 (5-6bp, 6 occasional), ISKpn23
     "IS30":   2,      # ISApl1, ISAba125
+    "IS256":  8,      # IS256, IS1249 (8-9bp TSD; Partridge 2018)
     "IS91":   None,   # rolling circle — no TSD
     "ISCR":   None,   # rolling circle — no TSD (generic prefix)
     "ISCR1":  None,
@@ -328,29 +329,122 @@ _ISESCAN_HEADER = (
     "orfBegin\torfEnd\tstrand\torfLen\tE-value\tE-value4copy\ttype\tov\ttir\n"
 )
 
+# Padding length (bp) added to each side of the input sequence before running
+# ISEScan. This provides flanking context for IS elements at sequence
+# boundaries (position 1 or seq_length) that ISEScan's HMM otherwise misses.
+_ISESCAN_PAD_LEN = 2000
+
+
+def pad_sequence_for_isescan(
+    fasta_in: str | Path,
+    fasta_out: str | Path,
+    pad_len: int = _ISESCAN_PAD_LEN,
+) -> int:
+    """Pad each sequence in a FASTA file with N bases on both sides.
+
+    Writes the padded FASTA to `fasta_out`. Returns the pad length used,
+    which callers must subtract from ISEScan output coordinates.
+    """
+    from Bio import SeqIO
+    from Bio.Seq import Seq
+    from Bio.SeqRecord import SeqRecord
+
+    pad = "N" * pad_len
+    records = []
+    for rec in SeqIO.parse(str(fasta_in), "fasta"):
+        padded_seq = Seq(pad + str(rec.seq) + pad)
+        padded_rec = SeqRecord(padded_seq, id=rec.id, description="")
+        records.append(padded_rec)
+    with open(fasta_out, "w") as fh:
+        SeqIO.write(records, fh, "fasta")
+    return pad_len
+
+
+def _adjust_isescan_coordinates(
+    tsv_in: str | Path,
+    tsv_out: str | Path,
+    pad_len: int,
+    seq_lengths: dict[str, int],
+) -> None:
+    """Subtract padding offset from ISEScan coordinate columns.
+
+    Drops any IS element whose adjusted coordinates fall entirely within
+    the padding region (start < 1 or end > original sequence length).
+    """
+    coord_cols = {"isBegin", "isEnd", "start1", "end1", "start2", "end2",
+                  "orfBegin", "orfEnd"}
+    with open(tsv_in) as fh_in, open(tsv_out, "w") as fh_out:
+        reader = csv.DictReader(fh_in, delimiter="\t")
+        if reader.fieldnames is None:
+            fh_out.write(_ISESCAN_HEADER)
+            return
+        writer = csv.DictWriter(
+            fh_out, fieldnames=reader.fieldnames, delimiter="\t",
+        )
+        writer.writeheader()
+        for row in reader:
+            seqid = row.get("seqID", "")
+            orig_len = seq_lengths.get(seqid, float("inf"))
+            adjusted = dict(row)
+            for col in coord_cols:
+                if col in adjusted and adjusted[col]:
+                    try:
+                        val = int(adjusted[col]) - pad_len
+                        adjusted[col] = str(val)
+                    except ValueError:
+                        pass
+            # Drop hits entirely outside the original sequence
+            try:
+                is_begin = int(adjusted["isBegin"])
+                is_end = int(adjusted["isEnd"])
+            except (KeyError, ValueError):
+                continue
+            if is_end < 1 or is_begin > orig_len:
+                continue
+            # Clamp to sequence boundaries
+            adjusted["isBegin"] = str(max(1, is_begin))
+            adjusted["isEnd"] = str(min(is_end, orig_len))
+            writer.writerow(adjusted)
+
 
 def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
     """Run ISEScan via its pixi environment. Returns path to .tsv output.
+
+    The input FASTA is padded with N bases on both sides so that IS elements
+    at sequence boundaries are detectable. Output coordinates are adjusted
+    back to the original coordinate space.
 
     ISEScan produces no output file when it finds no IS elements or when the
     input sequence is too short (< ~1 kb). In both cases we create a
     header-only TSV so downstream parsers always receive a valid file.
     """
     import warnings
+    from Bio import SeqIO
+
     fasta = Path(fasta)
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
+
+    # Record original sequence lengths for coordinate adjustment
+    seq_lengths: dict[str, int] = {}
+    for rec in SeqIO.parse(str(fasta), "fasta"):
+        seq_lengths[rec.id] = len(rec.seq)
+
+    # Pad the FASTA for ISEScan
+    padded_fasta = outdir / f"{fasta.stem}.padded.fasta"
+    pad_len = pad_sequence_for_isescan(fasta, padded_fasta)
+
     subprocess.run(
         ["pixi", "run", "-e", "isescan", "isescan.py",
-         "--seqfile", str(fasta), "--output", str(outdir), "--nthread", "4"],
+         "--seqfile", str(padded_fasta), "--output", str(outdir), "--nthread", "4"],
         check=True,
     )
-    tsv = outdir / fasta.name / (fasta.name + ".tsv")
-    if not tsv.exists():
+    raw_tsv = outdir / padded_fasta.name / (padded_fasta.name + ".tsv")
+    if not raw_tsv.exists():
         candidates = list(outdir.rglob("*.tsv"))
         if candidates:
-            tsv = candidates[0]
-    if not tsv.exists():
+            raw_tsv = candidates[0]
+    if not raw_tsv.exists():
         warnings.warn(
             f"ISEScan produced no output for {fasta.name} — "
             "sequence may be too short or contain no IS elements. "
@@ -360,6 +454,11 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
         )
         tsv = outdir / (fasta.stem + ".isescan.tsv")
         tsv.write_text(_ISESCAN_HEADER)
+        return tsv
+
+    # Adjust coordinates to remove padding offset
+    tsv = outdir / (fasta.stem + ".isescan.tsv")
+    _adjust_isescan_coordinates(raw_tsv, tsv, pad_len, seq_lengths)
     return tsv
 
 
