@@ -108,14 +108,13 @@ def find_ir(
 def confirm_boundaries(
     seq: str,
     features: list[MGEFeature],
-    ml_refine: bool = True,
+    ml_refine: bool = False,
 ) -> list[MGEFeature]:
     """Annotate TSD and IR evidence on each feature in-place.
 
-    When ml_refine=True (default), BLAST-sourced features with boundaries
-    off by more than OFFSET_WINDOW are first corrected by the ML boundary
-    refinement model before TSD/IR confirmation runs. This improves recall
-    on elements where BLAST alignment truncates before the true IS boundary.
+    ml_refine is disabled by default: evaluation on TnCentral showed the
+    model degraded boundary accuracy (MAE 24.6→39.4bp, 7/9 features worse).
+    Enable only if retraining on a larger, more diverse dataset.
     """
     if ml_refine:
         try:
