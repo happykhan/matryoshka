@@ -129,19 +129,28 @@ FLANKED_RULES: list[FlankedRule] = [
     ),
     # Tn10 — IS10R/IS10L (IS4-family) flanking tet(B) tetracycline resistance.
     # The canonical Tn10 is 9.3kb; IS10 elements are ~1.3kb each.
+    # upstream_max=5000: tet(B) sits ~4 kb from the left IS10 because
+    # the element contains jemC, orf1, orf2, tetR, and tetC between the
+    # left IS10 and tet(B). downstream_max=1500: additional ORFs between
+    # tet(B) and the right IS10.
     FlankedRule(
         family="Tn10", name="Tn10",
         cargo_match="tet",
         left_family="IS4", right_family="IS4",
-        upstream_max=500, downstream_max=500,
+        upstream_max=5000, downstream_max=1500,
     ),
     # Tn5 — IS50L/IS50R (IS4-family) flanking aminoglycoside resistance cluster
     # (aph(3')-IIa, aph(6)-Ic, ble). Canonical Tn5 is 5.8kb.
+    # The cargo cluster (aph(3')-IIa, ble, aph(6)-Ic) spans ~2kb between
+    # the two IS50 copies. infer_flanked works per-cargo-gene, so thresholds
+    # must accommodate the gap from any single aph gene to both IS elements:
+    # upstream_max=1500: aph(6)-Ic sits ~1.2kb from IS50L
+    # downstream_max=2000: aph(3')-IIa sits ~1.9kb from IS50R
     FlankedRule(
         family="Tn5", name="Tn5",
         cargo_match="aph",
         left_family="IS4", right_family="IS4",
-        upstream_max=500, downstream_max=500,
+        upstream_max=1500, downstream_max=2000,
     ),
 ]
 
