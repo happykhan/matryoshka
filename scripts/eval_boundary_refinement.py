@@ -16,10 +16,8 @@ Usage:
 
 from __future__ import annotations
 
-import copy
 import json
 import sys
-import tempfile
 import warnings
 from collections import defaultdict
 from pathlib import Path
@@ -29,8 +27,8 @@ from Bio import SeqIO
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from matryoshka.boundaries import confirm_boundaries
-from matryoshka.detect import MGEFeature
+from matryoshka.boundaries import confirm_boundaries  # noqa: E402
+from matryoshka.detect import MGEFeature  # noqa: E402
 
 DATA_DIR = PROJECT_ROOT / "data" / "tncentral"
 RESULTS_DIR = DATA_DIR / "benchmark_results"
@@ -81,10 +79,6 @@ def _load_sequence(stem: str) -> str | None:
             gb_path = candidates[0]
         else:
             return None
-    try:
-        warnings.filterwarnings("ignore", category=BiopythonWarning)
-    except NameError:
-        pass
     warnings.filterwarnings("ignore")
     rec = next(SeqIO.parse(str(gb_path), "genbank"))
     return str(rec.seq)

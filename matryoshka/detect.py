@@ -419,6 +419,7 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
     header-only TSV so downstream parsers always receive a valid file.
     """
     import warnings
+
     from Bio import SeqIO
 
     fasta = Path(fasta)

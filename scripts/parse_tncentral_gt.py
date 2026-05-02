@@ -7,12 +7,12 @@ Outputs:
   data/tncentral/summary.tsv        — one row per transposon with counts
 """
 
-import re
 import csv
+import re
 import sys
 from pathlib import Path
+
 from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
 
 GB_DIR = Path(__file__).parent.parent / "data" / "tncentral" / "gb"
 OUT_DIR = Path(__file__).parent.parent / "data" / "tncentral"
@@ -77,13 +77,11 @@ def parse_gb(gb_path: Path) -> tuple[dict, list[dict]]:
     tn_name = gb_path.stem  # e.g. Tn1999.1-CP019080
 
     # Top-level mobile_element (the transposon itself)
-    top_feature = None
     top_note = ""
     for feat in record.features:
         if feat.type == "mobile_element":
             me_type = feat.qualifiers.get("mobile_element_type", [""])[0]
             if "transposon" in me_type.lower():
-                top_feature = feat
                 top_note = feat.qualifiers.get("note", [""])[0]
                 break
 

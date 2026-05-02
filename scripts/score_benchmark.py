@@ -248,10 +248,8 @@ def score_feature_level(
             # Type must be compatible
             gt_norm = _normalise_element_type(gt["type"])
             p_norm = _normalise_element_type(p["type"])
-            if gt_norm != p_norm:
-                # Allow transposon to match mobile_element
-                if not (gt_norm == "IS" and p_norm == "mobile_element"):
-                    continue
+            if gt_norm != p_norm and not (gt_norm == "IS" and p_norm == "mobile_element"):
+                continue
             if _features_overlap(gt["start"], gt["end"],
                                  p["start"], p["end"], tolerance):
                 score = abs(gt["start"] - p["start"]) + abs(gt["end"] - p["end"])
@@ -274,9 +272,8 @@ def score_feature_level(
         for gt in gt_features:
             gt_norm = _normalise_element_type(gt["type"])
             p_norm = _normalise_element_type(p["type"])
-            if gt_norm != p_norm:
-                if not (gt_norm == "IS" and p_norm == "mobile_element"):
-                    continue
+            if gt_norm != p_norm and not (gt_norm == "IS" and p_norm == "mobile_element"):
+                continue
             if _features_overlap_any(gt["start"], gt["end"],
                                       p["start"], p["end"], tolerance):
                 pred_matched[j] = True
@@ -341,10 +338,6 @@ def classify_failure(
         "Tn4401", "Tn1546", "Tn1331", "Tn5393", "Tn7", "Tn552",
         "Tn6022", "Tn6019", "Tn6172",
     }
-
-    # Transposon rule coverage
-    flanked_rule_families = {"Tn4401", "Tn1999", "Tn6330", "Tn2006", "Tn125"}
-    signature_rule_families = {"Tn1546", "Tn1331"}
 
     if gt_name in blast_covered_names or gt_family in blast_covered_families:
         modes.append("blast_reference_miss_despite_coverage")
@@ -436,7 +429,6 @@ def generate_report(
     type_gt_total: Counter = Counter()
     type_gt_matched: Counter = Counter()
     type_pred_total: Counter = Counter()
-    type_pred_matched: Counter = Counter()
 
     for fs in feat_scores:
         for t, c in fs.get("gt_by_type", {}).items():
@@ -494,7 +486,7 @@ def generate_report(
 
     failures = [
         (ts, fm)
-        for ts, (_, fm) in zip(tn_scores, failure_modes)
+        for ts, (_, fm) in zip(tn_scores, failure_modes, strict=False)
         if not ts["detected"] and ts["element_class"] != "IS_element"
     ]
     # Sort by: composites first, then unit transposons, then others

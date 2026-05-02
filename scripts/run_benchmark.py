@@ -37,17 +37,17 @@ from Bio import SeqIO
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from matryoshka.boundaries import confirm_boundaries
-from matryoshka.confidence import assign_confidence
-from matryoshka.detect import (
+from matryoshka.boundaries import confirm_boundaries  # noqa: E402
+from matryoshka.confidence import assign_confidence  # noqa: E402
+from matryoshka.detect import (  # noqa: E402
     MGEFeature,
     parse_amrfinder,
     parse_integron_finder,
     parse_isescan,
 )
-from matryoshka.hierarchy import build_hierarchy
-from matryoshka.reference_scan import blast_available, scan_all
-from matryoshka.transposon import annotate_res_sites, infer_transposons
+from matryoshka.hierarchy import build_hierarchy  # noqa: E402
+from matryoshka.reference_scan import blast_available, scan_all  # noqa: E402
+from matryoshka.transposon import annotate_res_sites, infer_transposons  # noqa: E402
 
 DATA_DIR = PROJECT_ROOT / "data" / "tncentral"
 PARSED_DIR = DATA_DIR / "parsed"
@@ -398,7 +398,7 @@ def write_ground_truth_tsv(
     out_path = DATA_DIR / "benchmark_ground_truth.tsv"
     with open(out_path, "w") as fh:
         fh.write("transposon_name\tfeature_type\tfeature_name\tstart\tend\tstrand\n")
-        for stem, category, gt in elements:
+        for _stem, _category, gt in elements:
             name = gt["element_name"]
             # Mobile elements / transposons
             for me in gt.get("mobile_elements", []):
@@ -514,11 +514,11 @@ def score_element(
     for gf in gt_features:
         matched = False
         for pf in pred_features:
-            if _type_compatible(gf["type"], pf["type"]):
-                if (abs(gf["start"] - pf["start"]) <= tolerance
-                        and abs(gf["end"] - pf["end"]) <= tolerance):
-                    matched = True
-                    break
+            if (_type_compatible(gf["type"], pf["type"])
+                    and abs(gf["start"] - pf["start"]) <= tolerance
+                    and abs(gf["end"] - pf["end"]) <= tolerance):
+                matched = True
+                break
         if matched:
             gt_matched.append(gf)
         else:
@@ -527,11 +527,11 @@ def score_element(
     pred_matched_count = 0
     for pf in pred_features:
         for gf in gt_features:
-            if _type_compatible(gf["type"], pf["type"]):
-                if (abs(gf["start"] - pf["start"]) <= tolerance
-                        and abs(gf["end"] - pf["end"]) <= tolerance):
-                    pred_matched_count += 1
-                    break
+            if (_type_compatible(gf["type"], pf["type"])
+                    and abs(gf["start"] - pf["start"]) <= tolerance
+                    and abs(gf["end"] - pf["end"]) <= tolerance):
+                pred_matched_count += 1
+                break
 
     result["gt_features_total"] = len(gt_features)
     result["gt_features_matched"] = len(gt_matched)
@@ -557,10 +557,7 @@ def _type_compatible(gt_type: str, pred_type: str) -> bool:
     """Check if ground truth and prediction types are comparable."""
     if gt_type == pred_type:
         return True
-    # IS may appear as mobile_element in some contexts
-    if gt_type == "IS" and pred_type == "mobile_element":
-        return True
-    return False
+    return gt_type == "IS" and pred_type == "mobile_element"
 
 
 def _classify_failure(
@@ -655,7 +652,7 @@ def generate_report(scored: list[dict]) -> str:
     lines.append("")
     lines.append(f"Benchmark run against {len(scored)} representative TnCentral elements.")
     lines.append(f"Feature matching tolerance: +/-{TOLERANCE} bp.")
-    lines.append(f"Pipeline mode: full (ISEScan + AMRFinder + IntegronFinder + BLAST).")
+    lines.append("Pipeline mode: full (ISEScan + AMRFinder + IntegronFinder + BLAST).")
     lines.append("")
 
     # Transposon-level metrics by category
@@ -803,9 +800,9 @@ def generate_findings(scored: list[dict]) -> str:
     lines = []
     lines.append("# TnCentral Benchmark Findings")
     lines.append("")
-    lines.append(f"Date: 2026-05-02")
+    lines.append("Date: 2026-05-02")
     lines.append(f"Elements tested: {total}")
-    lines.append(f"Pipeline: full (ISEScan + AMRFinder + IntegronFinder + BLAST reference scan)")
+    lines.append("Pipeline: full (ISEScan + AMRFinder + IntegronFinder + BLAST reference scan)")
     lines.append("")
 
     lines.append("## Summary metrics")
@@ -940,7 +937,7 @@ def main() -> None:
     write_ground_truth_tsv([(stem, cat, gt) for stem, cat, _, _, gt in elements])
 
     scored: list[dict] = []
-    for i, (stem, category, rationale, gb_path, gt) in enumerate(elements):
+    for i, (_stem, category, _rationale, gb_path, gt) in enumerate(elements):
         result_path = RESULTS_DIR / f"{gb_path.stem}.json"
 
         # Check cache

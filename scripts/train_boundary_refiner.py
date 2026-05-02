@@ -34,13 +34,11 @@ from Bio import SeqIO
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, roc_auc_score
 from sklearn.model_selection import StratifiedKFold
-from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from matryoshka.boundary_refine import (
-    _dimer_freq, _tsd_score_paired, _ir_mismatch, _gc_delta
-)
+from matryoshka.boundary_refine import _dimer_freq, _gc_delta, _ir_mismatch, _tsd_score_paired
 
 GT_TSV = Path("data/tncentral/ground_truth.tsv")
 SEQ_DIR = Path("data/tncentral/sequences")

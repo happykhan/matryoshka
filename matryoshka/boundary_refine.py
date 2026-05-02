@@ -78,7 +78,7 @@ def _tsd_score_paired(seq: str, start: int, end: int, k_range=(3, 9)) -> tuple[f
             continue
         if l_kmer == r_kmer:
             best_exact = max(best_exact, k / k_range[1])
-        ham = sum(a != b for a, b in zip(l_kmer, r_kmer))
+        ham = sum(a != b for a, b in zip(l_kmer, r_kmer, strict=True))
         best_hamming = min(best_hamming, ham / k)
     return best_exact, best_hamming if best_hamming < float("inf") else 1.0
 
@@ -98,7 +98,7 @@ def _tsd_score(left_flank: str, right_flank: str, k_range=(3, 9)) -> tuple[float
             continue
         if l_kmer == r_kmer:
             best_exact = max(best_exact, k / k_range[1])
-        ham = sum(a != b for a, b in zip(l_kmer, r_kmer))
+        ham = sum(a != b for a, b in zip(l_kmer, r_kmer, strict=True))
         best_hamming = min(best_hamming, ham / k)
     return best_exact, best_hamming if best_hamming < float("inf") else 1.0
 

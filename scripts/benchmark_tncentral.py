@@ -21,8 +21,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -35,17 +35,17 @@ from Bio import SeqIO
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from matryoshka.boundaries import confirm_boundaries
-from matryoshka.confidence import assign_confidence
-from matryoshka.detect import (
+from matryoshka.boundaries import confirm_boundaries  # noqa: E402
+from matryoshka.confidence import assign_confidence  # noqa: E402
+from matryoshka.detect import (  # noqa: E402
     MGEFeature,
     parse_amrfinder,
     parse_integron_finder,
     parse_isescan,
 )
-from matryoshka.hierarchy import build_hierarchy
-from matryoshka.reference_scan import blast_available, scan_all
-from matryoshka.transposon import annotate_res_sites, infer_transposons
+from matryoshka.hierarchy import build_hierarchy  # noqa: E402
+from matryoshka.reference_scan import blast_available, scan_all  # noqa: E402
+from matryoshka.transposon import annotate_res_sites, infer_transposons  # noqa: E402
 
 DATA_DIR = PROJECT_ROOT / "data" / "tncentral"
 PARSED_DIR = DATA_DIR / "parsed"
@@ -145,7 +145,7 @@ def run_external_tool(
             candidates = list(outdir.rglob("*.integrons"))
             return candidates[0] if candidates else None
 
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
         return None
 
     return None
@@ -174,10 +174,8 @@ def run_full_pipeline(fasta_path: Path) -> tuple[list[MGEFeature], list[MGEFeatu
         # IntegronFinder
         integron_out = run_external_tool("integron_finder", fasta_path, tmp / "integron")
         if integron_out:
-            try:
+            with contextlib.suppress(Exception):
                 all_features.extend(parse_integron_finder(integron_out))
-            except Exception:
-                pass
 
     # BLAST reference scan
     if blast_available():
@@ -291,9 +289,7 @@ def select_subset(parsed_records: list[dict]) -> list[dict]:
     subset = []
     for rec in parsed_records:
         cls = rec.get("element_class", "")
-        if cls == "composite_transposon":
-            subset.append(rec)
-        elif cls == "integron" and rec.get("amr_genes"):
+        if cls == "composite_transposon" or cls == "integron" and rec.get("amr_genes"):
             subset.append(rec)
         elif cls == "unit_transposon" and rec.get("amr_genes"):
             # Include Tn3-family units with AMR — these test reference scan

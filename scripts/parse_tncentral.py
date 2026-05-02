@@ -258,14 +258,14 @@ def classify_element(parsed: dict) -> str:
     struct = parsed.get("structure", {})
     family = struct.get("family", "")
     etype = struct.get("type", "")
-    name = struct.get("name", "")
 
     # IS elements (standalone)
     if etype == "IS":
         return "IS_element"
-    if parsed["element_name"].startswith("IS") and not parsed["element_name"].startswith("ISEcp"):
-        if not any(m["type"] == "transposon" for m in parsed["mobile_elements"]):
-            return "IS_element"
+    if (parsed["element_name"].startswith("IS")
+            and not parsed["element_name"].startswith("ISEcp")
+            and not any(m["type"] == "transposon" for m in parsed["mobile_elements"])):
+        return "IS_element"
 
     # Integrons
     if etype == "integron" or parsed["element_name"].startswith("In"):
@@ -369,7 +369,7 @@ def main() -> None:
     # Print statistics
     from collections import Counter
     classes = Counter(r["element_class"] for r in all_records)
-    print(f"\nElement class distribution:")
+    print("\nElement class distribution:")
     for cls, count in classes.most_common():
         print(f"  {cls}: {count}")
 
