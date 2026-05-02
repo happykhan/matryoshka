@@ -184,6 +184,41 @@ Legend
 | SGI1 / SGI2 | ❌ | medium — attB at trmE |
 | ICEberg resource integration | ❌ | would unlock all of the above |
 
+## ISEScan limitations
+
+ISEScan produced no output for 8 of 30 TnCentral benchmark sequences (27%).
+Investigation of each case (May 2026 benchmark):
+
+| Sequence | Length | Ground truth IS | Classification | Notes |
+|---|---|---|---|---|
+| In1 (AY046276) | 6418bp | None | (a) genuine no-IS-found | Integron without IS elements; ISEScan correctly has nothing to report |
+| In336 (KP873172) | 3989bp | None | (a) genuine no-IS-found | Integron without IS elements; ISEScan correctly has nothing to report |
+| Tn1331 (KC354802.1) | 7996bp | None | (a) genuine no-IS-found | Tn3-family unit transposon; no IS elements in structure |
+| Tn1546 (M97297.1) | 10851bp | None | (a) genuine no-IS-found | Tn3-family unit transposon (vanA); no IS elements in structure |
+| Tn2 (KT002541) | 4950bp | None | (a) genuine no-IS-found | Tn3-family unit transposon; no IS elements in structure |
+| Tn3 (V00613) | 4957bp | None | (a) genuine no-IS-found | Archetype Tn3; no IS elements in structure |
+| TnPMLUA4 (KC964607.1) | 4473bp | IS26 @1-820, IS26 @3654-4473 | (c) IS near boundary | Both IS26 copies start at position 1 / end at sequence terminus. ISEScan likely requires flanking context beyond the IS element boundaries to detect the IS. Short sequence (4473bp) may compound the issue |
+| Tn125 (JN872328) | 10099bp | ISAba125 @1-1087, ISCR21 @7080-8535, ISAba125 @9013-10099 | (d) ISEScan profile gap | ISAba125 (IS30 family) is not in ISEScan's profile database. Both copies are also at sequence boundaries, compounding the issue. **Mitigated**: ISAba125 added as a BLAST reference in `matryoshka/references/isaba125.fasta` |
+
+**Summary**: Of 8 ISEScan no-output cases, 6 are genuine (no IS elements exist in
+the ground truth), 1 is an IS-at-boundary issue (TnPMLUA4), and 1 is a profile
+gap (ISAba125 in Tn125, now mitigated by BLAST). The 27% failure rate is misleading
+because most "failures" are correct behaviour on sequences without IS elements.
+
+**True ISEScan limitations** (2 of 30 = 7%):
+- **IS at sequence boundaries**: When IS copies start at position 1 or end at the
+  sequence terminus, ISEScan may not detect them. This affects transposon-only
+  TnCentral records where the element *is* the entire sequence. For whole-genome
+  input, IS elements will have flanking context and this is not a concern.
+- **ISAba125 profile gap**: ISEScan lacks a profile for ISAba125 (IS30 family).
+  HMMER-based detection would help here but is not needed now that BLAST reference
+  detection covers ISAba125.
+
+**Not worth tackling with HMMER**: The boundary issue (1 case) is specific to
+isolated transposon sequences, not real genomic data. The ISAba125 gap (1 case)
+is already mitigated by BLAST reference. Neither justifies adding HMMER complexity
+at this stage.
+
 ## Future-session priorities
 
 1. **Tn402/Tn5053 tni module detection** — enables class-1 integron subtype discrimination (In2-like vs In4-like vs complex).
