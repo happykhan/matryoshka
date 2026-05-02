@@ -27,6 +27,7 @@ NCBI_EMAIL=you@example.org pixi run python scripts/fetch_mge_references.py --for
 | `gi_sul2.fasta` | GIsul2 (sul2 + tet(31)) genomic island | KX709966 |
 | `isecp1.fasta` | ISEcp1 reference | FJ621588 |
 | `plasmidfinder_enterobacteriales.fasta` | PlasmidFinder Enterobacteriales replicon DB (159 records) | [PlasmidFinder DB](https://bitbucket.org/genomicepidemiology/plasmidfinder_db/) (Apache-2.0) |
+| `isaba125.fasta` | ISAba125 (IS30 family) reference — ISEScan fails to detect this element | AY751533 |
 | `rolling_circle_ter_sites.fasta` | terIS91, terISCR1, terISCR2, oriIS91 consensus motifs (~30bp) | Local motif (experimental) |
 
 All accessions are cited from Partridge et al. 2018 (Clin Microbiol Rev,

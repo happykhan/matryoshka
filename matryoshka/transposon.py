@@ -120,12 +120,15 @@ FLANKED_RULES: list[FlankedRule] = [
         upstream_max=500, downstream_max=2000,
     ),
     # Tn125 — ISAba125 flanking blaNDM (A. baumannii NDM metallo-beta-lactamase).
-    # ISAba125 is IS30-family.
+    # ISAba125 is IS30-family. The canonical Tn125 is ~10kb; NDM sits
+    # near the left ISAba125 (gap ~94bp), while the right ISAba125 is
+    # ~7kb downstream because the element contains ble, trpF, dsbC,
+    # cutA, groES, groEL, ISCR21, and aphA6 between NDM and the right IS.
     FlankedRule(
         family="Tn125", name="Tn125",
         cargo_match="NDM",
         left_family="IS30", right_family="IS30",
-        upstream_max=1000, downstream_max=1000,
+        upstream_max=1000, downstream_max=8000,
     ),
     # Tn10 — IS10R/IS10L (IS4-family) flanking tet(B) tetracycline resistance.
     # The canonical Tn10 is 9.3kb; IS10 elements are ~1.3kb each.

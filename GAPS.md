@@ -159,7 +159,7 @@ Legend
 |---|---|---|
 | ISCR1 specifically (vs generic ISCR) | ⚠️ | BLAST finds it, but no 3'-CS-adjacent rule for complex class-1 detection |
 | ISCR3/4/5/6/14/15/27 | ❌ | Table 2 AMR associations (blaSPM-1, blaAIM-1, rmtB/D, floR, blaOXA-45) |
-| ISAba1 / ISAba125 / ISAba14 / ISAba3 | ⚠️ | ISEScan catches them; specific rules added for Tn2006 (OXA-23), Tn125 (NDM) |
+| ISAba1 / ISAba125 / ISAba14 / ISAba3 | ⚠️ | ISEScan catches ISAba1; ISAba125 added as BLAST reference (ISEScan misses it). Rules for Tn2006 (OXA-23), Tn125 (NDM) |
 | IS1326, IS1353 | ❌ | Diagnostic keys for In2-like vs In4-like integron subtyping |
 | IS1111 / IS4321 / IS5075 | ❌ | attC / IRt interruption — needed for broken-integron detection |
 | IS256 (erm(B), cfr) | ❌ | Gram+ |
