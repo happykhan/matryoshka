@@ -322,8 +322,21 @@ def parse_mobsuite(report_path: str | Path) -> list[MGEFeature]:
 # Tool runners (subprocess wrappers)
 # ---------------------------------------------------------------------------
 
+_ISESCAN_HEADER = (
+    "seqID\tfamily\tcluster\tisBegin\tisEnd\tisLen\tncopy4is\t"
+    "start1\tend1\tstart2\tend2\tscore\tirId\tirLen\tnGaps\t"
+    "orfBegin\torfEnd\tstrand\torfLen\tE-value\tE-value4copy\ttype\tov\ttir\n"
+)
+
+
 def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
-    """Run ISEScan via its pixi environment. Returns path to .tsv output."""
+    """Run ISEScan via its pixi environment. Returns path to .tsv output.
+
+    ISEScan produces no output file when it finds no IS elements or when the
+    input sequence is too short (< ~1 kb). In both cases we create a
+    header-only TSV so downstream parsers always receive a valid file.
+    """
+    import warnings
     fasta = Path(fasta)
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -334,10 +347,19 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
     )
     tsv = outdir / fasta.name / (fasta.name + ".tsv")
     if not tsv.exists():
-        # ISEScan puts output under outdir/<seqfile_basename>/
         candidates = list(outdir.rglob("*.tsv"))
         if candidates:
             tsv = candidates[0]
+    if not tsv.exists():
+        warnings.warn(
+            f"ISEScan produced no output for {fasta.name} — "
+            "sequence may be too short or contain no IS elements. "
+            "Writing empty result.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        tsv = outdir / (fasta.stem + ".isescan.tsv")
+        tsv.write_text(_ISESCAN_HEADER)
     return tsv
 
 

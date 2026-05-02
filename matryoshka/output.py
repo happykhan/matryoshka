@@ -173,25 +173,18 @@ def to_png(features: list[MGEFeature], sample_name: str = "", dpi: int = 200) ->
 # ---------------------------------------------------------------------------
 
 def _feature_to_seqfeatures(f: MGEFeature) -> list:
-    """Flatten a feature tree into a list of SeqFeature objects for GenBank."""
+    """Flatten a feature tree into SeqFeature objects styled like TnCentral GenBank.
+
+    mobile_element features get /mobile_element_type and a human-readable /note.
+    CDS features (AMR, cassette, integrase) get /gene.
+    TSD sequences become separate repeat_region features flanking the element.
+    IR sequences become a repeat_region feature at the element terminus.
+    """
     from Bio.SeqFeature import SeqFeature, SimpleLocation
 
     strand = {"+": 1, "-": -1}.get(f.strand)
     loc = SimpleLocation(f.start - 1, f.end, strand=strand)
-    qualifiers: dict[str, list[str]] = {
-        "label": [f.name],
-        "family": [f.family],
-    }
-    if f.tsd_seq:
-        qualifiers["tsd"] = [f.tsd_seq]
-    if f.ir_left:
-        qualifiers["ir_left"] = [f.ir_left]
-    if f.ir_right:
-        qualifiers["ir_right"] = [f.ir_right]
-    for k, v in (f.attributes or {}).items():
-        if k == "seqid" or v in (None, ""):
-            continue
-        qualifiers[k] = [str(v)]
+    out: list = []
 
     feature_type_map = {
         "IS": "mobile_element",
@@ -200,11 +193,92 @@ def _feature_to_seqfeatures(f: MGEFeature) -> list:
         "cassette": "CDS",
         "attC": "misc_feature",
         "integrase": "CDS",
+        "transposase": "CDS",
         "AMR": "CDS",
         "replicon": "rep_origin",
+        "res_site": "misc_feature",
     }
     ftype = feature_type_map.get(f.element_type, "misc_feature")
-    out = [SeqFeature(location=loc, type=ftype, qualifiers=qualifiers)]
+
+    qualifiers: dict[str, list[str]] = {"label": [f.name]}
+
+    if ftype == "mobile_element":
+        if f.element_type == "IS":
+            qualifiers["mobile_element_type"] = [f"insertion sequence:{f.name}"]
+        elif f.element_type == "integron":
+            qualifiers["mobile_element_type"] = [f"integron:{f.name}"]
+        else:
+            qualifiers["mobile_element_type"] = [f"transposon:{f.name}"]
+
+        note_parts = []
+        if f.family:
+            note_parts.append(f"Family={f.family}")
+        conf = (f.attributes or {}).get("confidence")
+        if conf:
+            note_parts.append(f"Confidence={conf}")
+        if f.tsd_seq:
+            note_parts.append(f"DR {len(f.tsd_seq)} bp {f.tsd_seq}")
+        src = (f.attributes or {}).get("source")
+        if src:
+            note_parts.append(f"Source={src}")
+        if note_parts:
+            qualifiers["note"] = ["; ".join(note_parts)]
+
+    elif ftype == "CDS":
+        qualifiers["gene"] = [f.name]
+        product = (f.attributes or {}).get("full_name") or f.name
+        qualifiers["product"] = [product]
+        aclass = (f.attributes or {}).get("subclass") or (f.attributes or {}).get("class") or f.family
+        if aclass:
+            qualifiers["note"] = [f"Class={aclass}"]
+
+    elif ftype == "misc_feature":
+        qualifiers["note"] = [f"{f.element_type}:{f.name}"]
+
+    elif ftype == "rep_origin":
+        qualifiers["note"] = [f"Replicon={f.name}"]
+
+    out.append(SeqFeature(location=loc, type=ftype, qualifiers=qualifiers))
+
+    # Emit TSD as flanking repeat_region features (one on each side)
+    if f.tsd_seq and f.start > 1:
+        tsd_len = len(f.tsd_seq)
+        # Left TSD: immediately before element start
+        left_start = max(0, f.start - 1 - tsd_len)
+        left_loc = SimpleLocation(left_start, f.start - 1)
+        out.append(SeqFeature(
+            location=left_loc, type="repeat_region",
+            qualifiers={"label": [f"TSD_L ({f.name})"],
+                        "note": [f"Direct repeat {tsd_len} bp; seq={f.tsd_seq}"],
+                        "rpt_type": ["direct"]},
+        ))
+        # Right TSD: immediately after element end
+        right_loc = SimpleLocation(f.end, f.end + tsd_len)
+        out.append(SeqFeature(
+            location=right_loc, type="repeat_region",
+            qualifiers={"label": [f"TSD_R ({f.name})"],
+                        "note": [f"Direct repeat {tsd_len} bp; seq={f.tsd_seq}"],
+                        "rpt_type": ["direct"]},
+        ))
+
+    # Emit IR as a misc_feature at element termini
+    if f.ir_left and f.ir_right:
+        ir_len = len(f.ir_left)
+        irl_loc = SimpleLocation(f.start - 1, f.start - 1 + ir_len)
+        out.append(SeqFeature(
+            location=irl_loc, type="repeat_region",
+            qualifiers={"label": [f"IRL ({f.name})"],
+                        "note": [f"Inverted repeat left; seq={f.ir_left}"],
+                        "rpt_type": ["inverted"]},
+        ))
+        irr_loc = SimpleLocation(f.end - ir_len, f.end)
+        out.append(SeqFeature(
+            location=irr_loc, type="repeat_region",
+            qualifiers={"label": [f"IRR ({f.name})"],
+                        "note": [f"Inverted repeat right; seq={f.ir_right}"],
+                        "rpt_type": ["inverted"]},
+        ))
+
     for c in f.children:
         out.extend(_feature_to_seqfeatures(c))
     return out

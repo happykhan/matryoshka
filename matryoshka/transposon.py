@@ -111,11 +111,13 @@ FLANKED_RULES: list[FlankedRule] = [
     ),
     # Tn2006 — ISAba1 flanking blaOXA-23 (A. baumannii carbapenem resistance).
     # ISAba1 is IS4-family; we match on the family (ISEScan classification).
+    # downstream_max=2000: element contains helicase/methyltransferase between
+    # OXA-23 and the downstream ISAba1, so the gap can reach ~1600bp.
     FlankedRule(
         family="Tn2006", name="Tn2006",
         cargo_match="OXA-23",
         left_family="IS4", right_family="IS4",
-        upstream_max=500, downstream_max=500,
+        upstream_max=500, downstream_max=2000,
     ),
     # Tn125 — ISAba125 flanking blaNDM (A. baumannii NDM metallo-beta-lactamase).
     # ISAba125 is IS30-family.
@@ -124,6 +126,22 @@ FLANKED_RULES: list[FlankedRule] = [
         cargo_match="NDM",
         left_family="IS30", right_family="IS30",
         upstream_max=1000, downstream_max=1000,
+    ),
+    # Tn10 — IS10R/IS10L (IS4-family) flanking tet(B) tetracycline resistance.
+    # The canonical Tn10 is 9.3kb; IS10 elements are ~1.3kb each.
+    FlankedRule(
+        family="Tn10", name="Tn10",
+        cargo_match="tet",
+        left_family="IS4", right_family="IS4",
+        upstream_max=500, downstream_max=500,
+    ),
+    # Tn5 — IS50L/IS50R (IS4-family) flanking aminoglycoside resistance cluster
+    # (aph(3')-IIa, aph(6)-Ic, ble). Canonical Tn5 is 5.8kb.
+    FlankedRule(
+        family="Tn5", name="Tn5",
+        cargo_match="aph",
+        left_family="IS4", right_family="IS4",
+        upstream_max=500, downstream_max=500,
     ),
 ]
 
@@ -136,7 +154,7 @@ ONE_ENDED_RULES: list[OneEndedRule] = [
     OneEndedRule(
         family="ISEcp1_capture", name="ISEcp1_capture",
         is_family="IS1380",
-        cargo_matches=("CTX-M", "CMY-", "blaACC", "blaLAT", "blaDHA"),
+        cargo_matches=("CTX-M", "CMY-", "blaACC", "blaLAT", "blaDHA", "qnrB", "qnrA", "qnrS"),
         # ISEcp1 one-ended transposition can capture adjacent DNA up to
         # several kb beyond the IRR. 3 kb is a conservative practical limit.
         max_gap=3000,
