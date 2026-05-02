@@ -219,6 +219,31 @@ isolated transposon sequences, not real genomic data. The ISAba125 gap (1 case)
 is already mitigated by BLAST reference. Neither justifies adding HMMER complexity
 at this stage.
 
+## Boundary inaccuracy analysis (9 elements, May 2026)
+
+For 9 elements where detection was correct but boundaries deviated >50bp from
+TnCentral annotations. Investigated whether BLAST hit coordinates could be
+extended to the nearest TSD to improve boundaries.
+
+**Finding: TSD-based extension is not applicable to any of these 9 cases.**
+
+| Element | Cause | Detail |
+|---|---|---|
+| Tn5393 | BLAST reference shorter | Reference AF262622 covers only the Tn5393 unit; TnCentral includes flanking IS1133+ISEcp1 (3046bp upstream) not in the reference |
+| Tn4401b | Variant discrimination | BLAST picks Tn4401a (7019bp) instead of Tn4401b (10006bp). Variant picker issue, not alignment truncation |
+| In0 | Partial reference match | In2 archetype reference (U67194) covers only 2682bp of the 8525bp In0 element |
+| In1 | IntegronFinder offset | IntegronFinder reports 1683-6216 instead of 1-6418. Boundary convention mismatch |
+| In104 | IntegronFinder miss | Detected as IS26_TU (153-2184) instead of the full 5411bp integron |
+| In336 | IntegronFinder offset | IntegronFinder reports 392-3787 instead of 1-3989. Boundary convention mismatch |
+| Tn2012 | One-ended capture extent | ISEcp1_capture stops at cargo end (2583); element extends 157bp further with no downstream TSD |
+| TnEcp1.1 | One-ended capture extent | ISEcp1_capture stops at cargo end (2656); element extends 761bp further with no downstream TSD |
+| Tn2.1 | Complex multi-IS element | ISEcp1_capture covers 130-3392 of a complex 8979bp element with ISEcp1::IS1F structure |
+
+**Root causes by category:**
+- **3 BLAST reference mismatches**: Reference is a different size than TnCentral's annotation. Fix: improve references, not boundary logic.
+- **3 IntegronFinder boundaries**: IntegronFinder uses different boundary conventions than TnCentral. Structural difference, not error.
+- **3 ISEcp1 one-ended capture**: One-ended transposition by definition has no downstream IS/TSD boundary marker. The captured region extends beyond the last cargo gene but we have no structural signal to anchor to.
+
 ## Future-session priorities
 
 1. **Tn402/Tn5053 tni module detection** — enables class-1 integron subtype discrimination (In2-like vs In4-like vs complex).
