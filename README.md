@@ -154,14 +154,7 @@ plasmids. Known coverage gaps vs the Partridge 2018 review are tracked in
 
 ## Citing
 
-If you use Matryoshka in published work, please cite the Partridge 2018 review
-whose framework it implements:
-
-> Partridge SR, Kwong SM, Firth N, Jensen SO. *Mobile Genetic Elements Associated
-> with Antimicrobial Resistance*. Clin Microbiol Rev. 2018;31(4):e00088-17.
-> doi:10.1128/CMR.00088-17. PMCID: [PMC6148190](https://pmc.ncbi.nlm.nih.gov/articles/PMC6148190/).
-
-A Matryoshka-specific citation will follow once the preprint is available.
+i wouldn't use this software yet! 
 
 ## License
 
