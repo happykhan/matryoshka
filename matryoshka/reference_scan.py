@@ -271,16 +271,20 @@ def _dedupe_overlapping(hits: list[BlastHit]) -> list[BlastHit]:
     """
     if not hits:
         return []
-    # Normalise orientation and sort by identity desc, length desc
+    # Normalise orientation and sort by identity desc, subject coverage desc,
+    # length desc — prefer hits that cover more of the reference sequence
     ordered = sorted(
         hits,
-        key=lambda h: (-h.pident, -h.length),
+        key=lambda h: (-h.pident, -h.qcovs, -h.length),
     )
     kept: list[BlastHit] = []
     for h in ordered:
         qs, qe = sorted((h.qstart, h.qend))
         overlaps = False
         for k in kept:
+            # Only compare hits on the same query contig
+            if k.qseqid != h.qseqid:
+                continue
             ks, ke = sorted((k.qstart, k.qend))
             # Overlap if ranges intersect by more than 50% of the shorter
             ovl = max(0, min(qe, ke) - max(qs, ks))
@@ -310,7 +314,7 @@ def _group_by_query_region(
         (min(h.qstart, h.qend), max(h.qstart, h.qend), h)
         for h in hits
     ]
-    normed.sort()
+    normed.sort(key=lambda t: (t[0], t[1]))
     groups: list[list[BlastHit]] = []
     current: list[tuple[int, int, BlastHit]] = [normed[0]]
     cur_start, cur_end = normed[0][0], normed[0][1]

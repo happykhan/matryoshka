@@ -58,6 +58,7 @@ TSD_LENGTHS = {
     "Tn1546":  5,
     "Tn1331":  5,
     "Tn5393":  5,
+    "Tn5403":  5,
     "Tn6452":  5,
     "Tn7":     5,
     "Tn4401":  5,     # ISKpn7-bounded Tn3 variant
