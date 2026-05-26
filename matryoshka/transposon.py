@@ -542,7 +542,7 @@ def infer_is26_composites(features: list[MGEFeature]) -> list[MGEFeature]:
 # Composites (Tn1999, Tn_mcr1, IS26_island) are NOT included — they lack a
 # Tn3-family res site because they don't encode their own resolvase.
 TN3_FAMILY_MEMBERS = frozenset({
-    "Tn3", "Tn4401", "Tn1546", "Tn21", "Tn1331", "Tn5393",
+    "Tn3", "Tn4401", "Tn1546", "Tn21", "Tn1331", "Tn5393", "Tn5403",
     "Tn6022", "Tn6019", "Tn6021", "Tn6172",
 })
 
