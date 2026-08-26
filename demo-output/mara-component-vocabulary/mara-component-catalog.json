@@ -1,0 +1,802 @@
+{
+  "schema_version": "1.0",
+  "catalog_version": "2026-08-26",
+  "purpose": "Source-backed feature ontology and assembly grammar for automated MARA-compatible annotation. Definitions are independent of any one example plasmid.",
+  "evidence_states": [
+    "complete",
+    "partial",
+    "fragment",
+    "interrupted",
+    "uncertain"
+  ],
+  "sources": [
+    {
+      "id": "mara_2018",
+      "file": "Partridge_MARA_2018.pdf",
+      "scope": "MARA feature vocabulary, matching rules and visual grammar"
+    },
+    {
+      "id": "rac_2011",
+      "file": "Partridge_RAC_2011.pdf",
+      "scope": "gene cassette, cassette array and integron definitions"
+    },
+    {
+      "id": "tn123_2005",
+      "file": "Partridge_Tn1-2-3_2005.pdf",
+      "scope": "Tn1, Tn2 and Tn3 structure and variant interpretation"
+    },
+    {
+      "id": "f_plasmids_2011",
+      "file": "Partridge_2011_Fplasmid_blaCTX-M-15.pdf",
+      "scope": "nested resistance-region modules and rearrangements"
+    },
+    {
+      "id": "sally_feedback",
+      "file": "matryoshka_demo_SP_comments.pdf",
+      "scope": "expert corrections to element identity, boundaries and containment"
+    },
+    {
+      "id": "sally_worked_examples",
+      "file": "OtherTn__examples.docx; ISEcp1_TPU_examples.docx; Tn1_Tn2_Tn3.docx",
+      "scope": "supplied raw sequences, components and worked maps"
+    },
+    {
+      "id": "plasann_2026",
+      "file": "Islam_PlasAnn_2026.pdf",
+      "scope": "outer plasmid annotation layer, distinct from core MARA"
+    }
+  ],
+  "component_types": {
+    "resistance_gene": {
+      "level": "atomic",
+      "definition": "Exact resistance allele or explicitly unresolved/truncated resistance-gene framework.",
+      "detection": "AMRFinder or curated nucleotide/protein reference with allele-specific constraints.",
+      "orientation": "Coding direction.",
+      "containment": "May occur inside a cassette, captured segment, transposon, resistance region or plasmid backbone.",
+      "render": {
+        "symbol": "gene_arrow",
+        "colour": "black"
+      },
+      "current_status": "partially_detected"
+    },
+    "non_resistance_gene": {
+      "level": "atomic",
+      "definition": "Named protein-coding gene without an antimicrobial-resistance assignment.",
+      "detection": "Curated feature reference or gene caller plus functional annotation.",
+      "orientation": "Coding direction.",
+      "containment": "May occur in cassettes, mobile elements, accessory regions or plasmid backbone.",
+      "render": {
+        "symbol": "gene_arrow",
+        "colour": "black"
+      },
+      "current_status": "partially_detected"
+    },
+    "transposition_gene": {
+      "level": "atomic",
+      "definition": "Mobility gene such as tnpA, tnpR, tniA, tniB, tniQ, tniR or tns genes.",
+      "detection": "Curated component reference or protein-family model; exact role retained.",
+      "orientation": "Coding direction.",
+      "containment": "Part of an IS, unit transposon, Tn402-type module or related mobile element.",
+      "render": {
+        "symbol": "gene_arrow",
+        "colour": "black"
+      },
+      "current_status": "partially_detected"
+    },
+    "integrase": {
+      "level": "atomic",
+      "definition": "Integron integrase gene intI, with class/allele retained when known.",
+      "detection": "IntegronFinder or curated intI reference.",
+      "orientation": "Coding direction; the class-1 5-prime conserved segment runs towards attI and opposite intI.",
+      "containment": "Part of a minimal integron and normally within its 5-prime conserved region.",
+      "render": {
+        "symbol": "gene_arrow",
+        "colour": "black"
+      },
+      "current_status": "detected"
+    },
+    "gene_cassette": {
+      "level": "atomic_unit",
+      "definition": "Usually one promoterless ORF, occasionally two, plus its cognate attC recombination site.",
+      "detection": "Cassette reference or oriented ORF-to-attC reconstruction; ORF alone is a cassette fragment.",
+      "orientation": "Towards the main attC site.",
+      "containment": "Member of a cassette array; may be interrupted or reduced to a remnant.",
+      "render": {
+        "symbol": "cassette_box",
+        "colour": "pale_blue"
+      },
+      "current_status": "partially_detected"
+    },
+    "cassette_remnant": {
+      "level": "atomic_unit",
+      "definition": "Recognisable but incomplete cassette, ORF or attC remnant that cannot be promoted to a complete cassette.",
+      "detection": "Partial reference match or incomplete ORF-attC evidence.",
+      "orientation": "Inferred only when ORF or attC evidence supports it.",
+      "containment": "May remain in a cassette array or interrupted integron.",
+      "render": {
+        "symbol": "cassette_fragment",
+        "colour": "pale_blue"
+      },
+      "current_status": "partially_detected"
+    },
+    "attC": {
+      "level": "atomic_site",
+      "definition": "Cassette recombination site; seven bases begin the cassette and the remainder lies downstream of its gene.",
+      "detection": "IntegronFinder attC model or exact cassette reference.",
+      "orientation": "Main-site orientation defines cassette direction.",
+      "containment": "Child of a complete cassette, cassette remnant or cassette array.",
+      "render": {
+        "symbol": "att_site",
+        "colour": "grey"
+      },
+      "current_status": "detected"
+    },
+    "cassette_array": {
+      "level": "compound_region",
+      "definition": "One or more tandem gene cassettes downstream of attI and Pc.",
+      "detection": "Ordered, consistently oriented cassettes and attC sites connected to an integron platform.",
+      "orientation": "From attI/Pc through successive cassettes.",
+      "containment": "Child region of an integron; contains cassettes and remnants.",
+      "render": {
+        "symbol": "region_outline",
+        "colour": "pale_blue"
+      },
+      "current_status": "partially_detected"
+    },
+    "attI": {
+      "level": "atomic_site",
+      "definition": "Primary integron recombination site adjacent to intI and the cassette array.",
+      "detection": "Integron class-specific motif/reference and positional support from intI/Pc.",
+      "orientation": "Defines the start of the cassette array.",
+      "containment": "Part of the minimal integron platform.",
+      "render": {
+        "symbol": "att_site",
+        "colour": "orange"
+      },
+      "current_status": "reference_needed"
+    },
+    "Pc_promoter": {
+      "level": "atomic_site",
+      "definition": "Integron cassette promoter, including named variants and P2 when activated by the 5-prime-CS GGG insertion.",
+      "detection": "Variant-specific nucleotide motif in the 5-prime conserved segment.",
+      "orientation": "Transcribes the cassette array away from attI.",
+      "containment": "Part of the minimal integron platform/5-prime conserved segment.",
+      "render": {
+        "symbol": "promoter_flag",
+        "colour": "orange"
+      },
+      "current_status": "reference_needed"
+    },
+    "integron_5cs": {
+      "level": "atomic_region",
+      "definition": "Class-1 integron 5-prime conserved segment, with variants such as 5CS_GGG distinguished.",
+      "detection": "Exact/partial curated sequence match.",
+      "orientation": "Runs towards attI and opposite intI.",
+      "containment": "Part of a class-1 integron.",
+      "render": {
+        "symbol": "conserved_segment",
+        "colour": "orange"
+      },
+      "current_status": "detected"
+    },
+    "integron_3cs": {
+      "level": "atomic_region",
+      "definition": "Class-1 integron 3-prime conserved segment including qacEdelta1 and sul1 where present; not terminated automatically at qacEdelta1.",
+      "detection": "Exact/partial curated sequence match plus downstream structural evidence.",
+      "orientation": "Runs away from the cassette array.",
+      "containment": "Part of a class-1 integron and may connect to downstream modules.",
+      "render": {
+        "symbol": "conserved_segment",
+        "colour": "orange"
+      },
+      "current_status": "detected"
+    },
+    "terminal_inverted_repeat": {
+      "level": "atomic_boundary",
+      "definition": "Named element end such as IRL, IRR, IRi, IRt, IRalt or a subterminal IS1111-family IR.",
+      "detection": "Exact/near-exact end motif with element-specific length and positional support.",
+      "orientation": "Name and flat flag side preserve which outer boundary is represented.",
+      "containment": "Boundary child of the element it delimits; fragments remain explicit.",
+      "render": {
+        "symbol": "ir_flag",
+        "colour": "white"
+      },
+      "current_status": "partially_detected"
+    },
+    "direct_repeat": {
+      "level": "atomic_boundary",
+      "definition": "Target-site duplication/direct repeat with exact sequence, length and evidence state.",
+      "detection": "Equal flanking sequence at candidate boundaries using element-specific length and tolerated offsets.",
+      "orientation": "Unstranded paired boundary evidence.",
+      "containment": "Associated with the transposition event, never used alone to assign element identity.",
+      "render": {
+        "symbol": "dr_lollipop",
+        "colour": "evidence_specific"
+      },
+      "current_status": "detected"
+    },
+    "resolution_site": {
+      "level": "atomic_site",
+      "definition": "Recombination/resolution site, retaining resI, resII and resIII subsites when resolved.",
+      "detection": "Curated nucleotide reference and expected position relative to tnpR/tnpA.",
+      "orientation": "Element-relative orientation.",
+      "containment": "Part of a Tn3-family or Tn402-type transposition module.",
+      "render": {
+        "symbol": "res_site",
+        "colour": "black"
+      },
+      "current_status": "partially_detected"
+    },
+    "insertion_sequence": {
+      "level": "compound_unit",
+      "definition": "Exact named IS comprising its transposase region and characteristic ends; family-level labels are insufficient for structural inference.",
+      "detection": "Exact/variant reference match plus end evidence; incomplete copies retain fragment state.",
+      "orientation": "Transposase direction; MARA block arrow points to IRR.",
+      "containment": "May interrupt another element or delimit a composite/pseudo-compound structure.",
+      "render": {
+        "symbol": "is_block_arrow",
+        "colour": "white"
+      },
+      "current_status": "partially_detected"
+    },
+    "group_II_intron": {
+      "level": "compound_unit",
+      "definition": "Named mobile group-II intron, separate from insertion sequences.",
+      "detection": "Exact intron or reverse-transcriptase reference.",
+      "orientation": "Reverse-transcriptase coding direction.",
+      "containment": "May interrupt genes or mobile elements.",
+      "render": {
+        "symbol": "intron_block_arrow",
+        "colour": "grey"
+      },
+      "current_status": "reference_needed"
+    },
+    "ISCR": {
+      "level": "compound_unit",
+      "definition": "Insertion-sequence-common-region element using rolling-circle transposition and lacking conventional paired IR/DR boundaries.",
+      "detection": "Exact rcr/ISCR reference plus oriIS and terIS evidence.",
+      "orientation": "rcr direction and oriIS-to-terIS relationship.",
+      "containment": "May be associated with an adjacent captured segment.",
+      "render": {
+        "symbol": "iscr_block_arrow",
+        "colour": "pale_yellow"
+      },
+      "current_status": "partially_detected"
+    },
+    "oriIS": {
+      "level": "atomic_site",
+      "definition": "ISCR rolling-circle origin site.",
+      "detection": "ISCR-family-specific motif and position relative to rcr.",
+      "orientation": "Defines the origin side of an ISCR capture unit.",
+      "containment": "Child of ISCR or an ISCR capture structure.",
+      "render": {
+        "symbol": "site_marker",
+        "colour": "yellow"
+      },
+      "current_status": "reference_needed"
+    },
+    "terIS": {
+      "level": "atomic_site",
+      "definition": "ISCR rolling-circle termination site, which may be inefficient and permit adjacent DNA capture.",
+      "detection": "Family-specific termination motif with structural context.",
+      "orientation": "Defines the termination/capture side.",
+      "containment": "Child of ISCR or an ISCR capture structure.",
+      "render": {
+        "symbol": "site_marker",
+        "colour": "yellow"
+      },
+      "current_status": "partially_detected"
+    },
+    "captured_segment": {
+      "level": "atomic_region",
+      "definition": "Adjacent sequence mobilised with ISEcp1, ISCR or another one-ended capture mechanism.",
+      "detection": "Boundaries derived from IRR/IRalt or oriIS/terIS plus cargo and DR evidence.",
+      "orientation": "Follows the capture element's active end.",
+      "containment": "Child of a TPU/capture unit; must not be absorbed into an unrelated adjacent transposon.",
+      "render": {
+        "symbol": "captured_region",
+        "colour": "light_grey"
+      },
+      "current_status": "partially_detected"
+    },
+    "interruption": {
+      "level": "relation_event",
+      "definition": "A feature inserted into and breaking the collinearity of a host feature.",
+      "detection": "Split host-reference alignment plus an intervening feature or unclassified sequence.",
+      "orientation": "Records host and inserted-feature orientations independently.",
+      "containment": "Links the interrupted host pieces and inserted feature without deleting either.",
+      "render": {
+        "symbol": "jagged_insertion",
+        "colour": "white"
+      },
+      "current_status": "detected"
+    },
+    "annotation_gap": {
+      "level": "atomic_region",
+      "definition": "Unannotated sequence longer than 50 bp between known features.",
+      "detection": "Coordinate subtraction after all accepted features are placed.",
+      "orientation": "Unstranded.",
+      "containment": "Gap within the current locus; not a biological element call.",
+      "render": {
+        "symbol": "dashed_gap",
+        "colour": "red"
+      },
+      "current_status": "detected"
+    },
+    "unknown_fragment": {
+      "level": "atomic_region",
+      "definition": "Recognisable fragment whose exact parent feature remains unresolved, including possible divergent or assembly-error sequence.",
+      "detection": "Significant partial match lacking diagnostic sequence or coherent boundaries.",
+      "orientation": "Retained only when supported by the match.",
+      "containment": "May be nested in a region but cannot define a confident compound element.",
+      "render": {
+        "symbol": "fragment_block",
+        "colour": "white"
+      },
+      "current_status": "partially_detected"
+    },
+    "replicon": {
+      "level": "atomic_region",
+      "definition": "Plasmid replication-initiator/replicon feature used to identify an outer plasmid backbone.",
+      "detection": "PlasmidFinder or curated replicon reference.",
+      "orientation": "Coding direction when gene-based.",
+      "containment": "Plasmid backbone, not a core MARA mobile-resistance component.",
+      "render": {
+        "symbol": "replicon_block",
+        "colour": "teal"
+      },
+      "current_status": "detected"
+    },
+    "oriV": {
+      "level": "atomic_site",
+      "definition": "Plasmid vegetative replication origin.",
+      "detection": "Replicon-specific motif/reference and positional context.",
+      "orientation": "Replication-context dependent.",
+      "containment": "Plasmid backbone.",
+      "render": {
+        "symbol": "site_marker",
+        "colour": "teal"
+      },
+      "current_status": "reference_needed"
+    },
+    "oriT": {
+      "level": "atomic_site",
+      "definition": "Plasmid origin of transfer.",
+      "detection": "MOB-family-specific motif/reference and relaxase/conjugation context.",
+      "orientation": "Transfer-context dependent.",
+      "containment": "Plasmid transfer/backbone region.",
+      "render": {
+        "symbol": "site_marker",
+        "colour": "teal"
+      },
+      "current_status": "reference_needed"
+    },
+    "plasmid_backbone_gene": {
+      "level": "atomic",
+      "definition": "Plasmid replication, maintenance, regulation, partition, conjugation or transfer gene.",
+      "detection": "Functional protein model and plasmid-context evidence.",
+      "orientation": "Coding direction.",
+      "containment": "Plasmid backbone or transfer region.",
+      "render": {
+        "symbol": "gene_arrow",
+        "colour": "dark_grey"
+      },
+      "current_status": "reference_needed"
+    },
+    "ncRNA": {
+      "level": "atomic",
+      "definition": "Named plasmid non-coding RNA feature.",
+      "detection": "Curated ncRNA model/reference.",
+      "orientation": "Transcript direction when known.",
+      "containment": "Plasmid backbone or accessory region.",
+      "render": {
+        "symbol": "ncrna_block",
+        "colour": "blue"
+      },
+      "current_status": "reference_needed"
+    },
+    "plasmid_function_gene": {
+      "level": "atomic",
+      "definition": "Outer-layer plasmid gene assigned to conjugation, stress, metabolism, non-conjugative mobility, virulence/defence, toxin-antitoxin, metal/biocide resistance, antibiotic resistance or other function.",
+      "detection": "PlasAnn-style functional annotation with retained category and evidence.",
+      "orientation": "Coding direction.",
+      "containment": "Plasmid backbone or accessory region; category does not itself imply mobility.",
+      "render": {
+        "symbol": "gene_arrow",
+        "colour": "category_specific"
+      },
+      "current_status": "reference_needed"
+    }
+  },
+  "assembly_grammars": {
+    "insertion_sequence": {
+      "product": "insertion_sequence",
+      "requires": [
+        "exact IS identity",
+        "transposase or diagnostic sequence",
+        "element-specific end evidence"
+      ],
+      "excludes": [
+        "family label alone",
+        "unrelated cargo assigned as an IS child"
+      ]
+    },
+    "gene_cassette": {
+      "product": "gene_cassette",
+      "requires": [
+        "one or occasionally two ORFs",
+        "cognate attC"
+      ],
+      "excludes": [
+        "ORF-only promotion without attC evidence"
+      ]
+    },
+    "cassette_array": {
+      "product": "cassette_array",
+      "requires": [
+        "one or more ordered cassettes",
+        "consistent orientation",
+        "connection to attI/Pc platform"
+      ],
+      "excludes": [
+        "unordered nearby resistance genes"
+      ]
+    },
+    "minimal_integron": {
+      "product": "integron",
+      "requires": [
+        "intI",
+        "attI",
+        "Pc"
+      ],
+      "optional": [
+        "cassette_array"
+      ],
+      "excludes": [
+        "intI alone called a complete integron"
+      ]
+    },
+    "class_2_integron": {
+      "product": "class_2_integron",
+      "requires": [
+        "intI2 or its characteristic truncated form",
+        "attI2",
+        "class-2 cassette context"
+      ],
+      "optional": [
+        "ybeA-A cassette remnant with truncated attC",
+        "Tn7 tns context"
+      ],
+      "excludes": [
+        "assignment from a cassette array without class-2 platform evidence"
+      ]
+    },
+    "integron_classes_3_4_5": {
+      "product": "class_3_4_or_5_integron",
+      "requires": [
+        "class-specific intI",
+        "cognate attI",
+        "class-specific flanking-region evidence"
+      ],
+      "optional": [
+        "Pc",
+        "cassette_array"
+      ],
+      "excludes": [
+        "class assignment from integrase similarity alone"
+      ]
+    },
+    "class_1_integron_transposon": {
+      "product": "class_1_In_Tn",
+      "requires": [
+        "IRi",
+        "class-1 integron platform",
+        "IRt or supported downstream tni boundary"
+      ],
+      "optional": [
+        "5-prime-CS",
+        "cassette_array",
+        "3-prime-CS",
+        "complete or partial tni"
+      ],
+      "excludes": [
+        "ending automatically at qacEdelta1"
+      ]
+    },
+    "tn402_type": {
+      "product": "unit_transposon",
+      "requires": [
+        "25 bp IRi",
+        "tniA",
+        "tniB",
+        "tniQ",
+        "res",
+        "tniR",
+        "25 bp IRt"
+      ],
+      "optional": [
+        "class-1 integron"
+      ],
+      "excludes": [
+        "tni fragment promoted to complete Tn402"
+      ]
+    },
+    "tn3_family_unit": {
+      "product": "unit_transposon",
+      "requires": [
+        "diagnostic backbone",
+        "terminal IR pair",
+        "tnpA",
+        "res",
+        "tnpR"
+      ],
+      "optional": [
+        "cargo",
+        "internal insertion",
+        "named variant substitutions"
+      ],
+      "excludes": [
+        "short fragment promoted to exact Tn1",
+        "Tn2 or Tn3"
+      ]
+    },
+    "tn21_subgroup_unit": {
+      "product": "unit_transposon",
+      "requires": [
+        "Tn21-subgroup tnp region",
+        "res",
+        "named terminal IR evidence"
+      ],
+      "optional": [
+        "mer module",
+        "class-1 integron",
+        "internal IS or intron"
+      ],
+      "excludes": [
+        "adjacent module absorbed without boundary evidence"
+      ]
+    },
+    "hybrid_transposon": {
+      "product": "hybrid_transposon",
+      "requires": [
+        "two or more reference-backed transposon segments",
+        "coherent order",
+        "supported outer boundaries"
+      ],
+      "optional": [
+        "cargo",
+        "interruption",
+        "recombination breakpoint"
+      ],
+      "excludes": [
+        "nearby fragments joined without collinearity or boundary evidence",
+        "forced assignment to one canonical parent"
+      ]
+    },
+    "composite_transposon": {
+      "product": "composite_transposon",
+      "requires": [
+        "two permitted complete IS copies",
+        "family-specific orientation",
+        "intervening region",
+        "outer DR evidence"
+      ],
+      "excludes": [
+        "different or family-only IS calls",
+        "unsupported outer boundaries"
+      ]
+    },
+    "is26_pseudocomposite": {
+      "product": "IS26_pseudocomposite_transposon",
+      "requires": [
+        "two exact complete IS26 copies in supported direct orientation",
+        "independently bounded intervening region"
+      ],
+      "excludes": [
+        "oppositely oriented IS26 copies",
+        "one complete and one fragment",
+        "generic IS6 calls",
+        "merged IS26 island"
+      ]
+    },
+    "is26_translocatable_unit": {
+      "product": "IS26_translocatable_unit",
+      "requires": [
+        "one exact IS26",
+        "specific adjacent segment",
+        "supported TU boundary and mobility orientation"
+      ],
+      "excludes": [
+        "inference from opposing outer IS26 copies",
+        "arbitrary whole resistance region"
+      ]
+    },
+    "isecp1_tpu": {
+      "product": "ISEcp1_transposition_unit",
+      "requires": [
+        "exact ISEcp1",
+        "IRL",
+        "IRR",
+        "captured segment",
+        "IRalt"
+      ],
+      "optional": [
+        "outer 5 bp DR pair"
+      ],
+      "excludes": [
+        "interrupted components promoted to complete TPU",
+        "adjacent Tn1721 included as TPU cargo"
+      ]
+    },
+    "iscr_capture": {
+      "product": "ISCR_capture_unit",
+      "requires": [
+        "exact ISCR/rcr identity",
+        "oriIS",
+        "terIS relationship",
+        "adjacent captured segment"
+      ],
+      "excludes": [
+        "conventional IR/DR requirement",
+        "captured region assigned without rolling-circle orientation"
+      ]
+    },
+    "multiresistance_region": {
+      "product": "multiresistance_region",
+      "requires": [
+        "two or more independently annotated resistance/mobile modules",
+        "explicit boundaries or plasmid context"
+      ],
+      "optional": [
+        "recombination breakpoints",
+        "inversions",
+        "deletions",
+        "module fragments"
+      ],
+      "excludes": [
+        "claim that the complete region moves as one unit without evidence"
+      ]
+    },
+    "plasmid": {
+      "product": "plasmid",
+      "requires": [
+        "replicon or other strong plasmid-backbone evidence",
+        "sequence boundaries"
+      ],
+      "optional": [
+        "oriV",
+        "oriT",
+        "transfer genes",
+        "maintenance genes",
+        "ncRNA",
+        "accessory regions",
+        "MRR"
+      ],
+      "excludes": [
+        "calling every circular contig a typed plasmid without backbone evidence"
+      ]
+    }
+  },
+  "named_examples": {
+    "insertion_sequences": [
+      "IS1",
+      "IS1R",
+      "IS5",
+      "IS10",
+      "IS26",
+      "ISEcp1",
+      "IS1326",
+      "IS1353",
+      "IS6100",
+      "IS1111_family",
+      "IS4321",
+      "IS5075",
+      "ISPa21e",
+      "ISKpn6",
+      "ISKpn7",
+      "ISKpn14",
+      "ISKpn31",
+      "IS1999",
+      "ISCfr1",
+      "IS1182_like"
+    ],
+    "iscr": [
+      "ISCR3_like",
+      "ISCR27_fragment"
+    ],
+    "transposons": [
+      "Tn1",
+      "Tn1f",
+      "Tn2",
+      "Tn2c",
+      "Tn3",
+      "Tn7",
+      "Tn10",
+      "Tn21",
+      "Tn1696",
+      "Tn1721",
+      "Tn1722",
+      "Tn4401",
+      "Tn5393",
+      "Tn5403",
+      "Tn1331",
+      "Tn402",
+      "Tn4352",
+      "Tn1999",
+      "Tn2603",
+      "Tn5036",
+      "Tn5060",
+      "Tn6029",
+      "TnPa38"
+    ],
+    "group_II_introns": [
+      "Apu1",
+      "Apu2"
+    ],
+    "cassette_and_resistance_examples": [
+      "blaTEM-1b",
+      "blaTEM-1c",
+      "blaKPC",
+      "blaOXA-9",
+      "blaOXA-30",
+      "blaOXA-48",
+      "blaOXA-181",
+      "blaCTX-M-15",
+      "blaCMY-2",
+      "blaCMY-23",
+      "blaCMY-31",
+      "blaCMY-36",
+      "blaGES-5",
+      "aacA4-C329",
+      "aacA4-cr",
+      "aac(6-prime)-Ib-cr",
+      "aac(3)-IIe",
+      "aadA1a",
+      "aadA2",
+      "aadA5",
+      "dfrA12",
+      "dfrA17",
+      "catA1",
+      "catB3",
+      "sul1",
+      "sul2",
+      "qacEdelta1",
+      "tet(A)",
+      "tet(B)",
+      "aph(3-double-prime)-Ib",
+      "aph(6)-Id",
+      "chrA",
+      "mph(A)",
+      "mrx",
+      "mphR(A)",
+      "mer",
+      "gcuF",
+      "ereA3_fragment",
+      "qnrB19",
+      "qnrE1",
+      "ACC",
+      "rmtC"
+    ],
+    "supplied_integron_components": [
+      "5CS_std",
+      "5CS_GGG_AF071413",
+      "3CS_2239bp_U12338",
+      "IRi_AF071413",
+      "IRt_AF071413",
+      "Tn402_tni_U67194"
+    ],
+    "plasmid_outer_layer": [
+      "replicon",
+      "oriV",
+      "oriT",
+      "conjugation",
+      "maintenance_and_defence",
+      "stress_response",
+      "metabolism",
+      "virulence_and_defence",
+      "toxin_antitoxin",
+      "metal_and_biocide_resistance",
+      "ncRNA"
+    ]
+  }
+}

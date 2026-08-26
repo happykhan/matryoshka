@@ -26,11 +26,10 @@ biological mobilisation mechanism (Partridge et al., 2018):
        Pattern-matched cargo clusters that imply a known unit transposon
        even without flanking IS evidence (e.g. Tn1546 = vanA + vanH + vanX).
 
-IS26 resistance islands are handled separately because they don't follow
-the single-cargo flanked pattern: IS26 clusters recursively via the
-"translocatable unit" mechanism, producing dense mosaics. We detect all
-IS26/IS26 pairs with >=1 AMR cargo between them, then merge overlapping
-intervals into a single island.
+IS26-associated structures are handled separately. Directly oriented,
+complete IS26 copies can delimit a pseudo-compound transposon whose mobile
+form is a single-IS26 translocatable unit. Oppositely oriented IS26 copies do
+not delimit such a unit and must never be collapsed into a generic "island".
 
 Only *complete* IS copies (ISEScan type == "c") participate in inference.
 Partial copies (ISEScan "p" / name prefix "new_") are ignored — a
@@ -57,6 +56,8 @@ class FlankedRule:
     right_family: str
     upstream_max: int
     downstream_max: int
+    left_name: str | None = None
+    right_name: str | None = None
 
 
 @dataclass(frozen=True)
@@ -67,6 +68,7 @@ class OneEndedRule:
     is_family: str            # required IS family (complete copies only)
     cargo_matches: tuple[str, ...]   # any of these substrings (case-insensitive)
     max_gap: int              # max bp between IS end and cargo start
+    capture_at: str = "either"  # "irr" follows the IS orientation; otherwise either side
 
 
 @dataclass(frozen=True)
@@ -93,12 +95,14 @@ FLANKED_RULES: list[FlankedRule] = [
         cargo_match="KPC",
         left_family="IS21", right_family="IS1182",
         upstream_max=500, downstream_max=1000,
+        left_name="ISKpn7", right_name="ISKpn6",
     ),
     FlankedRule(
         family="Tn1999", name="Tn1999",
         cargo_match="OXA-48",
         left_family="IS4", right_family="IS4",
         upstream_max=2000, downstream_max=200,
+        left_name="IS1999", right_name="IS1999",
     ),
     # mcr-1 colistin resistance composite — ISApl1 (IS30 family) pair.
     # Canonical Tn number: Tn6330. Partridge 2018: CP016184 (single IS),
@@ -183,6 +187,7 @@ ONE_ENDED_RULES: list[OneEndedRule] = [
         # ISEcp1 one-ended transposition can capture adjacent DNA up to
         # several kb beyond the IRR. 3 kb is a conservative practical limit.
         max_gap=3000,
+        capture_at="irr",
     ),
 ]
 
@@ -224,7 +229,7 @@ SIGNATURE_RULES: list[SignatureRule] = [
 
 
 # ---------------------------------------------------------------------------
-# IS26 island parameters
+# IS26 pseudo-compound transposon parameters
 # ---------------------------------------------------------------------------
 
 IS26_MAX_PAIR_SPAN = 20_000
@@ -249,6 +254,23 @@ def _complete_is_of(features: list[MGEFeature], family: str) -> list[MGEFeature]
     ]
 
 
+def _complete_named_is(features: list[MGEFeature], name: str) -> list[MGEFeature]:
+    """Return complete, explicitly named IS copies.
+
+    Family-level ISEScan calls are deliberately insufficient here. Sally
+    Partridge's review requires exact IS identity before interpreting an
+    IS26-associated mobility structure.
+    """
+    expected = name.casefold()
+    return [
+        feature
+        for feature in features
+        if feature.element_type == "IS"
+        and feature.name.casefold() == expected
+        and _is_complete(feature)
+    ]
+
+
 def _cargo_matches(f: MGEFeature, patterns: tuple[str, ...] | str) -> bool:
     if f.element_type != "AMR":
         return False
@@ -266,6 +288,10 @@ def infer_flanked(rule: FlankedRule, features: list[MGEFeature]) -> list[MGEFeat
     """Infer transposons matching a flanked-cargo rule."""
     left_is = _complete_is_of(features, rule.left_family)
     right_is = _complete_is_of(features, rule.right_family)
+    if rule.left_name is not None:
+        left_is = [feature for feature in left_is if feature.name == rule.left_name]
+    if rule.right_name is not None:
+        right_is = [feature for feature in right_is if feature.name == rule.right_name]
     cargo = [f for f in features if _cargo_matches(f, rule.cargo_match)]
 
     results: list[MGEFeature] = []
@@ -289,6 +315,12 @@ def infer_flanked(rule: FlankedRule, features: list[MGEFeature]) -> list[MGEFeat
             start=up.start,
             end=down.end,
             strand=c.strand,
+            attributes={
+                "source": "rule",
+                "left_is": up.name,
+                "right_is": down.name,
+                "cargo": c.name,
+            },
         ))
     return results
 
@@ -300,8 +332,12 @@ def infer_flanked(rule: FlankedRule, features: list[MGEFeature]) -> list[MGEFeat
 def infer_one_ended(rule: OneEndedRule, features: list[MGEFeature]) -> list[MGEFeature]:
     """Infer a single-IS-plus-adjacent-cargo unit.
 
-    IS may sit on either side of the cargo; the emitted transposon spans
-    min(IS.start, cargo.start) .. max(IS.end, cargo.end).
+    Rules with ``capture_at="irr"`` only accept cargo beyond the pointed IRR
+    end of the IS: downstream for a forward IS and upstream for a reverse IS.
+    This avoids inventing an ISEcp1 TPU on the biologically wrong side.
+
+    The emitted span is deliberately a *candidate region* ending at the cargo.
+    A complete TPU still requires an independently detected IRalt and outer DR.
     """
     iss = _complete_is_of(features, rule.is_family)
     cargo = [f for f in features if _cargo_matches(f, rule.cargo_matches)]
@@ -313,9 +349,17 @@ def infer_one_ended(rule: OneEndedRule, features: list[MGEFeature]) -> list[MGEF
         for i in iss:
             if id(i) in used_is:
                 continue
-            if i.end <= c.start and c.start - i.end <= rule.max_gap:
+            if (
+                i.end <= c.start
+                and c.start - i.end <= rule.max_gap
+                and (rule.capture_at != "irr" or i.strand == "+")
+            ):
                 candidates.append((c.start - i.end, i))
-            elif i.start >= c.end and i.start - c.end <= rule.max_gap:
+            elif (
+                i.start >= c.end
+                and i.start - c.end <= rule.max_gap
+                and (rule.capture_at != "irr" or i.strand == "-")
+            ):
                 candidates.append((i.start - c.end, i))
         if not candidates:
             continue
@@ -331,8 +375,14 @@ def infer_one_ended(rule: OneEndedRule, features: list[MGEFeature]) -> list[MGEF
             name=rule.name,
             start=span_start,
             end=span_end,
-            strand=c.strand,
-            attributes={"cargo": c.name, "mediator_is": best_is.name},
+            strand=best_is.strand if rule.capture_at == "irr" else c.strand,
+            attributes={
+                "source": "rule",
+                "cargo": c.name,
+                "mediator_is": best_is.name,
+                "structural_status": "candidate_missing_capture_boundary",
+                "boundary_note": "IRalt/ter and outer direct repeat not confirmed",
+            },
         ))
     return emitted
 
@@ -409,50 +459,18 @@ def infer_tn1999(features: list[MGEFeature]) -> list[MGEFeature]:
 
 
 # ---------------------------------------------------------------------------
-# IS26 island inference (unchanged)
+# IS26 pseudo-compound transposon inference
 # ---------------------------------------------------------------------------
 
-def _merge_overlapping_islands(
-    islands: list[MGEFeature],
-    amr: list[MGEFeature],
-) -> list[MGEFeature]:
-    if not islands:
-        return []
-    merged = sorted(islands, key=lambda f: (f.start, f.end))
-    changed = True
-    while changed:
-        changed = False
-        out: list[MGEFeature] = [merged[0]]
-        for isl in merged[1:]:
-            prev = out[-1]
-            if isl.start <= prev.end:
-                new_start = min(prev.start, isl.start)
-                new_end = max(prev.end, isl.end)
-                out[-1] = MGEFeature(
-                    element_type="transposon",
-                    family="IS26_island",
-                    name=prev.name,
-                    start=new_start,
-                    end=new_end,
-                    strand=".",
-                )
-                changed = True
-            else:
-                out.append(isl)
-        merged = out
+def infer_is26_pseudocomposites(features: list[MGEFeature]) -> list[MGEFeature]:
+    """Identify individual, directly oriented IS26-bounded candidates.
 
-    final: list[MGEFeature] = []
-    for i, isl in enumerate(merged, start=1):
-        cargo = [a for a in amr if a.start >= isl.start and a.end <= isl.end]
-        isl.name = f"IS26_island_{i}"
-        isl.attributes["cargo_count"] = len(cargo)
-        isl.attributes["cargo"] = ",".join(a.name for a in cargo)
-        final.append(isl)
-    return final
-
-
-def infer_is26_islands(features: list[MGEFeature]) -> list[MGEFeature]:
-    is26 = sorted(_complete_is_of(features, "IS6"), key=lambda f: f.start)
+    We retain overlapping candidates instead of merging an entire resistance
+    region into an "IS26 island". An outer direct repeat can only be confirmed
+    after the candidate boundaries have been checked against the input DNA, so
+    the emitted feature records that evidence state explicitly.
+    """
+    is26 = sorted(_complete_named_is(features, "IS26"), key=lambda feature: feature.start)
     amr = [f for f in features if f.element_type == "AMR"]
 
     candidates: list[MGEFeature] = []
@@ -460,19 +478,39 @@ def infer_is26_islands(features: list[MGEFeature]) -> list[MGEFeature]:
         for right in is26[i + 1:]:
             if right.end - left.start > IS26_MAX_PAIR_SPAN:
                 break
+            if left.strand not in {"+", "-"} or left.strand != right.strand:
+                continue
             cargo = [a for a in amr
                      if a.start >= left.end and a.end <= right.start]
             if not cargo:
                 continue
             candidates.append(MGEFeature(
                 element_type="transposon",
-                family="IS26_island",
-                name="IS26_island",
+                family="IS26_pseudocomposite",
+                name="IS26_pseudocomposite",
                 start=left.start,
                 end=right.end,
-                strand=".",
+                strand=left.strand,
+                attributes={
+                    "source": "rule",
+                    "mobility_model": "pseudo-compound_transposon",
+                    "outer_direct_repeat_status": "unconfirmed",
+                    "cargo_count": len(cargo),
+                    "cargo": ",".join(feature.name for feature in cargo),
+                    "note": (
+                        "directly oriented IS26 pair; confirm an outer direct repeat "
+                        "before treating as a mobile pseudo-compound transposon"
+                    ),
+                },
             ))
-    return _merge_overlapping_islands(candidates, amr)
+    for index, candidate in enumerate(candidates, start=1):
+        candidate.name = f"IS26_pseudocomposite_{index}"
+    return candidates
+
+
+def infer_is26_islands(features: list[MGEFeature]) -> list[MGEFeature]:
+    """Compatibility alias for the corrected pseudo-compound model."""
+    return infer_is26_pseudocomposites(features)
 
 
 # Max distance for single-IS26 translocatable unit detection
@@ -489,19 +527,26 @@ def infer_is26_translocatable_units(features: list[MGEFeature]) -> list[MGEFeatu
     within IS26_TU_MAX_GAP bp of AMR cargo that is NOT already enclosed
     by a two-IS26 island.
     """
-    is26 = _complete_is_of(features, "IS6")
+    is26 = _complete_named_is(features, "IS26")
     amr = [f for f in features if f.element_type == "AMR"]
-    islands = [f for f in features
-               if f.element_type == "transposon" and f.family == "IS26_island"]
+    pseudocomposites = [
+        feature
+        for feature in features
+        if feature.element_type == "transposon"
+        and feature.family == "IS26_pseudocomposite"
+    ]
 
-    def _inside_island(s: int, e: int) -> bool:
-        return any(isl.start <= s and e <= isl.end for isl in islands)
+    def _inside_pseudocomposite(start: int, end: int) -> bool:
+        return any(
+            candidate.start <= start and end <= candidate.end
+            for candidate in pseudocomposites
+        )
 
     emitted: list[MGEFeature] = []
     used_pairs: set[tuple[int, int]] = set()
     for i in is26:
         for a in amr:
-            if _inside_island(a.start, a.end):
+            if _inside_pseudocomposite(a.start, a.end):
                 continue
             if i.end <= a.start and a.start - i.end <= IS26_TU_MAX_GAP:
                 span = (i.start, a.end)
@@ -531,7 +576,7 @@ def infer_is26_translocatable_units(features: list[MGEFeature]) -> list[MGEFeatu
 
 
 def infer_is26_composites(features: list[MGEFeature]) -> list[MGEFeature]:
-    return infer_is26_islands(features)
+    return infer_is26_pseudocomposites(features)
 
 
 # ---------------------------------------------------------------------------
@@ -539,10 +584,10 @@ def infer_is26_composites(features: list[MGEFeature]) -> list[MGEFeature]:
 # ---------------------------------------------------------------------------
 
 # Tn3-superfamily *unit* transposons — have tnpA/tnpR/res between IRL and IRR.
-# Composites (Tn1999, Tn_mcr1, IS26_island) are NOT included — they lack a
+# Composites (Tn1999, Tn_mcr1, IS26 pseudocomposites) are NOT included — they lack a
 # Tn3-family res site because they don't encode their own resolvase.
 TN3_FAMILY_MEMBERS = frozenset({
-    "Tn3", "Tn4401", "Tn1546", "Tn21", "Tn1331", "Tn5393", "Tn5403",
+    "Tn1", "Tn2", "Tn3", "Tn4401", "Tn1546", "Tn21", "Tn1331", "Tn5393", "Tn5403",
     "Tn6022", "Tn6019", "Tn6021", "Tn6172",
 })
 
@@ -562,6 +607,8 @@ def annotate_res_sites(transposons: list[MGEFeature]) -> list[MGEFeature]:
     out: list[MGEFeature] = []
     for t in transposons:
         if t.family not in TN3_FAMILY_MEMBERS:
+            continue
+        if t.attributes.get("curated_internal_features"):
             continue
         # Expected res region: ~200-400bp from IRL (start for + strand,
         # end for - strand). 120bp wide.
@@ -596,7 +643,7 @@ def infer_transposons(features: list[MGEFeature]) -> list[MGEFeature]:
       2. One-ended captures (single IS + cargo)
       3. Rolling-circle captures (ISCR / IS91 + cargo)
       4. Signature clusters (cargo-only pattern matches)
-      5. IS26 islands (merged pairs)
+      5. IS26 pseudo-compound candidates (individual direct-orientation pairs)
 
     De-duplication: emitted features are unique by (family, start, end).
 
@@ -615,15 +662,15 @@ def infer_transposons(features: list[MGEFeature]) -> list[MGEFeature]:
             seen.add(key)
             out.append(f)
 
-    for rule in FLANKED_RULES:
-        _extend(infer_flanked(rule, features))
-    for rule in ONE_ENDED_RULES:
-        _extend(infer_one_ended(rule, features))
-    for rule in ROLLING_CIRCLE_RULES:
-        _extend(infer_one_ended(rule, features))
+    for flanked_rule in FLANKED_RULES:
+        _extend(infer_flanked(flanked_rule, features))
+    for one_ended_rule in ONE_ENDED_RULES:
+        _extend(infer_one_ended(one_ended_rule, features))
+    for rolling_rule in ROLLING_CIRCLE_RULES:
+        _extend(infer_one_ended(rolling_rule, features))
     for srule in SIGNATURE_RULES:
         _extend(infer_signature(srule, features))
-    _extend(infer_is26_islands(features))
+    _extend(infer_is26_pseudocomposites(features))
     # Single-IS26 translocatable units: low-confidence, emitted only for
     # cargo not already covered by an island
     _extend(infer_is26_translocatable_units(features + out))

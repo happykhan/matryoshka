@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="138" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="920" height="138" fill="#ffffff"/>
+<rect x="72.0" y="44" width="776.0" height="40" fill="#009b55" stroke="#111111" stroke-width="2"/>
+<text x="460.0" y="37.0" text-anchor="middle" font-size="12" font-weight="bold" font-style="normal" fill="#111111">Tn1</text>
+<line x1="346.9" y1="47" x2="346.9" y2="81" stroke="#111111" stroke-width="1" stroke-dasharray="2,2"/><line x1="364.6" y1="47" x2="364.6" y2="81" stroke="#111111" stroke-width="1" stroke-dasharray="2,2"/>
+<polygon points="95.1,66 110.1,58 229.9,58 229.9,74 110.1,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="162.5" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">blaTEM-2</text>
+<polygon points="258.6,66 273.6,58 346.0,58 346.0,74 273.6,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="302.3" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">tnpR</text>
+<polygon points="371.5,58 827.8,58 842.8,66 827.8,74 371.5,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="607.2" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">tnpA</text>
+<text x="355.8" y="105.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="italic" fill="#111111">res</text>
+<line x1="72.0" y1="44" x2="72.0" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="72.0,23 82.0,29 72.0,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<line x1="848.0" y1="44" x2="848.0" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="848.0,23 838.0,29 848.0,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="72.0" y1="44" x2="72.0" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="72.0" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="848.0" y1="44" x2="848.0" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="848.0" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<text x="848.0" y="126.0" text-anchor="end" font-size="9" font-weight="normal" font-style="normal" fill="#555">Tn1_NC_008357</text>
+</svg>

@@ -1,170 +1,189 @@
 # Matryoshka
 
-**Nested mobile genetic element annotation for bacterial genomes.**
+Nested mobile genetic element annotation and MARA-style visualisation for bacterial
+assemblies.
 
-Matryoshka takes a resolved bacterial assembly plus the outputs of standard MGE detection
-tools (ISEScan, AMRFinder+, IntegronFinder) and produces a *nested* annotation — showing
-what is contained inside what — rather than a flat coordinate list.
+Matryoshka detects known mobile-element structures, reconstructs their biological
+containment hierarchy, and writes machine-readable annotations plus one readable
+diagram per locus. The external-alpha default is deliberately conservative: it scans
+the reference sets validated against Sally Partridge's supplied worked examples.
 
-It runs rule-based inference for known composite transposons, BLAST against a bundled
-reference library for structurally conserved elements, and confirms boundaries with
-target-site-duplication (TSD) and inverted-repeat (IR) detection. Every feature is
-tagged with a confidence score.
+## Try it
 
----
-
-## What it identifies
-
-| Category | Elements |
-|---|---|
-| Insertion sequences | IS6 (IS26, IS257), IS1380 (ISEcp1), IS30 (ISApl1), IS91/ISCR (rolling-circle), plus anything ISEScan calls |
-| Composite transposons | Tn4401 (blaKPC, variant a/b discriminated), Tn1999 (blaOXA-48), Tn_mcr1 (ISApl1+mcr-1), IS26 islands (merged pairs), IS26 TUs (single-IS, low-confidence) |
-| Tn3-family unit transposons | Tn1546 (vanA), Tn21, Tn1331, Tn5393 — via BLAST or cargo signature |
-| One-ended / rolling-circle capture | ISEcp1 → blaCTX-M / CMY / ACC / LAT / DHA; ISCR1-mediated + IS91 capture units |
-| Genomic islands | AbGRI1 (Tn6022 + Tn6172 flanking comM), AbaR3-like (Tn6019), GI*sul2* |
-| Integrons | Class 1 / 2 / 3 with cassettes (via IntegronFinder) |
-| Plasmid features | Replicon typing via PlasmidFinder (Enterobacteriales, 159 replicons) |
-| Structural sub-features | Tn3-family *res* sites (positional), ter-site motifs for rolling-circle elements |
-| AMR cargo | Everything AMRFinder+ calls |
-
-## How the hierarchy works
-
-Each feature becomes a child of the *smallest* feature that strictly contains it. IS
-elements can't parent AMR / cassette / integron features (a spatial overlap doesn't
-imply biological containment), but transposons and integrons can. The result is a
-tree of `MGEFeature` nodes you can walk, render, or flatten.
-
-## Example — pKpQIL (K. pneumoniae, blaKPC plasmid)
-
-```
-Tn4401a              8882–18788   (BLAST, 99.84% ID, 100bp Pout deletion, conf=1.0)
-├── res_Tn4401a      9082–9202    (positional, conf=0.3)
-├── IS21_203         13998–15928
-└── blaKPC-3         15984–16862
-
-IS26_island_1        25540–32163
-├── IS6_292          25540–26359
-├── blaOXA           26527–27348
-├── blaTEM-1         28051–28908
-└── IS6_292          29089–32163
-
-IncFIB(pQil)         53120–53859  (PlasmidFinder, 100% ID, conf=1.0)
-```
-
----
-
-## Install
-
-Requires: [pixi](https://pixi.sh). All other dependencies (Python 3.11+, BLAST+,
-matplotlib, biopython) are managed by pixi.
+Matryoshka needs Python 3.11–3.13 and NCBI BLAST+ (`blastn` and `makeblastdb`).
 
 ```bash
-git clone https://github.com/happykhan/matryoshka
+git clone https://github.com/happykhan/matryoshka.git
 cd matryoshka
+
+# macOS
+brew install blast
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install .
+
+# Ubuntu/Debian: install BLAST first with:
+# sudo apt-get install ncbi-blast+
+```
+
+Run the bundled Tn1/Tn2/Tn3 acceptance example:
+
+```bash
+matryoshka run tests/test-data/partridge-examples/Tn1-Tn2-Tn3.fasta \
+  --out results
+```
+
+The result directory contains:
+
+- `annotation.json` — versioned hierarchy with stable feature IDs and provenance;
+- `annotation.gff3` — one valid multi-record GFF3 document;
+- `run.json` — short run summary;
+- `mara/*.svg` — locus-based MARA-style maps;
+- `mara-table/*.svg` — MARA-style annotation tables.
+
+Each Tn1/Tn2/Tn3 target receives its own viewport, so the element stays legible in a
+long plasmid or chromosome. Near matches are labelled `Tn1-like`, `Tn2-like` or
+`Tn3-like`; supported insertions, deletions, fragments and reverse-complement matches
+retain their evidence in the JSON and table.
+
+### Pixi alternative
+
+[Pixi](https://pixi.sh) provides a locked core environment for Linux and Intel/Apple
+Silicon macOS:
+
+```bash
 pixi install
+pixi run smoke
 ```
 
-Detection tools (ISEScan, AMRFinder+, IntegronFinder) live in isolated pixi
-environments and are invoked as subprocesses. They are optional — you can also pass
-existing outputs on the command line.
+ISEScan, AMRFinder+ and IntegronFinder environments are currently Linux-only. The core
+validated-reference workflow works on all listed platforms.
 
-## Quickstart
+## Run your own sequence
 
 ```bash
-# Annotate a plasmid using pre-computed detection-tool outputs
-pixi run python -m matryoshka annotate plasmid.fasta \
-    --isescan     isescan_output.tsv \
-    --amrfinder   amrfinder_output.tsv \
-    --integrons   integronfinder_output.integrons \
-    --format      json \
-    --out         plasmid.annotation.json
-
-# Render a scale-accurate linear SVG
-pixi run python -m matryoshka annotate plasmid.fasta \
-    --isescan isescan_output.tsv --amrfinder amrfinder_output.tsv \
-    --format linear --out plasmid.svg
+matryoshka run assembly.fasta --out results --threads 4
 ```
 
-Multi-FASTA input (e.g. chromosome + plasmids) is handled automatically — each
-contig gets its own hierarchy. For per-contig SVG/PNG output pass `--out some_dir/`.
+The default `--profile validated` includes the Sally-backed Tn1/Tn2/Tn3, curated unit
+transposon, integron and ISEcp1-TPU references. `--profile all` enables broader legacy
+and experimental references and should be treated as exploratory.
 
-## Output formats
+BLAST-based detection is always run. Extra detector evidence can be supplied without
+rerunning tools:
 
-| `--format` | Contents |
+```bash
+matryoshka run assembly.fasta --out results \
+  --isescan isescan.tsv \
+  --amrfinder amrfinder.tsv \
+  --integrons sample.integrons
+```
+
+On Linux, installed detectors can be invoked automatically:
+
+```bash
+# Run any detector available on PATH (or through this checkout's Pixi environments).
+matryoshka run assembly.fasta --out results --detectors available
+
+# Require all three; fail clearly if one is unavailable.
+matryoshka run assembly.fasta --out results --detectors all
+```
+
+The lower-level `matryoshka annotate` command emits one selected format and remains
+useful for scripts. `matryoshka run` is the supported reproducible workflow for new
+users.
+
+## What it currently identifies
+
+| Category | Implemented support |
 |---|---|
-| `json` | Full hierarchy with attributes, confidence, TSD/IR evidence |
-| `gff3` | One row per feature with Parent= relationships, IR/TSD/source attributes |
-| `genbank` | Biopython SeqFeature round-tripped record — loadable in Artemis / SnapGene |
-| `wolvercote` | Compact nested cell-format notation (see [cell-format](https://github.com/happykhan/cell-format)) |
-| `svg` | Circular schematic via wolvercote renderer |
-| `png` | Rasterised circular diagram |
-| `linear` | Scale-accurate linear map (matryoshka's flagship output) |
+| Tn1/Tn2/Tn3 | Complete canonical units, closest-reference minor variants, indels, reverse orientation and conservative partial/ambiguous calls |
+| Curated MARA units | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
+| ISEcp1 transposition units | Seven complete supplied ISEcp1–blaCMY references and orientation-aware incomplete candidates |
+| Insertion sequences | Exact curated IS calls plus ISEScan calls, including IS26/IS257, ISEcp1, ISApl1 and IS91/ISCR families |
+| Composite/signature elements | Tn4401, Tn1999, Tn6330, Tn2006, Tn125, Tn10, Tn5, Tn4001, Tn1546 and Tn1331 rules |
+| Integrons | IntegronFinder parsing, cassette reconstruction, class-1-integron and complete Tn402 component inference |
+| Other references | Tn4401 variants, Acinetobacter islands, GIsul2, Tn7, Tn552, Tn1546, Tn1331, replicons and documented motifs in the `all` profile |
 
-## Reference library
-
-Bundled in `matryoshka/references/`. Every reference is traceable to a published
-accession — see the header line of each FASTA for origin.
-
-Refresh or extend via the fetcher scripts:
+The source-backed [MARA component inventory](docs/mara-component-inventory.md) defines
+30 raw component classes and 18 compound-element grammars. It distinguishes what is
+implemented, partially implemented and still missing; the catalogue is also available
+to software:
 
 ```bash
-NCBI_EMAIL=you@example.org pixi run python scripts/fetch_mge_references.py --force
+matryoshka catalog --format tsv
+matryoshka catalog --format json --out mara-catalog.json
 ```
 
-References include Tn4401 variants (a/b), Tn1546, Tn21, Tn1331, Tn5393,
-Acinetobacter islands (Tn6022, Tn6019, Tn6172, Tn6022Δ), GI*sul2*, ISEcp1, Tn7,
-Tn552, In2, mcr-1 exemplars, Tn3 *res* consensus, rolling-circle ter-site motifs
-and PlasmidFinder's Enterobacteriales replicon DB (159 records).
+Biological and representational targets are defined in the
+[MARA parity specification](docs/mara-parity-spec.md). Unfinished capabilities remain
+explicit in [GAPS.md](GAPS.md); this is not yet a general replacement for expert MARA
+annotation.
 
-## Validation plasmids
+## Supported outputs
 
-| Plasmid | Accession | Tests |
+The result-directory contract is documented in
+[docs/output-contract.md](docs/output-contract.md), and its JSON Schema is
+[annotation-v1.schema.json](docs/schema/annotation-v1.schema.json).
+
+The lower-level `annotate --format` choices are:
+
+| Format | Contents |
+|---|---|
+| `json` | Legacy single-output hierarchy |
+| `gff3` | Feature rows with `Parent` relationships |
+| `genbank` | Biopython GenBank feature annotations |
+| `wolvercote` | Compact nested cell-format text |
+| `linear` | Scale-accurate whole-record SVG |
+| `mara` | One feature-specific locus SVG per validated target |
+| `mara-table` | One MARA-style annotation-table SVG per locus |
+
+Legacy circular CellGen SVG/PNG rendering is not distributed in this alpha because it
+required an unpublished sibling package. Use the bundled linear and MARA SVG outputs.
+
+## Reference and validation data
+
+The machine-readable [reference manifest](matryoshka/references/manifest.yaml) pins the
+database version, file hashes, record IDs, accessions, provenance, profile and scan
+thresholds for every bundled FASTA. The human-readable companion is
+[matryoshka/references/MANIFEST.md](matryoshka/references/MANIFEST.md).
+
+Three complete public NCBI plasmids are committed as acceptance fixtures:
+
+| Plasmid | Accession | Acceptance purpose |
 |---|---|---|
-| pKpQIL | NC_014016 | Tn4401a detection, variant discrimination, IncFIB(pQil) replicon |
-| pOXA-48a | JN626286 | Tn1999 inference, TSD=TGCTG confirmation, IncL replicon |
-| pEK499 | EU935739 | IS26 island merging (16 children), nested ISEcp1_capture, IncFIA+IncFII |
+| pKpQIL | NC_014016.1 | Tn4401 reference detection |
+| pOXA-48a | JN626286.1 | Tn1999/TSD and negative Tn4401 control |
+| pEK499 | EU935739.1 | ISEcp1 and false-positive controls |
 
-Run the test suite:
+Their SHA-256 hashes and refresh script are in `tests/test-data/acceptance/`. Compact
+detector parser fixtures are clearly labelled as hand-authored. Sally's private working
+documents are not redistributed; see [docs/redistribution.md](docs/redistribution.md).
+
+## Development and verification
 
 ```bash
-pixi run pytest tests/ -q
+python -m pip install -e ".[dev,viz]"
+pytest -q
+ruff check matryoshka tests scripts
+python -m build
 ```
 
-## Confidence scoring
+CI tests Python 3.11, 3.12 and 3.13 with BLAST installed, validates the checksummed
+reference manifest, builds the wheel, installs it in a clean environment and runs the
+complete result-directory workflow.
 
-Every feature is tagged with a confidence score in `attributes.confidence` (0.0–1.0)
-and a human label in `attributes.confidence_label`:
+## Version and status
 
-| Score | Label | Typical evidence |
-|---|---|---|
-| 1.00 | high | BLAST hit ≥98% identity and ≥95% subject coverage |
-| 0.85 | high | Rule-inferred composite transposon with TSD and IR |
-| 0.70 | medium | Rule-inferred transposon, no boundary evidence |
-| 0.60 | low | IS element with IR |
-| 0.40 | speculative | Single-IS26 translocatable unit |
-| 0.30 | speculative | Positional res site (not sequence-confirmed) |
+`0.1.0a1` is an external alpha. The validated profile is suitable for demonstration
+and repeatable evaluation of the documented subset, not unattended clinical or
+surveillance decisions. Calls retain coordinates, reference evidence and confidence so
+an expert can review them.
 
-See [`matryoshka/confidence.py`](matryoshka/confidence.py) for the full rubric.
+Changes are recorded in [CHANGELOG.md](CHANGELOG.md). Please report reproducible issues
+through [GitHub Issues](https://github.com/happykhan/matryoshka/issues).
 
-## Status
+## Licence and citation
 
-Alpha. Core annotation pipeline is stable and validated on three reference
-plasmids. Known coverage gaps vs the Partridge 2018 review are tracked in
-[GAPS.md](GAPS.md).
-
-## Citing
-
-i wouldn't use this software yet! 
-
-## License
-
-MIT. See [LICENSE](LICENSE).
-
-## Contributing
-
-Contributions welcome — particularly new transposon inference rules or
-reference-sequence additions. See [GAPS.md](GAPS.md) for open work.
-
-New transposon rules are declarative (see `FLANKED_RULES`, `ONE_ENDED_RULES`,
-`SIGNATURE_RULES` in `matryoshka/transposon.py`); adding most Tn families is a
-one-line addition to a dict.
+Code is MIT licensed. Reference-data provenance and individual licences are recorded in
+the manifest. Citation metadata is in [CITATION.cff](CITATION.cff).

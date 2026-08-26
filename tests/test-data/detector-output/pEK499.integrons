@@ -1,0 +1,7 @@
+ID_integron	ID_replicon	pos_beg	pos_end	strand	type	type_elt	annotation	element	evalue
+integron_1	EU935739.1	65567	66580	1	complete	protein	intI	intI1	0
+integron_1	EU935739.1	66600	67200	1	complete	protein	protein	dfrA17	1e-30
+integron_1	EU935739.1	67201	67280	1	complete	attC	attC	attC_1	1e-12
+integron_1	EU935739.1	67300	68000	1	complete	protein	protein	aadA5	1e-25
+integron_1	EU935739.1	68001	68080	1	complete	attC	attC	attC_2	1e-11
+integron_1	EU935739.1	68600	68683	1	complete	attC	attC	attC_3	1e-10

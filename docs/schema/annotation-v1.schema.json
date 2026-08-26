@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/happykhan/matryoshka/blob/main/docs/schema/annotation-v1.schema.json",
+  "title": "Matryoshka annotation document v1",
+  "type": "object",
+  "required": ["schema_version", "generated_by", "reference_database", "run", "records"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_by": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"const": "matryoshka"},
+        "version": {"type": "string"}
+      }
+    },
+    "reference_database": {
+      "type": "object",
+      "required": ["version", "profile"],
+      "properties": {
+        "version": {"type": "string"},
+        "profile": {"enum": ["validated", "all"]}
+      }
+    },
+    "run": {"type": "object"},
+    "records": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/record"}
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "required": ["id", "length", "features"],
+      "properties": {
+        "id": {"type": "string"},
+        "length": {"type": "integer", "minimum": 1},
+        "features": {"type": "array", "items": {"$ref": "#/$defs/feature"}}
+      }
+    },
+    "feature": {
+      "type": "object",
+      "required": ["id", "parent_id", "element_type", "family", "name", "start", "end", "strand", "attributes", "children"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^mge-"},
+        "parent_id": {"type": ["string", "null"]},
+        "element_type": {"type": "string"},
+        "family": {"type": "string"},
+        "name": {"type": "string"},
+        "start": {"type": "integer", "minimum": 0},
+        "end": {"type": "integer", "minimum": 0},
+        "strand": {"enum": ["+", "-", "."]},
+        "attributes": {"type": "object"},
+        "children": {"type": "array", "items": {"$ref": "#/$defs/feature"}}
+      }
+    }
+  }
+}

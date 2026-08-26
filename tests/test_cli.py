@@ -1,4 +1,4 @@
-"""End-to-end smoke tests for the `matryoshka annotate` CLI."""
+"""End-to-end smoke tests for the public CLI workflows."""
 
 import json
 from pathlib import Path
@@ -8,18 +8,18 @@ from click.testing import CliRunner
 
 from matryoshka.__main__ import cli
 
-DATA = Path(__file__).parent.parent / "data"
-FASTA = DATA / "reference_plasmids/pOXA-48a.fasta"
-ISESCAN = DATA / "isescan_test/reference_plasmids/pOXA-48a.fasta.tsv"
-AMRFINDER = DATA / "amrfinder_test/pOXA-48a.tsv"
+DATA = Path(__file__).parent / "test-data"
+FASTA = DATA / "acceptance" / "pOXA-48a.fasta"
+ISESCAN = DATA / "detector-output" / "pOXA-48a.isescan.tsv"
+AMRFINDER = DATA / "detector-output" / "pOXA-48a.amrfinder.tsv"
+TN123 = DATA / "partridge-examples" / "Tn1-Tn2-Tn3.fasta"
 
-SKIP = pytest.mark.skipif(
-    not (FASTA.exists() and ISESCAN.exists() and AMRFINDER.exists()),
-    reason="pOXA-48a test data not present",
+SKIP_BLAST = pytest.mark.skipif(
+    __import__("shutil").which("blastn") is None,
+    reason="blastn not on PATH",
 )
 
 
-@SKIP
 class TestAnnotateCLI:
     def _run(self, fmt: str, tmp_path: Path) -> str:
         out = tmp_path / f"out.{fmt}"
@@ -72,12 +72,32 @@ class TestAnnotateCLI:
     def test_missing_tool_output_errors(self, tmp_path):
         out = tmp_path / "out.json"
         runner = CliRunner()
-        result = runner.invoke(cli, ["annotate", str(FASTA), "-o", str(out)])
+        result = runner.invoke(
+            cli,
+            ["annotate", str(FASTA), "--no-reference-scan", "-o", str(out)],
+        )
         assert result.exit_code != 0
-        assert "at least one detection tool" in result.output.lower()
+        assert "detection tool output or enable the reference scan" in result.output.lower()
 
     def test_version(self):
         runner = CliRunner()
         result = runner.invoke(cli, ["--version"])
         assert result.exit_code == 0
         assert "matryoshka" in result.output
+
+
+@SKIP_BLAST
+def test_run_writes_versioned_result_directory(tmp_path):
+    out = tmp_path / "result"
+    result = CliRunner().invoke(
+        cli,
+        ["run", str(TN123), "--threads", "2", "--out", str(out)],
+    )
+    assert result.exit_code == 0, result.output
+    document = json.loads((out / "annotation.json").read_text())
+    summary = json.loads((out / "run.json").read_text())
+    assert document["schema_version"] == "1.0"
+    assert document["reference_database"]["profile"] == "validated"
+    assert summary["mara_loci"] == 3
+    assert len(list((out / "mara").glob("*.svg"))) == 3
+    assert len(list((out / "mara-table").glob("*.svg"))) == 3

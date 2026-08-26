@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import csv
 import io
+import platform
+import shutil
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -145,20 +147,35 @@ def parse_amrfinder(tsv_path: str | Path) -> list[MGEFeature]:
         for row in reader:
             strand_raw = row.get("Strand", "+").strip()
             strand = strand_raw if strand_raw in ("+", "-") else "."
+            symbol = row.get("Element symbol", "")
+            unresolved_oxa = symbol.strip().lower() in {"oxa", "blaoxa"}
+            display_name = "blaOXA-family (unresolved)" if unresolved_oxa else symbol
+            attributes = {
+                "seqid": row.get("Contig id", ""),
+                "full_name": row.get("Element name", ""),
+                "subclass": row.get("Subclass", ""),
+                "method": row.get("Method", ""),
+            }
+            if unresolved_oxa:
+                attributes.update({
+                    "original_symbol": symbol,
+                    "nomenclature_status": "family_only_unresolved",
+                    "requires_exact_allele": True,
+                    "confidence": "low",
+                    "note": (
+                        "generic blaOXA is not an acceptable final allele call; "
+                        "exact allele resolution is required"
+                    ),
+                })
 
             f = MGEFeature(
                 element_type="AMR",
                 family=row.get("Class", ""),
-                name=row.get("Element symbol", ""),
+                name=display_name,
                 start=int(row["Start"]),
                 end=int(row["Stop"]),
                 strand=strand,
-                attributes={
-                    "seqid": row.get("Contig id", ""),
-                    "full_name": row.get("Element name", ""),
-                    "subclass": row.get("Subclass", ""),
-                    "method": row.get("Method", ""),
-                },
+                attributes=attributes,
             )
             features.append(f)
     return features
@@ -215,6 +232,55 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
                         and r.get("annotation") != "intI"]
         protein_rows.sort(key=lambda r: int(r["pos_beg"]))
         cassette_array = "|".join(r["element"] for r in protein_rows)
+
+        # MARA treats a gene cassette as the ORF plus its recombination site,
+        # not as the protein-coding interval alone. Pair each protein with the
+        # nearest attC in the direction of the integron, using every attC once.
+        attc_rows = [r for r in members if r.get("type_elt") == "attC"]
+        available_attc = set(range(len(attc_rows)))
+        cassette_bounds: dict[int, tuple[int, int, str] | None] = {}
+        ordered_proteins = sorted(
+            protein_rows,
+            key=lambda r: int(r["pos_beg"]),
+            reverse=int_strand == "-",
+        )
+        for protein in ordered_proteins:
+            protein_start = int(protein["pos_beg"])
+            protein_end = int(protein["pos_end"])
+            protein_strand = _if_strand(protein["strand"])
+            direction = protein_strand if protein_strand in {"+", "-"} else int_strand
+            if direction == "-":
+                candidates = [
+                    index
+                    for index in available_attc
+                    if int(attc_rows[index]["pos_beg"]) <= protein_end
+                ]
+                selected = max(
+                    candidates,
+                    key=lambda index: int(attc_rows[index]["pos_end"]),
+                    default=None,
+                )
+            else:
+                candidates = [
+                    index
+                    for index in available_attc
+                    if int(attc_rows[index]["pos_end"]) >= protein_start
+                ]
+                selected = min(
+                    candidates,
+                    key=lambda index: int(attc_rows[index]["pos_beg"]),
+                    default=None,
+                )
+            if selected is None:
+                cassette_bounds[id(protein)] = None
+                continue
+            available_attc.remove(selected)
+            attc = attc_rows[selected]
+            cassette_bounds[id(protein)] = (
+                min(protein_start, int(attc["pos_beg"])),
+                max(protein_end, int(attc["pos_end"])),
+                attc["element"],
+            )
         integron_feat = MGEFeature(
             element_type="integron",
             family=family,
@@ -254,13 +320,29 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
                     attributes={"evalue": r.get("evalue", "")},
                 )
             elif type_elt == "protein":
+                bounds = cassette_bounds.get(id(r))
+                complete = bounds is not None
+                start, end, attc_name = (
+                    bounds
+                    if bounds is not None
+                    else (int(r["pos_beg"]), int(r["pos_end"]), "")
+                )
                 child = MGEFeature(
                     element_type="cassette",
                     family="gene_cassette",
                     name=r["element"],
-                    start=int(r["pos_beg"]),
-                    end=int(r["pos_end"]),
+                    start=start,
+                    end=end,
                     strand=child_strand,
+                    attributes={
+                        "orf_start": int(r["pos_beg"]),
+                        "orf_end": int(r["pos_end"]),
+                        "attc_name": attc_name,
+                        "boundary_status": (
+                            "complete_with_attC" if complete else "orf_only"
+                        ),
+                        "fragment": not complete,
+                    },
                 )
             else:
                 continue
@@ -323,6 +405,37 @@ def parse_mobsuite(report_path: str | Path) -> list[MGEFeature]:
 # ---------------------------------------------------------------------------
 # Tool runners (subprocess wrappers)
 # ---------------------------------------------------------------------------
+
+DETECTOR_EXECUTABLES = {
+    "isescan": "isescan.py",
+    "amrfinder": "amrfinder",
+    "integron": "integron_finder",
+}
+
+
+def detector_available(detector: str) -> bool:
+    executable = DETECTOR_EXECUTABLES[detector]
+    if shutil.which(executable):
+        return True
+    project_manifest = Path(__file__).parents[1] / "pixi.toml"
+    return (
+        platform.system() == "Linux"
+        and project_manifest.exists()
+        and shutil.which("pixi") is not None
+    )
+
+
+def _detector_command(detector: str) -> list[str]:
+    executable = DETECTOR_EXECUTABLES[detector]
+    direct = shutil.which(executable)
+    if direct:
+        return [direct]
+    project_manifest = Path(__file__).parents[1] / "pixi.toml"
+    if platform.system() == "Linux" and project_manifest.exists() and shutil.which("pixi"):
+        return ["pixi", "run", "-e", detector, executable]
+    raise FileNotFoundError(
+        f"{executable} is not on PATH. Install the detector or use its precomputed output."
+    )
 
 _ISESCAN_HEADER = (
     "seqID\tfamily\tcluster\tisBegin\tisEnd\tisLen\tncopy4is\t"
@@ -409,7 +522,7 @@ def _adjust_isescan_coordinates(
 
 
 def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
-    """Run ISEScan via its pixi environment. Returns path to .tsv output.
+    """Run ISEScan from PATH or a Linux Pixi environment. Return its TSV.
 
     The input FASTA is padded with N bases on both sides so that IS elements
     at sequence boundaries are detectable. Output coordinates are adjusted
@@ -437,7 +550,7 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
     pad_len = pad_sequence_for_isescan(fasta, padded_fasta)
 
     subprocess.run(
-        ["pixi", "run", "-e", "isescan", "isescan.py",
+        [*_detector_command("isescan"),
          "--seqfile", str(padded_fasta), "--output", str(outdir), "--nthread", "4"],
         check=True,
     )
@@ -465,13 +578,13 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
 
 
 def run_amrfinder(fasta: str | Path, outdir: str | Path) -> Path:
-    """Run AMRFinder+ via its pixi environment. Returns path to TSV output."""
+    """Run AMRFinder+ from PATH or a Linux Pixi environment. Return its TSV."""
     fasta = Path(fasta)
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     out_tsv = outdir / (fasta.stem + ".tsv")
     subprocess.run(
-        ["pixi", "run", "-e", "amrfinder", "amrfinder",
+        [*_detector_command("amrfinder"),
          "-n", str(fasta), "-o", str(out_tsv), "--plus"],
         check=True,
     )
@@ -479,12 +592,12 @@ def run_amrfinder(fasta: str | Path, outdir: str | Path) -> Path:
 
 
 def run_integron_finder(fasta: str | Path, outdir: str | Path) -> Path:
-    """Run IntegronFinder via its pixi environment. Returns path to .integrons file."""
+    """Run IntegronFinder from PATH or a Linux Pixi environment. Return its output."""
     fasta = Path(fasta)
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["pixi", "run", "-e", "integron", "integron_finder",
+        [*_detector_command("integron"),
          "--outdir", str(outdir), "--circ", str(fasta)],
         check=True,
     )

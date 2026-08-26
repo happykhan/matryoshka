@@ -15,6 +15,7 @@ Scoring rubric:
     0.55  One-ended rule, no boundary evidence
     0.50  Signature rule (gene-pattern only, no IS anchor)
     0.40  IS26 translocatable unit (single-IS, speculative)
+    0.55  IS26 pseudo-compound candidate without confirmed outer DR
     0.30  res site (positional, not sequence-confirmed)
     0.60  IS element with IR confirmed (ISEScan baseline)
     0.45  IS element without IR
@@ -70,6 +71,9 @@ def _rule_score(f: MGEFeature) -> float:
     if family == "IS26_TU":
         return 0.40
 
+    if family == "IS26_pseudocomposite" and not has_tsd:
+        return 0.55
+
     # Signature-only rules (vanA Tn1546, Tn1331 three-gene)
     if family in ("Tn1546", "Tn1331"):
         return 0.50
@@ -82,7 +86,7 @@ def _rule_score(f: MGEFeature) -> float:
     if f.element_type == "genomic_island":
         return 0.75
 
-    # Flanked-cargo composites (Tn4401, Tn1999, Tn_mcr1, IS26_island)
+    # Flanked-cargo composites and confirmed IS26 pseudo-compound candidates
     if f.element_type == "transposon":
         if has_tsd and has_ir:
             return 0.85
@@ -119,7 +123,9 @@ def assign_confidence(features: list[MGEFeature]) -> list[MGEFeature]:
             return
         seen.add(fid)
 
-        if f.attributes.get("source") == "reference_scan":
+        if f.attributes.get("source") == "curated_reference":
+            score = 1.00
+        elif f.attributes.get("source") == "reference_scan":
             score = _blast_score(f)
         elif f.attributes.get("source") in ("rule", "inference"):
             score = _rule_score(f)

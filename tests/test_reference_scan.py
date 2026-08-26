@@ -11,9 +11,9 @@ from matryoshka.reference_scan import (
     scan_all,
 )
 
-DATA = Path(__file__).parent.parent / "data"
-PKPQIL = DATA / "reference_plasmids" / "pKpQIL.fasta"
-POXA48A = DATA / "reference_plasmids" / "pOXA-48a.fasta"
+DATA = Path(__file__).parent / "test-data" / "acceptance"
+PKPQIL = DATA / "pKpQIL.fasta"
+POXA48A = DATA / "pOXA-48a.fasta"
 TN4401_REF = REFERENCES_DIR / "tn4401.fasta"
 
 SKIP_BLAST = pytest.mark.skipif(
@@ -23,15 +23,10 @@ SKIP_REFS = pytest.mark.skipif(
     not TN4401_REF.exists(),
     reason="reference sequences not downloaded — run scripts/fetch_mge_references.py",
 )
-SKIP_QUERY = pytest.mark.skipif(
-    not (PKPQIL.exists() and POXA48A.exists()),
-    reason="query plasmid FASTAs not present (data/ is gitignored)",
-)
 
 
 @SKIP_BLAST
 @SKIP_REFS
-@SKIP_QUERY
 class TestScan:
     def test_tn4401_detected_on_pkpqil(self):
         hits = scan(PKPQIL, TN4401_REF, min_identity=95.0, min_length=4_000)
@@ -51,20 +46,35 @@ class TestScan:
 @SKIP_REFS
 class TestScanAll:
     def test_pek499_finds_isecp1(self):
-        pek499 = DATA / "reference_plasmids" / "pEK499.fasta"
-        if not pek499.exists():
-            pytest.skip("pEK499 fasta not present")
+        pek499 = DATA / "pEK499.fasta"
         hits = scan_all(pek499)
         isecp1 = [h for h in hits if h.name == "ISEcp1"]
         # pEK499 is known to carry multiple ISEcp1 copies (ISEScan misses them)
         assert len(isecp1) >= 1
 
     def test_no_spurious_acinetobacter_on_ecoli(self):
-        pek499 = DATA / "reference_plasmids" / "pEK499.fasta"
-        if not pek499.exists():
-            pytest.skip("pEK499 fasta not present")
+        pek499 = DATA / "pEK499.fasta"
         hits = scan_all(pek499)
         acineto = [h for h in hits if h.family.startswith("Tn60")]
         # With tightened thresholds, shared Tn3 backbones should not
         # appear as Acinetobacter island calls in E. coli plasmids
         assert acineto == []
+
+    def test_validated_profile_is_deterministic_with_concurrent_workers(self):
+        query = Path(__file__).parent / "test-data" / "partridge-examples" / "Tn1-Tn2-Tn3.fasta"
+        serial = scan_all(query, profile="validated", threads=1)
+        concurrent = scan_all(query, profile="validated", threads=4)
+
+        def signature(features):
+            return [
+                (
+                    feature.attributes.get("seqid"),
+                    feature.name,
+                    feature.start,
+                    feature.end,
+                    feature.strand,
+                )
+                for feature in features
+            ]
+
+        assert signature(concurrent) == signature(serial)

@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-import pytest
 from Bio import SeqIO
 
 from matryoshka.boundaries import confirm_boundaries
@@ -10,18 +9,12 @@ from matryoshka.detect import parse_amrfinder, parse_isescan
 from matryoshka.hierarchy import build_hierarchy
 from matryoshka.transposon import infer_tn1999
 
-DATA = Path(__file__).parent.parent / "data"
-ISESCAN_TSV  = DATA / "isescan_test/reference_plasmids/pOXA-48a.fasta.tsv"
-AMRFINDER_TSV = DATA / "amrfinder_test/pOXA-48a.tsv"
-FASTA = DATA / "reference_plasmids/pOXA-48a.fasta"
-
-SKIP = pytest.mark.skipif(
-    not (ISESCAN_TSV.exists() and AMRFINDER_TSV.exists() and FASTA.exists()),
-    reason="pOXA-48a test data not present",
-)
+DATA = Path(__file__).parent / "test-data"
+ISESCAN_TSV = DATA / "detector-output" / "pOXA-48a.isescan.tsv"
+AMRFINDER_TSV = DATA / "detector-output" / "pOXA-48a.amrfinder.tsv"
+FASTA = DATA / "acceptance" / "pOXA-48a.fasta"
 
 
-@SKIP
 class TestInferTn1999:
     def _feats(self):
         return parse_isescan(ISESCAN_TSV) + parse_amrfinder(AMRFINDER_TSV)
@@ -54,7 +47,6 @@ class TestInferTn1999:
         assert len(is4_children) == 2
 
 
-@SKIP
 class TestTn1999TSD:
     def test_5bp_tsd_found(self):
         feats = parse_isescan(ISESCAN_TSV) + parse_amrfinder(AMRFINDER_TSV)

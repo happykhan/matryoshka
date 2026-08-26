@@ -1,18 +1,19 @@
 [workspace]
 name = "matryoshka"
-version = "0.1.0"
+version = "0.1.0a1"
 description = "Nested MGE detection and annotation for complete bacterial genomes"
 channels = ["conda-forge", "bioconda"]
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64", "osx-64"]
 
 [tasks]
 run = "python -m matryoshka"
 test = "pytest tests/"
 fetch-refs = "python scripts/fetch_references.py"
+smoke = "matryoshka run tests/test-data/partridge-examples/Tn1-Tn2-Tn3.fasta --out smoke-output"
 
 [dependencies]
 # Core: Python 3.11+ for main code (wolvercote needs >=3.10)
-python = ">=3.11"
+python = ">=3.11,<3.14"
 biopython = ">=1.83"
 pandas = ">=2.0"
 pyyaml = ">=6.0"
@@ -24,26 +25,25 @@ blast = ">=2.15"
 scikit-learn = ">=1.4"
 
 [pypi-dependencies]
-wolvercote = { path = "../cell-format/python", editable = true }
 matryoshka = { path = ".", editable = true }
 
 # ── Detection tool environments ──────────────────────────────────────────────
 # Each runs as a subprocess; they live in isolated environments.
 # wolvercote NOT included — these only need the tool executables.
 
-[feature.isescan.dependencies]
+[feature.isescan.target.linux-64.dependencies]
 python = ">=3.9"
 isescan = ">=1.7.2"
 
-[feature.integron.dependencies]
+[feature.integron.target.linux-64.dependencies]
 python = ">=3.9,<=3.10"
 biopython = "==1.78"
 integron_finder = ">=2.0"
 
-[feature.amrfinder.dependencies]
+[feature.amrfinder.target.linux-64.dependencies]
 ncbi-amrfinderplus = ">=4.0"
 
-[feature.mobsuite.dependencies]
+[feature.mobsuite.target.linux-64.dependencies]
 python = ">=3.9,<=3.10"
 mob_suite = ">=3.1"
 

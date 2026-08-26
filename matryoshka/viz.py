@@ -300,7 +300,7 @@ def to_linear_svg(roots: list[MGEFeature], seq_len: int,
 
     # ── Vertical layout ───────────────────────────────────────────────────────
     backbone_y = TITLE_H + SCALEBAR_H + BACKBONE_BELOW_SCALE
-    cursor = backbone_y + 10
+    cursor: float = backbone_y + 10
 
     compound_rows: list[tuple[float, float, MGEFeature]] = []
     for f in compounds:
