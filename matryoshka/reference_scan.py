@@ -1149,7 +1149,11 @@ def _dedupe_component_features(features: list[MGEFeature]) -> list[MGEFeature]:
             coverage = float(alternative.attributes.get("blast_coverage", 0))
             profile_score = identity * coverage / 100.0
             current = matches_by_type.get(type_name)
-            if current is not None and float(current["profile_score"]) >= profile_score:
+            current_score = current.get("profile_score") if current is not None else None
+            if (
+                isinstance(current_score, (int, float))
+                and current_score >= profile_score
+            ):
                 continue
             matches_by_type[type_name] = {
                 "type": type_name,
