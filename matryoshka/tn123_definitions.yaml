@@ -11,12 +11,12 @@ sources:
     citation: Partridge and Hall 2005, Evolution of Transposons Containing blaTEM Genes
     file: Partridge_Tn1-2-3_2005.pdf
     scope: Tn1, Tn2 and Tn3 mosaic structure and sequence differences around res
-  - id: sally_tn123_working_document
-    citation: Sally Partridge, Sequences to use for Tn1, Tn2 and Tn3
+  - id: expert_tn123_working_document
+    citation: Expert-reviewed working document, Sequences to use for Tn1, Tn2 and Tn3
     file: Tn1_Tn2_Tn3.docx
     scope: canonical accessions, named variants and sequences to avoid as canonical exemplars
-  - id: sally_feedback
-    citation: Sally Partridge comments on the Matryoshka demonstration
+  - id: expert_feedback
+    citation: Expert review comments on the Matryoshka demonstration
     file: matryoshka_demo_SP_comments.pdf
     scope: fragment boundaries, complete-feature precedence and pEK499 Tn2 fragments
 
@@ -137,7 +137,7 @@ types:
   Tn1:
     display_name: Tn1
     expert_description: >-
-      Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the
+      Canonical Tn1 uses the expert-reviewed NC_008357 sequence. It has the
       complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local blaTEM,
       tnpR, res and tnpA profiles define the Tn1 component signature. Exact
       Tn1 additionally requires a gap-free, mismatch-free match to this
@@ -145,7 +145,7 @@ types:
     canonical_reference: Tn1_NC_008357
     source_accession: NC_008357
     bla_allele: blaTEM-2
-    sources: [sally_tn123_working_document, partridge_2005]
+    sources: [expert_tn123_working_document, partridge_2005]
     components:
       - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
       - {role: blaTEM, name: blaTEM-2, element_type: AMR, start: 148, end: 1008, strand: "-"}
@@ -156,8 +156,8 @@ types:
   Tn2:
     display_name: Tn2
     expert_description: >-
-      Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the
-      2005 paper and selected as Tn2 in her working document. It has the
+      Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as
+      Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the
       complete group grammar and carries blaTEM-1b. Its local component
       profiles, particularly the diagnostic sequence around res, distinguish
       a Tn2-like candidate from Tn1 and Tn3 without requiring a whole-element
@@ -165,7 +165,7 @@ types:
     canonical_reference: Tn2_AY123253
     source_accession: AY123253
     bla_allele: blaTEM-1b
-    sources: [sally_tn123_working_document, partridge_2005]
+    sources: [expert_tn123_working_document, partridge_2005]
     components:
       - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
       - {role: blaTEM, name: blaTEM-1b, element_type: AMR, start: 148, end: 1008, strand: "-"}
@@ -176,7 +176,7 @@ types:
   Tn3:
     display_name: Tn3
     expert_description: >-
-      Canonical Tn3 uses HM749966, the sequence Sally selected in preference
+      Canonical Tn3 uses HM749966, selected during expert review in preference
       to the older V00613 record. It has the complete group grammar and
       carries blaTEM-1a. The combined local component profiles, not blaTEM
       protein identity or gene order alone, distinguish a Tn3-like candidate
@@ -184,7 +184,7 @@ types:
     canonical_reference: Tn3_HM749966
     source_accession: HM749966
     bla_allele: blaTEM-1a
-    sources: [sally_tn123_working_document, partridge_2005]
+    sources: [expert_tn123_working_document, partridge_2005]
     components:
       - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
       - {role: blaTEM, name: blaTEM-1a, element_type: AMR, start: 148, end: 1008, strand: "-"}
@@ -201,7 +201,7 @@ definitions:
     source_accession: NC_008357
     reference_kind: canonical
     component_reference: true
-    review_status: Sally-selected canonical sequence
+    review_status: expert-selected canonical sequence
     expert_rule: Exact, complete, gap-free match to NC_008357 plus complete component grammar.
   Tn2_AY123253:
     display_name: Tn2
@@ -210,7 +210,7 @@ definitions:
     source_accession: AY123253
     reference_kind: canonical
     component_reference: true
-    review_status: Sally-selected canonical sequence
+    review_status: expert-selected canonical sequence
     expert_rule: Exact, complete, gap-free match to AY123253 plus complete component grammar.
   Tn3_HM749966:
     display_name: Tn3
@@ -219,7 +219,7 @@ definitions:
     source_accession: HM749966
     reference_kind: canonical
     component_reference: true
-    review_status: Sally-selected canonical sequence
+    review_status: expert-selected canonical sequence
     expert_rule: Exact, complete, gap-free match to HM749966 plus complete component grammar.
   Tn2c_HM749967:
     display_name: Tn2c
@@ -229,7 +229,7 @@ definitions:
     reference_kind: reviewed_subtype_candidate
     component_reference: true
     bla_allele: blaTEM-1c
-    review_status: Sally called this Tn2c in MARA and marked it for later addition
+    review_status: Expert-reviewed Tn2c candidate retained for later validation
     expert_rule: >-
       Exact, complete, gap-free match to the 4950 bp Tn2 interval in HM749967.
       It retains the Tn2 grammar but carries the blaTEM-1c sequence and nine
@@ -244,7 +244,7 @@ definitions:
     source_accession: CP028717
     reference_kind: reviewed_subtype_candidate
     component_reference: false
-    review_status: Sally described this as Tn2 with an inserted ISEcp1 TPU
+    review_status: Expert-reviewed Tn2 with an inserted ISEcp1 TPU
     expert_rule: >-
       Exact match to the 8979 bp interrupted Tn2 structure extracted from
       CP028717. The Tn2 backbone is complete, including both terminal IRs,
@@ -263,7 +263,7 @@ definitions:
     source_accession: GQ160960
     reference_kind: reviewed_subtype_candidate
     component_reference: false
-    review_status: Sally said to ignore this as the canonical Tn1 because it contains Tn5036-like
+    review_status: Excluded as canonical Tn1 because it contains a Tn5036-like insertion
     expert_rule: >-
       Exact match to the 10491 bp interrupted Tn1 structure in GQ160960.
       The outer Tn1 grammar is complete, while a defective 5537 bp
@@ -281,7 +281,7 @@ definitions:
     source_accession: V00613
     reference_kind: reviewed_subtype_candidate
     component_reference: false
-    review_status: Sally noted the 9 bp duplication and preferred HM749966 as canonical
+    review_status: Expert review noted the 9 bp duplication and retained HM749966 as canonical
     expert_rule: >-
       Exact match to V00613 is Tn3 with the declared 9 bp duplication. It is
       a recognised Tn3 sequence variant, not an exact match to canonical

@@ -3,8 +3,8 @@
   "profile": "validated",
   "records": 1,
   "features": 17,
-  "mara_loci": 6,
-  "mara_locus_outputs": [
+  "locus_views": 6,
+  "locus_outputs": [
     {
       "record": "EU935739.1",
       "call": "Tn1/2/3 fragment",
@@ -14,8 +14,8 @@
       "end": 40671,
       "view_start": 33747,
       "view_end": 45671,
-      "mara": "mara/EU935739.1__Tn1-2-3_fragment__38747-40671.svg",
-      "mara_table": "mara-table/EU935739.1__Tn1-2-3_fragment__38747-40671.svg",
+      "locus_map": "locus-map/EU935739.1__Tn1-2-3_fragment__38747-40671.svg",
+      "locus_table": "locus-table/EU935739.1__Tn1-2-3_fragment__38747-40671.svg",
       "hierarchy": "hierarchy/EU935739.1.svg"
     },
     {
@@ -27,8 +27,8 @@
       "end": 50512,
       "view_start": 41849,
       "view_end": 55512,
-      "mara": "mara/EU935739.1__Tn5403-like__46849-50512.svg",
-      "mara_table": "mara-table/EU935739.1__Tn5403-like__46849-50512.svg",
+      "locus_map": "locus-map/EU935739.1__Tn5403-like__46849-50512.svg",
+      "locus_table": "locus-table/EU935739.1__Tn5403-like__46849-50512.svg",
       "hierarchy": "hierarchy/EU935739.1.svg"
     },
     {
@@ -40,8 +40,8 @@
       "end": 51256,
       "view_start": 45511,
       "view_end": 56256,
-      "mara": "mara/EU935739.1__Tn1722_fragment__50511-51256.svg",
-      "mara_table": "mara-table/EU935739.1__Tn1722_fragment__50511-51256.svg",
+      "locus_map": "locus-map/EU935739.1__Tn1722_fragment__50511-51256.svg",
+      "locus_table": "locus-table/EU935739.1__Tn1722_fragment__50511-51256.svg",
       "hierarchy": "hierarchy/EU935739.1.svg"
     },
     {
@@ -53,8 +53,8 @@
       "end": 56492,
       "view_start": 49940,
       "view_end": 61492,
-      "mara": "mara/EU935739.1__Tn1722_fragment__54940-56492.svg",
-      "mara_table": "mara-table/EU935739.1__Tn1722_fragment__54940-56492.svg",
+      "locus_map": "locus-map/EU935739.1__Tn1722_fragment__54940-56492.svg",
+      "locus_table": "locus-table/EU935739.1__Tn1722_fragment__54940-56492.svg",
       "hierarchy": "hierarchy/EU935739.1.svg"
     },
     {
@@ -66,8 +66,8 @@
       "end": 62561,
       "view_start": 55316,
       "view_end": 67561,
-      "mara": "mara/EU935739.1__Tn1-2-3_fragment__60316-62561.svg",
-      "mara_table": "mara-table/EU935739.1__Tn1-2-3_fragment__60316-62561.svg",
+      "locus_map": "locus-map/EU935739.1__Tn1-2-3_fragment__60316-62561.svg",
+      "locus_table": "locus-table/EU935739.1__Tn1-2-3_fragment__60316-62561.svg",
       "hierarchy": "hierarchy/EU935739.1.svg"
     },
     {
@@ -79,8 +79,8 @@
       "end": 69821,
       "view_start": 60365,
       "view_end": 74821,
-      "mara": "mara/EU935739.1__class_1_integron_candidate__65365-69821.svg",
-      "mara_table": "mara-table/EU935739.1__class_1_integron_candidate__65365-69821.svg",
+      "locus_map": "locus-map/EU935739.1__class_1_integron_candidate__65365-69821.svg",
+      "locus_table": "locus-table/EU935739.1__class_1_integron_candidate__65365-69821.svg",
       "hierarchy": "hierarchy/EU935739.1.svg"
     }
   ],
@@ -90,8 +90,8 @@
     "annotation_gff3": "annotation.gff3",
     "annotation_cell": "annotation.cell",
     "hierarchy_directory": "hierarchy",
-    "mara_directory": "mara",
-    "mara_table_directory": "mara-table",
+    "locus_map_directory": "locus-map",
+    "locus_table_directory": "locus-table",
     "proof_json": "proof/proof.json",
     "proof_report": "proof/report.html",
     "component_ledger": "proof/components.tsv",

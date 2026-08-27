@@ -258,8 +258,8 @@
             }
           ],
           "outputs": {
-            "mara": "mara/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
-            "mara_table": "mara-table/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+            "locus_map": "locus-map/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+            "locus_table": "locus-table/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
             "hierarchy": "hierarchy/arbitrary_demo_contig.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
@@ -520,8 +520,8 @@
             }
           ],
           "outputs": {
-            "mara": "mara/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
-            "mara_table": "mara-table/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+            "locus_map": "locus-map/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+            "locus_table": "locus-table/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
             "hierarchy": "hierarchy/arbitrary_demo_contig.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
@@ -773,8 +773,8 @@
             }
           ],
           "outputs": {
-            "mara": "mara/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
-            "mara_table": "mara-table/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
+            "locus_map": "locus-map/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
+            "locus_table": "locus-table/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
             "hierarchy": "hierarchy/arbitrary_demo_contig.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",

@@ -974,7 +974,7 @@ def _scan_collinear_unit_hits(
             best,
             meta.get(best.sseqid, {"_id": best.sseqid}),
         ))
-    # Sally's annotation order gives an exact complete unit priority over a
+    # expert review annotation order gives an exact complete unit priority over a
     # competing terminal fragment from a related reference. This matters for
     # Tn1721, whose partial duplication can otherwise produce an extra Tn1722
     # fragment at the end of the same complete locus.
@@ -1287,24 +1287,24 @@ REFERENCE_PARAMS: dict[str, dict] = {
     "integron_archetypes.fasta":{"min_identity": 90.0, "min_length": 2_000},
     "gi_sul2.fasta":            {"min_identity": 95.0, "min_length": 5_000},
     "isecp1.fasta":             {"min_identity": 90.0, "min_length": 1_000},
-    "mara_isecp1_tpu.fasta":   {"min_identity": 98.0, "min_length": 1_000,
+    "locus_isecp1_tpu.fasta":   {"min_identity": 98.0, "min_length": 1_000,
                                  "min_subject_coverage": 70.0,
                                  "pick_best_variant": True,
                                  "prefer_identity": True},
-    "mara_exact_is.fasta":      {"min_identity": 98.0, "min_length": 500},
-    "mara_integron_segments.fasta": {"min_identity": 98.0, "min_length": 200},
-    "mara_integron_ends.fasta": {"min_identity": 100.0, "min_length": 25,
+    "locus_exact_is.fasta":      {"min_identity": 98.0, "min_length": 500},
+    "locus_integron_segments.fasta": {"min_identity": 98.0, "min_length": 200},
+    "locus_integron_ends.fasta": {"min_identity": 100.0, "min_length": 25,
                                   "evalue": 10.0},
-    "mara_integron_tni.fasta": {"min_identity": 98.0, "min_length": 500,
+    "locus_integron_tni.fasta": {"min_identity": 98.0, "min_length": 500,
                                  "assemble_collinear": True},
-    "mara_partridge_units.fasta": {
+    "reviewed_units.fasta": {
         "min_identity": 95.0,
         "min_length": 500,
         "assemble_collinear": True,
     },
     "tn7.fasta":                {"min_identity": 90.0, "min_length": 3_000},
     "tn552.fasta":              {"min_identity": 95.0, "min_length": 2_000},
-    # Canonical references selected by Sally Partridge. A lower length
+    # Canonical references selected during expert review. A lower length
     # threshold permits fragment reporting, but only near-complete hits are
     # assigned an exact Tn name.
     "tn1_tn2_tn3.fasta": {
@@ -1351,18 +1351,18 @@ REFERENCE_PARAMS: dict[str, dict] = {
 }
 
 
-# The public alpha defaults to references validated against Sally Partridge's
-# supplied examples. Broader historical/experimental references remain
+# The public alpha defaults to references validated against expert-reviewed
+# examples. Broader historical/experimental references remain
 # available only through the explicit ``all`` profile.
 VALIDATED_REFERENCE_FILES = frozenset({
     "integron_archetypes.fasta",
     "isecp1.fasta",
-    "mara_exact_is.fasta",
-    "mara_integron_ends.fasta",
-    "mara_integron_segments.fasta",
-    "mara_integron_tni.fasta",
-    "mara_isecp1_tpu.fasta",
-    "mara_partridge_units.fasta",
+    "locus_exact_is.fasta",
+    "locus_integron_ends.fasta",
+    "locus_integron_segments.fasta",
+    "locus_integron_tni.fasta",
+    "locus_isecp1_tpu.fasta",
+    "reviewed_units.fasta",
     "tn21.fasta",
     "tn1_tn2_tn3.fasta",
 })

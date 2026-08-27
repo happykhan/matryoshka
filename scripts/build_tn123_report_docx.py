@@ -315,7 +315,7 @@ def add_cover(doc: Document) -> None:
     p = doc.add_paragraph(style="Title")
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.add_run("Automated detection and visualisation\nof Tn1, Tn2 and Tn3")
-    add_para(doc, "Expert rules, real-accession validation, MARA-style locus maps,\nMARA tables and hierarchical outputs",
+    add_para(doc, "Expert rules, real-accession validation, locus maps,\nlocus tables and hierarchical outputs",
              size=13, color=MUTED, after=28, align=WD_ALIGN_PARAGRAPH.CENTER)
     add_table(
         doc,
@@ -327,7 +327,7 @@ def add_cover(doc: Document) -> None:
     add_para(doc, "Purpose", size=12, bold=True, color=NAVY, before=16, after=5)
     add_para(doc, "This document is the reviewable evidence package: it explains what is run, how the biological rules are specified, and what the program produced from the reviewed accession sequences. The actual figures and tables are embedded in the report.", size=11, after=10)
     add_para(doc, "Scope statement", size=12, bold=True, color=NAVY, before=10, after=5)
-    add_para(doc, "The validated scope is Tn1, Tn2, Tn3 and the reviewed close definitions listed here. It is not yet an exhaustive replacement for expert MARA annotation across every mobile-element family.", size=11)
+    add_para(doc, "The validated scope is Tn1, Tn2, Tn3 and the reviewed close definitions listed here. It is not yet an exhaustive replacement for expert mobile-element annotation across every family.", size=11)
 
 
 def add_contents(doc: Document) -> None:
@@ -339,7 +339,7 @@ def add_contents(doc: Document) -> None:
         ["3", "Expert-rule architecture", "Human-readable YAML, schema validation and extension workflow"],
         ["4", "Worked Tn1 definition", "Grammar, thresholds, exact naming and variants"],
         ["5", "Validation design", "Real positive controls, natural fragments, variants and negative controls"],
-        ["6", "Real-accession evidence", "MARA map, MARA table, hierarchy and component ledger for every reviewed definition"],
+        ["6", "Real-accession evidence", "locus map, locus table, hierarchy and component ledger for every reviewed definition"],
         ["7", "Arbitrary-sequence demonstration", "Three distinct loci recovered from one 44.6 kb contig"],
         ["8", "Limitations and next work", "What is proven, what remains expert review, and what is not claimed"],
     ]
@@ -350,7 +350,7 @@ def add_contents(doc: Document) -> None:
         "An arbitrary multi-FASTA input can be scanned without pre-existing annotations.",
         "Tn1/Tn2/Tn3 components are detected independently and assembled using an explicit component grammar.",
         "A complete locus is classified from its component grammar and weighted local component profiles; a whole-element comparison is secondary confirmation.",
-        "Every result can be inspected as a MARA-style map, a MARA table, the original hierarchy view, JSON, GFF3 and CellGen format.",
+        "Every result can be inspected as a locus map, a locus table, the original hierarchy view, JSON, GFF3 and CellGen format.",
         "The seven reviewed accession definitions produce complete component grammars and exact declared calls; pEK499 produces two retained partial Tn2-like fragments rather than an invented complete Tn2.",
     ):
         add_bullet(doc, text)
@@ -369,7 +369,7 @@ def add_tool_explanation(doc: Document) -> None:
         ["3", "Assemble loci", "Group nearby features and test the required order and orientation on either strand."],
         ["4", "Classify by expert rules", "Score the detected component profiles and assign a type only when the declared threshold and margin are met."],
         ["5", "Compare references", "Optionally confirm an exact reviewed definition and record secondary closest-reference context."],
-        ["6", "Write outputs", "JSON, GFF3, CellGen, hierarchy SVG, MARA map, MARA table and proof ledger."],
+        ["6", "Write outputs", "JSON, GFF3, CellGen, hierarchy SVG, locus map, locus table and proof ledger."],
     ]
     add_table(doc, ["Stage", "Operation", "Why it matters"], steps,
               [700, 2100, 5660], font_size=9.2)
@@ -401,7 +401,7 @@ def add_run_details(doc: Document) -> None:
     add_heading(doc, "Reproducible commands", 2)
     add_code(doc, "# Prove discovery without complete-element lookup\nmatryoshka run arbitrary-demo.fasta --out results/component-only \\\n  --profile tn123-components --detectors none\n\n# Seven reviewed definitions with secondary exact confirmation\nmatryoshka run matryoshka/references/tn1_tn2_tn3.fasta \\\n  --out results/tn123-reviewed --detectors none\n\n# Export the rules for expert review\nmatryoshka definitions --format markdown --out tn123-definitions-review.md")
     add_para(doc, "Reproducibility metadata", size=11.5, bold=True, color=NAVY, before=8, after=4)
-    add_para(doc, "Each result directory includes run.json, the software and definition versions, reference profile, detector selection, input checksum, runtime parameters and a direct index of every MARA map/table pair.")
+    add_para(doc, "Each result directory includes run.json, the software and definition versions, reference profile, detector selection, input checksum, runtime parameters and a direct index of every locus map/table pair.")
 
 
 def add_rules(doc: Document) -> None:
@@ -511,17 +511,17 @@ def add_accession_results(doc: Document, temp_dir: Path) -> None:
             locus["verdict"],
         ]], [2300, 1500, 2100, 3000, 2600, 800], font_size=8.4, green_last=True)
         add_para(doc, match["expert_rule"], size=9.0, color=MUTED, after=4)
-        figure_label(doc, f"MARA-style locus map generated from the detected and assembled features for {record_id}.")
-        add_svg(doc, REVIEWED / locus["outputs"]["mara"], temp_dir, width=9.25,
-                title=f"{locus['call']} MARA locus map",
-                description=f"MARA-style locus map for accession {match['source_accession']} with detected components and legend.")
+        figure_label(doc, f"locus map generated from the detected and assembled features for {record_id}.")
+        add_svg(doc, REVIEWED / locus["outputs"]["locus_map"], temp_dir, width=9.25,
+                title=f"{locus['call']} locus maps",
+                description=f"locus map for accession {match['source_accession']} with detected components and legend.")
         if record_id == "Tn2_1_CP028717":
             new_section(doc, landscape=True)
-            add_heading(doc, "6.5 Continued — Tn2.1 MARA feature table", 1)
-        figure_label(doc, "MARA table generated from the same call and evidence ledger.")
-        add_svg(doc, REVIEWED / locus["outputs"]["mara_table"], temp_dir, width=9.25,
-                title=f"{locus['call']} MARA table",
-                description=f"MARA-style feature table for accession {match['source_accession']}.")
+            add_heading(doc, "6.5 Continued — Tn2.1 locus table", 1)
+        figure_label(doc, "locus table generated from the same call and evidence ledger.")
+        add_svg(doc, REVIEWED / locus["outputs"]["locus_table"], temp_dir, width=9.25,
+                title=f"{locus['call']} locus table",
+                description=f"locus feature table for accession {match['source_accession']}.")
 
         new_section(doc, landscape=True)
         add_heading(doc, f"6.{number} Evidence detail — {locus['call']} ({match['source_accession']})", 1)
@@ -541,12 +541,12 @@ def add_accession_results(doc: Document, temp_dir: Path) -> None:
             new_section(doc, landscape=True)
             add_heading(doc, "6.5 Nested locus — ISEcp1-associated insertion", 1)
             add_para(doc, "The interrupted Tn2.1 definition contains a separately indexed ISEcp1-associated locus. It is drawn independently as well as inside the whole Tn2.1 view.")
-            add_svg(doc, REVIEWED / "mara" / nested_stem, temp_dir, width=9.25,
+            add_svg(doc, REVIEWED / "locus-map" / nested_stem, temp_dir, width=9.25,
                     title="Tn2.1 nested ISEcp1-associated insertion",
-                    description="MARA-style map of the separately indexed ISEcp1-associated insertion within Tn2.1.")
-            add_svg(doc, REVIEWED / "mara-table" / nested_stem, temp_dir, width=9.25,
+                    description="locus map of the separately indexed ISEcp1-associated insertion within Tn2.1.")
+            add_svg(doc, REVIEWED / "locus-table" / nested_stem, temp_dir, width=9.25,
                     title="Tn2.1 nested ISEcp1-associated insertion table",
-                    description="MARA-style feature table for the separately indexed ISEcp1-associated insertion within Tn2.1.")
+                    description="locus feature table for the separately indexed ISEcp1-associated insertion within Tn2.1.")
 
 
 def add_partial_results(doc: Document, temp_dir: Path) -> None:
@@ -574,14 +574,14 @@ def add_partial_results(doc: Document, temp_dir: Path) -> None:
         new_section(doc, landscape=True)
         add_heading(doc, f"7.{index} pEK499 fragment {locus['start']:,}–{locus['end']:,}", 1)
         add_para(doc, f"Observed call: {locus['call']}; closest reviewed type: {match['best_match']}; identity {match['whole_locus_identity']:.1f}%; reference coverage {match['whole_locus_coverage']:.2f}%; proof verdict {locus['verdict']}.", size=10.0)
-        figure_label(doc, "MARA-style locus map. Missing element ends/components remain visibly absent.")
-        add_svg(doc, PEK499 / locus["outputs"]["mara"], temp_dir, width=9.25,
+        figure_label(doc, "locus map. Missing element ends/components remain visibly absent.")
+        add_svg(doc, PEK499 / locus["outputs"]["locus_map"], temp_dir, width=9.25,
                 title="pEK499 partial Tn1/Tn2/Tn3 locus map",
-                description=f"MARA-style partial-fragment map at pEK499 coordinates {locus['start']} to {locus['end']}.")
-        figure_label(doc, "MARA table for the partial call. The partial status and incomplete grammar are explicit.")
-        add_svg(doc, PEK499 / locus["outputs"]["mara_table"], temp_dir, width=9.25,
+                description=f"locus partial-fragment map at pEK499 coordinates {locus['start']} to {locus['end']}.")
+        figure_label(doc, "locus table for the partial call. The partial status and incomplete grammar are explicit.")
+        add_svg(doc, PEK499 / locus["outputs"]["locus_table"], temp_dir, width=9.25,
                 title="pEK499 partial Tn1/Tn2/Tn3 table",
-                description=f"MARA table for the pEK499 fragment at {locus['start']} to {locus['end']}.")
+                description=f"locus table for the pEK499 fragment at {locus['start']} to {locus['end']}.")
 
 
 def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
@@ -614,12 +614,12 @@ def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
         match = locus["known_element_match"]
         add_para(doc, f"The component grammar is complete and the expert component-profile rules assign {match.get('rule_based_type_call')}. No complete Tn1/Tn2/Tn3 reference comparison was run; the visible call is {locus['call']}. Insertions and other structural differences are retained from split component alignments and shown in the map/table.")
         figure_width = 8.65 if locus["call"] == "Tn2-like" else 9.25
-        add_svg(doc, ARBITRARY / locus["outputs"]["mara"], temp_dir, width=figure_width,
-                title=f"Arbitrary contig {locus['call']} MARA map",
-                description=f"MARA-style map of the detected {locus['call']} locus on the arbitrary contig.")
-        add_svg(doc, ARBITRARY / locus["outputs"]["mara_table"], temp_dir, width=figure_width,
-                title=f"Arbitrary contig {locus['call']} MARA table",
-                description=f"MARA-style evidence table for the detected {locus['call']} locus.")
+        add_svg(doc, ARBITRARY / locus["outputs"]["locus_map"], temp_dir, width=figure_width,
+                title=f"Arbitrary contig {locus['call']} locus map",
+                description=f"locus map of the detected {locus['call']} locus on the arbitrary contig.")
+        add_svg(doc, ARBITRARY / locus["outputs"]["locus_table"], temp_dir, width=figure_width,
+                title=f"Arbitrary contig {locus['call']} locus table",
+                description=f"locus evidence table for the detected {locus['call']} locus.")
 
 
 def add_outputs_and_limits(doc: Document) -> None:
@@ -630,8 +630,8 @@ def add_outputs_and_limits(doc: Document) -> None:
         ["annotation.gff3", "Interoperable genomic feature annotation."],
         ["annotation.cell", "Original nested CellGen/Wolvercote representation."],
         ["hierarchy/*.svg", "Original scale-accurate parent-child view of the record."],
-        ["mara/*.svg", "Readable locus-centred MARA-style map with its own legend/key."],
-        ["mara-table/*.svg", "MARA-style feature/evidence table for the same locus."],
+        ["locus-map/*.svg", "Readable locus-centred locus map with its own legend/key."],
+        ["locus-table/*.svg", "locus feature/evidence table for the same locus."],
         ["proof/report.html", "Linked human-readable evidence report."],
         ["proof/proof.json; components.tsv; matches.tsv", "Machine-checkable component-to-call ledger."],
         ["run.json", "Run metadata plus direct paths to every generated locus map and table."],
@@ -641,11 +641,11 @@ def add_outputs_and_limits(doc: Document) -> None:
     add_para(doc, "The CellGen line carries the same nesting as the hierarchy graphic: the six components are children of Tn1, which belongs to the input record.")
     add_heading(doc, "How to read the figures", 2)
     for text in (
-        "The MARA locus map prioritises biological readability around one locus.",
-        "The MARA table is the feature-by-feature description, including evidence and call qualification.",
+        "The locus maps prioritises biological readability around one locus.",
+        "The locus table is the feature-by-feature description, including evidence and call qualification.",
         "The hierarchy view preserves scale and parent-child nesting across the whole record.",
         "The proof ledger separates sequence-detected required components from context added from a reviewed subtype definition.",
-        "The legend/key is embedded in every MARA map and table so the symbols are interpretable without prior MARA experience.",
+        "The legend/key is embedded in every locus map and table so the symbols are interpretable without prior experience of the notation.",
     ):
         add_bullet(doc, text)
 
@@ -655,14 +655,14 @@ def add_outputs_and_limits(doc: Document) -> None:
     add_para(doc, "What is not yet proven", size=11.5, bold=True, color=NAVY, before=8, after=4)
     for text in (
         "Population-level sensitivity and specificity across a large independent accession panel.",
-        "Exhaustive subtype coverage or complete parity with every component and compound element described across all MARA papers.",
+        "Exhaustive subtype coverage or complete parity with every component and compound element described across the source literature.",
         "Assigning a new formal element name to a previously undescribed structure without expert review; novel candidates within the defined family are deliberately reported as type-like.",
         "Target-site duplication evidence when the input sequence ends exactly at the element boundary or lacks sufficient flank.",
         "Consistent optional-detector availability on every installation; the built-in validated scan is the portable core.",
     ):
         add_bullet(doc, text)
     add_para(doc, "Recommended next validation", size=11.5, bold=True, color=NAVY, before=8, after=4)
-    add_para(doc, "Have Sally review the human-readable definitions and the embedded figures; freeze accepted naming decisions; then evaluate a blinded accession set containing true Tn1/Tn2/Tn3 examples, close variants, fragmented assemblies and related Tn3-family elements. Report locus-level precision/recall, boundary error and exact-versus-qualified naming accuracy.")
+    add_para(doc, "Have a domain expert review the human-readable definitions and embedded figures; freeze accepted naming decisions; then evaluate a blinded accession set containing true Tn1/Tn2/Tn3 examples, close variants, fragmented assemblies and related Tn3-family elements. Report locus-level precision/recall, boundary error and exact-versus-qualified naming accuracy.")
     add_heading(doc, "Expert decisions still requested", 2)
     for text in (
         "Confirm whether HM749967 should be displayed as Tn2c.",
@@ -697,7 +697,7 @@ def build() -> None:
     doc.core_properties.title = "Automated detection and visualisation of Tn1, Tn2 and Tn3"
     doc.core_properties.subject = "Expert-rule architecture and accession-level evidence report"
     doc.core_properties.author = "Matryoshka project"
-    doc.core_properties.keywords = "Tn1, Tn2, Tn3, MARA, mobile genetic elements, validation"
+    doc.core_properties.keywords = "Tn1, Tn2, Tn3, locus maps, mobile genetic elements, validation"
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     doc.save(OUTPUT)
     print(OUTPUT)

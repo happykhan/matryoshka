@@ -4,7 +4,7 @@ Matryoshka CLI — detect and annotate nested MGEs in bacterial genomes.
 Usage:
     matryoshka annotate <fasta> [--isescan <tsv>] [--amrfinder <tsv>]
                                 [--integrons <file>]
-                                [--format gff3|json|wolvercote|linear|mara|mara-table]
+                                [--format gff3|json|wolvercote|linear|locus-map|locus-table]
                                 [--out <path>]
 """
 
@@ -23,6 +23,7 @@ from Bio import SeqIO
 from .boundaries import confirm_boundaries
 from .component_catalog import catalog_as_json, catalog_as_tsv
 from .confidence import assign_confidence
+from .curated_units import annotate_curated_units
 from .detect import (
     MGEFeature,
     detector_available,
@@ -40,11 +41,10 @@ from .element_definitions import (
 )
 from .hierarchy import build_hierarchy
 from .integron_structures import infer_integron_structures
-from .mara_loci import extract_mara_loci
-from .mara_table import to_mara_table_svg
-from .mara_viz import to_mara_svg
+from .locus_map import to_locus_map_svg
+from .locus_table import to_locus_table_svg
+from .locus_views import extract_locus_views
 from .output import to_genbank, to_gff3, to_json, to_wolvercote
-from .partridge_units import annotate_partridge_units
 from .proof import build_tn123_proof, write_proof_bundle
 from .reference_scan import REFERENCE_PROFILES, blast_available, scan_all
 from .report import annotation_document, annotation_gff3, count_features
@@ -75,7 +75,7 @@ def cli() -> None:
 )
 @click.option("--out", "-o", default="-", help="Output file (default: stdout).")
 def catalog(fmt: str, out: str) -> None:
-    """List the MARA raw components and compound assembly grammar."""
+    """List the raw components and compound assembly grammar."""
     data = catalog_as_json() if fmt == "json" else catalog_as_tsv()
     _emit(data, out, False)
 
@@ -166,7 +166,7 @@ def _suppress_redundant_inference(features: list[MGEFeature]) -> list[MGEFeature
         )
 
     def _reference_rank(feature: MGEFeature) -> tuple[float, float, float, int]:
-        provenance = 1.0 if feature.attributes.get("provenance") == "Sally_Partridge" else 0.0
+        provenance = 1.0 if feature.attributes.get("provenance") == "expert_reviewed" else 0.0
         coverage = float(
             feature.attributes.get("blast_subject_coverage")
             or feature.attributes.get("blast_coverage")
@@ -257,7 +257,7 @@ def _annotate_contig(
     # Projection is now a labelled fallback only for components that the
     # independent scan could not recover.
     all_feats.extend(annotate_tn123(all_feats))
-    all_feats.extend(annotate_partridge_units(all_feats))
+    all_feats.extend(annotate_curated_units(all_feats))
     all_feats = _suppress_redundant_inference(all_feats)
 
     # Res sites are positioned from the surviving (post-dedup) transposons
@@ -326,11 +326,12 @@ def _load_detector_outputs(
 @click.option("--amrfinder", type=click.Path(exists=True), help="Precomputed AMRFinder+ TSV.")
 @click.option("--integrons", type=click.Path(exists=True), help="Precomputed IntegronFinder file.")
 @click.option(
-    "--mara-flank",
+    "--locus-flank",
+    "locus_flank",
     type=click.IntRange(min=0),
     default=5_000,
     show_default=True,
-    help="Flanking bases included around each MARA locus.",
+    help="Flanking bases included around each locus map.",
 )
 def run_workflow(
     fasta: Path,
@@ -341,7 +342,7 @@ def run_workflow(
     isescan: str | None,
     amrfinder: str | None,
     integrons: str | None,
-    mara_flank: int,
+    locus_flank: int,
 ) -> None:
     """Run a reproducible annotation and write a complete result directory."""
     if not blast_available():
@@ -396,14 +397,14 @@ def run_workflow(
         raise click.UsageError(f"No FASTA records found in {fasta}")
 
     annotated: list[tuple[str, int, list[MGEFeature]]] = []
-    mara_dir = out / "mara"
-    table_dir = out / "mara-table"
+    locus_map_dir = out / "locus-map"
+    table_dir = out / "locus-table"
     hierarchy_dir = out / "hierarchy"
-    mara_dir.mkdir(exist_ok=True)
+    locus_map_dir.mkdir(exist_ok=True)
     table_dir.mkdir(exist_ok=True)
     hierarchy_dir.mkdir(exist_ok=True)
     proof_output_paths: dict[tuple[str, int, int, str], dict[str, str]] = {}
-    mara_locus_outputs: list[dict[str, object]] = []
+    locus_outputs: list[dict[str, object]] = []
     locus_count = 0
     for record in fasta_records:
         sequence = str(record.seq)
@@ -416,19 +417,19 @@ def run_workflow(
             to_linear_svg(roots, len(sequence), record.id),
             encoding="utf-8",
         )
-        for locus in extract_mara_loci(roots, len(sequence), mara_flank):
+        for locus in extract_locus_views(roots, len(sequence), locus_flank):
             locus_name = f"{record.id}__{locus.suffix}"
             label = (
                 f"{record.id} • {locus.target.name} "
                 f"{locus.target.start}..{locus.target.end} • "
                 f"view {locus.view_start}..{locus.view_end}"
             )
-            (mara_dir / f"{locus_name}.svg").write_text(
-                to_mara_svg(locus.roots, locus.view_length, label),
+            (locus_map_dir / f"{locus_name}.svg").write_text(
+                to_locus_map_svg(locus.roots, locus.view_length, label),
                 encoding="utf-8",
             )
             (table_dir / f"{locus_name}.svg").write_text(
-                to_mara_table_svg(locus.roots, label),
+                to_locus_table_svg(locus.roots, label),
                 encoding="utf-8",
             )
             proof_output_paths[(
@@ -437,14 +438,14 @@ def run_workflow(
                 locus.target.end,
                 locus.target.name,
             )] = {
-                "mara": f"mara/{locus_name}.svg",
-                "mara_table": f"mara-table/{locus_name}.svg",
+                "locus_map": f"locus-map/{locus_name}.svg",
+                "locus_table": f"locus-table/{locus_name}.svg",
                 "hierarchy": f"hierarchy/{safe_record_id}.svg",
                 "cell_format": "annotation.cell",
                 "annotation_json": "annotation.json",
                 "annotation_gff3": "annotation.gff3",
             }
-            mara_locus_outputs.append({
+            locus_outputs.append({
                 "record": record.id,
                 "call": locus.target.name,
                 "family": locus.target.family,
@@ -453,8 +454,8 @@ def run_workflow(
                 "end": locus.target.end,
                 "view_start": locus.view_start,
                 "view_end": locus.view_end,
-                "mara": f"mara/{locus_name}.svg",
-                "mara_table": f"mara-table/{locus_name}.svg",
+                "locus_map": f"locus-map/{locus_name}.svg",
+                "locus_table": f"locus-table/{locus_name}.svg",
                 "hierarchy": f"hierarchy/{safe_record_id}.svg",
             })
             locus_count += 1
@@ -507,16 +508,16 @@ def run_workflow(
         "profile": profile,
         "records": len(annotated),
         "features": sum(count_features(roots) for _, _, roots in annotated),
-        "mara_loci": locus_count,
-        "mara_locus_outputs": mara_locus_outputs,
+        "locus_views": locus_count,
+        "locus_outputs": locus_outputs,
         "proof_status": proof["summary"]["status"],
         "outputs": {
             "annotation_json": "annotation.json",
             "annotation_gff3": "annotation.gff3",
             "annotation_cell": "annotation.cell",
             "hierarchy_directory": "hierarchy",
-            "mara_directory": "mara",
-            "mara_table_directory": "mara-table",
+            "locus_map_directory": "locus-map",
+            "locus_table_directory": "locus-table",
             "proof_json": "proof/proof.json",
             "proof_report": "proof/report.html",
             "component_ledger": "proof/components.tsv",
@@ -525,7 +526,7 @@ def run_workflow(
     }
     (out / "run.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     click.echo(
-        f"Complete: {summary['features']} features and {locus_count} MARA loci in {out}",
+        f"Complete: {summary['features']} features and {locus_count} locus maps in {out}",
         err=True,
     )
 
@@ -546,10 +547,10 @@ def _render(
         return to_wolvercote(roots, [], sample_name)
     if fmt == "linear":
         return to_linear_svg(roots, len(seq), sample_name)
-    if fmt == "mara":
-        return to_mara_svg(roots, len(seq), sample_name)
-    if fmt == "mara-table":
-        return to_mara_table_svg(roots, sample_name)
+    if fmt == "locus-map":
+        return to_locus_map_svg(roots, len(seq), sample_name)
+    if fmt == "locus-table":
+        return to_locus_table_svg(roots, sample_name)
     raise click.BadParameter(f"unknown format: {fmt}")
 
 
@@ -561,8 +562,8 @@ def _render(
 @click.option(
     "--format", "fmt", default="json",
     type=click.Choice([
-        "json", "gff3", "genbank", "wolvercote", "linear", "mara",
-        "mara-table",
+        "json", "gff3", "genbank", "wolvercote", "linear", "locus-map",
+        "locus-table",
     ]),
     show_default=True, help="Output format",
 )
@@ -585,11 +586,12 @@ def _render(
     help="Concurrent reference scans.",
 )
 @click.option(
-    "--mara-flank",
+    "--locus-flank",
+    "locus_flank",
     type=click.IntRange(min=0),
     default=5_000,
     show_default=True,
-    help="Flanking bases included around each validated MARA target locus.",
+    help="Flanking bases included around each validated target locus.",
 )
 @click.option("--out", "-o", default="-", help="Output file or directory (default: stdout)")
 def annotate(
@@ -602,7 +604,7 @@ def annotate(
     reference_scan: bool,
     profile: str,
     threads: int,
-    mara_flank: int,
+    locus_flank: int,
     out: str,
 ) -> None:
     """Combine detection tool outputs into a nested MGE annotation.
@@ -658,8 +660,8 @@ def annotate(
             f"{len(roots)} root-level elements from {len(contig_feats)} features",
             err=True,
         )
-        if fmt in {"mara", "mara-table"}:
-            loci = extract_mara_loci(roots, len(seq), mara_flank)
+        if fmt in {"locus-map", "locus-table"}:
+            loci = extract_locus_views(roots, len(seq), locus_flank)
             if loci:
                 for locus in loci:
                     locus_name = f"{contig_id}__{locus.suffix}"
@@ -669,9 +671,9 @@ def annotate(
                         f"view {locus.view_start}..{locus.view_end}"
                     )
                     rendered: str | bytes = (
-                        to_mara_svg(locus.roots, locus.view_length, label)
-                        if fmt == "mara"
-                        else to_mara_table_svg(locus.roots, label)
+                        to_locus_map_svg(locus.roots, locus.view_length, label)
+                        if fmt == "locus-map"
+                        else to_locus_table_svg(locus.roots, label)
                     )
                     outputs.append((locus_name, rendered))
                 continue
@@ -684,7 +686,7 @@ def annotate(
         outputs.append((contig_id, rendered))
 
     directory_requested = (
-        fmt in {"mara", "mara-table"}
+        fmt in {"locus-map", "locus-table"}
         and out != "-"
         and Path(out).suffix.lower() != ".svg"
     )

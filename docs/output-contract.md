@@ -11,17 +11,17 @@
 | `annotation.cell` | Nested CellGen/Wolvercote cell-format representation of the same hierarchy |
 | `run.json` | Compact counts and relative output locations |
 | `hierarchy/*.svg` | One whole-record, scale-accurate rendering of the original nested hierarchy |
-| `mara/*.svg` | One readable MARA-style locus map per supported target, including a symbol key |
-| `mara-table/*.svg` | Matching annotation table per locus, including evidence notes and a compact key |
+| `locus-map/*.svg` | One readable locus map per supported target, including a symbol key |
+| `locus-table/*.svg` | Matching annotation table per locus, including evidence notes and a compact key |
 | `proof/proof.json` | Machine-checkable Tn1/Tn2/Tn3 component, grammar, match and output verdicts |
 | `proof/components.tsv` | One row per independently sequence-detected Tn1/Tn2/Tn3 component |
 | `proof/matches.tsv` | One row per assembled Tn1/Tn2/Tn3 locus, including the rule-based type call, optional reference context, definition ID/version and sequence-difference counts |
 | `proof/report.html` | Portable human-readable proof report linking all representations |
 | `detectors/` | Present only when Matryoshka ran optional external detectors |
 
-`run.json` contains a `mara_locus_outputs` array with one entry per generated
+`run.json` contains a `locus_outputs` array with one entry per generated
 locus map. Each entry records the sequence record, call, family, coordinates,
-viewport and direct relative paths to its MARA map, MARA table and hierarchy
+viewport and direct relative paths to its locus map, locus table and hierarchy
 view. Consumers should use this index rather than guessing filenames.
 
 The proof status is `PASS` only when every required Tn1/Tn2/Tn3 component was

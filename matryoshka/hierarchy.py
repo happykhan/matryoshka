@@ -53,7 +53,7 @@ def contains(parent: MGEFeature, child: MGEFeature) -> bool:
         return False
     if (parent.start, parent.end) == (child.start, child.end):
         return False
-    # Sally's annotation precedence: a partial/fragmentary match must not
+    # expert review annotation precedence: a partial/fragmentary match must not
     # become the biological parent of a complete recognised element merely
     # because its uncertain span surrounds it.
     if (

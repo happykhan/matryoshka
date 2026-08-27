@@ -1,6 +1,6 @@
 # Matryoshka
 
-Component-first mobile genetic element annotation and MARA-style visualisation for
+Component-first mobile genetic element annotation and locus visualisation for
 bacterial assemblies.
 
 Matryoshka scans an arbitrary FASTA sequence for constituent mobile-element features,
@@ -21,7 +21,7 @@ The primary classification path is component-first:
 | Apply expert rules | Compare the detected component profiles with the YAML-defined Tn1/Tn2/Tn3 signatures and require the configured score and margin | The component evidence assigns `Tn1-like`, `Tn2-like` or `Tn3-like` |
 | Describe variation | Retain substitutions, insertions, deletions, interruptions, missing ends and ambiguous evidence | Differences remain visible rather than being replaced by a canonical structure |
 | Confirm a reviewed name | Optionally compare the assembled complete locus with reviewed whole-element sequences | This can upgrade a compatible call to an exact type/subtype or add closest-reference context; it cannot create or override the component-rule call |
-| Render outputs | Draw the hierarchy, MARA locus map and MARA table from the detected/assembled feature record | Projected context is visually distinguished from independently detected components |
+| Render outputs | Draw the hierarchy, locus maps and locus table from the detected/assembled feature record | Projected context is visually distinguished from independently detected components |
 
 The rules and thresholds are maintained in
 [`matryoshka/tn123_definitions.yaml`](matryoshka/tn123_definitions.yaml), not embedded
@@ -55,7 +55,7 @@ python -m pip install .
 Run the bundled Tn1/Tn2/Tn3 acceptance example:
 
 ```bash
-matryoshka run tests/test-data/partridge-examples/Tn1-Tn2-Tn3.fasta \
+matryoshka run tests/test-data/reviewed-examples/Tn1-Tn2-Tn3.fasta \
   --out results
 ```
 
@@ -88,8 +88,8 @@ The result directory contains:
 - `annotation.cell` — nested CellGen/Wolvercote cell-format text;
 - `run.json` — short run summary;
 - `hierarchy/*.svg` — the original scale-accurate nested hierarchy view;
-- `mara/*.svg` — locus-based MARA-style maps;
-- `mara-table/*.svg` — MARA-style annotation tables;
+- `locus-map/*.svg` — one readable locus map per supported target;
+- `locus-table/*.svg` — the corresponding locus annotation tables;
 - `proof/report.html` — a human-readable component-to-call proof report;
 - `proof/proof.json`, `components.tsv` and `matches.tsv` — machine-checkable
   component, grammar and known-element evidence.
@@ -121,12 +121,12 @@ matryoshka definitions --format yaml --out tn123-definitions.yaml
 matryoshka definitions --format json --out tn123-definitions.json
 ```
 
-The current definitions include the three Sally-selected canonical elements plus
+The current definitions include three expert-reviewed canonical elements plus
 Tn2c (HM749967), Tn2.1 (CP028717), Tn1Mer (GQ160960) and the legacy V00613 Tn3
 sequence. See the [definition and validation report](docs/tn123-definition-and-validation-report.md)
 and its [real-accession ledger](docs/validation/tn123-real-accession-results.tsv).
 The [reviewed-definition demonstration](demo-output/tn123-reviewed-definitions/README.md)
-includes the complete result bundle and every generated MARA locus map/table.
+includes the complete result bundle and every generated locus map/table.
 The self-contained Word/PDF evidence report in `reports/` embeds those figures,
 the original hierarchy views, component ledgers, the natural pEK499 partial
 fragments and the arbitrary-contig demonstration. The complete pEK499 bundle is
@@ -151,7 +151,7 @@ validated-reference workflow works on all listed platforms.
 matryoshka run assembly.fasta --out results --threads 4
 ```
 
-The default `--profile validated` includes the Sally-backed Tn1/Tn2/Tn3, curated unit
+The default `--profile validated` includes the expert-reviewed Tn1/Tn2/Tn3, curated unit
 transposon, integron and ISEcp1-TPU references. `--profile all` enables broader legacy
 and experimental references and should be treated as exploratory.
 
@@ -197,27 +197,27 @@ users.
 | Category | Implemented support |
 |---|---|
 | Tn1/Tn2/Tn3 | YAML-defined IR/blaTEM/tnpR/res/tnpA grammar, orientation-aware component-profile classification, optional exact reference confirmation, indels, reverse orientation and conservative partial/ambiguous calls |
-| Curated MARA units | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
+| Curated unit transposons | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
 | ISEcp1 transposition units | Seven complete supplied ISEcp1–blaCMY references and orientation-aware incomplete candidates |
 | Insertion sequences | Exact curated IS calls plus ISEScan calls, including IS26/IS257, ISEcp1, ISApl1 and IS91/ISCR families |
 | Composite/signature elements | Tn4401, Tn1999, Tn6330, Tn2006, Tn125, Tn10, Tn5, Tn4001, Tn1546 and Tn1331 rules |
 | Integrons | IntegronFinder parsing, cassette reconstruction, class-1-integron and complete Tn402 component inference |
 | Other references | Tn4401 variants, Acinetobacter islands, GIsul2, Tn7, Tn552, Tn1546, Tn1331, replicons and documented motifs in the `all` profile |
 
-The source-backed [MARA component inventory](docs/mara-component-inventory.md) defines
+The source-backed [locus component inventory](docs/locus-component-inventory.md) defines
 30 raw component classes and 18 compound-element grammars. It distinguishes what is
 implemented, partially implemented and still missing; the catalogue is also available
 to software:
 
 ```bash
 matryoshka catalog --format tsv
-matryoshka catalog --format json --out mara-catalog.json
+matryoshka catalog --format json --out locus-catalog.json
 ```
 
 Biological and representational targets are defined in the
-[MARA parity specification](docs/mara-parity-spec.md). Unfinished capabilities remain
-explicit in [GAPS.md](GAPS.md); this is not yet a general replacement for expert MARA
-annotation.
+[locus annotation specification](docs/locus-annotation-spec.md). Unfinished capabilities remain
+explicit in [GAPS.md](GAPS.md); this is not yet a general replacement for expert
+mobile-element annotation.
 
 ## Supported outputs
 
@@ -234,11 +234,12 @@ The lower-level `annotate --format` choices are:
 | `genbank` | Biopython GenBank feature annotations |
 | `wolvercote` | Compact nested cell-format text |
 | `linear` | Scale-accurate whole-record SVG |
-| `mara` | One feature-specific locus SVG per validated target, with an on-figure symbol key |
-| `mara-table` | One MARA-style annotation-table SVG per locus, with evidence notes and a compact key |
+| `locus-map` | One feature-specific locus SVG per validated target, with an on-figure symbol key |
+| `locus-table` | One locus annotation-table SVG per locus, with evidence notes and a compact key |
 
 Legacy circular CellGen SVG/PNG rendering is not distributed in this alpha because it
-required an unpublished sibling package. Use the bundled linear and MARA SVG outputs.
+required an unpublished sibling package. Use the bundled linear, locus-map and
+locus-table SVG outputs.
 
 ## Reference and validation data
 
@@ -256,7 +257,7 @@ Three complete public NCBI plasmids are committed as acceptance fixtures:
 | pEK499 | EU935739.1 | ISEcp1 and false-positive controls |
 
 Their SHA-256 hashes and refresh script are in `tests/test-data/acceptance/`. Compact
-detector parser fixtures are clearly labelled as hand-authored. Sally's private working
+detector parser fixtures are clearly labelled as hand-authored. Private expert-review
 documents are not redistributed; see [docs/redistribution.md](docs/redistribution.md).
 
 ## Development and verification

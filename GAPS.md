@@ -31,9 +31,9 @@ Legend
 | Tn1546 (vanA) | M97297 | ✅ | vanA signature + BLAST | |
 | Tn21 (class 1 integron + mer) | AF071413 | ✅ | BLAST + curated map | tnp, terminal IRs, In2 IRi/IRt, 5'-CS, aadA1 cassette region, partial 3'-CS/tni and mer rendered separately |
 | Tn1331 (multi-AMR) | AF479774 | ✅ | Gene-signature (aac(6')-Ib + blaOXA-9 + aadA1) + BLAST |
-| Tn5393 (strAB) | AF262622 | ✅ | Sally's exact 5470 bp reference with curated terminal IRs and collinear variant assembly |
+| Tn5393 (strAB) | AF262622 | ✅ | Exact 5470 bp expert-reviewed reference with curated terminal IRs and collinear variant assembly |
 | Tn1 (blaTEM-2) | NC_008357 | ✅ | Independent IR/blaTEM/tnpR/res/tnpA component scan, grammar assembly and whole-locus naming |
-| Tn3 itself | HM749966, V00613 | ✅ | Sally-selected canonical reference plus a declared legacy 9 bp-duplication subtype |
+| Tn3 itself | HM749966, V00613 | ✅ | expert-selected canonical reference plus a declared legacy 9 bp-duplication subtype |
 | Tn2 (blaTEM-1) | AY123253, HM749967, CP028717 | ✅ | YAML-defined canonical Tn2, Tn2c and interrupted Tn2.1 definitions; independent component scan and grammar assembly |
 | Tn7 | AP002527 | ⚠️ | BLAST only | No attTn7/glmS detection (needs gene prediction) |
 | Tn552 | X52734 | ⚠️ | BLAST only | Staph-specific; no inference rule |
@@ -123,7 +123,7 @@ Legend
 | GenBank flat file output | ✅ |
 | Wolvercote nested cell-format text | ✅ |
 | Scale-accurate linear SVG | ✅ |
-| MARA locus SVG and Position/Name/FID/Type/Notes table | ✅ | Validated for Tn1/Tn2/Tn3, ISEcp1 TPUs, Tn21, Tn1721/Tn1722, Tn4401, Tn5393 and Tn5403 |
+| Locus-map SVG and Position/Name/FID/Type/Notes locus table | ✅ | Validated for Tn1/Tn2/Tn3, ISEcp1 TPUs, Tn21, Tn1721/Tn1722, Tn4401, Tn5393 and Tn5403 |
 | Component-to-call proof bundle | ✅ | Tn1/Tn2/Tn3 only: JSON verdicts, component/match TSV ledgers and linked HTML report |
 | Per-contig output on multi-FASTA input | ✅ |
 | Confidence scores per element | ✅ | 0.0–1.0 scalar + label (high/medium/low/speculative) in `attributes.confidence` |
@@ -132,7 +132,7 @@ Legend
 
 ## Known false-positive / false-negative modes
 
-- **ISEcp1 reference boundaries** are fixed: the bundled reference is Sally's exact 1656 bp ISfinder sequence, not the former 166 kb accession-scale sequence.
+- **ISEcp1 reference boundaries** are fixed: the bundled reference is the exact, expert-reviewed 1656 bp ISfinder sequence, not the former 166 kb accession-scale sequence.
 - **Tn4401 variant calling** requires the full set of a–h references. Variants a and b are shipped; other near matches remain `variant=unknown` rather than receiving an unsupported subtype.
 - **Cross-family Tn3 backbone matches** (e.g. Tn6019 hit in E. coli) are suppressed by a 10 kb minimum alignment length on the Acinetobacter references. Tighter thresholds elsewhere may be needed as the reference library grows.
 - **Single-IS26 translocatable units** remain deliberately speculative: they are emitted separately at low confidence and are never used to merge a whole IS26-rich region.

@@ -233,7 +233,7 @@ def parse_integron_finder(integrons_path: str | Path) -> list[MGEFeature]:
         protein_rows.sort(key=lambda r: int(r["pos_beg"]))
         cassette_array = "|".join(r["element"] for r in protein_rows)
 
-        # MARA treats a gene cassette as the ORF plus its recombination site,
+        # The annotation model treats a gene cassette as the ORF plus its recombination site,
         # not as the protein-coding interval alone. Pair each protein with the
         # nearest attC in the direction of the integron, using every attC once.
         attc_rows = [r for r in members if r.get("type_elt") == "attC"]

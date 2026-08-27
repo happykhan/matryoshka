@@ -10,9 +10,9 @@ Matryoshka now separates biological definitions from the software that applies t
 
 For an arbitrary FASTA record, the program detects component sequences, assembles them into a candidate unit and classifies the candidate from explicit component grammar plus weighted local component profiles. This can produce `Tn1-like`, `Tn2-like` or `Tn3-like` without any complete-element lookup. A separate whole-locus comparison may then confirm an exact reviewed definition or provide closest-reference context, but cannot create the family/type call. A partial match is retained as `Tn1/2/3 fragment` and is not promoted to a complete type.
 
-The current validation ledger contains 14 checks and all pass. It covers seven reviewed real-accession definitions, Sally Partridge's two reviewed Tn2 fragments in pEK499, three related Tn3-family elements that must not be misnamed, one complete sequence containing substitutions, and one truncated sequence. A complete result-bundle run on the seven reviewed definitions gives seven independently assembled loci and seven `PASS` proof verdicts.
+The current validation ledger contains 14 checks and all pass. It covers seven reviewed real-accession definitions, expert-reviewed two reviewed Tn2 fragments in pEK499, three related Tn3-family elements that must not be misnamed, one complete sequence containing substitutions, and one truncated sequence. A complete result-bundle run on the seven reviewed definitions gives seven independently assembled loci and seven `PASS` proof verdicts.
 
-This establishes a reproducible Tn1/Tn2/Tn3 workflow. It does not claim that the present reference library is an exhaustive definition of every Tn3-family transposon or a complete replacement for expert MARA annotation.
+This establishes a reproducible Tn1/Tn2/Tn3 workflow. It does not claim that the present reference library is an exhaustive definition of every Tn3-family transposon or a complete replacement for expert mobile-element annotation.
 
 ## What happens to an arbitrary sequence
 
@@ -36,8 +36,8 @@ arbitrary FASTA
     |
     +-- detect boundary evidence and retain insertions, deletions and mismatches
     |
-    +-- write JSON, GFF3, CellGen format, hierarchy SVG, MARA map,
-        MARA table and an evidence proof report
+    +-- write JSON, GFF3, CellGen format, hierarchy SVG, locus map,
+        locus table and an evidence proof report
 ```
 
 The component scan and classifier are the primary biological decision path. The whole-locus comparison is independent secondary evidence. A complete reference hit is not allowed to manufacture the six required components or the family/type call. Conversely, component rules can discover and draw a type-like candidate even when no complete-element lookup is run.
@@ -105,7 +105,7 @@ A different transposon may contain one or more shared genes, IRs or sequence blo
 
 ## Worked definition: Tn1
 
-Sally selected the Tn1 sequence from accession NC_008357. The human rule is:
+Expert review selected the Tn1 sequence from accession NC_008357. The human rule is:
 
 > Call Tn1-like when the complete six-part grammar is independently supported and the weighted local component profiles meet the Tn1 score and margin rules. Confirm exact Tn1 only when the optional whole-locus comparison is a complete, gap-free, mismatch-free match to NC_008357. The element carries `blaTEM-2`.
 
@@ -142,7 +142,7 @@ definitions:
     source_accession: NC_008357
     reference_kind: canonical
     component_reference: true
-    review_status: Sally-selected canonical sequence
+    review_status: expert-selected canonical sequence
 ```
 
 Negative coordinates are counted from the right end of the reviewed reference, allowing the same layout convention to work for definitions of different lengths.
@@ -151,7 +151,7 @@ Negative coordinates are counted from the right end of the reviewed reference, a
 
 The authoritative biological rules are in `matryoshka/tn123_definitions.yaml`. Their structure is documented by `docs/schema/tn123-definitions-v1.schema.json` and checked by the generic loader. The remaining Python code is a component assembler and classifier rather than a separate set of element-specific naming conditions.
 
-The exact file used by the program can be exported for Sally's review:
+The exact file used by the program can be exported for expert-reviewed review:
 
 ```bash
 matryoshka definitions --format markdown --out tn123-definitions-review.md
@@ -201,7 +201,7 @@ For all seven, the independently detected component grammar is complete and the 
 | 38,747–40,671 | Tn1/2/3 fragment | Tn2 | 38.89% | PASS |
 | 60,316–62,561 | Tn1/2/3 fragment | Tn2 | 45.37% | PASS |
 
-These are retained at the boundaries described in Sally's comments. They are not combined into an invented complete Tn2 and are not labelled exact Tn2.
+These are retained at the boundaries described in expert-reviewed comments. They are not combined into an invented complete Tn2 and are not labelled exact Tn2.
 
 The proof bundle marks each locus `PARTIAL` and the pEK499 run `PARTIAL_TN123_EVIDENCE`. That status means the incomplete evidence was retained correctly; it is distinct from both a complete-element `PASS` and a validation `FAIL`.
 
@@ -221,18 +221,18 @@ Tn1696, Tn1721 and Tn5403 receive no named Tn1, Tn2 or Tn3 call in the Tn1/Tn2/T
 - `annotation.gff3`;
 - `annotation.cell`, preserving the original nested CellGen/Wolvercote representation;
 - `hierarchy/*.svg`, the original scale-accurate hierarchy view;
-- `mara/*.svg`, one readable locus map per supported target;
-- `mara-table/*.svg`, with definition, subtype, identity, coverage, differences and boundary notes;
+- `locus-map/*.svg`, one readable locus map per supported target;
+- `locus-table/*.svg`, with definition, subtype, identity, coverage, differences and boundary notes;
 - `proof/report.html`, a human-readable component-to-call report; and
 - `proof/proof.json`, `components.tsv` and `matches.tsv`, the machine-checkable evidence ledger.
 
-Every MARA map and table contains its own key. The maps distinguish sequence-detected components from expert-definition context so that a reader can see what was observed and what was added from a reviewed subtype description.
+Every locus map and table contains its own key. The maps distinguish sequence-detected components from expert-definition context so that a reader can see what was observed and what was added from a reviewed subtype description.
 
 The repository includes a ready-to-open component-only example at `demo-output/arbitrary-tn123/proof-bundle/proof/report.html`. Its input is one 44,647 bp arbitrary contig containing a Tn1-derived sequence with 25 substitutions, a Tn2-derived sequence with an 800 bp internal insertion, and a reverse-complement Tn3-derived sequence. It is run with `--profile tn123-components`, so no complete Tn1/Tn2/Tn3 lookup occurs. All three loci pass the component-to-call proof as qualified type-like calls, and the insertion is recovered from split component evidence and drawn.
 
-The seven reviewed definitions have a separate complete bundle at `demo-output/tn123-reviewed-definitions/proof-bundle/`. Its `mara/` and `mara-table/` directories contain the accession-specific maps and tables. It contains eight map entries: one for each of the seven whole-element definitions and a separate nested ISEcp1-associated locus within Tn2.1. `run.json` lists every map explicitly under `mara_locus_outputs`.
+The seven reviewed definitions have a separate complete bundle at `demo-output/tn123-reviewed-definitions/proof-bundle/`. Its `locus_map/` and `locus-table/` directories contain the accession-specific maps and tables. It contains eight map entries: one for each of the seven whole-element definitions and a separate nested ISEcp1-associated locus within Tn2.1. `run.json` lists every map explicitly under `locus_outputs`.
 
-## Review questions for Sally
+## Review questions for the expert reviewer
 
 The machinery is now extensible; the remaining expert decisions are content decisions rather than software constraints:
 
@@ -242,4 +242,4 @@ The machinery is now extensible; the remaining expert decisions are content deci
 4. confirm the preferred display wording for V00613; and
 5. supply or approve further type/subtype definitions and counterexamples for the next expansion.
 
-The YAML definition, generated Markdown review file and accession validation ledger are intended to make those decisions inspectable without requiring Sally to read the implementation code.
+The YAML definition, generated Markdown review file and accession validation ledger are intended to make those decisions inspectable without requiring the expert reviewer to read the implementation code.

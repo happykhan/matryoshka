@@ -1,4 +1,4 @@
-"""Assemble MARA class-1-integron and Tn402 structures from exact components."""
+"""Assemble locus class-1-integron and Tn402 structures from exact components."""
 
 from __future__ import annotations
 
@@ -129,7 +129,7 @@ def infer_integron_structures(features: list[MGEFeature]) -> list[MGEFeature]:
                     ),
                     "iri_status": "confirmed" if iri is not None else "not_detected",
                     "irt_status": "confirmed" if irt is not None else "not_detected",
-                    "note": "assembled from exact MARA component references",
+                    "note": "assembled from exact locus component references",
                 },
             ))
 

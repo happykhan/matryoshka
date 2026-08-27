@@ -1,4 +1,4 @@
-"""Tests for component-aware MARA class-1-integron reconstruction."""
+"""Tests for component-aware locus class-1-integron reconstruction."""
 
 from matryoshka.detect import MGEFeature
 from matryoshka.integron_structures import infer_integron_structures

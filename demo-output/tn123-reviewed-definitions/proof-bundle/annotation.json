@@ -11,7 +11,7 @@
   "run": {
     "input": "matryoshka/references/tn1_tn2_tn3.fasta",
     "input_sha256": "327f33c0d881a583e57caf1d41b7a84e2f3933df1016402b68b714914bb59322",
-    "command": "matryoshka run matryoshka/references/tn1_tn2_tn3.fasta --profile validated --threads 4 --out /tmp/matryoshka-bundles.e0rViB/regen-reviewed",
+    "command": "matryoshka run matryoshka/references/tn1_tn2_tn3.fasta --profile validated --threads 4 --out demo-output/tn123-reviewed-definitions/proof-bundle",
     "python": "3.13.15",
     "platform": "macOS-14.6.1-arm64-arm-64bit-Mach-O",
     "detector_outputs": {}
@@ -54,7 +54,7 @@
             "reference_kind": "canonical",
             "expert_rule": "Exact, complete, gap-free match to NC_008357 plus complete component grammar.",
             "known_differences_from_parent": [],
-            "review_status": "Sally-selected canonical sequence",
+            "review_status": "expert-selected canonical sequence",
             "tn123_canonical": "true",
             "best_match": "Tn1",
             "blast_identity": 100.0,
@@ -737,7 +737,7 @@
             "reference_kind": "canonical",
             "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
             "known_differences_from_parent": [],
-            "review_status": "Sally-selected canonical sequence",
+            "review_status": "expert-selected canonical sequence",
             "tn123_canonical": "true",
             "best_match": "Tn2",
             "blast_identity": 100.0,
@@ -1413,7 +1413,7 @@
             "reference_kind": "canonical",
             "expert_rule": "Exact, complete, gap-free match to HM749966 plus complete component grammar.",
             "known_differences_from_parent": [],
-            "review_status": "Sally-selected canonical sequence",
+            "review_status": "expert-selected canonical sequence",
             "tn123_canonical": "true",
             "best_match": "Tn3",
             "blast_identity": 100.0,
@@ -2099,7 +2099,7 @@
               "9 nucleotide substitutions relative to canonical Tn2 AY123253",
               "blaTEM-1c allele"
             ],
-            "review_status": "Sally called this Tn2c in MARA and marked it for later addition",
+            "review_status": "Expert-reviewed Tn2c candidate retained for later validation",
             "tn123_canonical": "true",
             "best_match": "Tn2",
             "blast_identity": 100.0,
@@ -2778,7 +2778,7 @@
               "4024 bp ISEcp1-associated insertion near the blaTEM end",
               "5 bp duplicated Tn2 sequence flanks the insertion junction"
             ],
-            "review_status": "Sally described this as Tn2 with an inserted ISEcp1 TPU",
+            "review_status": "Expert-reviewed Tn2 with an inserted ISEcp1 TPU",
             "tn123_canonical": "true",
             "best_match": "Tn2",
             "blast_identity": 100.0,
@@ -3148,7 +3148,7 @@
                     "source_accession": "FJ621588",
                     "reference_position": "1..1656",
                     "tsd_length": "5",
-                    "provenance": "Sally_Partridge_worked_example",
+                    "provenance": "expert_reviewed_worked_example",
                     "tsd_evidence": "searched_not_found",
                     "confidence": 0.8,
                     "confidence_label": "medium"
@@ -3518,7 +3518,7 @@
               "defective Tn5036-like transposon inserted into the Tn1 backbone",
               "blaTEM-1 rather than canonical Tn1 blaTEM-2"
             ],
-            "review_status": "Sally said to ignore this as the canonical Tn1 because it contains Tn5036-like",
+            "review_status": "Excluded as canonical Tn1 because it contains a Tn5036-like insertion",
             "tn123_canonical": "true",
             "best_match": "Tn1",
             "blast_identity": 100.0,
@@ -4232,7 +4232,7 @@
             "known_differences_from_parent": [
               "9 bp duplication relative to canonical Tn3 HM749966"
             ],
-            "review_status": "Sally noted the 9 bp duplication and preferred HM749966 as canonical",
+            "review_status": "Expert review noted the 9 bp duplication and retained HM749966 as canonical",
             "tn123_canonical": "true",
             "best_match": "Tn3",
             "blast_identity": 100.0,

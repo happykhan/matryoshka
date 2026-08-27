@@ -1,7 +1,7 @@
 """Curated annotations for the canonical Tn1, Tn2 and Tn3 references.
 
 The reference choices and feature layouts follow the material supplied by
-Sally Partridge. Coordinates are 1-based and relative to each complete
+expert-reviewed source material. Coordinates are 1-based and relative to each complete
 transposon reference sequence.
 """
 

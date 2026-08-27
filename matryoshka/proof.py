@@ -399,13 +399,13 @@ def proof_html(proof: dict[str, Any], title: str = "Matryoshka proof report") ->
                 f'<a href="../{html.escape(path)}">{html.escape(name.replace("_", " "))}</a>'
                 for name, path in outputs.items()
             )
-            mara = outputs.get("mara")
+            locus_map = outputs.get("locus_map")
             hierarchy = outputs.get("hierarchy")
             figures = ""
-            if mara:
+            if locus_map:
                 figures += (
-                    '<h3>MARA locus map</h3>'
-                    f'<img src="../{html.escape(mara)}" alt="MARA locus map">'
+                    '<h3>Locus map</h3>'
+                    f'<img src="../{html.escape(locus_map)}" alt="Locus map">'
                 )
             if hierarchy:
                 figures += (

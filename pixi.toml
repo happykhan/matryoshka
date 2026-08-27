@@ -9,7 +9,7 @@ platforms = ["linux-64", "osx-arm64", "osx-64"]
 run = "python -m matryoshka"
 test = "pytest tests/"
 fetch-refs = "python scripts/fetch_references.py"
-smoke = "matryoshka run tests/test-data/partridge-examples/Tn1-Tn2-Tn3.fasta --out smoke-output"
+smoke = "matryoshka run tests/test-data/reviewed-examples/Tn1-Tn2-Tn3.fasta --out smoke-output"
 
 [dependencies]
 # Core: Python 3.11+ for main code (wolvercote needs >=3.10)

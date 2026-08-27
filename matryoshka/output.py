@@ -155,7 +155,7 @@ def to_json(features: list[MGEFeature], indent: int = 2) -> str:
 def to_svg(features: list[MGEFeature], sample_name: str = "") -> str:
     raise RuntimeError(
         "Circular CellGen rendering is not distributed with Matryoshka 0.1 alpha. "
-        "Use the supported 'linear' or 'mara' SVG output instead."
+        "Use the supported 'linear' or 'locus-map' SVG output instead."
     )
 
 
