@@ -240,7 +240,7 @@ def curated_internal_features(parent: MGEFeature) -> list[MGEFeature]:
         if projected is None:
             continue
         start, end = projected
-        attributes: dict[str, object] = {
+        context_attributes: dict[str, object] = {
             "seqid": seqid,
             "source": "expert_definition",
             "source_accession": source_accession,
@@ -249,9 +249,9 @@ def curated_internal_features(parent: MGEFeature) -> list[MGEFeature]:
             "definition_id": reference_id,
         }
         if item.get("status"):
-            attributes["structural_status"] = item["status"]
+            context_attributes["structural_status"] = item["status"]
             if item["status"] == "partial":
-                attributes["fragment"] = True
+                context_attributes["fragment"] = True
         children.append(MGEFeature(
             element_type=str(item["element_type"]),
             family=str(item["family"]),
@@ -259,7 +259,7 @@ def curated_internal_features(parent: MGEFeature) -> list[MGEFeature]:
             start=start,
             end=end,
             strand=_project_strand(parent, str(item["strand"])),
-            attributes=attributes,
+            attributes=context_attributes,
         ))
     parent.attributes["curated_internal_features"] = True
     rules = tn123_rules()["family"]
