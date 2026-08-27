@@ -656,8 +656,8 @@ references:
   - Tn21
   source_accessions:
   - AF071413
-  profile: all
-  status: experimental_or_legacy
+  profile: validated
+  status: validated
   licence: source-database-terms
   redistribution_status: public_accession_traceable
   provenance: public accession sequence with curated annotation

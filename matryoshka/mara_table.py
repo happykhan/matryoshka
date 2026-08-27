@@ -13,6 +13,7 @@ MARGIN = 18
 TITLE_H = 34
 HEADER_H = 30
 BASE_ROW_H = 28
+KEY_H = 38
 FONT = "Arial,Helvetica,sans-serif"
 COLUMN_X = (MARGIN, 170, 520, 650, 760, WIDTH - MARGIN)
 COLUMN_LABELS = ("Position", "Name*", "FID", "Type", "Notes")
@@ -108,13 +109,51 @@ def _notes(feature: MGEFeature) -> str:
         inserted_bases = int(attrs.get("inserted_bases", 0) or 0)
         if inserted_bases:
             parts.append(f"inserted sequence≈{inserted_bases} bp")
+        assembly_status = attrs.get("component_assembly_status")
+        if assembly_status:
+            count = attrs.get("detected_component_count", 0)
+            parts.append(
+                f"component grammar={assembly_status}; "
+                f"{count} independently sequence-detected components"
+            )
         if feature.tsd_seq:
-            parts.append(f"DR={feature.tsd_seq}")
+            strength = attrs.get("tsd_evidence_strength", "supporting")
+            left = f"{attrs.get('tsd_left_start', '?')}..{attrs.get('tsd_left_end', '?')}"
+            right = f"{attrs.get('tsd_right_start', '?')}..{attrs.get('tsd_right_end', '?')}"
+            parts.append(
+                f"boundary-adjacent DR={feature.tsd_seq} ({strength} evidence; "
+                f"left={left}; right={right})"
+            )
         elif feature.tsd_length:
-            parts.append(f"expected DR={feature.tsd_length} bp; flanking sequence unavailable")
+            evidence = attrs.get("tsd_evidence")
+            if evidence == "short_repeat_candidate":
+                candidate = attrs.get("tsd_candidate_seq", "")
+                parts.append(
+                    f"expected DR={feature.tsd_length} bp; short-repeat "
+                    f"candidate={candidate}; weak evidence"
+                )
+            elif evidence == "searched_not_found":
+                parts.append(f"expected DR={feature.tsd_length} bp; searched but not found")
+            elif evidence == "untestable_missing_flank":
+                parts.append(
+                    f"expected DR={feature.tsd_length} bp; flanking sequence unavailable"
+                )
+            else:
+                parts.append(f"expected DR={feature.tsd_length} bp; not sequence-confirmed")
         if attrs.get("fragment"):
             parts.append("exact Tn1/Tn2/Tn3 identity unresolved")
         return "; ".join(parts)
+    if attrs.get("source") == "tn123_component_scan":
+        identity = attrs.get("blast_identity", "")
+        coverage = attrs.get("blast_coverage", "")
+        status = attrs.get("structural_status", "")
+        detail = (
+            f"independently sequence-detected {attrs.get('component_role', 'component')}; "
+            f"identity={identity}%; coverage={coverage}%"
+        )
+        if status and status != "intact":
+            detail += f"; {str(status).replace('_', ' ')}"
+        return detail
     if feature.element_type == "IR":
         return f"terminal inverted repeat; IR={feature.end - feature.start + 1} bp"
     if feature.element_type == "res_site":
@@ -173,7 +212,7 @@ def _text(
     )
 
 
-def _arrow(x: float, y: float, strand: str) -> str:
+def _arrow(x: float, y: float, strand: str, *, projected: bool = False) -> str:
     if strand not in {"+", "-"}:
         return ""
     length = 34
@@ -183,10 +222,12 @@ def _arrow(x: float, y: float, strand: str) -> str:
     else:
         x1, x2 = x + length, x
         head = f"{x2:.1f},{y:.1f} {x2 + 8:.1f},{y - 5:.1f} {x2 + 8:.1f},{y + 5:.1f}"
+    colour = "#ffffff" if projected else "#000000"
+    dash = ' stroke-dasharray="4,2"' if projected else ""
     return (
         f'<line x1="{x1:.1f}" y1="{y:.1f}" x2="{x2:.1f}" y2="{y:.1f}" '
-        'stroke="#000" stroke-width="6"/>'
-        f'<polygon points="{head}" fill="#000"/>'
+        f'stroke="#000" stroke-width="6"{dash}/>'
+        f'<polygon points="{head}" fill="{colour}" stroke="#000"{dash}/>'
     )
 
 
@@ -209,7 +250,8 @@ def to_mara_table_svg(roots: list[MGEFeature], sample_name: str = "") -> str:
     rows = [_row(feature, depth) for feature, depth in _flatten(roots)]
     note_lines = [_wrapped_notes(row.notes) for row in rows]
     row_heights = [max(BASE_ROW_H, 12 + len(lines) * 14) for lines in note_lines]
-    height = TITLE_H + HEADER_H + sum(row_heights) + MARGIN
+    table_bottom = TITLE_H + HEADER_H + sum(row_heights)
+    height = table_bottom + KEY_H + MARGIN
 
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{height}" '
@@ -245,7 +287,13 @@ def to_mara_table_svg(roots: list[MGEFeature], sample_name: str = "") -> str:
         if row.feature.element_type == "IR":
             parts.append(_ir_triangle(glyph_x, baseline - 3, row.name))
         else:
-            parts.append(_arrow(glyph_x, baseline - 3, row.feature.strand))
+            parts.append(_arrow(
+                glyph_x,
+                baseline - 3,
+                row.feature.strand,
+                projected=row.feature.attributes.get("evidence_class")
+                == "reference_projected",
+            ))
         parts.append(_text(COLUMN_X[2] + 8, baseline, row.fid, size=10))
         parts.append(_text(COLUMN_X[3] + 8, baseline, row.feature_type, size=10))
         for line_index, line in enumerate(lines):
@@ -254,8 +302,27 @@ def to_mara_table_svg(roots: list[MGEFeature], sample_name: str = "") -> str:
 
     for x in COLUMN_X:
         parts.append(
-            f'<line x1="{x}" y1="{TITLE_H}" x2="{x}" y2="{height - MARGIN}" '
+            f'<line x1="{x}" y1="{TITLE_H}" x2="{x}" y2="{table_bottom}" '
             'stroke="#d2d2cf" stroke-width="0.8"/>'
         )
+    key_y = table_bottom + 23
+    parts.extend([
+        _text(MARGIN, key_y, "Key:", size=10, weight="bold"),
+        _arrow(62, key_y - 3, "+"),
+        _text(105, key_y, "strand", size=10),
+        _ir_triangle(180, key_y - 3, "IRL"),
+        _text(198, key_y, "terminal inverted repeat (IR)", size=10),
+        f'<circle cx="430" cy="{key_y - 5}" r="5" fill="#9ca3aa" stroke="#111"/>',
+        _text(443, key_y, "sequence-matched DR/TSD", size=10),
+        f'<circle cx="590" cy="{key_y - 5}" r="5" fill="#fff" stroke="#737b83"/>',
+        _text(603, key_y, "expected, unconfirmed DR/TSD", size=10),
+        _text(
+            850,
+            key_y,
+            "Solid components are sequence-detected; dashed/outlined components are reference-projected.",
+            size=10,
+            fill="#555555",
+        ),
+    ])
     parts.append("</svg>")
     return "\n".join(parts)

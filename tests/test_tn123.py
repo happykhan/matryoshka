@@ -23,8 +23,14 @@ from matryoshka.reference_scan import (
     _hit_to_feature,
     blast_available,
     scan,
+    scan_tn123_components,
 )
-from matryoshka.tn123 import REFERENCE_METADATA, annotate_tn123, curated_internal_features
+from matryoshka.tn123 import (
+    REFERENCE_METADATA,
+    annotate_tn123,
+    assemble_tn123_components,
+    curated_internal_features,
+)
 
 PARTRIDGE_FASTA = (
     Path(__file__).parent / "test-data" / "partridge-examples" / "Tn1-Tn2-Tn3.fasta"
@@ -151,6 +157,62 @@ def test_mara_table_contains_hierarchy_and_evidence_columns():
     assert "AY123253" in svg
     assert "blaTEM-1b" in svg
     assert "expected DR=5 bp" in svg
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_components_are_independently_detected_across_canonical_records():
+    components = scan_tn123_components(PARTRIDGE_FASTA)
+    by_contig: dict[str, list[MGEFeature]] = {}
+    for component in components:
+        by_contig.setdefault(str(component.attributes["seqid"]), []).append(component)
+    assert set(by_contig) == {
+        "Tn1_NC_008357", "Tn2_AY123253", "Tn3_HM749966",
+    }
+    for detected in by_contig.values():
+        roles = [str(feature.attributes["component_role"]) for feature in detected]
+        assert roles.count("terminal_IR") == 2
+        assert set(roles) == {"terminal_IR", "blaTEM", "tnpR", "res", "tnpA"}
+        assert all(
+            feature.attributes["evidence_class"] == "sequence_detected"
+            for feature in detected
+        )
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_component_grammar_can_emit_parent_without_whole_locus_call():
+    components = [
+        feature
+        for feature in scan_tn123_components(PARTRIDGE_FASTA)
+        if feature.attributes["seqid"] == "Tn1_NC_008357"
+    ]
+    parents = assemble_tn123_components(components)
+    assert len(parents) == 1
+    assert parents[0].name == "Tn3-family unit"
+    assert parents[0].attributes["source"] == "component_assembly"
+    assert parents[0].attributes["component_assembly_status"] == "complete"
+    assert parents[0].attributes["component_order_valid"] is True
+    assert parents[0].attributes["detected_component_count"] == 6
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_component_grammar_rejects_missing_required_res_site():
+    components = [
+        feature
+        for feature in scan_tn123_components(PARTRIDGE_FASTA)
+        if feature.attributes["seqid"] == "Tn1_NC_008357"
+        and feature.attributes["component_role"] != "res"
+    ]
+    assert assemble_tn123_components(components) == []
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_random_sequence_has_no_tn123_component_calls(tmp_path: Path):
+    query = _write_fasta(
+        tmp_path / "negative.fasta",
+        "random_negative",
+        _random_dna(50_000, 90210),
+    )
+    assert scan_tn123_components(query) == []
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
@@ -308,6 +370,20 @@ def test_reference_only_cli_detects_all_three_and_writes_mara(tmp_path: Path):
         "Tn2_AY123253": [("Tn2", 100.0)],
         "Tn3_HM749966": [("Tn3", 100.0)],
     }
+    for features in detected.values():
+        parent = features[0]
+        assert parent["attributes"]["component_assembly_status"] == "complete"
+        assert parent["attributes"]["component_order_valid"] is True
+        assert parent["attributes"]["detected_component_count"] == 6
+        assert parent["attributes"]["reference_projected_component_count"] == 0
+        assert sum(
+            child["element_type"] == "res_site"
+            for child in parent["children"]
+        ) == 1
+        assert {
+            child["attributes"]["evidence_class"] for child in parent["children"]
+            if child["element_type"] in {"IR", "AMR", "gene", "res_site"}
+        } == {"sequence_detected"}
 
     mara_dir = tmp_path / "mara"
     result = runner.invoke(

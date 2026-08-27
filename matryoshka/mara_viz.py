@@ -11,7 +11,7 @@ import html
 from .detect import MGEFeature
 
 WIDTH = 1280
-HEIGHT = 184
+HEIGHT = 304
 LEFT = 72
 RIGHT = 72
 TRACK_Y = 66
@@ -71,7 +71,7 @@ def _walk(features: list[MGEFeature]) -> list[MGEFeature]:
     return out
 
 
-def _x(position: int, seq_len: int) -> float:
+def _x(position: int | float, seq_len: int) -> float:
     drawing_width = WIDTH - LEFT - RIGHT
     return LEFT + drawing_width * (max(1, position) - 1) / max(seq_len - 1, 1)
 
@@ -249,7 +249,13 @@ def _gene_arrow(feature: MGEFeature, seq_len: int) -> str:
         points = (
             f"{x1:.1f},{top} {x2:.1f},{top} {x2:.1f},{bottom} {x1:.1f},{bottom}"
         )
-    return f'<polygon points="{points}" fill="#000" stroke="#000" stroke-width="1"/>'
+    projected = feature.attributes.get("evidence_class") == "reference_projected"
+    fill = "#ffffff" if projected else "#000000"
+    dash = ' stroke-dasharray="4,2"' if projected else ""
+    return (
+        f'<polygon points="{points}" fill="{fill}" stroke="#000" '
+        f'stroke-width="1"{dash}/>'
+    )
 
 
 def _res_marker(feature: MGEFeature, seq_len: int) -> str:
@@ -305,15 +311,24 @@ def _lollipop(
     sequence: str | None,
     expected_length: int | None = None,
     colour: str = "#9ca3aa",
+    evidence: str = "",
 ) -> str:
     confirmed = sequence is not None
     fill = colour if confirmed else "#ffffff"
     stroke = OUTLINE if confirmed else "#737b83"
-    title = (
-        f"confirmed TSD: {sequence}"
-        if confirmed
-        else f"expected {expected_length or '?'} bp TSD; flanking sequence unavailable"
-    )
+    if confirmed:
+        title = f"boundary-adjacent sequence-matched TSD: {sequence}"
+    elif evidence == "short_repeat_candidate":
+        title = (
+            f"expected {expected_length or '?'} bp TSD; exact short-repeat "
+            "candidate is weak evidence"
+        )
+    elif evidence == "searched_not_found":
+        title = f"expected {expected_length or '?'} bp TSD; searched but not found"
+    elif evidence == "untestable_missing_flank":
+        title = f"expected {expected_length or '?'} bp TSD; flanking sequence unavailable"
+    else:
+        title = f"expected {expected_length or '?'} bp TSD; not sequence-confirmed"
     label = _text(x, 9, sequence, size=8) if sequence else ""
     return (
         f'<g><title>{html.escape(title)}</title>'
@@ -322,6 +337,60 @@ def _lollipop(
         f'<circle cx="{x:.1f}" cy="13" r="5" fill="{fill}" '
         f'stroke="{stroke}" stroke-width="1.2"/>{label}</g>'
     )
+
+
+def _legend() -> str:
+    """Self-contained key for readers who have not seen MARA notation."""
+    top = 164
+    row1 = 194
+    row2 = 222
+    row3 = 250
+    parts = [
+        f'<line x1="{LEFT}" y1="{top}" x2="{WIDTH - RIGHT}" y2="{top}" '
+        'stroke="#d4d4d4" stroke-width="1"/>',
+        _text(LEFT, top + 18, "Key", size=10, anchor="start", weight="bold"),
+        # Directional gene arrow.
+        f'<line x1="115" y1="{row1}" x2="145" y2="{row1}" stroke="#000" stroke-width="6"/>',
+        f'<polygon points="145,{row1} 137,{row1 - 5} 137,{row1 + 5}" fill="#000"/>',
+        _text(154, row1 + 3, "gene (arrow shows strand)", size=9, anchor="start"),
+        # Terminal inverted-repeat flag.
+        f'<line x1="350" y1="{row1 + 7}" x2="350" y2="{row1 - 9}" stroke="#111" stroke-width="1.3"/>',
+        f'<polygon points="350,{row1 - 7} 360,{row1 - 1} 350,{row1 + 5}" fill="#fff" stroke="#111"/>',
+        _text(370, row1 + 3, "terminal inverted repeat (IR)", size=9, anchor="start"),
+        # Confirmed and expected/unconfirmed target-site duplications.
+        f'<line x1="590" y1="{row1 + 7}" x2="590" y2="{row1 - 7}" stroke="#111"/>',
+        f'<circle cx="590" cy="{row1 - 8}" r="5" fill="#9ca3aa" stroke="#111"/>',
+        _text(603, row1 + 3, "sequence-matched DR/TSD", size=9, anchor="start"),
+        f'<line x1="744" y1="{row1 + 7}" x2="744" y2="{row1 - 7}" stroke="#737b83"/>',
+        f'<circle cx="744" cy="{row1 - 8}" r="5" fill="#fff" stroke="#737b83"/>',
+        _text(757, row1 + 3, "expected, unconfirmed DR/TSD", size=9, anchor="start"),
+        # White IS block arrow and coloured mobile-element block.
+        f'<polygon points="996,{row1 - 9} 1022,{row1 - 9} 1032,{row1} 1022,{row1 + 9} 996,{row1 + 9}" fill="#fff" stroke="#111"/>',
+        _text(1040, row1 + 3, "insertion sequence (IS)", size=9, anchor="start"),
+        f'<rect x="94" y="{row2 - 9}" width="42" height="18" fill="{TN123_COLOUR}" stroke="#111"/>',
+        _text(145, row2 + 3, "mobile element / transposon", size=9, anchor="start"),
+        f'<rect x="350" y="{row2 - 9}" width="42" height="18" fill="{CASSETTE_COLOUR}" stroke="#111"/>',
+        _text(401, row2 + 3, "gene cassette", size=9, anchor="start"),
+        f'<rect x="520" y="{row2 - 9}" width="42" height="18" fill="{INTEGRON_COLOUR}" stroke="#111"/>',
+        _text(571, row2 + 3, "integron conserved segment", size=9, anchor="start"),
+        f'<polygon points="770,{row2 - 9} 800,{row2 - 9} 806,{row2 - 3} 800,{row2 + 3} 806,{row2 + 9} 770,{row2 + 9} 764,{row2 + 3} 770,{row2 - 3} 764,{row2 - 9}" fill="#fff" stroke="#111"/>',
+        _text(815, row2 + 3, "inserted / unresolved sequence", size=9, anchor="start"),
+        f'<line x1="1045" y1="{row2}" x2="1085" y2="{row2}" stroke="{GAP_COLOUR}" stroke-width="2" stroke-dasharray="6,4"/>',
+        _text(1094, row2 + 3, "unannotated flank", size=9, anchor="start"),
+        f'<line x1="115" y1="{row3}" x2="145" y2="{row3}" stroke="#000" stroke-width="6"/>',
+        f'<polygon points="145,{row3} 137,{row3 - 5} 137,{row3 + 5}" fill="#000"/>',
+        _text(154, row3 + 3, "independently sequence-detected component", size=9, anchor="start"),
+        f'<polygon points="350,{row3 - 7} 380,{row3 - 7} 390,{row3} 380,{row3 + 7} 350,{row3 + 7}" fill="#fff" stroke="#111" stroke-dasharray="4,2"/>',
+        _text(400, row3 + 3, "reference-projected component", size=9, anchor="start"),
+        _text(
+            WIDTH / 2,
+            282,
+            "Symbols are annotation calls; see the matching table Notes for sequence-detected versus reference-projected evidence.",
+            size=9,
+            fill="#555555",
+        ),
+    ]
+    return "".join(parts)
 
 
 def _gap_line(start: int, end: int, seq_len: int) -> list[str]:
@@ -668,22 +737,41 @@ def to_mara_svg(
 
     for feature in major_units + insertion_sequences + integrons:
         if feature.tsd_seq:
+            left_position = (
+                int(feature.attributes.get("tsd_left_start", feature.start))
+                + int(feature.attributes.get("tsd_left_end", feature.start))
+            ) / 2
+            right_position = (
+                int(feature.attributes.get("tsd_right_start", feature.end))
+                + int(feature.attributes.get("tsd_right_end", feature.end))
+            ) / 2
             parts.append(_lollipop(
-                _x(feature.start, seq_len), feature.tsd_seq, feature.tsd_length,
+                _x(left_position, seq_len), feature.tsd_seq, feature.tsd_length,
             ))
             parts.append(_lollipop(
-                _x(feature.end, seq_len), feature.tsd_seq, feature.tsd_length,
+                _x(right_position, seq_len), feature.tsd_seq, feature.tsd_length,
             ))
         elif feature.tsd_length:
+            evidence = str(feature.attributes.get("tsd_evidence", ""))
+            if not evidence:
+                evidence = (
+                    "searched_not_found"
+                    if feature.start > feature.tsd_length
+                    and feature.end + feature.tsd_length <= seq_len
+                    else "untestable_missing_flank"
+                )
             parts.append(_lollipop(
                 _x(feature.start, seq_len), None, feature.tsd_length,
+                evidence=evidence,
             ))
             parts.append(_lollipop(
                 _x(feature.end, seq_len), None, feature.tsd_length,
+                evidence=evidence,
             ))
 
     if sample_name:
         parts.append(_text(WIDTH - RIGHT, 151, sample_name, size=9, anchor="end", fill="#555"))
 
+    parts.append(_legend())
     parts.append("</svg>")
     return "\n".join(parts)

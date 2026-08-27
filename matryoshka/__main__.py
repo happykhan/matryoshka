@@ -42,7 +42,7 @@ from .output import to_genbank, to_gff3, to_json, to_wolvercote
 from .partridge_units import annotate_partridge_units
 from .reference_scan import REFERENCE_PROFILES, blast_available, scan_all
 from .report import annotation_document, annotation_gff3, count_features
-from .tn123 import annotate_tn123
+from .tn123 import annotate_tn123, assemble_tn123_components
 from .transposon import annotate_res_sites, infer_transposons
 from .viz import to_linear_svg
 
@@ -223,8 +223,13 @@ def _annotate_contig(
     all_feats = base_features + inferred
     all_feats = _suppress_redundant_inference(all_feats)
 
-    # Exact Tn1/Tn2/Tn3 references carry a curated internal map. These
-    # annotations make reference-only runs useful without inventing gene calls.
+    # Tn1/Tn2/Tn3 parents are accepted from independently detected IR, gene,
+    # res and cargo components. Whole-locus homology remains corroborating
+    # naming evidence rather than the source of their internal annotation.
+    all_feats.extend(assemble_tn123_components(all_feats))
+
+    # Projection is now a labelled fallback only for components that the
+    # independent scan could not recover.
     all_feats.extend(annotate_tn123(all_feats))
     all_feats.extend(annotate_partridge_units(all_feats))
     all_feats = _suppress_redundant_inference(all_feats)

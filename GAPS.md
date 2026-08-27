@@ -32,8 +32,9 @@ Legend
 | Tn21 (class 1 integron + mer) | AF071413 | ✅ | BLAST + curated map | tnp, terminal IRs, In2 IRi/IRt, 5'-CS, aadA1 cassette region, partial 3'-CS/tni and mer rendered separately |
 | Tn1331 (multi-AMR) | AF479774 | ✅ | Gene-signature (aac(6')-Ib + blaOXA-9 + aadA1) + BLAST |
 | Tn5393 (strAB) | AF262622 | ✅ | Sally's exact 5470 bp reference with curated terminal IRs and collinear variant assembly |
+| Tn1 (blaTEM-2) | NC_008357 | ✅ | Independent IR/blaTEM/tnpR/res/tnpA component scan, grammar assembly and whole-locus naming |
 | Tn3 itself | HM749966, V00613 | ✅ | Sally-selected canonical reference plus legacy archetype |
-| Tn2 (blaTEM) | AY123253 | ✅ | Sally-selected canonical reference and curated internal map |
+| Tn2 (blaTEM-1) | AY123253 | ✅ | Independent component scan and grammar assembly; interrupted tnpA is reassembled from collinear sequence matches |
 | Tn7 | AP002527 | ⚠️ | BLAST only | No attTn7/glmS detection (needs gene prediction) |
 | Tn552 | X52734 | ⚠️ | BLAST only | Staph-specific; no inference rule |
 | Tn_mcr1 (ISApl1-mcr-1) | CP016184 etc. | ✅ | Composite rule, 2 bp TSD |
@@ -76,11 +77,12 @@ Legend
 | Concept | Covered? | Notes |
 |---------|----------|-------|
 | Family-specific TSD lengths (TSD_LENGTHS dict) | ✅ | IS6=8, IS1380=5, IS30=2, IS91/ISCR=None, Tn3/Tn7/Tn4401/Tn1999=5 |
-| TSD boundary offset tolerance (±3bp) | ✅ | `find_tsd` offset window |
+| Boundary-adjacent TSD confirmation | ✅ | Exact repeats must sit flush outside the candidate ends; arbitrary flank matches are rejected |
+| Evidence-gated boundary correction | ✅ | A small offset window is opened only when independent terminal-repeat evidence supports caller-coordinate refinement; exact repeat coordinates and offsets are retained |
 | IR detection with mismatch tolerance | ✅ | `find_ir` (2 mismatch default) |
 | Hybrid promoter creation (IS26/IS257 -35 + adjacent -10) | ➖ | Regulatory, not structural |
 | Terminal IR conservation across Tn3 family (38 bp) | ⚠️ | Not explicitly annotated; BLAST picks up Tn3 backbone |
-| Res site (Tn3-family TnpR recognition) | ⚠️ | Expected-position annotation only (not sequence-confirmed). Motif BLAST too divergent to call reliably |
+| Res site (Tn3-family TnpR recognition) | ⚠️ | Independently sequence-detected for the validated Tn1/Tn2/Tn3 vertical slice; broader Tn3-family diversity still requires additional references/models |
 
 ## Plasmids
 

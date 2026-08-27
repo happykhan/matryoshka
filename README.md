@@ -46,6 +46,14 @@ long plasmid or chromosome. Near matches are labelled `Tn1-like`, `Tn2-like` or
 `Tn3-like`; supported insertions, deletions, fragments and reverse-complement matches
 retain their evidence in the JSON and table.
 
+For these three elements, the diagram is assembled from sequence evidence rather than
+drawn from a name alone. Matryoshka independently scans for both terminal IRs,
+`blaTEM`, `tnpR`, `res` and `tnpA`; checks their order and orientation; and then uses
+the closest whole-locus reference to assign Tn1, Tn2, Tn3 or a qualified `*-like`
+name. Missing required components prevent an exact named call. Solid arrows in the
+figure are sequence-detected components; outlined dashed arrows are reference
+projections and are used only where a supported parent lacks a component call.
+
 ### Pixi alternative
 
 [Pixi](https://pixi.sh) provides a locked core environment for Linux and Intel/Apple
@@ -97,7 +105,7 @@ users.
 
 | Category | Implemented support |
 |---|---|
-| Tn1/Tn2/Tn3 | Complete canonical units, closest-reference minor variants, indels, reverse orientation and conservative partial/ambiguous calls |
+| Tn1/Tn2/Tn3 | Independent IR/blaTEM/tnpR/res/tnpA detection, orientation-aware component assembly, canonical naming, closest-reference minor variants, indels, reverse orientation and conservative partial/ambiguous calls |
 | Curated MARA units | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
 | ISEcp1 transposition units | Seven complete supplied ISEcp1–blaCMY references and orientation-aware incomplete candidates |
 | Insertion sequences | Exact curated IS calls plus ISEScan calls, including IS26/IS257, ISEcp1, ISApl1 and IS91/ISCR families |
@@ -135,8 +143,8 @@ The lower-level `annotate --format` choices are:
 | `genbank` | Biopython GenBank feature annotations |
 | `wolvercote` | Compact nested cell-format text |
 | `linear` | Scale-accurate whole-record SVG |
-| `mara` | One feature-specific locus SVG per validated target |
-| `mara-table` | One MARA-style annotation-table SVG per locus |
+| `mara` | One feature-specific locus SVG per validated target, with an on-figure symbol key |
+| `mara-table` | One MARA-style annotation-table SVG per locus, with evidence notes and a compact key |
 
 Legacy circular CellGen SVG/PNG rendering is not distributed in this alpha because it
 required an unpublished sibling package. Use the bundled linear and MARA SVG outputs.

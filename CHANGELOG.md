@@ -40,15 +40,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cross-platform Pixi environment and a core Docker image.
 - MARA-style single-line SVG output with directional genes, IR flags, exact
   `res` sites, long-gap notation, hollow expected/filled confirmed TSD lollipops
-  and fragment edges.
+  and fragment edges. Every map now includes a self-contained symbol key.
 - MARA-style tabular SVG output with position, hierarchical feature name and
-  strand glyph, accession/FID, type and evidence notes.
+  strand glyph, accession/FID, type, evidence notes and a compact symbol key.
 - Canonical Tn1 (NC_008357), Tn2 (AY123253) and Tn3 (HM749966) detection with
   curated internal maps and conservative `Tn1/2/3` fragment reporting.
 - Locus-based Tn1/Tn2/Tn3 detection in arbitrary-length sequences, including
   collinear multi-HSP assembly, nearest-reference `Tn*-like` calls, reverse
   orientation, internal insertion/deletion status and separate views for
   multiple loci on the same contig.
+- Independent Tn1/Tn2/Tn3 component scanning for both terminal IRs, `blaTEM`,
+  `tnpR`, `res` and `tnpA`, followed by orientation-aware grammar assembly.
+  Exact member names now require the component grammar as well as whole-locus
+  reference evidence; an interrupted `tnpA` can be assembled from collinear HSPs.
 - Reference-only annotation, so the bundled BLAST scan can run without dummy
   detection-tool output files.
 - Seven curated complete ISEcp1-blaCMY transposition-unit references from
@@ -65,11 +69,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   evidence, with parser children retained through the CLI hierarchy rebuild.
 - Component-based class-1-integron and complete Tn402 inference using exact
   5'-CS, 3'-CS, IRi, IRt and tni references.
-- TSD detection with ±3bp boundary offset tolerance.
+- Boundary-adjacent TSD detection with exact repeat coordinates, evidence
+  strength and negative controls for random/non-adjacent matches. A small
+  coordinate-refinement window opens only when independent terminal-repeat
+  evidence supports it.
+- Feature-specific TSD lengths and explicit boundary evidence states for
+  sequence-confirmed, searched-but-not-found and unavailable flanking sequence.
 - Hierarchy enforces biologically-sensible parent/child pairings.
 - CHANGELOG, LICENSE, CITATION.cff, CONTRIBUTING.md, references manifest.
 
 ### Fixed
+- The default validated profile now detects the complete Sally-supplied Tn21
+  parent, rather than reporting only its internal In2 integron.
 - Fresh installations no longer depend on a missing sibling `cell-format`
   checkout. Unsupported legacy circular SVG/PNG choices are no longer
   advertised; the supported linear and MARA SVG renderers remain bundled.
@@ -91,6 +102,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   from being promoted to a complete integron.
 - Generic `blaOXA` calls are explicitly reported as unresolved family-level
   evidence and down-weighted until an exact allele is available.
+- MARA maps and tables distinguish independently sequence-detected components
+  (solid arrows) from reference-projected components (outlined dashed arrows),
+  and describe the component grammar and boundary evidence in their keys.
 - Wolvercote parser no longer crashes on gene names containing parentheses.
 - Wheel builds no longer add the bundled reference directory twice.
 

@@ -9,8 +9,8 @@
 | `annotation.json` | Full v1 annotation document validated by `schema/annotation-v1.schema.json` |
 | `annotation.gff3` | One GFF3 document with sequence regions, unique stable IDs and `Parent` links |
 | `run.json` | Compact counts and relative output locations |
-| `mara/*.svg` | One readable MARA-style locus map per supported target |
-| `mara-table/*.svg` | Matching annotation table per locus |
+| `mara/*.svg` | One readable MARA-style locus map per supported target, including a symbol key |
+| `mara-table/*.svg` | Matching annotation table per locus, including evidence notes and a compact key |
 | `detectors/` | Present only when Matryoshka ran optional external detectors |
 
 ## Coordinates and identity
@@ -38,3 +38,9 @@ biological confidence solely from the feature name.
 `validated` is the default and contains the expert-example-backed alpha subset. `all`
 adds experimental and legacy references. The selected profile is embedded in both
 `annotation.json` and `run.json`.
+
+The diagrams are renderings of the annotation hierarchy, not independent evidence.
+For Tn1/Tn2/Tn3, solid component arrows represent independent sequence matches used
+by the assembly grammar; outlined dashed arrows represent components projected from a
+curated map after a supported parent call. Use the matching table and machine-readable
+annotation for identities, coverages, boundary evidence and grammar status.

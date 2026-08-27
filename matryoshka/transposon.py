@@ -315,11 +315,19 @@ def infer_flanked(rule: FlankedRule, features: list[MGEFeature]) -> list[MGEFeat
             start=up.start,
             end=down.end,
             strand=c.strand,
+            # The outer termini of a flanked composite are independently
+            # supported by the terminal repeats reported for its two complete
+            # IS copies.  Carry that evidence to the assembled parent so the
+            # boundary confirmer may correct a small caller-coordinate drift.
+            ir_left=up.ir_left,
+            ir_right=down.ir_right,
             attributes={
                 "source": "rule",
                 "left_is": up.name,
                 "right_is": down.name,
                 "cargo": c.name,
+                "boundary_evidence": "terminal_IS_pair",
+                "boundary_offset_window": 5,
             },
         ))
     return results
@@ -609,6 +617,16 @@ def annotate_res_sites(transposons: list[MGEFeature]) -> list[MGEFeature]:
         if t.family not in TN3_FAMILY_MEMBERS:
             continue
         if t.attributes.get("curated_internal_features"):
+            continue
+        requirements = t.attributes.get("component_requirements", {})
+        if (
+            t.attributes.get("component_assembly_status") == "complete"
+            and isinstance(requirements, dict)
+            and requirements.get("res") is True
+        ):
+            # The component grammar already supplied an independently
+            # sequence-detected res site. Do not overlay the old positional
+            # placeholder on the same Tn1/Tn2/Tn3 locus.
             continue
         # Expected res region: ~200-400bp from IRL (start for + strand,
         # end for - strand). 120bp wide.
