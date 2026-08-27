@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A reproducible 14-case validation ledger and review report covering exact
   real accessions, pEK499 fragments, minor variation, truncation and related
   elements that must not be misnamed as Tn1/Tn2/Tn3.
+- A complete reviewed-definition demonstration bundle containing every MARA
+  locus map and table, plus a `run.json` index with direct paths for all maps.
 - A source-backed MARA component ontology with 30 raw component classes,
   18 compound-element assembly grammars, named validation examples and
   `matryoshka catalog` JSON/TSV export.

@@ -4,6 +4,47 @@
   "records": 1,
   "features": 22,
   "mara_loci": 3,
+  "mara_locus_outputs": [
+    {
+      "record": "arbitrary_demo_contig",
+      "call": "Tn1-like",
+      "family": "Tn1",
+      "element_type": "transposon",
+      "start": 8001,
+      "end": 12949,
+      "view_start": 3001,
+      "view_end": 17949,
+      "mara": "mara/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+      "mara_table": "mara-table/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+      "hierarchy": "hierarchy/arbitrary_demo_contig.svg"
+    },
+    {
+      "record": "arbitrary_demo_contig",
+      "call": "Tn2-like",
+      "family": "Tn2",
+      "element_type": "transposon",
+      "start": 19950,
+      "end": 25699,
+      "view_start": 14950,
+      "view_end": 30699,
+      "mara": "mara/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+      "mara_table": "mara-table/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+      "hierarchy": "hierarchy/arbitrary_demo_contig.svg"
+    },
+    {
+      "record": "arbitrary_demo_contig",
+      "call": "Tn3",
+      "family": "Tn3",
+      "element_type": "transposon",
+      "start": 31700,
+      "end": 36647,
+      "view_start": 26700,
+      "view_end": 41647,
+      "mara": "mara/arbitrary_demo_contig__Tn3__31700-36647.svg",
+      "mara_table": "mara-table/arbitrary_demo_contig__Tn3__31700-36647.svg",
+      "hierarchy": "hierarchy/arbitrary_demo_contig.svg"
+    }
+  ],
   "proof_status": "PASS",
   "outputs": {
     "annotation_json": "annotation.json",

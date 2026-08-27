@@ -219,6 +219,8 @@ Every MARA map and table contains its own key. The maps distinguish sequence-det
 
 The repository includes a ready-to-open example at `demo-output/arbitrary-tn123/proof-bundle/proof/report.html`. Its input is one 44,647 bp arbitrary contig containing a Tn1 with 25 substitutions, a Tn2 with an 800 bp internal insertion, and an exact reverse-complement Tn3. All three loci pass the component-to-call proof. The first two remain qualified `Tn1-like` and `Tn2-like` calls with their differences recorded; only the unchanged Tn3 receives an exact canonical name.
 
+The seven reviewed definitions have a separate complete bundle at `demo-output/tn123-reviewed-definitions/proof-bundle/`. Its `mara/` and `mara-table/` directories contain the accession-specific maps and tables. It contains eight map entries: one for each of the seven whole-element definitions and a separate nested ISEcp1-associated locus within Tn2.1. `run.json` lists every map explicitly under `mara_locus_outputs`.
+
 ## Review questions for Sally
 
 The machinery is now extensible; the remaining expert decisions are content decisions rather than software constraints:

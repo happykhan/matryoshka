@@ -80,6 +80,8 @@ The current definitions include the three Sally-selected canonical elements plus
 Tn2c (HM749967), Tn2.1 (CP028717), Tn1Mer (GQ160960) and the legacy V00613 Tn3
 sequence. See the [definition and validation report](docs/tn123-definition-and-validation-report.md)
 and its [real-accession ledger](docs/validation/tn123-real-accession-results.tsv).
+The [reviewed-definition demonstration](demo-output/tn123-reviewed-definitions/README.md)
+includes the complete result bundle and every generated MARA locus map/table.
 
 ### Pixi alternative
 

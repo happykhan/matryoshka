@@ -400,6 +400,7 @@ def run_workflow(
     table_dir.mkdir(exist_ok=True)
     hierarchy_dir.mkdir(exist_ok=True)
     proof_output_paths: dict[tuple[str, int, int, str], dict[str, str]] = {}
+    mara_locus_outputs: list[dict[str, object]] = []
     locus_count = 0
     for record in fasta_records:
         sequence = str(record.seq)
@@ -440,6 +441,19 @@ def run_workflow(
                 "annotation_json": "annotation.json",
                 "annotation_gff3": "annotation.gff3",
             }
+            mara_locus_outputs.append({
+                "record": record.id,
+                "call": locus.target.name,
+                "family": locus.target.family,
+                "element_type": locus.target.element_type,
+                "start": locus.target.start,
+                "end": locus.target.end,
+                "view_start": locus.view_start,
+                "view_end": locus.view_end,
+                "mara": f"mara/{locus_name}.svg",
+                "mara_table": f"mara-table/{locus_name}.svg",
+                "hierarchy": f"hierarchy/{safe_record_id}.svg",
+            })
             locus_count += 1
 
     detector_provenance = {
@@ -491,6 +505,7 @@ def run_workflow(
         "records": len(annotated),
         "features": sum(count_features(roots) for _, _, roots in annotated),
         "mara_loci": locus_count,
+        "mara_locus_outputs": mara_locus_outputs,
         "proof_status": proof["summary"]["status"],
         "outputs": {
             "annotation_json": "annotation.json",

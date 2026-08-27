@@ -19,6 +19,11 @@
 | `proof/report.html` | Portable human-readable proof report linking all representations |
 | `detectors/` | Present only when Matryoshka ran optional external detectors |
 
+`run.json` contains a `mara_locus_outputs` array with one entry per generated
+locus map. Each entry records the sequence record, call, family, coordinates,
+viewport and direct relative paths to its MARA map, MARA table and hierarchy
+view. Consumers should use this index rather than guessing filenames.
+
 The proof status is `PASS` only when every required Tn1/Tn2/Tn3 component was
 detected from sequence, the component order/orientation grammar is complete, a known
 whole-element reference supports the name, and zero internal components were merely

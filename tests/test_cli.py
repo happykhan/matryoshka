@@ -105,6 +105,13 @@ def test_run_writes_versioned_result_directory(tmp_path):
     assert document["schema_version"] == "1.0"
     assert document["reference_database"]["profile"] == "validated"
     assert summary["mara_loci"] == 3
+    assert [locus["call"] for locus in summary["mara_locus_outputs"]] == [
+        "Tn1", "Tn2", "Tn3",
+    ]
+    for locus in summary["mara_locus_outputs"]:
+        assert (out / locus["mara"]).is_file()
+        assert (out / locus["mara_table"]).is_file()
+        assert (out / locus["hierarchy"]).is_file()
     assert summary["proof_status"] == "PASS"
     assert len(list((out / "mara").glob("*.svg"))) == 3
     assert len(list((out / "mara-table").glob("*.svg"))) == 3
