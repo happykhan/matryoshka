@@ -21,7 +21,6 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
-
 REPO = Path(__file__).parents[1]
 OUTPUT = REPO / "reports" / "Matryoshka-Tn123-definition-and-validation-report.docx"
 REVIEWED = REPO / "demo-output" / "tn123-reviewed-definitions" / "proof-bundle"
