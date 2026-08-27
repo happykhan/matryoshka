@@ -10,6 +10,7 @@ def test_proof_reports_no_loci_instead_of_false_pass():
         "status": "NO_TN123_LOCI",
         "tn123_loci": 0,
         "passed": 0,
+        "partial": 0,
         "failed": 0,
     }
 

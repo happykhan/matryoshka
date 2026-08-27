@@ -61,7 +61,25 @@ projections and are used only where a supported parent lacks a component call.
 For a Tn1/Tn2/Tn3 locus to receive `PASS` in the proof report, all required
 components must be independently sequence-detected, their grammar and orientation
 must be valid, the whole locus must match a known element, and no internal component
-may be supplied only by reference projection.
+may be supplied only by reference projection. Expected fragments receive a
+`PARTIAL` locus verdict and a `PARTIAL_TN123_EVIDENCE` run status rather than being
+misrepresented as either a complete pass or a pipeline failure.
+
+The biological naming rules are data, not embedded conditionals. They are maintained
+in [`matryoshka/tn123_definitions.yaml`](matryoshka/tn123_definitions.yaml), validated
+by the definition loader, documented by a [JSON Schema](docs/schema/tn123-definitions-v1.schema.json),
+and exportable in review-friendly or machine-readable form:
+
+```bash
+matryoshka definitions --format markdown --out tn123-definitions-review.md
+matryoshka definitions --format yaml --out tn123-definitions.yaml
+matryoshka definitions --format json --out tn123-definitions.json
+```
+
+The current definitions include the three Sally-selected canonical elements plus
+Tn2c (HM749967), Tn2.1 (CP028717), Tn1Mer (GQ160960) and the legacy V00613 Tn3
+sequence. See the [definition and validation report](docs/tn123-definition-and-validation-report.md)
+and its [real-accession ledger](docs/validation/tn123-real-accession-results.tsv).
 
 ### Pixi alternative
 
@@ -114,7 +132,7 @@ users.
 
 | Category | Implemented support |
 |---|---|
-| Tn1/Tn2/Tn3 | Independent IR/blaTEM/tnpR/res/tnpA detection, orientation-aware component assembly, canonical naming, closest-reference minor variants, indels, reverse orientation and conservative partial/ambiguous calls |
+| Tn1/Tn2/Tn3 | YAML-defined IR/blaTEM/tnpR/res/tnpA grammar, orientation-aware component assembly, exact canonical/subtype naming, closest-reference minor variants, indels, reverse orientation and conservative partial/ambiguous calls |
 | Curated MARA units | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
 | ISEcp1 transposition units | Seven complete supplied ISEcp1–blaCMY references and orientation-aware incomplete candidates |
 | Insertion sequences | Exact curated IS calls plus ISEScan calls, including IS26/IS257, ISEcp1, ISApl1 and IS91/ISCR families |

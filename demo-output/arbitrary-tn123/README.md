@@ -19,8 +19,13 @@ dashed arrow would identify a curated reference projection.
 `proof-bundle/` is the one-command acceptance result. Open
 `proof-bundle/proof/report.html` to review the full chain for each locus. The
 same directory contains the raw component ledger, known-element match ledger,
-machine-checkable PASS/FAIL proof, original hierarchical SVG, MARA map and table,
+machine-checkable PASS/PARTIAL/FAIL proof, original hierarchical SVG, MARA map and table,
 and `annotation.cell` CellGen/Wolvercote nested cell-format output.
+
+The match ledger also names the versioned YAML definition used for each call and
+records the type, subtype, substitutions, inserted bases and deleted bases. The
+current regenerated bundle gives three `PASS` verdicts: the two qualified variants
+retain their differences, while only the unchanged Tn3 receives an exact name.
 
 Reproduce it with:
 

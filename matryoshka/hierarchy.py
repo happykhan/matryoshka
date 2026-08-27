@@ -53,6 +53,16 @@ def contains(parent: MGEFeature, child: MGEFeature) -> bool:
         return False
     if (parent.start, parent.end) == (child.start, child.end):
         return False
+    # Sally's annotation precedence: a partial/fragmentary match must not
+    # become the biological parent of a complete recognised element merely
+    # because its uncertain span surrounds it.
+    if (
+        parent.element_type == "transposon"
+        and child.element_type == "transposon"
+        and parent.attributes.get("fragment")
+        and not child.attributes.get("fragment")
+    ):
+        return False
     return (parent.element_type, child.element_type) not in _FORBIDDEN_NESTING
 
 

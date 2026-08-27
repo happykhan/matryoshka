@@ -93,7 +93,7 @@
 <g><title>gene: tnpR (34900–35457)</title>
 <rect x="1076.19" y="280.00" width="16.22" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
-<g><title>AMR: blaTEM-1 (35640–36500)</title>
+<g><title>AMR: blaTEM-1a (35640–36500)</title>
 <rect x="1097.74" y="280.00" width="25.04" height="34.00" fill="#e74c3c" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 <text x="1110.26" y="301.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white" font-weight="bold">bl…</text>
 </g>

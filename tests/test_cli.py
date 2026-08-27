@@ -130,6 +130,7 @@ def test_arbitrary_sequence_proof_connects_detection_matching_and_outputs(tmp_pa
         "status": "PASS",
         "tn123_loci": 3,
         "passed": 3,
+        "partial": 0,
         "failed": 0,
     }
     loci = proof["records"][0]["loci"]

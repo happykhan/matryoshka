@@ -1,0 +1,275 @@
+schema_version: "1.0"
+definition_version: "2026-08-27"
+name: Tn1/Tn2/Tn3 expert definitions
+purpose: >-
+  Reviewable biological rules for detecting the Tn1/Tn2/Tn3 group, assigning
+  a type or named subtype, describing variants, and retaining incomplete
+  fragments without over-naming them.
+
+sources:
+  - id: partridge_2005
+    citation: Partridge and Hall 2005, Evolution of Transposons Containing blaTEM Genes
+    file: Partridge_Tn1-2-3_2005.pdf
+    scope: Tn1, Tn2 and Tn3 mosaic structure and sequence differences around res
+  - id: sally_tn123_working_document
+    citation: Sally Partridge, Sequences to use for Tn1, Tn2 and Tn3
+    file: Tn1_Tn2_Tn3.docx
+    scope: canonical accessions, named variants and sequences to avoid as canonical exemplars
+  - id: sally_feedback
+    citation: Sally Partridge comments on the Matryoshka demonstration
+    file: matryoshka_demo_SP_comments.pdf
+    scope: fragment boundaries, complete-feature precedence and pEK499 Tn2 fragments
+
+family:
+  id: tn123
+  name: Tn1/Tn2/Tn3 group
+  parent_family: Tn3 family
+  expert_description: >-
+    A unit transposon bounded by two 38 bp terminal inverted repeats and
+    containing blaTEM, tnpR, res and tnpA in the conserved element-relative
+    order. This grammar establishes a Tn1/Tn2/Tn3-group unit. It does not by
+    itself distinguish Tn1, Tn2 and Tn3 because their structures and most of
+    their nucleotide sequences are shared.
+  tsd_length: 5
+  terminal_ir_length: 38
+
+grammar:
+  required_components:
+    - {role: terminal_IR, minimum_count: 2, description: both 38 bp element ends}
+    - {role: blaTEM, minimum_count: 1, description: blaTEM resistance gene}
+    - {role: tnpR, minimum_count: 1, description: resolvase gene}
+    - {role: res, minimum_count: 1, description: resolution site}
+    - {role: tnpA, minimum_count: 1, description: transposase gene}
+  forward_order: [terminal_IR, blaTEM, tnpR, res, tnpA, terminal_IR]
+  reverse_order: reverse_of_forward
+  candidate_anchor_role: tnpA
+  candidate_component_window_bp: 2500
+  expert_rule: >-
+    A complete group-level call requires all six component occurrences in the
+    stated order. Reverse-complement copies use the reversed order. Missing
+    components, conflicting order or a missing end produce a fragment or an
+    unresolved Tn3-family unit rather than an exact Tn1, Tn2 or Tn3 call.
+
+classification:
+  type_assignment:
+    method: closest whole-locus reference after component grammar validation
+    compare_types: [Tn1, Tn2, Tn3]
+    minimum_identity_percent: 95.0
+    minimum_reference_coverage_percent: 80.0
+    minimum_type_margin_percent: 0.5
+    expert_rule: >-
+      Compare the complete candidate with the canonical Tn1, Tn2 and Tn3
+      sequences. Assign a type only when one type is clearly closer than the
+      others. Otherwise report an unresolved Tn1/Tn2/Tn3-group element.
+  exact_definition_match:
+    identity_percent: 100.0
+    reference_coverage_percent: 100.0
+    require_both_ends: true
+    require_zero_mismatches: true
+    require_zero_inserted_bases: true
+    require_zero_deleted_bases: true
+    require_complete_component_grammar: true
+    expert_rule: >-
+      Exact means identical to a declared reference definition. A sequence
+      containing even one substitution or indel is a variant unless that
+      sequence has its own reviewed subtype definition.
+  close_variant:
+    minimum_identity_percent: 98.0
+    label_template: "{type}-like"
+    expert_rule: >-
+      A complete candidate that is clearly closest to one type but is not
+      identical to a declared definition is reported as type-like, with its
+      substitutions, insertions and deletions retained in the evidence.
+  fragment:
+    minimum_aligned_reference_bases: 400
+    visible_label: Tn1/2/3 fragment
+    expert_rule: >-
+      Partial homology is retained with coordinates, detected components and
+      closest reference. A fragment is not promoted to a complete named type.
+
+component_detection:
+  long:
+    minimum_reference_length: 200
+    minimum_identity_percent: 90.0
+    minimum_hsp_length: 100
+    minimum_assembled_coverage_percent: 70.0
+    maximum_reference_gap_bp: 100
+  res:
+    minimum_identity_percent: 85.0
+    minimum_hsp_length: 80
+    minimum_subject_coverage_percent: 70.0
+    minimum_assembled_coverage_percent: 85.0
+  terminal_IR:
+    minimum_identity_percent: 89.0
+    minimum_hsp_length: 34
+    minimum_subject_coverage_percent: 89.0
+    minimum_assembled_coverage_percent: 85.0
+    evalue: 10.0
+  whole_locus:
+    minimum_identity_percent: 95.0
+    minimum_hsp_length: 100
+    minimum_assembled_reference_bases: 400
+    maximum_query_insertion_bp: 50000
+    maximum_reference_gap_bp: 500
+    maximum_reference_overlap_bp: 100
+
+types:
+  Tn1:
+    display_name: Tn1
+    expert_description: >-
+      Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the
+      complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Exact Tn1 requires a
+      gap-free, mismatch-free match to this declared sequence.
+    canonical_reference: Tn1_NC_008357
+    source_accession: NC_008357
+    bla_allele: blaTEM-2
+    sources: [sally_tn123_working_document, partridge_2005]
+    components:
+      - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
+      - {role: blaTEM, name: blaTEM-2, element_type: AMR, start: 148, end: 1008, strand: "-"}
+      - {role: tnpR, name: tnpR, element_type: gene, start: 1191, end: 1748, strand: "-"}
+      - {role: res, name: res, element_type: res_site, start: 1754, end: 1867, strand: "."}
+      - {role: tnpA, name: tnpA, element_type: gene, start: 1911, end: -34, strand: "+"}
+      - {role: terminal_IR, name: IRR, element_type: IR, start: -38, end: -1, strand: "."}
+  Tn2:
+    display_name: Tn2
+    expert_description: >-
+      Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the
+      2005 paper and selected as Tn2 in her working document. It has the
+      complete group grammar and carries blaTEM-1b. Whole-locus sequence,
+      including the diagnostic regions around res, distinguishes it from Tn1
+      and Tn3.
+    canonical_reference: Tn2_AY123253
+    source_accession: AY123253
+    bla_allele: blaTEM-1b
+    sources: [sally_tn123_working_document, partridge_2005]
+    components:
+      - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
+      - {role: blaTEM, name: blaTEM-1b, element_type: AMR, start: 148, end: 1008, strand: "-"}
+      - {role: tnpR, name: tnpR, element_type: gene, start: 1191, end: 1748, strand: "-"}
+      - {role: res, name: res, element_type: res_site, start: 1754, end: 1867, strand: "."}
+      - {role: tnpA, name: tnpA, element_type: gene, start: 1911, end: -34, strand: "+"}
+      - {role: terminal_IR, name: IRR, element_type: IR, start: -38, end: -1, strand: "."}
+  Tn3:
+    display_name: Tn3
+    expert_description: >-
+      Canonical Tn3 uses HM749966, the sequence Sally selected in preference
+      to the older V00613 record. It has the complete group grammar and
+      carries blaTEM-1a. Whole-locus sequence, not blaTEM protein identity or
+      gene order alone, distinguishes it from Tn1 and Tn2.
+    canonical_reference: Tn3_HM749966
+    source_accession: HM749966
+    bla_allele: blaTEM-1a
+    sources: [sally_tn123_working_document, partridge_2005]
+    components:
+      - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
+      - {role: blaTEM, name: blaTEM-1a, element_type: AMR, start: 148, end: 1008, strand: "-"}
+      - {role: tnpR, name: tnpR, element_type: gene, start: 1191, end: 1748, strand: "-"}
+      - {role: res, name: res, element_type: res_site, start: 1754, end: 1867, strand: "."}
+      - {role: tnpA, name: tnpA, element_type: gene, start: 1911, end: -34, strand: "+"}
+      - {role: terminal_IR, name: IRR, element_type: IR, start: -38, end: -1, strand: "."}
+
+definitions:
+  Tn1_NC_008357:
+    display_name: Tn1
+    type: Tn1
+    subtype: canonical
+    source_accession: NC_008357
+    reference_kind: canonical
+    component_reference: true
+    review_status: Sally-selected canonical sequence
+    expert_rule: Exact, complete, gap-free match to NC_008357 plus complete component grammar.
+  Tn2_AY123253:
+    display_name: Tn2
+    type: Tn2
+    subtype: canonical
+    source_accession: AY123253
+    reference_kind: canonical
+    component_reference: true
+    review_status: Sally-selected canonical sequence
+    expert_rule: Exact, complete, gap-free match to AY123253 plus complete component grammar.
+  Tn3_HM749966:
+    display_name: Tn3
+    type: Tn3
+    subtype: canonical
+    source_accession: HM749966
+    reference_kind: canonical
+    component_reference: true
+    review_status: Sally-selected canonical sequence
+    expert_rule: Exact, complete, gap-free match to HM749966 plus complete component grammar.
+  Tn2c_HM749967:
+    display_name: Tn2c
+    type: Tn2
+    subtype: Tn2c
+    source_accession: HM749967
+    reference_kind: reviewed_subtype_candidate
+    component_reference: true
+    bla_allele: blaTEM-1c
+    review_status: Sally called this Tn2c in MARA and marked it for later addition
+    expert_rule: >-
+      Exact, complete, gap-free match to the 4950 bp Tn2 interval in HM749967.
+      It retains the Tn2 grammar but carries the blaTEM-1c sequence and nine
+      substitutions relative to AY123253.
+    known_differences_from_parent:
+      - 9 nucleotide substitutions relative to canonical Tn2 AY123253
+      - blaTEM-1c allele
+  Tn2_1_CP028717:
+    display_name: Tn2.1
+    type: Tn2
+    subtype: Tn2.1
+    source_accession: CP028717
+    reference_kind: reviewed_subtype_candidate
+    component_reference: false
+    review_status: Sally described this as Tn2 with an inserted ISEcp1 TPU
+    expert_rule: >-
+      Exact match to the 8979 bp interrupted Tn2 structure extracted from
+      CP028717. The Tn2 backbone is complete, including both terminal IRs,
+      and a 4024 bp ISEcp1-associated region interrupts the sequence between
+      canonical reference positions 124 and 129.
+    known_differences_from_parent:
+      - 4024 bp ISEcp1-associated insertion near the blaTEM end
+      - 5 bp duplicated Tn2 sequence flanks the insertion junction
+    additional_features:
+      - {element_type: transposition_unit, family: ISEcp1_TPU, name: ISEcp1-associated insertion, start: 130, end: 4153, strand: "+", evidence: definition_projection}
+      - {element_type: IS, family: IS1380, name: ISEcp1, start: 130, end: 1221, strand: "+", evidence: definition_projection, status: partial}
+  Tn1Mer_GQ160960:
+    display_name: Tn1Mer
+    type: Tn1
+    subtype: Tn1Mer
+    source_accession: GQ160960
+    reference_kind: reviewed_subtype_candidate
+    component_reference: false
+    review_status: Sally said to ignore this as the canonical Tn1 because it contains Tn5036-like
+    expert_rule: >-
+      Exact match to the 10491 bp interrupted Tn1 structure in GQ160960.
+      The outer Tn1 grammar is complete, while a defective 5537 bp
+      Tn5036-like transposon interrupts the Tn1 backbone. This is a named
+      interrupted subtype, not the canonical Tn1 reference.
+    known_differences_from_parent:
+      - defective Tn5036-like transposon inserted into the Tn1 backbone
+      - blaTEM-1 rather than canonical Tn1 blaTEM-2
+    additional_features:
+      - {element_type: transposon, family: Tn5036-like, name: defective Tn5036-like, start: 1888, end: 7424, strand: "-", evidence: definition_projection, status: interrupted}
+  Tn3_V00613:
+    display_name: Tn3
+    type: Tn3
+    subtype: V00613_legacy_9bp_duplication
+    source_accession: V00613
+    reference_kind: reviewed_subtype_candidate
+    component_reference: false
+    review_status: Sally noted the 9 bp duplication and preferred HM749966 as canonical
+    expert_rule: >-
+      Exact match to V00613 is Tn3 with the declared 9 bp duplication. It is
+      a recognised Tn3 sequence variant, not an exact match to canonical
+      HM749966.
+    known_differences_from_parent:
+      - 9 bp duplication relative to canonical Tn3 HM749966
+
+related_element_policy:
+  expert_rule: >-
+    Shared components may be detected in another Tn3-family transposon. If
+    the complete Tn1/Tn2/Tn3 grammar is absent and no declared whole-element
+    definition matches, draw the supported components and report an
+    unresolved Tn3-family unit or fragment. Do not force a Tn1, Tn2 or Tn3
+    name.
+  examples_expected_not_to_be_named_tn123: [Tn1696, Tn1721, Tn5403]

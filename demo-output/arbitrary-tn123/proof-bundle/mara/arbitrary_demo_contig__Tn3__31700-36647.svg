@@ -8,7 +8,7 @@
 <polygon points="695.2,58 722.7,58 737.5,66 722.7,74 695.2,74" fill="#000000" stroke="#000" stroke-width="1"/>
 <text x="716.4" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">tnpR</text>
 <polygon points="751.5,58 801.8,58 816.8,66 801.8,74 751.5,74" fill="#000000" stroke="#000" stroke-width="1"/>
-<text x="784.1" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">blaTEM-1</text>
+<text x="784.1" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">blaTEM-1a</text>
 <text x="690.5" y="105.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="italic" fill="#111111">res</text>
 <line x1="454.8" y1="44" x2="454.8" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="454.8,23 444.8,29 454.8,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
 <line x1="825.2" y1="44" x2="825.2" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="825.2,23 835.2,29 825.2,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>

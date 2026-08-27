@@ -10,6 +10,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .detect import MGEFeature
+from .element_definitions import (
+    tn123_components,
+    tn123_definition,
+    tn123_reference_metadata,
+    tn123_rules,
+    tn123_type,
+)
 
 
 @dataclass(frozen=True)
@@ -37,45 +44,20 @@ class Tn123ComponentReference:
     sequence: str
 
 
-REFERENCE_METADATA: dict[str, dict[str, str]] = {
-    "Tn1_NC_008357": {
-        "element_type": "transposon",
-        "family": "Tn1",
-        "name": "Tn1",
-        "source_accession": "NC_008357",
-        "tn123_canonical": "true",
-    },
-    "Tn2_AY123253": {
-        "element_type": "transposon",
-        "family": "Tn2",
-        "name": "Tn2",
-        "source_accession": "AY123253",
-        "tn123_canonical": "true",
-    },
-    "Tn3_HM749966": {
-        "element_type": "transposon",
-        "family": "Tn3",
-        "name": "Tn3",
-        "source_accession": "HM749966",
-        "tn123_canonical": "true",
-    },
-}
+REFERENCE_METADATA: dict[str, dict[str, str]] = tn123_reference_metadata()
 
 
-_COMMON_LAYOUT = (
-    InternalFeature("IR", "IRL", 1, 38, "."),
-    InternalFeature("AMR", "{bla}", 148, 1008, "-"),
-    InternalFeature("gene", "tnpR", 1191, 1748, "-"),
-    InternalFeature("res_site", "res", 1754, 1867, "."),
-    InternalFeature("gene", "tnpA", 1911, -34, "+"),
-    InternalFeature("IR", "IRR", -38, -1, "."),
-)
-
-_BLA_NAMES = {
-    "Tn1": "blaTEM-2",
-    "Tn2": "blaTEM-1b",
-    "Tn3": "blaTEM-1",
-}
+def _internal_features(reference_id: str) -> tuple[InternalFeature, ...]:
+    return tuple(
+        InternalFeature(
+            str(component["element_type"]),
+            str(component["name"]),
+            int(component["start"]),
+            int(component["end"]),
+            str(component["strand"]),
+        )
+        for component in tn123_components(reference_id)
+    )
 
 
 def component_references(
@@ -84,17 +66,19 @@ def component_references(
 ) -> list[Tn123ComponentReference]:
     """Return canonical components as independent nucleotide references."""
     metadata = REFERENCE_METADATA[reference_id]
+    definition = tn123_definition(reference_id)
+    if not definition["component_reference"]:
+        return []
     family = metadata["family"]
     references: list[Tn123ComponentReference] = []
-    for item in _COMMON_LAYOUT:
+    definition_components = tn123_components(reference_id)
+    for item, component in zip(
+        _internal_features(reference_id), definition_components, strict=True
+    ):
         start = _absolute_coordinate(item.start, len(sequence))
         end = _absolute_coordinate(item.end, len(sequence))
-        name = _BLA_NAMES[family] if item.name == "{bla}" else item.name
-        role = {
-            "IR": "terminal_IR",
-            "AMR": "blaTEM",
-            "res_site": "res",
-        }.get(item.element_type, item.name)
+        name = item.name
+        role = str(component["role"])
         safe_name = "".join(character if character.isalnum() else "_" for character in name)
         references.append(Tn123ComponentReference(
             reference_id=f"{reference_id}__{safe_name}__{start}_{end}",
@@ -196,7 +180,16 @@ def _project_strand(parent: MGEFeature, strand: str) -> str:
 
 def curated_internal_features(parent: MGEFeature) -> list[MGEFeature]:
     """Project canonical internal features onto an exact full-length call."""
-    if parent.family not in _BLA_NAMES:
+    reference_id = str(parent.attributes.get("reference_id", ""))
+    if reference_id in REFERENCE_METADATA:
+        definition = tn123_definition(reference_id)
+        layout = _internal_features(reference_id)
+    elif parent.family in {"Tn1", "Tn2", "Tn3"}:
+        type_definition = tn123_type(parent.family)
+        reference_id = str(type_definition["canonical_reference"])
+        definition = tn123_definition(reference_id)
+        layout = _internal_features(reference_id)
+    else:
         return []
     try:
         coverage = float(parent.attributes.get("blast_subject_coverage", 0.0))
@@ -213,14 +206,14 @@ def curated_internal_features(parent: MGEFeature) -> list[MGEFeature]:
     seqid = parent.attributes.get("seqid", "")
     source_accession = parent.attributes.get("source_accession", "")
     children: list[MGEFeature] = []
-    for item in _COMMON_LAYOUT:
+    for item in layout:
         rel_start = _absolute_coordinate(item.start, reference_length)
         rel_end = _absolute_coordinate(item.end, reference_length)
         projected = _project_reference_interval(parent, rel_start, rel_end)
         if projected is None:
             continue
         start, end = projected
-        name = _BLA_NAMES[parent.family] if item.name == "{bla}" else item.name
+        name = item.name
         interruption = _interruption_size(parent, rel_start, rel_end)
         attributes: dict[str, object] = {
             "seqid": seqid,
@@ -240,9 +233,38 @@ def curated_internal_features(parent: MGEFeature) -> list[MGEFeature]:
             strand=_project_strand(parent, item.strand),
             attributes=attributes,
         ))
+    for item in definition.get("additional_features", []):
+        rel_start = _absolute_coordinate(int(item["start"]), reference_length)
+        rel_end = _absolute_coordinate(int(item["end"]), reference_length)
+        projected = _project_reference_interval(parent, rel_start, rel_end)
+        if projected is None:
+            continue
+        start, end = projected
+        attributes: dict[str, object] = {
+            "seqid": seqid,
+            "source": "expert_definition",
+            "source_accession": source_accession,
+            "parent_transposon": parent.name,
+            "evidence_class": item.get("evidence", "definition_projection"),
+            "definition_id": reference_id,
+        }
+        if item.get("status"):
+            attributes["structural_status"] = item["status"]
+            if item["status"] == "partial":
+                attributes["fragment"] = True
+        children.append(MGEFeature(
+            element_type=str(item["element_type"]),
+            family=str(item["family"]),
+            name=str(item["name"]),
+            start=start,
+            end=end,
+            strand=_project_strand(parent, str(item["strand"])),
+            attributes=attributes,
+        ))
     parent.attributes["curated_internal_features"] = True
-    parent.attributes["ir_length"] = 38
-    parent.tsd_length = 5
+    rules = tn123_rules()["family"]
+    parent.attributes["ir_length"] = int(rules["terminal_ir_length"])
+    parent.tsd_length = int(rules["tsd_length"])
     return children
 
 
@@ -293,7 +315,12 @@ def inserted_sequence_features(parent: MGEFeature) -> list[MGEFeature]:
     return out
 
 
-_REQUIRED_COMPONENTS = ("terminal_IR", "blaTEM", "tnpR", "res", "tnpA")
+def _required_component_counts() -> dict[str, int]:
+    grammar = tn123_rules()["grammar"]
+    return {
+        str(component["role"]): int(component["minimum_count"])
+        for component in grammar["required_components"]
+    }
 
 
 def _component_role(feature: MGEFeature) -> str:
@@ -359,11 +386,13 @@ def _select_component_path(
 
     selected.sort(key=lambda item: (item.start, item.end))
     roles = [_component_role(feature) for feature in selected]
-    forward = ["terminal_IR", "blaTEM", "tnpR", "res", "tnpA", "terminal_IR"]
+    grammar = tn123_rules()["grammar"]
+    forward = [str(role) for role in grammar["forward_order"]]
     expected = forward if parent.strand != "-" else list(reversed(forward))
+    required_counts = _required_component_counts()
     requirements = {
-        role: len(by_role.get(role, [])) >= (2 if role == "terminal_IR" else 1)
-        for role in _REQUIRED_COMPONENTS
+        role: len(by_role.get(role, [])) >= count
+        for role, count in required_counts.items()
     }
     order_valid = roles == expected
     return selected, requirements, order_valid
@@ -399,7 +428,11 @@ def _record_component_assembly(
                 "evidence_class": feature.attributes.get("evidence_class"),
                 "identity": feature.attributes.get("blast_identity"),
                 "coverage": feature.attributes.get("blast_coverage"),
-                "status": feature.attributes.get("component_status"),
+                "status": feature.attributes.get("structural_status"),
+                "component_status": feature.attributes.get("component_status"),
+                "reference": feature.attributes.get("component_reference"),
+                "reference_segments": feature.attributes.get("reference_segments", []),
+                "inserted_bases": feature.attributes.get("inserted_bases", 0),
             }
             for feature in selected
         ],
@@ -440,7 +473,7 @@ def assemble_tn123_components(features: list[MGEFeature]) -> list[MGEFeature]:
         )
         if (
             not complete
-            and parent.name in {"Tn1", "Tn2", "Tn3"}
+            and parent.attributes.get("variant_status") == "exact_reference"
             and not parent.attributes.get("fragment")
         ):
             parent.attributes["reference_assigned_name"] = parent.name
@@ -460,8 +493,12 @@ def assemble_tn123_components(features: list[MGEFeature]) -> list[MGEFeature]:
             component
             for component in components
             if component.attributes.get("seqid") == seqid
-            and component.start >= tnpa.start - 2_500
-            and component.end <= tnpa.end + 2_500
+            and component.start >= tnpa.start - int(
+                tn123_rules()["grammar"]["candidate_component_window_bp"]
+            )
+            and component.end <= tnpa.end + int(
+                tn123_rules()["grammar"]["candidate_component_window_bp"]
+            )
         ]
         irs = sorted(
             (feature for feature in nearby if _component_role(feature) == "terminal_IR"),
@@ -504,9 +541,27 @@ def annotate_tn123(features: list[MGEFeature]) -> list[MGEFeature]:
         ]
         for feature in retained:
             feature.attributes["evidence_class"] = "reference_projected"
+        required_roles = set(_required_component_counts())
+        projected_components = [
+            feature for feature in retained
+            if _component_role(feature) in required_roles
+        ]
+        projected_context = [
+            feature for feature in retained
+            if _component_role(feature) not in required_roles
+        ]
         parent.attributes["curated_internal_features"] = bool(retained)
         parent.attributes["independently_detected_internal_features"] = bool(detected)
-        parent.attributes["reference_projected_component_count"] = len(retained)
+        # Only required grammar parts count as projected components. Reviewed
+        # subtype context (for example the ISEcp1-associated insertion in
+        # Tn2.1) is deliberately separate: it enriches the drawing but is not
+        # used to manufacture the core Tn1/2/3 component proof.
+        parent.attributes["reference_projected_component_count"] = len(
+            projected_components
+        )
+        parent.attributes["reference_projected_context_feature_count"] = len(
+            projected_context
+        )
         out.extend(retained)
         out.extend(inserted_sequence_features(parent))
     return out

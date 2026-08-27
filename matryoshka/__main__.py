@@ -33,6 +33,11 @@ from .detect import (
     run_integron_finder,
     run_isescan,
 )
+from .element_definitions import (
+    definitions_as_json,
+    definitions_as_markdown,
+    definitions_as_yaml,
+)
 from .hierarchy import build_hierarchy
 from .integron_structures import infer_integron_structures
 from .mara_loci import extract_mara_loci
@@ -73,6 +78,26 @@ def catalog(fmt: str, out: str) -> None:
     """List the MARA raw components and compound assembly grammar."""
     data = catalog_as_json() if fmt == "json" else catalog_as_tsv()
     _emit(data, out, False)
+
+
+@cli.command("definitions")
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["yaml", "json", "markdown"]),
+    default="markdown",
+    show_default=True,
+    help="Expert-definition output format.",
+)
+@click.option("--out", "-o", default="-", help="Output file (default: stdout).")
+def definitions_command(fmt: str, out: str) -> None:
+    """Show the biological rules used to call Tn1, Tn2 and Tn3."""
+    exporters = {
+        "yaml": definitions_as_yaml,
+        "json": definitions_as_json,
+        "markdown": definitions_as_markdown,
+    }
+    _emit(exporters[fmt](), out, False)
 
 
 def _features_on_contig(

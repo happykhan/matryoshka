@@ -16,6 +16,15 @@
       "reference_id": "Tn1_NC_008357",
       "source": "reference_scan",
       "source_accession": "NC_008357",
+      "definition_id": "Tn1_NC_008357",
+      "definition_version": "2026-08-27",
+      "defined_type": "Tn1",
+      "defined_subtype": "canonical",
+      "closest_definition": "Tn1",
+      "reference_kind": "canonical",
+      "expert_rule": "Exact, complete, gap-free match to NC_008357 plus complete component grammar.",
+      "known_differences_from_parent": [],
+      "review_status": "Sally-selected canonical sequence",
       "tn123_canonical": "true",
       "best_match": "Tn1",
       "blast_identity": 99.5,
@@ -29,18 +38,22 @@
           "qend": 12949,
           "sstart": 1,
           "send": 4949,
-          "identity": 99.495
+          "identity": 99.495,
+          "mismatch_bases": 25,
+          "gap_bases": 0
         }
       ],
-      "variant_margin": 1.78,
+      "variant_margin": 1.64,
       "variant_status": "minor_sequence_variant",
       "structural_status": "intact",
       "query_span": 4949,
       "inserted_bases": 0,
       "deleted_bases": 0,
+      "mismatch_bases": 25,
+      "alignment_gap_bases": 0,
       "left_end_covered": true,
       "right_end_covered": true,
-      "note": "closest reference is Tn1; reported as a variant",
+      "note": "closest definition is Tn1 (Tn1); reported as a variant",
       "component_assembly_status": "complete",
       "component_order_valid": true,
       "component_requirements": {
@@ -61,7 +74,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_segments": [
+            {
+              "qstart": 8001,
+              "qend": 8038,
+              "sstart": 38,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "blaTEM",
@@ -72,7 +99,21 @@
           "evidence_class": "sequence_detected",
           "identity": 99.42,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__blaTEM_2__148_1008",
+          "reference_segments": [
+            {
+              "qstart": 8148,
+              "qend": 9008,
+              "sstart": 1,
+              "send": 861,
+              "identity": 99.419,
+              "mismatch_bases": 5,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "tnpR",
@@ -83,7 +124,21 @@
           "evidence_class": "sequence_detected",
           "identity": 99.1,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__tnpR__1191_1748",
+          "reference_segments": [
+            {
+              "qstart": 9191,
+              "qend": 9748,
+              "sstart": 1,
+              "send": 558,
+              "identity": 99.104,
+              "mismatch_bases": 5,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "res",
@@ -94,7 +149,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__res__1754_1867",
+          "reference_segments": [
+            {
+              "qstart": 9754,
+              "qend": 9867,
+              "sstart": 1,
+              "send": 114,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "tnpA",
@@ -105,7 +174,21 @@
           "evidence_class": "sequence_detected",
           "identity": 99.57,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__tnpA__1911_4916",
+          "reference_segments": [
+            {
+              "qstart": 9911,
+              "qend": 12916,
+              "sstart": 1,
+              "send": 3006,
+              "identity": 99.568,
+              "mismatch_bases": 13,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "terminal_IR",
@@ -116,7 +199,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_segments": [
+            {
+              "qstart": 12912,
+              "qend": 12949,
+              "sstart": 1,
+              "send": 38,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         }
       ],
       "naming_evidence": [
@@ -128,6 +225,7 @@
       "ir_length": 38,
       "independently_detected_internal_features": true,
       "reference_projected_component_count": 0,
+      "reference_projected_context_feature_count": 0,
       "ir_evidence": "sequence_matched",
       "tsd_evidence": "searched_not_found",
       "confidence": 1.0,
@@ -151,9 +249,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -163,7 +261,9 @@
               "qend": 8038,
               "sstart": 38,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -202,7 +302,9 @@
               "qend": 9008,
               "sstart": 1,
               "send": 861,
-              "identity": 99.419
+              "identity": 99.419,
+              "mismatch_bases": 5,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -241,7 +343,9 @@
               "qend": 9748,
               "sstart": 1,
               "send": 558,
-              "identity": 99.104
+              "identity": 99.104,
+              "mismatch_bases": 5,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -280,7 +384,9 @@
               "qend": 9867,
               "sstart": 1,
               "send": 114,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -319,7 +425,9 @@
               "qend": 12916,
               "sstart": 1,
               "send": 3006,
-              "identity": 99.568
+              "identity": 99.568,
+              "mismatch_bases": 13,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -346,9 +454,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -358,7 +466,9 @@
               "qend": 12949,
               "sstart": 1,
               "send": 38,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -387,6 +497,15 @@
       "reference_id": "Tn2_AY123253",
       "source": "reference_scan",
       "source_accession": "AY123253",
+      "definition_id": "Tn2_AY123253",
+      "definition_version": "2026-08-27",
+      "defined_type": "Tn2",
+      "defined_subtype": "canonical",
+      "closest_definition": "Tn2",
+      "reference_kind": "canonical",
+      "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
+      "known_differences_from_parent": [],
+      "review_status": "Sally-selected canonical sequence",
       "tn123_canonical": "true",
       "best_match": "Tn2",
       "blast_identity": 100.0,
@@ -400,14 +519,18 @@
           "qend": 22450,
           "sstart": 1,
           "send": 2501,
-          "identity": 100.0
+          "identity": 100.0,
+          "mismatch_bases": 0,
+          "gap_bases": 0
         },
         {
           "qstart": 23250,
           "qend": 25699,
           "sstart": 2501,
           "send": 4950,
-          "identity": 100.0
+          "identity": 100.0,
+          "mismatch_bases": 0,
+          "gap_bases": 0
         }
       ],
       "variant_margin": 1.8,
@@ -416,9 +539,11 @@
       "query_span": 5750,
       "inserted_bases": 799,
       "deleted_bases": 0,
+      "mismatch_bases": 0,
+      "alignment_gap_bases": 0,
       "left_end_covered": true,
       "right_end_covered": true,
-      "note": "closest reference is Tn2; reported as a variant",
+      "note": "closest definition is Tn2 (Tn2); reported as a variant",
       "component_assembly_status": "complete",
       "component_order_valid": true,
       "component_requirements": {
@@ -439,7 +564,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_segments": [
+            {
+              "qstart": 19950,
+              "qend": 19987,
+              "sstart": 38,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "blaTEM",
@@ -450,7 +589,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2_AY123253__blaTEM_1b__148_1008",
+          "reference_segments": [
+            {
+              "qstart": 20097,
+              "qend": 20957,
+              "sstart": 1,
+              "send": 861,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "tnpR",
@@ -461,7 +614,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2_AY123253__tnpR__1191_1748",
+          "reference_segments": [
+            {
+              "qstart": 21140,
+              "qend": 21697,
+              "sstart": 1,
+              "send": 558,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "res",
@@ -472,7 +639,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__res__1754_1867",
+          "reference_segments": [
+            {
+              "qstart": 21703,
+              "qend": 21816,
+              "sstart": 1,
+              "send": 114,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "tnpA",
@@ -483,7 +664,30 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "complete_with_insertion",
+          "component_status": "complete",
+          "reference": "Tn2_AY123253__tnpA__1911_4917",
+          "reference_segments": [
+            {
+              "qstart": 21860,
+              "qend": 22450,
+              "sstart": 1,
+              "send": 591,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            },
+            {
+              "qstart": 23250,
+              "qend": 25666,
+              "sstart": 591,
+              "send": 3007,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 799
         },
         {
           "role": "terminal_IR",
@@ -494,7 +698,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_segments": [
+            {
+              "qstart": 25662,
+              "qend": 25699,
+              "sstart": 1,
+              "send": 38,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         }
       ],
       "naming_evidence": [
@@ -506,6 +724,7 @@
       "ir_length": 38,
       "independently_detected_internal_features": true,
       "reference_projected_component_count": 0,
+      "reference_projected_context_feature_count": 0,
       "ir_evidence": "sequence_matched",
       "tsd_evidence": "searched_not_found",
       "confidence": 1.0,
@@ -529,9 +748,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -541,7 +760,9 @@
               "qend": 19987,
               "sstart": 38,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -580,7 +801,9 @@
               "qend": 20957,
               "sstart": 1,
               "send": 861,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -619,7 +842,9 @@
               "qend": 21697,
               "sstart": 1,
               "send": 558,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -646,8 +871,8 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "res",
-          "component_reference": "Tn2_AY123253__res__1754_1867",
-          "reference_parent": "Tn2_AY123253",
+          "component_reference": "Tn2c_HM749967__res__1754_1867",
+          "reference_parent": "Tn2c_HM749967",
           "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
@@ -658,7 +883,9 @@
               "qend": 21816,
               "sstart": 1,
               "send": 114,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -697,14 +924,18 @@
               "qend": 22450,
               "sstart": 1,
               "send": 591,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             },
             {
               "qstart": 23250,
               "qend": 25666,
               "sstart": 591,
               "send": 3007,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -757,9 +988,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -769,7 +1000,9 @@
               "qend": 25699,
               "sstart": 1,
               "send": 38,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -798,6 +1031,15 @@
       "reference_id": "Tn3_HM749966",
       "source": "reference_scan",
       "source_accession": "HM749966",
+      "definition_id": "Tn3_HM749966",
+      "definition_version": "2026-08-27",
+      "defined_type": "Tn3",
+      "defined_subtype": "canonical",
+      "closest_definition": "Tn3",
+      "reference_kind": "canonical",
+      "expert_rule": "Exact, complete, gap-free match to HM749966 plus complete component grammar.",
+      "known_differences_from_parent": [],
+      "review_status": "Sally-selected canonical sequence",
       "tn123_canonical": "true",
       "best_match": "Tn3",
       "blast_identity": 100.0,
@@ -811,7 +1053,9 @@
           "qend": 36647,
           "sstart": 4948,
           "send": 1,
-          "identity": 100.0
+          "identity": 100.0,
+          "mismatch_bases": 0,
+          "gap_bases": 0
         }
       ],
       "variant_margin": 1.86,
@@ -820,6 +1064,8 @@
       "query_span": 4948,
       "inserted_bases": 0,
       "deleted_bases": 0,
+      "mismatch_bases": 0,
+      "alignment_gap_bases": 0,
       "left_end_covered": true,
       "right_end_covered": true,
       "component_assembly_status": "complete",
@@ -842,7 +1088,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_segments": [
+            {
+              "qstart": 31700,
+              "qend": 31737,
+              "sstart": 38,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "tnpA",
@@ -853,7 +1113,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__tnpA__1911_4915",
+          "reference_segments": [
+            {
+              "qstart": 31733,
+              "qend": 34737,
+              "sstart": 3005,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "res",
@@ -864,7 +1138,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__res__1754_1867",
+          "reference_segments": [
+            {
+              "qstart": 34781,
+              "qend": 34894,
+              "sstart": 114,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "tnpR",
@@ -875,18 +1163,46 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__tnpR__1191_1748",
+          "reference_segments": [
+            {
+              "qstart": 34900,
+              "qend": 35457,
+              "sstart": 558,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "blaTEM",
-          "name": "blaTEM-1",
+          "name": "blaTEM-1a",
           "start": 35640,
           "end": 36500,
           "strand": "+",
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__blaTEM_1a__148_1008",
+          "reference_segments": [
+            {
+              "qstart": 35640,
+              "qend": 36500,
+              "sstart": 861,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         },
         {
           "role": "terminal_IR",
@@ -897,7 +1213,21 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_segments": [
+            {
+              "qstart": 36610,
+              "qend": 36647,
+              "sstart": 1,
+              "send": 38,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0
         }
       ],
       "naming_evidence": [
@@ -909,6 +1239,7 @@
       "ir_length": 38,
       "independently_detected_internal_features": true,
       "reference_projected_component_count": 0,
+      "reference_projected_context_feature_count": 0,
       "ir_evidence": "sequence_matched",
       "tsd_evidence": "searched_not_found",
       "confidence": 1.0,
@@ -932,9 +1263,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -944,7 +1275,9 @@
               "qend": 31737,
               "sstart": 38,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -983,7 +1316,9 @@
               "qend": 34737,
               "sstart": 3005,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -1022,7 +1357,9 @@
               "qend": 34894,
               "sstart": 114,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -1061,7 +1398,9 @@
               "qend": 35457,
               "sstart": 558,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -1074,7 +1413,7 @@
       {
         "element_type": "AMR",
         "family": "Tn3_family",
-        "name": "blaTEM-1",
+        "name": "blaTEM-1a",
         "start": 35640,
         "end": 36500,
         "strand": "+",
@@ -1088,7 +1427,7 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "blaTEM",
-          "component_reference": "Tn3_HM749966__blaTEM_1__148_1008",
+          "component_reference": "Tn3_HM749966__blaTEM_1a__148_1008",
           "reference_parent": "Tn3_HM749966",
           "reference_family": "Tn3",
           "blast_identity": 100.0,
@@ -1100,7 +1439,9 @@
               "qend": 36500,
               "sstart": 861,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
@@ -1127,9 +1468,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -1139,7 +1480,9 @@
               "qend": 36647,
               "sstart": 1,
               "send": 38,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
