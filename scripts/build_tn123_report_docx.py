@@ -349,7 +349,7 @@ def add_contents(doc: Document) -> None:
     for text in (
         "An arbitrary multi-FASTA input can be scanned without pre-existing annotations.",
         "Tn1/Tn2/Tn3 components are detected independently and assembled using an explicit component grammar.",
-        "A complete locus is matched to a reviewed whole-element definition; non-identical and incomplete loci are not silently promoted to exact names.",
+        "A complete locus is classified from its component grammar and weighted local component profiles; a whole-element comparison is secondary confirmation.",
         "Every result can be inspected as a MARA-style map, a MARA table, the original hierarchy view, JSON, GFF3 and CellGen format.",
         "The seven reviewed accession definitions produce complete component grammars and exact declared calls; pEK499 produces two retained partial Tn2-like fragments rather than an invented complete Tn2.",
     ):
@@ -367,8 +367,8 @@ def add_tool_explanation(doc: Document) -> None:
         ["1", "Read FASTA", "One or many contigs or complete sequences; no feature annotation is required."],
         ["2", "Detect components", "Scan independently for 38 bp terminal inverted repeats, blaTEM, tnpR, res and tnpA."],
         ["3", "Assemble loci", "Group nearby features and test the required order and orientation on either strand."],
-        ["4", "Match definitions", "Compare complete candidates with the reviewed whole-element references and subtype rules."],
-        ["5", "Refine boundaries", "Record terminal-IR and direct-repeat evidence, insertions, deletions and mismatches."],
+        ["4", "Classify by expert rules", "Score the detected component profiles and assign a type only when the declared threshold and margin are met."],
+        ["5", "Compare references", "Optionally confirm an exact reviewed definition and record secondary closest-reference context."],
         ["6", "Write outputs", "JSON, GFF3, CellGen, hierarchy SVG, MARA map, MARA table and proof ledger."],
     ]
     add_table(doc, ["Stage", "Operation", "Why it matters"], steps,
@@ -376,9 +376,9 @@ def add_tool_explanation(doc: Document) -> None:
     add_heading(doc, "Call classes", 2)
     add_table(doc, ["Visible result", "Meaning"], [
         ["Tn1 / Tn2 / Tn3 or named subtype", "Complete component grammar and exact match to a reviewed declared definition."],
-        ["Tn1-like / Tn2-like / Tn3-like", "Complete grammar and a clear closest type, but the sequence is not an exact declared definition."],
+        ["Tn1-like / Tn2-like / Tn3-like", "Complete grammar and a clear best weighted component profile, without requiring a complete-element match."],
         ["Tn1/2/3 fragment", "At least 400 aligned reference bases, but an end or required component is missing or the grammar is incomplete."],
-        ["Unresolved Tn1/Tn2/Tn3-group unit", "The group grammar is supported but the closest whole-locus type is not sufficiently distinct."],
+        ["Unresolved Tn1/Tn2/Tn3-group unit", "The group grammar is supported but the component-profile score or type margin is insufficient."],
         ["No Tn1/Tn2/Tn3 call", "Some shared components may still be annotated and drawn, but the element-level rule is not satisfied."],
     ], [2800, 5660], font_size=9.2)
 
@@ -387,19 +387,19 @@ def add_run_details(doc: Document) -> None:
     new_section(doc)
     add_heading(doc, "2. What is actually run", 1)
     add_heading(doc, "Built-in analysis", 2)
-    add_para(doc, "The command always performs the validated reference scan when BLAST is available. It searches the input both against whole-element references and against independent component references. Collinear hits are assembled across substitutions and insertions; candidate components are then checked without allowing a whole-locus match to manufacture missing required components.")
+    add_para(doc, "The command scans independently for the component sequences and assembles their collinear matches across substitutions, insertions and deletions. The expert-rule classifier uses those components to establish the family and type. Under the default validated profile, a separate whole-element comparison is then attached as confirmation or context. The tn123-components profile omits that complete-element lookup entirely.")
     add_heading(doc, "Optional detector layer", 2)
     add_para(doc, "The --detectors option controls additional programs, not the built-in Tn1/Tn2/Tn3 scan. The report bundles were generated with --detectors none, which means ISEScan, AMRFinderPlus and IntegronFinder were not launched. Built-in BLAST detection and the expert-rule classifier still ran. With --detectors available or --detectors all, those programs add broader IS, AMR-gene and integron evidence.")
     add_table(doc, ["Analysis", "Role", "Used for this report"], [
-        ["BLAST whole-locus scan", "Find complete, interrupted and partial similarity to reviewed elements", "Yes"],
-        ["BLAST component scan", "Detect IRL/IRR, blaTEM, tnpR, res and tnpA independently", "Yes"],
+        ["BLAST component scan", "Detect IRL/IRR, blaTEM, tnpR, res and tnpA independently", "Yes; primary"],
         ["Component assembler", "Test count, order, orientation and ends", "Yes"],
-        ["Expert-rule classifier", "Assign exact, type-like, fragment or unresolved result", "Yes"],
+        ["Expert-rule classifier", "Assign family/type-like, fragment or unresolved result from weighted component profiles", "Yes; primary"],
+        ["BLAST whole-locus comparison", "Optionally confirm an exact reviewed definition or add closest-reference context", "Yes; secondary"],
         ["Boundary/direct-repeat check", "Record evidence immediately outside inferred ends when flanks exist", "Yes"],
         ["ISEScan / AMRFinderPlus / IntegronFinder", "Broader optional component discovery", "Not launched"],
     ], [2600, 4100, 1760], font_size=9.1)
     add_heading(doc, "Reproducible commands", 2)
-    add_code(doc, "# Seven reviewed whole-element definitions\nmatryoshka run matryoshka/references/tn1_tn2_tn3.fasta \\\n+  --out results/tn123-reviewed --detectors none\n\n# Natural pEK499 sequence (accession EU935739.1)\nmatryoshka run pEK499.fasta --out results/pEK499 --detectors none\n\n# Export the rules for expert review\nmatryoshka definitions --format markdown --out tn123-definitions-review.md")
+    add_code(doc, "# Prove discovery without complete-element lookup\nmatryoshka run arbitrary-demo.fasta --out results/component-only \\\n  --profile tn123-components --detectors none\n\n# Seven reviewed definitions with secondary exact confirmation\nmatryoshka run matryoshka/references/tn1_tn2_tn3.fasta \\\n  --out results/tn123-reviewed --detectors none\n\n# Export the rules for expert review\nmatryoshka definitions --format markdown --out tn123-definitions-review.md")
     add_para(doc, "Reproducibility metadata", size=11.5, bold=True, color=NAVY, before=8, after=4)
     add_para(doc, "Each result directory includes run.json, the software and definition versions, reference profile, detector selection, input checksum, runtime parameters and a direct index of every MARA map/table pair.")
 
@@ -413,7 +413,7 @@ def add_rules(doc: Document) -> None:
         ["family", "Shared biological description, expected terminal-IR length and target-site duplication length."],
         ["grammar", "Required component counts and forward/reverse order."],
         ["component_detection", "Identity, coverage, length and chaining thresholds for each component class."],
-        ["classification", "Exact-match, closest-type, close-variant and fragment naming rules."],
+        ["classification", "Weighted component-profile type rules, exact-reference confirmation and fragment rules."],
         ["types", "Canonical Tn1, Tn2 and Tn3 sequences and their annotated component layouts."],
         ["definitions", "Reviewable named sequences/subtypes, accession provenance, expert description and differences from parent."],
         ["related_element_policy", "Explicit negative-control policy to prevent shared components being over-named."],
@@ -424,8 +424,9 @@ def add_rules(doc: Document) -> None:
     add_heading(doc, "Current thresholds", 2)
     add_table(doc, ["Decision", "Rule"], [
         ["Exact declared definition", "100% identity, 100% reference coverage, both ends, zero mismatches/insertions/deletions and complete component grammar."],
-        ["Type assignment", "At least 95% identity and 80% reference coverage; best type must exceed the next type by at least 0.5 percentage points."],
-        ["Type-like variant", "Complete candidate, clear closest type, at least 98% identity, but not an exact declared definition."],
+        ["Rule-based type", "Complete grammar; weighted local component score at least 90%; best type exceeds the next by at least 0.5 points."],
+        ["Component weights", "blaTEM 1; tnpR 2; res 3; tnpA 3. The combined profile, rather than a single gene, assigns the type-like call."],
+        ["Secondary reference", "At least 95% identity and 80% coverage; used for context or exact confirmation, never to create the family/type."],
         ["Fragment", "At least 400 aligned reference bases; retained without a complete name."],
     ], [2600, 5860], font_size=9.2)
 
@@ -434,9 +435,9 @@ def add_tn1_example(doc: Document) -> None:
     new_section(doc)
     add_heading(doc, "4. Worked expert definition: Tn1", 1)
     add_para(doc, "Human-readable rule", size=11.5, bold=True, color=NAVY, after=4)
-    add_para(doc, "Call exact Tn1 only when the six required components are independently detected in the correct order, both 38 bp terminal ends are covered, and the whole locus is a complete, gap-free and mismatch-free match to the declared NC_008357 sequence. The canonical sequence carries blaTEM-2.", size=11)
+    add_para(doc, "Call a Tn1-like candidate when the six required components are independently detected in the correct order and their weighted local profiles best support Tn1 above the declared score and margin. Upgrade that call to exact reviewed Tn1 only when an optional secondary comparison is a complete, gap-free and mismatch-free match to NC_008357. The canonical sequence carries blaTEM-2.", size=11)
     add_heading(doc, "YAML representation used by the program", 2)
-    add_code(doc, "types:\n  Tn1:\n    canonical_reference: Tn1_NC_008357\n    source_accession: NC_008357\n    bla_allele: blaTEM-2\n    components:\n      - {role: terminal_IR, name: IRL, start: 1, end: 38}\n      - {role: blaTEM, name: blaTEM-2, start: 148, end: 1008, strand: '-'}\n      - {role: tnpR, name: tnpR, start: 1191, end: 1748, strand: '-'}\n      - {role: res, name: res, start: 1754, end: 1867}\n      - {role: tnpA, name: tnpA, start: 1911, end: -34, strand: '+'}\n      - {role: terminal_IR, name: IRR, start: -38, end: -1}\n\ndefinitions:\n  Tn1_NC_008357:\n    display_name: Tn1\n    type: Tn1\n    subtype: canonical\n    source_accession: NC_008357\n    component_reference: true\n    expert_rule: Exact, complete, gap-free match to NC_008357\n                 plus complete component grammar.", size=7.8)
+    add_code(doc, "classification:\n  type_assignment:\n    method: weighted component profiles\n    discriminator_role_weights:\n      blaTEM: 1\n      tnpR: 2\n      res: 3\n      tnpA: 3\n    minimum_component_profile_score_percent: 90\n    minimum_type_margin_percent: 0.5\n  reference_comparison:\n    role: secondary context after rule-based classification\n\ntypes:\n  Tn1:\n    canonical_reference: Tn1_NC_008357\n    source_accession: NC_008357\n    components:\n      - {role: terminal_IR, name: IRL, start: 1, end: 38}\n      - {role: blaTEM, name: blaTEM-2, start: 148, end: 1008, strand: '-'}\n      - {role: tnpR, name: tnpR, start: 1191, end: 1748, strand: '-'}\n      - {role: res, name: res, start: 1754, end: 1867}\n      - {role: tnpA, name: tnpA, start: 1911, end: -34, strand: '+'}\n      - {role: terminal_IR, name: IRR, start: -38, end: -1}", size=7.3)
     add_para(doc, "Negative coordinates count from the right-hand end of the reference. This keeps the component layout readable and reusable for definitions of different lengths.", size=9.5, color=MUTED)
     add_heading(doc, "How to add or revise a subtype", 2)
     for text in (
@@ -455,18 +456,19 @@ def add_boundaries_and_validation(doc: Document) -> None:
     add_heading(doc, "5. Boundaries, direct repeats and validation design", 1)
     add_heading(doc, "How direct repeats are detected", 2)
     add_para(doc, "For this group, a five-base direct repeat is supporting boundary evidence, not the naming rule. After candidate element ends have been inferred, Matryoshka reads the five bases immediately outside the left end and the five bases immediately outside the right end. An identical pair is reported with sequence and coordinates. If the record ends at the element boundary, the test is marked untestable because the flank is absent. If both flanks exist but differ, the result records that a repeat was searched for and not found.")
-    add_para(doc, "A five-base repeat can occur by chance. It therefore cannot create a Tn1/Tn2/Tn3 name without the component grammar and whole-locus evidence.", size=9.7, color=MUTED)
+    add_para(doc, "A five-base repeat can occur by chance. It therefore cannot create a Tn1/Tn2/Tn3 name without the complete component grammar and type-profile evidence.", size=9.7, color=MUTED)
     add_heading(doc, "Validation set", 2)
     add_table(doc, ["Evidence class", "Examples", "Purpose"], [
         ["Reviewed exact definitions", "NC_008357, AY123253, HM749966, HM749967, CP028717, GQ160960, V00613", "Positive controls for type/subtype execution and output generation."],
         ["Natural partial sequence", "pEK499, EU935739.1", "Verify that two separated Tn2-related fragments remain partial."],
         ["Minor sequence variation", "Tn1 with 25 substitutions", "Verify a complete non-identical sequence becomes Tn1-like."],
         ["Structural variation", "Tn2 with an 800 bp insertion", "Verify an inserted sequence is retained and the call remains qualified."],
+        ["Internal deletion", "Tn2 with a 300 bp deletion", "Verify split component evidence is chained and remains Tn2-like."],
         ["Truncation", "Tn1 missing 700 left-hand bases", "Verify the sequence becomes a fragment rather than exact Tn1."],
         ["Related elements", "Tn1696, Tn1721, Tn5403", "Verify shared components do not force a Tn1/Tn2/Tn3 name."],
     ], [2400, 2700, 3360], font_size=8.8)
     add_heading(doc, "Headline result", 2)
-    add_para(doc, "All 14 ledger checks pass. The seven reviewed whole-element inputs produce seven exact declared calls with complete independently detected component grammars. The two pEK499 loci remain partial. The synthetic variants retain their differences, and the three related elements are not misnamed as Tn1, Tn2 or Tn3.", size=11, bold=True, color=GREEN_TEXT)
+    add_para(doc, "All 14 real-accession ledger checks and all 23 focused Tn1/Tn2/Tn3 acceptance tests pass. The component-only tests type substituted, inserted and deleted variants without a complete-element lookup. The reviewed inputs receive exact confirmation; the pEK499 loci remain partial; related elements are not misnamed.", size=11, bold=True, color=GREEN_TEXT)
 
 
 def add_validation_ledger(doc: Document) -> None:
@@ -587,16 +589,20 @@ def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
     record = proof["records"][0]
     new_section(doc, landscape=True)
     add_heading(doc, "8. Arbitrary-sequence demonstration", 1)
-    add_para(doc, "A single 44,647 bp contig was constructed with unrelated flanking sequence and three loci: a Tn1 with 25 substitutions, a Tn2 with an approximately 800 bp internal insertion (799 inserted bases in the alignment evidence), and an unchanged reverse-complement Tn3. The FASTA was processed as one ordinary record.")
+    add_para(doc, "A single 44,647 bp contig was constructed with unrelated flanking sequence and three loci: a Tn1-derived sequence with 25 substitutions, a Tn2-derived sequence with an approximately 800 bp internal insertion, and a reverse-complement Tn3-derived sequence. It was processed with --profile tn123-components, which excludes complete Tn1/Tn2/Tn3 reference lookup. Every biological call below therefore comes from detected components and expert rules.")
     rows = []
     for locus in record["loci"]:
         match = locus["known_element_match"]
+        scores = locus.get("classification", {}).get("component_type_scores", {})
+        if not scores:
+            scores = locus.get("rule_evidence", {}).get("component_type_scores", {})
+        type_call = match.get("rule_based_type_call") or locus.get("family")
         rows.append([
             f"{locus['start']:,}–{locus['end']:,}", locus["call"], locus["strand"],
-            f"{match['whole_locus_identity']:.1f}%", str(match["mismatch_bases"]),
-            str(match["inserted_bases"]), locus["verdict"],
+            str(type_call), str(scores.get(str(type_call), "see JSON")),
+            "none", locus["verdict"],
         ])
-    add_table(doc, ["Coordinates", "Call", "Strand", "Identity", "Mismatches", "Inserted bp", "Proof"],
+    add_table(doc, ["Coordinates", "Call", "Strand", "Rule type", "Component score", "Whole-element lookup", "Proof"],
               rows, [2100, 1900, 800, 1200, 1300, 1300, 900], font_size=8.5, green_last=True)
     figure_label(doc, "Original hierarchy view: all three loci are retained on their shared contig and nested features remain visible.")
     add_svg(doc, ARBITRARY / record["loci"][0]["outputs"]["hierarchy"], temp_dir, width=9.25,
@@ -606,11 +612,12 @@ def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
         new_section(doc, landscape=True)
         add_heading(doc, f"8.{index} Arbitrary contig locus — {locus['call']}", 1)
         match = locus["known_element_match"]
-        add_para(doc, f"The component grammar is complete. The whole-locus comparison gives {match['whole_locus_identity']:.1f}% identity and {match['whole_locus_coverage']:.1f}% coverage, with {match['mismatch_bases']} mismatches and {match['inserted_bases']} inserted bases. The visible call is therefore {locus['call']}.")
-        add_svg(doc, ARBITRARY / locus["outputs"]["mara"], temp_dir, width=9.25,
+        add_para(doc, f"The component grammar is complete and the expert component-profile rules assign {match.get('rule_based_type_call')}. No complete Tn1/Tn2/Tn3 reference comparison was run; the visible call is {locus['call']}. Insertions and other structural differences are retained from split component alignments and shown in the map/table.")
+        figure_width = 8.65 if locus["call"] == "Tn2-like" else 9.25
+        add_svg(doc, ARBITRARY / locus["outputs"]["mara"], temp_dir, width=figure_width,
                 title=f"Arbitrary contig {locus['call']} MARA map",
                 description=f"MARA-style map of the detected {locus['call']} locus on the arbitrary contig.")
-        add_svg(doc, ARBITRARY / locus["outputs"]["mara_table"], temp_dir, width=9.25,
+        add_svg(doc, ARBITRARY / locus["outputs"]["mara_table"], temp_dir, width=figure_width,
                 title=f"Arbitrary contig {locus['call']} MARA table",
                 description=f"MARA-style evidence table for the detected {locus['call']} locus.")
 
@@ -649,7 +656,7 @@ def add_outputs_and_limits(doc: Document) -> None:
     for text in (
         "Population-level sensitivity and specificity across a large independent accession panel.",
         "Exhaustive subtype coverage or complete parity with every component and compound element described across all MARA papers.",
-        "Reliable de novo naming of a previously undescribed element without expert review and a declared definition.",
+        "Assigning a new formal element name to a previously undescribed structure without expert review; novel candidates within the defined family are deliberately reported as type-like.",
         "Target-site duplication evidence when the input sequence ends exactly at the element boundary or lacks sufficient flank.",
         "Consistent optional-detector availability on every installation; the built-in validated scan is the portable core.",
     ):

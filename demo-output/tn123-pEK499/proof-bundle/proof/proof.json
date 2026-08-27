@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "purpose": "Audit arbitrary FASTA sequence through independent component detection, grammar assembly, known-element matching and generated outputs.",
+  "purpose": "Audit arbitrary FASTA sequence through independent component detection, expert-rule classification, secondary known-element comparison and generated outputs.",
   "summary": {
     "status": "PARTIAL_TN123_EVIDENCE",
     "tn123_loci": 2,
@@ -23,6 +23,9 @@
           "strand": "-",
           "known_element_match": {
             "best_match": "Tn2",
+            "rule_based_type_call": "unresolved",
+            "reference_comparison_type": "Tn2",
+            "reference_comparison_status": "ambiguous_reference",
             "closest_definition": "Tn2",
             "definition_id": "Tn2_AY123253",
             "definition_version": "2026-08-27",
@@ -35,13 +38,13 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "ambiguous",
-            "structural_status": "internal_fragment",
+            "variant_status": "rule_incomplete",
+            "structural_status": "partial_or_conflicting",
             "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -55,15 +58,46 @@
               "tnpA": false
             },
             "detected_component_count": 3,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "unresolved",
+            "component_type_scores": {
+              "Tn1": 31.336,
+              "Tn2": 65.982,
+              "Tn3": 31.415
+            },
+            "component_role_scores": {
+              "res": {
+                "Tn1": 0.0,
+                "Tn2": 100.0,
+                "Tn3": 0.0
+              },
+              "tnpR": {
+                "Tn1": 94.44,
+                "Tn2": 100.0,
+                "Tn3": 94.62
+              },
+              "blaTEM": {
+                "Tn1": 93.146,
+                "Tn2": 93.84,
+                "Tn3": 93.493
+              }
+            },
+            "component_type_margin": 34.567
           },
           "checks": {
             "components_detected_from_sequence": false,
             "all_required_components_present": false,
             "component_order_and_orientation_valid": false,
             "component_grammar_complete": false,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": false,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [
@@ -162,6 +196,9 @@
           "strand": "-",
           "known_element_match": {
             "best_match": "Tn2",
+            "rule_based_type_call": "unresolved",
+            "reference_comparison_type": "Tn2",
+            "reference_comparison_status": "ambiguous_reference",
             "closest_definition": "Tn2",
             "definition_id": "Tn2_AY123253",
             "definition_version": "2026-08-27",
@@ -174,13 +211,13 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "ambiguous",
-            "structural_status": "internal_fragment",
+            "variant_status": "rule_incomplete",
+            "structural_status": "partial_or_conflicting",
             "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -194,15 +231,36 @@
               "tnpA": true
             },
             "detected_component_count": 1,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "unresolved",
+            "component_type_scores": {
+              "Tn1": 24.707,
+              "Tn2": 24.897,
+              "Tn3": 24.702
+            },
+            "component_role_scores": {
+              "tnpA": {
+                "Tn1": 74.122,
+                "Tn2": 74.69,
+                "Tn3": 74.105
+              }
+            },
+            "component_type_margin": 0.19
           },
           "checks": {
             "components_detected_from_sequence": false,
             "all_required_components_present": false,
             "component_order_and_orientation_valid": false,
             "component_grammar_complete": false,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": false,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [

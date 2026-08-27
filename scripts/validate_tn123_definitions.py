@@ -14,7 +14,8 @@ from typing import Any
 from Bio import SeqIO
 
 from matryoshka.detect import MGEFeature
-from matryoshka.reference_scan import REFERENCES_DIR, scan
+from matryoshka.reference_scan import REFERENCES_DIR, scan, scan_tn123_components
+from matryoshka.tn123 import assemble_tn123_components
 
 TN123_REFERENCE = REFERENCES_DIR / "tn1_tn2_tn3.fasta"
 
@@ -34,6 +35,8 @@ def _row(
         "accession": accession,
         "expected": expected,
         "observed_call": feature.name if feature is not None else "no Tn1/2/3 call",
+        "classification_basis": attributes.get("classification_basis", ""),
+        "rule_based_type_call": attributes.get("rule_based_type_call", ""),
         "defined_type": attributes.get("defined_type", ""),
         "defined_subtype": attributes.get("defined_subtype", ""),
         "closest_definition": attributes.get("closest_definition", ""),
@@ -41,9 +44,9 @@ def _row(
         "end": feature.end if feature is not None else "",
         "identity_percent": attributes.get("blast_identity", ""),
         "reference_coverage_percent": attributes.get("blast_coverage", ""),
-        "mismatch_bases": attributes.get("mismatch_bases", ""),
-        "inserted_bases": attributes.get("inserted_bases", ""),
-        "deleted_bases": attributes.get("deleted_bases", ""),
+        "mismatch_bases": attributes.get("reference_mismatch_bases", ""),
+        "inserted_bases": attributes.get("reference_inserted_bases", ""),
+        "deleted_bases": attributes.get("reference_deleted_bases", ""),
         "variant_status": attributes.get("variant_status", ""),
         "result": result,
     }
@@ -56,6 +59,14 @@ def _mutate(sequence: str, count: int = 25) -> str:
     for position in positions:
         bases[position] = replacement[bases[position]]
     return "".join(bases)
+
+
+def _annotate(query: Path) -> list[MGEFeature]:
+    """Run component-rule classification plus secondary reference comparison."""
+    features = scan(query, TN123_REFERENCE, 95.0, 100)
+    features.extend(scan_tn123_components(query))
+    features.extend(assemble_tn123_components(features))
+    return [feature for feature in features if feature.element_type == "transposon"]
 
 
 def build_rows(repo: Path) -> list[dict[str, Any]]:
@@ -71,7 +82,7 @@ def build_rows(repo: Path) -> list[dict[str, Any]]:
     }
     exact_hits = {
         str(hit.attributes["seqid"]): hit
-        for hit in scan(TN123_REFERENCE, TN123_REFERENCE, 95.0, 100)
+        for hit in _annotate(TN123_REFERENCE)
     }
     for record, (accession, expected) in exact_expected.items():
         feature = exact_hits.get(record)
@@ -86,7 +97,7 @@ def build_rows(repo: Path) -> list[dict[str, Any]]:
         ))
 
     pek499 = repo / "tests" / "test-data" / "acceptance" / "pEK499.fasta"
-    for feature in scan(pek499, TN123_REFERENCE, 95.0, 100):
+    for feature in _annotate(pek499):
         expected = {
             (38_747, 40_671): "generic Tn1/2/3 fragment; closest Tn2",
             (60_316, 62_561): "generic Tn1/2/3 fragment; closest Tn2",
@@ -102,7 +113,7 @@ def build_rows(repo: Path) -> list[dict[str, Any]]:
         ))
 
     related = REFERENCES_DIR / "tn3_family_extras.fasta"
-    related_hits = scan(related, TN123_REFERENCE, 95.0, 100)
+    related_hits = _annotate(related)
     for record in ("Tn1696", "Tn1721", "Tn5403"):
         feature = next(
             (hit for hit in related_hits if hit.attributes.get("seqid") == record),
@@ -135,7 +146,7 @@ def build_rows(repo: Path) -> list[dict[str, Any]]:
         )
         edge_hits = {
             str(hit.attributes["seqid"]): hit
-            for hit in scan(query, TN123_REFERENCE, 95.0, 100)
+            for hit in _annotate(query)
         }
     rows.append(_row(
         "synthetic minor variation",
@@ -175,7 +186,9 @@ def main() -> None:
     with (args.out_dir / "tn123-real-accession-results.tsv").open(
         "w", newline="", encoding="utf-8"
     ) as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields, delimiter="\t")
+        writer = csv.DictWriter(
+            handle, fieldnames=fields, delimiter="\t", lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(rows)
     (args.out_dir / "tn123-real-accession-results.json").write_text(

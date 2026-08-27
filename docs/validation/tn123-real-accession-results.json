@@ -9,6 +9,8 @@
       "accession": "NC_008357",
       "expected": "Tn1",
       "observed_call": "Tn1",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn1",
       "defined_type": "Tn1",
       "defined_subtype": "canonical",
       "closest_definition": "Tn1",
@@ -19,7 +21,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "exact_reference",
+      "variant_status": "exact_reference_confirmed",
       "result": "PASS"
     },
     {
@@ -28,6 +30,8 @@
       "accession": "AY123253",
       "expected": "Tn2",
       "observed_call": "Tn2",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn2",
       "defined_type": "Tn2",
       "defined_subtype": "canonical",
       "closest_definition": "Tn2",
@@ -38,7 +42,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "exact_reference",
+      "variant_status": "exact_reference_confirmed",
       "result": "PASS"
     },
     {
@@ -47,6 +51,8 @@
       "accession": "HM749966",
       "expected": "Tn3",
       "observed_call": "Tn3",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn3",
       "defined_type": "Tn3",
       "defined_subtype": "canonical",
       "closest_definition": "Tn3",
@@ -57,7 +63,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "exact_reference",
+      "variant_status": "exact_reference_confirmed",
       "result": "PASS"
     },
     {
@@ -66,6 +72,8 @@
       "accession": "HM749967",
       "expected": "Tn2c",
       "observed_call": "Tn2c",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn2",
       "defined_type": "Tn2",
       "defined_subtype": "Tn2c",
       "closest_definition": "Tn2c",
@@ -76,7 +84,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "exact_reference",
+      "variant_status": "exact_reference_confirmed",
       "result": "PASS"
     },
     {
@@ -85,6 +93,8 @@
       "accession": "CP028717",
       "expected": "Tn2.1",
       "observed_call": "Tn2.1",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn2",
       "defined_type": "Tn2",
       "defined_subtype": "Tn2.1",
       "closest_definition": "Tn2.1",
@@ -95,7 +105,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "exact_reference",
+      "variant_status": "exact_reference_confirmed",
       "result": "PASS"
     },
     {
@@ -104,6 +114,8 @@
       "accession": "GQ160960",
       "expected": "Tn1Mer",
       "observed_call": "Tn1Mer",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn1",
       "defined_type": "Tn1",
       "defined_subtype": "Tn1Mer",
       "closest_definition": "Tn1Mer",
@@ -114,7 +126,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "exact_reference",
+      "variant_status": "exact_reference_confirmed",
       "result": "PASS"
     },
     {
@@ -123,6 +135,8 @@
       "accession": "V00613",
       "expected": "Tn3 (legacy 9 bp duplication subtype)",
       "observed_call": "Tn3",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn3",
       "defined_type": "Tn3",
       "defined_subtype": "V00613_legacy_9bp_duplication",
       "closest_definition": "Tn3",
@@ -133,7 +147,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "exact_reference",
+      "variant_status": "exact_reference_confirmed",
       "result": "PASS"
     },
     {
@@ -142,6 +156,8 @@
       "accession": "EU935739",
       "expected": "generic Tn1/2/3 fragment; closest Tn2",
       "observed_call": "Tn1/2/3 fragment",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "unresolved",
       "defined_type": "Tn2",
       "defined_subtype": "canonical",
       "closest_definition": "Tn2",
@@ -152,7 +168,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "ambiguous",
+      "variant_status": "rule_incomplete",
       "result": "PASS"
     },
     {
@@ -161,6 +177,8 @@
       "accession": "EU935739",
       "expected": "generic Tn1/2/3 fragment; closest Tn2",
       "observed_call": "Tn1/2/3 fragment",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "unresolved",
       "defined_type": "Tn2",
       "defined_subtype": "canonical",
       "closest_definition": "Tn2",
@@ -171,7 +189,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "ambiguous",
+      "variant_status": "rule_incomplete",
       "result": "PASS"
     },
     {
@@ -180,6 +198,8 @@
       "accession": "",
       "expected": "no named Tn1/Tn2/Tn3 call; supported fragment permitted",
       "observed_call": "no Tn1/2/3 call",
+      "classification_basis": "",
+      "rule_based_type_call": "",
       "defined_type": "",
       "defined_subtype": "",
       "closest_definition": "",
@@ -199,6 +219,8 @@
       "accession": "",
       "expected": "no named Tn1/Tn2/Tn3 call; supported fragment permitted",
       "observed_call": "no Tn1/2/3 call",
+      "classification_basis": "",
+      "rule_based_type_call": "",
       "defined_type": "",
       "defined_subtype": "",
       "closest_definition": "",
@@ -218,6 +240,8 @@
       "accession": "",
       "expected": "no named Tn1/Tn2/Tn3 call; supported fragment permitted",
       "observed_call": "no Tn1/2/3 call",
+      "classification_basis": "",
+      "rule_based_type_call": "",
       "defined_type": "",
       "defined_subtype": "",
       "closest_definition": "",
@@ -237,6 +261,8 @@
       "accession": "",
       "expected": "Tn1-like, not exact Tn1",
       "observed_call": "Tn1-like",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "Tn1",
       "defined_type": "Tn1",
       "defined_subtype": "canonical",
       "closest_definition": "Tn1",
@@ -247,7 +273,7 @@
       "mismatch_bases": 25,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "minor_sequence_variant",
+      "variant_status": "rule_based_type_candidate",
       "result": "PASS"
     },
     {
@@ -256,6 +282,8 @@
       "accession": "",
       "expected": "generic Tn1/2/3 fragment; closest Tn1",
       "observed_call": "Tn1/2/3 fragment",
+      "classification_basis": "expert_component_rules",
+      "rule_based_type_call": "unresolved",
       "defined_type": "Tn1",
       "defined_subtype": "canonical",
       "closest_definition": "Tn1",
@@ -266,7 +294,7 @@
       "mismatch_bases": 0,
       "inserted_bases": 0,
       "deleted_bases": 0,
-      "variant_status": "ambiguous",
+      "variant_status": "rule_incomplete",
       "result": "PASS"
     }
   ]

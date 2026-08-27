@@ -303,7 +303,10 @@ def _load_detector_outputs(
     type=click.Choice(sorted(REFERENCE_PROFILES)),
     default="validated",
     show_default=True,
-    help="Validated Sally-backed references, or every experimental/legacy reference.",
+    help=(
+        "Validated references, component-only Tn1/Tn2/Tn3 discovery, "
+        "or every experimental/legacy reference."
+    ),
 )
 @click.option(
     "--threads",
@@ -572,7 +575,7 @@ def _render(
     type=click.Choice(sorted(REFERENCE_PROFILES)),
     default="validated",
     show_default=True,
-    help="Reference set used by the BLAST scan.",
+    help="Detection profile; tn123-components excludes complete-element lookup.",
 )
 @click.option(
     "--threads",

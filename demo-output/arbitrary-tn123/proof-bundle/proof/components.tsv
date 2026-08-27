@@ -11,9 +11,9 @@ arbitrary_demo_contig	Tn2-like	19950	25699	+	tnpR	tnpR	21140	21697	-	100.0	100.0
 arbitrary_demo_contig	Tn2-like	19950	25699	+	res	res	21703	21816	.	100.0	100.0	intact	complete	sequence_detected	0	Tn2c_HM749967__res__1754_1867
 arbitrary_demo_contig	Tn2-like	19950	25699	+	tnpA	tnpA	21860	25666	+	100.0	100.0	complete_with_insertion	complete	sequence_detected	799	Tn2_AY123253__tnpA__1911_4917
 arbitrary_demo_contig	Tn2-like	19950	25699	+	terminal_IR	IRR	25662	25699	.	100.0	100.0	intact	complete	sequence_detected	0	Tn2c_HM749967__IRR__4913_4950
-arbitrary_demo_contig	Tn3	31700	36647	-	terminal_IR	IRR	31700	31737	.	100.0	100.0	intact	complete	sequence_detected	0	Tn2c_HM749967__IRR__4913_4950
-arbitrary_demo_contig	Tn3	31700	36647	-	tnpA	tnpA	31733	34737	-	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__tnpA__1911_4915
-arbitrary_demo_contig	Tn3	31700	36647	-	res	res	34781	34894	.	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__res__1754_1867
-arbitrary_demo_contig	Tn3	31700	36647	-	tnpR	tnpR	34900	35457	+	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__tnpR__1191_1748
-arbitrary_demo_contig	Tn3	31700	36647	-	blaTEM	blaTEM-1a	35640	36500	+	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__blaTEM_1a__148_1008
-arbitrary_demo_contig	Tn3	31700	36647	-	terminal_IR	IRL	36610	36647	.	100.0	100.0	intact	complete	sequence_detected	0	Tn2c_HM749967__IRR__4913_4950
+arbitrary_demo_contig	Tn3-like	31700	36647	-	terminal_IR	IRR	31700	31737	.	100.0	100.0	intact	complete	sequence_detected	0	Tn2c_HM749967__IRR__4913_4950
+arbitrary_demo_contig	Tn3-like	31700	36647	-	tnpA	tnpA	31733	34737	-	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__tnpA__1911_4915
+arbitrary_demo_contig	Tn3-like	31700	36647	-	res	res	34781	34894	.	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__res__1754_1867
+arbitrary_demo_contig	Tn3-like	31700	36647	-	tnpR	tnpR	34900	35457	+	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__tnpR__1191_1748
+arbitrary_demo_contig	Tn3-like	31700	36647	-	blaTEM	blaTEM-1a	35640	36500	+	100.0	100.0	intact	complete	sequence_detected	0	Tn3_HM749966__blaTEM_1a__148_1008
+arbitrary_demo_contig	Tn3-like	31700	36647	-	terminal_IR	IRL	36610	36647	.	100.0	100.0	intact	complete	sequence_detected	0	Tn2c_HM749967__IRR__4913_4950

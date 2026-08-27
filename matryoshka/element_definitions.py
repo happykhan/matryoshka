@@ -212,6 +212,8 @@ def definitions_as_markdown() -> str:
         "",
         f"Type assignment: {classification['type_assignment']['expert_rule']}",
         "",
+        f"Secondary reference comparison: {classification['reference_comparison']['expert_rule']}",
+        "",
         f"Exact definition match: {classification['exact_definition_match']['expert_rule']}",
         "",
         f"Close variant: {classification['close_variant']['expert_rule']}",

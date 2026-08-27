@@ -8,7 +8,7 @@
 
 Matryoshka now separates biological definitions from the software that applies them. The Tn1/Tn2/Tn3 rules are maintained in a human-readable YAML file, checked by the definition loader, documented by a JSON Schema, and available as YAML, JSON or a formatted review document from the command line. Adding or revising a type no longer requires adding a new set of conditions to the Python source.
 
-For an arbitrary FASTA record, the program first detects the component sequences, assembles them into a candidate unit, and only then compares the complete locus with reviewed whole-element definitions. It assigns an exact name only when the component grammar is complete and the locus is identical to a declared definition. A previously undeclared sequence with minor changes is reported as `Tn1-like`, `Tn2-like` or `Tn3-like`. A partial match is retained as `Tn1/2/3 fragment`, with its closest reference recorded, but is not promoted to a complete type.
+For an arbitrary FASTA record, the program detects component sequences, assembles them into a candidate unit and classifies the candidate from explicit component grammar plus weighted local component profiles. This can produce `Tn1-like`, `Tn2-like` or `Tn3-like` without any complete-element lookup. A separate whole-locus comparison may then confirm an exact reviewed definition or provide closest-reference context, but cannot create the family/type call. A partial match is retained as `Tn1/2/3 fragment` and is not promoted to a complete type.
 
 The current validation ledger contains 14 checks and all pass. It covers seven reviewed real-accession definitions, Sally Partridge's two reviewed Tn2 fragments in pEK499, three related Tn3-family elements that must not be misnamed, one complete sequence containing substitutions, and one truncated sequence. A complete result-bundle run on the seven reviewed definitions gives seven independently assembled loci and seven `PASS` proof verdicts.
 
@@ -27,10 +27,12 @@ arbitrary FASTA
     |
     +-- check the required component order and both element ends
     |
-    +-- compare the complete locus with reviewed whole-element definitions
+    +-- score local blaTEM, tnpR, res and tnpA profiles against expert type rules
     |
-    +-- assign exact type/subtype, qualified type-like call, unresolved unit,
-    |   or fragment
+    +-- assign a qualified type-like call, unresolved unit or fragment
+    |
+    +-- optionally compare with reviewed whole-element definitions to confirm
+    |   an exact type/subtype or record secondary context
     |
     +-- detect boundary evidence and retain insertions, deletions and mismatches
     |
@@ -38,7 +40,7 @@ arbitrary FASTA
         MARA table and an evidence proof report
 ```
 
-The component scan and whole-locus comparison are independent pieces of evidence. A reference match alone is not allowed to manufacture the six required components. Conversely, shared components can be drawn even when the whole locus does not match any declared element.
+The component scan and classifier are the primary biological decision path. The whole-locus comparison is independent secondary evidence. A complete reference hit is not allowed to manufacture the six required components or the family/type call. Conversely, component rules can discover and draw a type-like candidate even when no complete-element lookup is run.
 
 ## The group-level biological rule
 
@@ -74,11 +76,11 @@ An exact name requires all of the following:
 
 This is deliberately strict. One substitution makes the sequence a variant unless the altered sequence has its own reviewed subtype definition.
 
-### Tn1, Tn2 or Tn3 type
+### Rule-based Tn1, Tn2 or Tn3 type
 
-A complete candidate is compared with the canonical Tn1, Tn2 and Tn3 whole-locus sequences. The closest type must have at least 95% identity, at least 80% reference coverage, and a score at least 0.5 percentage points better than the next different type. This whole-locus comparison includes the sequence around `res`, where the informative differences described by Partridge and Hall are concentrated.
+A complete candidate is scored against the local component profiles defined by the canonical Tn1, Tn2 and Tn3 examples. The weighted roles are `blaTEM` 1, `tnpR` 2, `res` 3 and `tnpA` 3. The best weighted component score must reach 90% and exceed the next type by at least 0.5 percentage points. The combined profile includes the informative differences around `res` described by Partridge and Hall; it is not a single-gene or whole-element lookup.
 
-If the closest complete sequence is not identical to a declared definition but has at least 98% identity, the visible name is qualified as `Tn1-like`, `Tn2-like` or `Tn3-like`. The evidence records its mismatch, insertion and deletion counts.
+When those expert rules support a type, the visible name is `Tn1-like`, `Tn2-like` or `Tn3-like`. Split component matches retain insertions and deletions. If the optional secondary comparison is 100% identical across a reviewed complete definition, the call can be confirmed as exact.
 
 ### Named subtype
 
@@ -99,17 +101,26 @@ A match covering at least 400 reference bases is retained, but a missing end or 
 
 ### Related but different element
 
-A different transposon may contain one or more shared genes, IRs or sequence blocks. Those supported parts can still be annotated and drawn. If the complete Tn1/Tn2/Tn3 grammar is absent and no declared whole-element definition matches, the program does not force a Tn1, Tn2 or Tn3 name. This is the expected outcome for examples such as Tn1696, Tn1721 and Tn5403.
+A different transposon may contain one or more shared genes, IRs or sequence blocks. Those supported parts can still be annotated and drawn. If the complete Tn1/Tn2/Tn3 grammar or a sufficiently distinct component profile is absent, the program does not force a Tn1, Tn2 or Tn3 name. A whole-element match cannot override that rule. This is the expected outcome for examples such as Tn1696, Tn1721 and Tn5403.
 
 ## Worked definition: Tn1
 
 Sally selected the Tn1 sequence from accession NC_008357. The human rule is:
 
-> Call exact Tn1 only when the complete six-part grammar is independently supported and the whole locus is a complete, gap-free, mismatch-free match to the declared NC_008357 Tn1 sequence. The element carries `blaTEM-2`.
+> Call Tn1-like when the complete six-part grammar is independently supported and the weighted local component profiles meet the Tn1 score and margin rules. Confirm exact Tn1 only when the optional whole-locus comparison is a complete, gap-free, mismatch-free match to NC_008357. The element carries `blaTEM-2`.
 
 The corresponding reviewable definition is:
 
 ```yaml
+classification:
+  type_assignment:
+    method: weighted component profiles
+    discriminator_role_weights: {blaTEM: 1, tnpR: 2, res: 3, tnpA: 3}
+    minimum_component_profile_score_percent: 90
+    minimum_type_margin_percent: 0.5
+  reference_comparison:
+    role: secondary context after rule-based classification
+
 types:
   Tn1:
     canonical_reference: Tn1_NC_008357
@@ -163,7 +174,7 @@ If a future element needs a different component grammar rather than another Tn1/
 
 The five-base direct repeat is boundary evidence, not the primary basis for assigning Tn1, Tn2 or Tn3. Once a candidate boundary is available, Matryoshka examines the flanking sequence immediately outside both ends for the expected repeat. A matching pair is reported with its sequence and coordinates. If the necessary flank is absent, the result says that the repeat is untestable. If the flank is present but no pair is found, the result says that it was searched for and not found.
 
-A short repeated sequence by itself is weak evidence because five-base matches can occur by chance. It therefore supports a component- and reference-backed call but cannot create an exact element name. Natural fragments can retain an original repeat at a truncation junction; that repeat is reported without pretending the missing element is complete.
+A short repeated sequence by itself is weak evidence because five-base matches can occur by chance. It therefore supports a component-rule call but cannot create an element name. Natural fragments can retain an original repeat at a truncation junction; that repeat is reported without pretending the missing element is complete.
 
 ## Validation results
 
@@ -181,7 +192,7 @@ The reproducible machine-readable results are in `docs/validation/tn123-real-acc
 | GQ160960 | interrupted Tn1Mer | exact Tn1Mer, including Tn5036-like context | PASS |
 | V00613 | legacy Tn3 with 9 bp duplication | exact declared Tn3 subtype, not canonical HM749966 | PASS |
 
-For all seven, whole-locus identity and reference coverage are 100%, the independently detected component grammar is complete, and the proof report passes. Required components are never supplied solely by projection. Reviewed subtype context can be projected into the figure, but it is counted separately from the six sequence-detected components.
+For all seven, the independently detected component grammar is complete and the rule-based type agrees with the secondary 100% whole-locus confirmation, so the proof report passes. Required components are never supplied solely by projection. Reviewed subtype context can be projected into the figure, but it is counted separately from the six sequence-detected components.
 
 ### Natural partial fragments: pEK499 (EU935739)
 
@@ -217,7 +228,7 @@ Tn1696, Tn1721 and Tn5403 receive no named Tn1, Tn2 or Tn3 call in the Tn1/Tn2/T
 
 Every MARA map and table contains its own key. The maps distinguish sequence-detected components from expert-definition context so that a reader can see what was observed and what was added from a reviewed subtype description.
 
-The repository includes a ready-to-open example at `demo-output/arbitrary-tn123/proof-bundle/proof/report.html`. Its input is one 44,647 bp arbitrary contig containing a Tn1 with 25 substitutions, a Tn2 with an 800 bp internal insertion, and an exact reverse-complement Tn3. All three loci pass the component-to-call proof. The first two remain qualified `Tn1-like` and `Tn2-like` calls with their differences recorded; only the unchanged Tn3 receives an exact canonical name.
+The repository includes a ready-to-open component-only example at `demo-output/arbitrary-tn123/proof-bundle/proof/report.html`. Its input is one 44,647 bp arbitrary contig containing a Tn1-derived sequence with 25 substitutions, a Tn2-derived sequence with an 800 bp internal insertion, and a reverse-complement Tn3-derived sequence. It is run with `--profile tn123-components`, so no complete Tn1/Tn2/Tn3 lookup occurs. All three loci pass the component-to-call proof as qualified type-like calls, and the insertion is recovered from split component evidence and drawn.
 
 The seven reviewed definitions have a separate complete bundle at `demo-output/tn123-reviewed-definitions/proof-bundle/`. Its `mara/` and `mara-table/` directories contain the accession-specific maps and tables. It contains eight map entries: one for each of the seven whole-element definitions and a separate nested ISEcp1-associated locus within Tn2.1. `run.json` lists every map explicitly under `mara_locus_outputs`.
 

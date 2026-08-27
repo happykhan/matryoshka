@@ -121,6 +121,8 @@ def build_tn123_proof(
                 requirements = {}
             components = _component_documents(parent)
             best_match = attributes.get("best_match")
+            rule_type = attributes.get("rule_based_type_call")
+            reference_type = attributes.get("reference_comparison_type")
             naming_evidence = attributes.get("naming_evidence", [])
             if not isinstance(naming_evidence, list):
                 naming_evidence = []
@@ -142,10 +144,8 @@ def build_tn123_proof(
                 "component_grammar_complete": (
                     attributes.get("component_assembly_status") == "complete"
                 ),
-                "known_element_reference_match": (
-                    best_match in {"Tn1", "Tn2", "Tn3"}
-                    and "whole_locus_alignment" in naming_evidence
-                ),
+                "expert_rule_type_assigned": rule_type in {"Tn1", "Tn2", "Tn3"},
+                "secondary_reference_context_available": bool(reference_type),
                 "no_reference_projected_components": (
                     int(attributes.get("reference_projected_component_count", 0) or 0)
                     == 0
@@ -154,11 +154,19 @@ def build_tn123_proof(
             expected_partial = (
                 attributes.get("fragment") is True
                 and bool(components)
-                and checks["known_element_reference_match"]
+                and checks["secondary_reference_context_available"]
                 and checks["no_reference_projected_components"]
             )
+            required_pass_checks = (
+                "components_detected_from_sequence",
+                "all_required_components_present",
+                "component_order_and_orientation_valid",
+                "component_grammar_complete",
+                "expert_rule_type_assigned",
+                "no_reference_projected_components",
+            )
             verdict = (
-                "PASS" if all(checks.values())
+                "PASS" if all(checks[key] for key in required_pass_checks)
                 else "PARTIAL" if expected_partial
                 else "FAIL"
             )
@@ -179,6 +187,11 @@ def build_tn123_proof(
                 "strand": parent.strand,
                 "known_element_match": {
                     "best_match": best_match,
+                    "rule_based_type_call": rule_type,
+                    "reference_comparison_type": reference_type,
+                    "reference_comparison_status": attributes.get(
+                        "reference_comparison_status"
+                    ),
                     "closest_definition": attributes.get("closest_definition"),
                     "definition_id": attributes.get("definition_id"),
                     "definition_version": attributes.get("definition_version"),
@@ -188,9 +201,9 @@ def build_tn123_proof(
                     "source_accession": attributes.get("source_accession"),
                     "whole_locus_identity": attributes.get("blast_identity"),
                     "whole_locus_coverage": attributes.get("blast_coverage"),
-                    "mismatch_bases": attributes.get("mismatch_bases", 0),
-                    "inserted_bases": attributes.get("inserted_bases", 0),
-                    "deleted_bases": attributes.get("deleted_bases", 0),
+                    "mismatch_bases": attributes.get("reference_mismatch_bases", 0),
+                    "inserted_bases": attributes.get("reference_inserted_bases", 0),
+                    "deleted_bases": attributes.get("reference_deleted_bases", 0),
                     "variant_status": attributes.get("variant_status"),
                     "structural_status": attributes.get("structural_status"),
                     "expert_rule": attributes.get("expert_rule"),
@@ -206,11 +219,29 @@ def build_tn123_proof(
                     "detected_component_count": attributes.get(
                         "detected_component_count", 0
                     ),
+                    "inserted_bases": attributes.get("inserted_bases", 0),
+                    "deleted_bases": attributes.get("deleted_bases", 0),
                     "reference_projected_component_count": attributes.get(
                         "reference_projected_component_count", 0
                     ),
                     "reference_projected_context_feature_count": attributes.get(
                         "reference_projected_context_feature_count", 0
+                    ),
+                },
+                "classification": {
+                    "basis": attributes.get("classification_basis"),
+                    "rule_based_family_call": attributes.get(
+                        "rule_based_family_call"
+                    ),
+                    "rule_based_type_call": rule_type,
+                    "component_type_scores": attributes.get(
+                        "component_type_scores", {}
+                    ),
+                    "component_role_scores": attributes.get(
+                        "component_role_scores", {}
+                    ),
+                    "component_type_margin": attributes.get(
+                        "component_type_margin"
                     ),
                 },
                 "checks": checks,
@@ -236,7 +267,8 @@ def build_tn123_proof(
         "schema_version": PROOF_SCHEMA_VERSION,
         "purpose": (
             "Audit arbitrary FASTA sequence through independent component detection, "
-            "grammar assembly, known-element matching and generated outputs."
+            "expert-rule classification, secondary known-element comparison and "
+            "generated outputs."
         ),
         "summary": {
             "status": status,
@@ -285,10 +317,11 @@ def proof_components_tsv(proof: dict[str, Any]) -> str:
 
 
 def proof_matches_tsv(proof: dict[str, Any]) -> str:
-    """Render one row per assembled and matched Tn1/2/3 locus."""
+    """Render one row per assembled and classified Tn1/2/3 locus."""
     output = io.StringIO()
     fields = [
-        "verdict", "record", "call", "start", "end", "strand", "best_match",
+        "verdict", "record", "call", "start", "end", "strand",
+        "rule_based_type_call", "component_type_scores", "best_match",
         "defined_type", "defined_subtype", "definition_id", "definition_version",
         "reference_id", "source_accession", "whole_locus_identity",
         "whole_locus_coverage", "mismatch_bases", "inserted_bases",
@@ -309,6 +342,11 @@ def proof_matches_tsv(proof: dict[str, Any]) -> str:
                 "start": locus["start"],
                 "end": locus["end"],
                 "strand": locus["strand"],
+                "rule_based_type_call": match["rule_based_type_call"],
+                "component_type_scores": json.dumps(
+                    locus["classification"]["component_type_scores"],
+                    sort_keys=True,
+                ),
                 "best_match": match["best_match"],
                 "defined_type": match["defined_type"],
                 "defined_subtype": match["defined_subtype"],
@@ -382,6 +420,17 @@ def proof_html(proof: dict[str, Any], title: str = "Matryoshka proof report") ->
                 if isinstance(differences, list) and differences
                 else ""
             )
+            classification = locus["classification"]
+            component_scores = html.escape(json.dumps(
+                classification.get("component_type_scores", {}),
+                sort_keys=True,
+            ))
+            reference_context = (
+                f'<span>secondary reference <b>{html.escape(str(match["reference_comparison_type"]))}</b></span>'
+                f'<span>whole-locus identity <b>{match["whole_locus_identity"]}%</b></span>'
+                if match.get("reference_comparison_type")
+                else '<span>complete-element lookup <b>not run</b></span>'
+            )
             cards.append(
                 '<section class="card">'
                 f'<div class="verdict {locus["verdict"].lower()}">{locus["verdict"]}</div>'
@@ -389,12 +438,11 @@ def proof_html(proof: dict[str, Any], title: str = "Matryoshka proof report") ->
                 f'<p>{html.escape(str(record["id"]))}: {locus["start"]}..{locus["end"]} '
                 f'({html.escape(str(locus["strand"]))})</p>'
                 '<div class="facts">'
-                f'<span>known match <b>{html.escape(str(match["best_match"]))}</b></span>'
-                f'<span>definition <b>{html.escape(str(match["definition_id"]))}</b></span>'
-                f'<span>subtype <b>{html.escape(str(match["defined_subtype"] or "canonical"))}</b></span>'
-                f'<span>whole-locus identity <b>{match["whole_locus_identity"]}%</b></span>'
-                f'<span>differences <b>{match["mismatch_bases"]} substitutions; '
-                f'{match["inserted_bases"]} inserted bp; {match["deleted_bases"]} deleted bp</b></span>'
+                f'<span>rule-based type <b>{html.escape(str(match["rule_based_type_call"]))}</b></span>'
+                f'<span>component scores <b>{component_scores}</b></span>'
+                f'{reference_context}'
+                f'<span>component structure <b>{assembly["inserted_bases"]} inserted bp; '
+                f'{assembly["deleted_bases"]} deleted bp</b></span>'
                 f'<span>grammar <b>{html.escape(str(assembly["status"]))}</b></span>'
                 f'<span>detected components <b>{assembly["detected_component_count"]}</b></span>'
                 '</div>'

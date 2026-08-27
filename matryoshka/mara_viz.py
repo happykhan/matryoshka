@@ -568,9 +568,23 @@ def to_mara_svg(
             if feature.attributes.get("fragment") and feature.family == "Tn3_family"
             else feature.name
         )
-        # Keep the unit name above any internal IR flag at the locus midpoint
-        # (notably the duplicated IRR in Tn1721).
-        parts.append(_text(mid, 20, label, size=12, weight="bold"))
+        nested = any(
+            other is not feature
+            and other.start <= feature.start
+            and feature.end <= other.end
+            and (other.start, other.end) != (feature.start, feature.end)
+            for other in major_units
+        )
+        # Keep outer and nested unit names on separate rows. This avoids label
+        # collisions in interrupted structures such as Tn1Mer while retaining
+        # the established MARA-style position above the feature block.
+        parts.append(_text(
+            mid,
+            34 if nested else 20,
+            label,
+            size=10 if nested else 12,
+            weight="bold",
+        ))
         if feature.attributes.get("fragment"):
             x1, x2 = _x(feature.start, seq_len), _x(feature.end, seq_len)
             parts.extend([

@@ -76,10 +76,10 @@
 <rect x="807.21" y="176.00" width="1.08" height="62.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 </g>
-<g><title>transposon: Tn3 (31700–36647) IR=GGGGTCTGAC</title>
+<g><title>transposon: Tn3-like (31700–36647) IR=GGGGTCTGAC</title>
 <rect x="983.02" y="260.00" width="144.04" height="62.00" fill="#27ae60" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="0.1"/>
 <rect x="983.02" y="260.00" width="144.04" height="62.00" fill="none" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="1.0"/>
-<text x="987.02" y="273.00" font-size="11" font-family="monospace" text-anchor="start" fill="#27ae60" font-weight="bold">Tn3  (4.9 kb)</text>
+<text x="987.02" y="273.00" font-size="11" font-family="monospace" text-anchor="start" fill="#27ae60" font-weight="bold">Tn3-like  (4.9 kb)</text>
 <g><title>IR: IRR (31700–31737)</title>
 <rect x="983.02" y="280.00" width="1.08" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>

@@ -16,7 +16,9 @@ A complete group-level call requires all six component occurrences in the stated
 
 ## Classification rules
 
-Type assignment: Compare the complete candidate with the canonical Tn1, Tn2 and Tn3 sequences. Assign a type only when one type is clearly closer than the others. Otherwise report an unresolved Tn1/Tn2/Tn3-group element.
+Type assignment: First establish a complete Tn1/Tn2/Tn3-group locus from independently detected components. Score Tn1, Tn2 and Tn3 using the locally detected blaTEM, tnpR, res and tnpA component profiles and the declared weights. Assign a rule-based type only when the best component profile clears the score and margin thresholds. The score threshold permits a locally interrupted or deleted component while the required-component and order rules remain satisfied. Otherwise retain a complete but unresolved Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required to discover or type a candidate.
+
+Secondary reference comparison: Compare an assembled candidate with reviewed whole-element references only after component-rule classification. Record the closest reference, identity, coverage and differences. An exact match may confirm a known definition, but a closest match must not create the family or type call.
 
 Exact definition match: Exact means identical to a declared reference definition. A sequence containing even one substitution or indel is a variant unless that sequence has its own reviewed subtype definition.
 
@@ -26,7 +28,7 @@ Fragment: Partial homology is retained with coordinates, detected components and
 
 ## Type: Tn1
 
-Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Exact Tn1 requires a gap-free, mismatch-free match to this declared sequence.
+Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local blaTEM, tnpR, res and tnpA profiles define the Tn1 component signature. Exact Tn1 additionally requires a gap-free, mismatch-free match to this declared sequence.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -39,7 +41,7 @@ Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the complete
 
 ## Type: Tn2
 
-Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in her working document. It has the complete group grammar and carries blaTEM-1b. Whole-locus sequence, including the diagnostic regions around res, distinguishes it from Tn1 and Tn3.
+Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in her working document. It has the complete group grammar and carries blaTEM-1b. Its local component profiles, particularly the diagnostic sequence around res, distinguish a Tn2-like candidate from Tn1 and Tn3 without requiring a whole-element match.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -52,7 +54,7 @@ Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the 2005 pape
 
 ## Type: Tn3
 
-Canonical Tn3 uses HM749966, the sequence Sally selected in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. Whole-locus sequence, not blaTEM protein identity or gene order alone, distinguishes it from Tn1 and Tn2.
+Canonical Tn3 uses HM749966, the sequence Sally selected in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. The combined local component profiles, not blaTEM protein identity or gene order alone, distinguish a Tn3-like candidate from Tn1 and Tn2.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |

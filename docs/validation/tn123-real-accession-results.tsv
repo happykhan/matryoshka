@@ -1,15 +1,15 @@
-scenario	record	accession	expected	observed_call	defined_type	defined_subtype	closest_definition	start	end	identity_percent	reference_coverage_percent	mismatch_bases	inserted_bases	deleted_bases	variant_status	result
-reviewed real accession	Tn1_NC_008357	NC_008357	Tn1	Tn1	Tn1	canonical	Tn1	1	4949	100.0	100.0	0	0	0	exact_reference	PASS
-reviewed real accession	Tn2_AY123253	AY123253	Tn2	Tn2	Tn2	canonical	Tn2	1	4950	100.0	100.0	0	0	0	exact_reference	PASS
-reviewed real accession	Tn3_HM749966	HM749966	Tn3	Tn3	Tn3	canonical	Tn3	1	4948	100.0	100.0	0	0	0	exact_reference	PASS
-reviewed real accession	Tn2c_HM749967	HM749967	Tn2c	Tn2c	Tn2	Tn2c	Tn2c	1	4950	100.0	100.0	0	0	0	exact_reference	PASS
-reviewed real accession	Tn2_1_CP028717	CP028717	Tn2.1	Tn2.1	Tn2	Tn2.1	Tn2.1	1	8979	100.0	100.0	0	0	0	exact_reference	PASS
-reviewed real accession	Tn1Mer_GQ160960	GQ160960	Tn1Mer	Tn1Mer	Tn1	Tn1Mer	Tn1Mer	1	10491	100.0	100.0	0	0	0	exact_reference	PASS
-reviewed real accession	Tn3_V00613	V00613	Tn3 (legacy 9 bp duplication subtype)	Tn3	Tn3	V00613_legacy_9bp_duplication	Tn3	1	4957	100.0	100.0	0	0	0	exact_reference	PASS
-reviewed natural partial fragments	EU935739.1	EU935739	generic Tn1/2/3 fragment; closest Tn2	Tn1/2/3 fragment	Tn2	canonical	Tn2	38747	40671	100.0	38.89	0	0	0	ambiguous	PASS
-reviewed natural partial fragments	EU935739.1	EU935739	generic Tn1/2/3 fragment; closest Tn2	Tn1/2/3 fragment	Tn2	canonical	Tn2	60316	62561	100.0	45.37	0	0	0	ambiguous	PASS
-related but different Tn3-family element	Tn1696		no named Tn1/Tn2/Tn3 call; supported fragment permitted	no Tn1/2/3 call												PASS
-related but different Tn3-family element	Tn1721		no named Tn1/Tn2/Tn3 call; supported fragment permitted	no Tn1/2/3 call												PASS
-related but different Tn3-family element	Tn5403		no named Tn1/Tn2/Tn3 call; supported fragment permitted	no Tn1/2/3 call												PASS
-synthetic minor variation	novel_complete_variant		Tn1-like, not exact Tn1	Tn1-like	Tn1	canonical	Tn1	1	4949	99.5	100.0	25	0	0	minor_sequence_variant	PASS
-synthetic partial sequence	left_truncated_fragment		generic Tn1/2/3 fragment; closest Tn1	Tn1/2/3 fragment	Tn1	canonical	Tn1	1	4249	100.0	85.86	0	0	0	ambiguous	PASS
+scenario	record	accession	expected	observed_call	classification_basis	rule_based_type_call	defined_type	defined_subtype	closest_definition	start	end	identity_percent	reference_coverage_percent	mismatch_bases	inserted_bases	deleted_bases	variant_status	result
+reviewed real accession	Tn1_NC_008357	NC_008357	Tn1	Tn1	expert_component_rules	Tn1	Tn1	canonical	Tn1	1	4949	100.0	100.0	0	0	0	exact_reference_confirmed	PASS
+reviewed real accession	Tn2_AY123253	AY123253	Tn2	Tn2	expert_component_rules	Tn2	Tn2	canonical	Tn2	1	4950	100.0	100.0	0	0	0	exact_reference_confirmed	PASS
+reviewed real accession	Tn3_HM749966	HM749966	Tn3	Tn3	expert_component_rules	Tn3	Tn3	canonical	Tn3	1	4948	100.0	100.0	0	0	0	exact_reference_confirmed	PASS
+reviewed real accession	Tn2c_HM749967	HM749967	Tn2c	Tn2c	expert_component_rules	Tn2	Tn2	Tn2c	Tn2c	1	4950	100.0	100.0	0	0	0	exact_reference_confirmed	PASS
+reviewed real accession	Tn2_1_CP028717	CP028717	Tn2.1	Tn2.1	expert_component_rules	Tn2	Tn2	Tn2.1	Tn2.1	1	8979	100.0	100.0	0	0	0	exact_reference_confirmed	PASS
+reviewed real accession	Tn1Mer_GQ160960	GQ160960	Tn1Mer	Tn1Mer	expert_component_rules	Tn1	Tn1	Tn1Mer	Tn1Mer	1	10491	100.0	100.0	0	0	0	exact_reference_confirmed	PASS
+reviewed real accession	Tn3_V00613	V00613	Tn3 (legacy 9 bp duplication subtype)	Tn3	expert_component_rules	Tn3	Tn3	V00613_legacy_9bp_duplication	Tn3	1	4957	100.0	100.0	0	0	0	exact_reference_confirmed	PASS
+reviewed natural partial fragments	EU935739.1	EU935739	generic Tn1/2/3 fragment; closest Tn2	Tn1/2/3 fragment	expert_component_rules	unresolved	Tn2	canonical	Tn2	38747	40671	100.0	38.89	0	0	0	rule_incomplete	PASS
+reviewed natural partial fragments	EU935739.1	EU935739	generic Tn1/2/3 fragment; closest Tn2	Tn1/2/3 fragment	expert_component_rules	unresolved	Tn2	canonical	Tn2	60316	62561	100.0	45.37	0	0	0	rule_incomplete	PASS
+related but different Tn3-family element	Tn1696		no named Tn1/Tn2/Tn3 call; supported fragment permitted	no Tn1/2/3 call														PASS
+related but different Tn3-family element	Tn1721		no named Tn1/Tn2/Tn3 call; supported fragment permitted	no Tn1/2/3 call														PASS
+related but different Tn3-family element	Tn5403		no named Tn1/Tn2/Tn3 call; supported fragment permitted	no Tn1/2/3 call														PASS
+synthetic minor variation	novel_complete_variant		Tn1-like, not exact Tn1	Tn1-like	expert_component_rules	Tn1	Tn1	canonical	Tn1	1	4949	99.5	100.0	25	0	0	rule_based_type_candidate	PASS
+synthetic partial sequence	left_truncated_fragment		generic Tn1/2/3 fragment; closest Tn1	Tn1/2/3 fragment	expert_component_rules	unresolved	Tn1	canonical	Tn1	1	4249	100.0	85.86	0	0	0	rule_incomplete	PASS

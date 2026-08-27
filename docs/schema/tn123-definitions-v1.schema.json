@@ -38,7 +38,7 @@
     },
     "classification": {
       "type": "object",
-      "required": ["type_assignment", "exact_definition_match", "close_variant", "fragment"]
+      "required": ["type_assignment", "reference_comparison", "exact_definition_match", "close_variant", "fragment"]
     },
     "component_detection": {
       "type": "object",

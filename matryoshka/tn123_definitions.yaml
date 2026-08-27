@@ -52,15 +52,35 @@ grammar:
 
 classification:
   type_assignment:
-    method: closest whole-locus reference after component grammar validation
+    method: weighted component profiles after component grammar validation
     compare_types: [Tn1, Tn2, Tn3]
-    minimum_identity_percent: 95.0
-    minimum_reference_coverage_percent: 80.0
+    discriminator_role_weights:
+      blaTEM: 1.0
+      tnpR: 2.0
+      res: 3.0
+      tnpA: 3.0
+    minimum_component_profile_score_percent: 90.0
     minimum_type_margin_percent: 0.5
     expert_rule: >-
-      Compare the complete candidate with the canonical Tn1, Tn2 and Tn3
-      sequences. Assign a type only when one type is clearly closer than the
-      others. Otherwise report an unresolved Tn1/Tn2/Tn3-group element.
+      First establish a complete Tn1/Tn2/Tn3-group locus from independently
+      detected components. Score Tn1, Tn2 and Tn3 using the locally detected
+      blaTEM, tnpR, res and tnpA component profiles and the declared weights.
+      Assign a rule-based type only when the best component profile clears the
+      score and margin thresholds. The score threshold permits a locally
+      interrupted or deleted component while the required-component and order
+      rules remain satisfied. Otherwise retain a complete but unresolved
+      Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required
+      to discover or type a candidate.
+  reference_comparison:
+    role: secondary context after rule-based classification
+    minimum_identity_percent: 95.0
+    minimum_reference_coverage_percent: 80.0
+    minimum_reference_margin_percent: 0.5
+    expert_rule: >-
+      Compare an assembled candidate with reviewed whole-element references
+      only after component-rule classification. Record the closest reference,
+      identity, coverage and differences. An exact match may confirm a known
+      definition, but a closest match must not create the family or type call.
   exact_definition_match:
     identity_percent: 100.0
     reference_coverage_percent: 100.0
@@ -93,7 +113,7 @@ component_detection:
     minimum_identity_percent: 90.0
     minimum_hsp_length: 100
     minimum_assembled_coverage_percent: 70.0
-    maximum_reference_gap_bp: 100
+    maximum_reference_gap_bp: 500
   res:
     minimum_identity_percent: 85.0
     minimum_hsp_length: 80
@@ -118,8 +138,10 @@ types:
     display_name: Tn1
     expert_description: >-
       Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the
-      complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Exact Tn1 requires a
-      gap-free, mismatch-free match to this declared sequence.
+      complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local blaTEM,
+      tnpR, res and tnpA profiles define the Tn1 component signature. Exact
+      Tn1 additionally requires a gap-free, mismatch-free match to this
+      declared sequence.
     canonical_reference: Tn1_NC_008357
     source_accession: NC_008357
     bla_allele: blaTEM-2
@@ -136,9 +158,10 @@ types:
     expert_description: >-
       Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the
       2005 paper and selected as Tn2 in her working document. It has the
-      complete group grammar and carries blaTEM-1b. Whole-locus sequence,
-      including the diagnostic regions around res, distinguishes it from Tn1
-      and Tn3.
+      complete group grammar and carries blaTEM-1b. Its local component
+      profiles, particularly the diagnostic sequence around res, distinguish
+      a Tn2-like candidate from Tn1 and Tn3 without requiring a whole-element
+      match.
     canonical_reference: Tn2_AY123253
     source_accession: AY123253
     bla_allele: blaTEM-1b
@@ -155,8 +178,9 @@ types:
     expert_description: >-
       Canonical Tn3 uses HM749966, the sequence Sally selected in preference
       to the older V00613 record. It has the complete group grammar and
-      carries blaTEM-1a. Whole-locus sequence, not blaTEM protein identity or
-      gene order alone, distinguishes it from Tn1 and Tn2.
+      carries blaTEM-1a. The combined local component profiles, not blaTEM
+      protein identity or gene order alone, distinguish a Tn3-like candidate
+      from Tn1 and Tn2.
     canonical_reference: Tn3_HM749966
     source_accession: HM749966
     bla_allele: blaTEM-1a

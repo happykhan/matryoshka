@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "purpose": "Audit arbitrary FASTA sequence through independent component detection, grammar assembly, known-element matching and generated outputs.",
+  "purpose": "Audit arbitrary FASTA sequence through independent component detection, expert-rule classification, secondary known-element comparison and generated outputs.",
   "summary": {
     "status": "PASS",
     "tn123_loci": 3,
@@ -22,26 +22,29 @@
           "end": 12949,
           "strand": "+",
           "known_element_match": {
-            "best_match": "Tn1",
-            "closest_definition": "Tn1",
-            "definition_id": "Tn1_NC_008357",
-            "definition_version": "2026-08-27",
-            "defined_type": "Tn1",
-            "defined_subtype": "canonical",
-            "reference_id": "Tn1_NC_008357",
-            "source_accession": "NC_008357",
-            "whole_locus_identity": 99.5,
-            "whole_locus_coverage": 100.0,
-            "mismatch_bases": 25,
+            "best_match": "unresolved",
+            "rule_based_type_call": "Tn1",
+            "reference_comparison_type": null,
+            "reference_comparison_status": null,
+            "closest_definition": null,
+            "definition_id": null,
+            "definition_version": null,
+            "defined_type": null,
+            "defined_subtype": null,
+            "reference_id": null,
+            "source_accession": null,
+            "whole_locus_identity": null,
+            "whole_locus_coverage": null,
+            "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "minor_sequence_variant",
-            "structural_status": "intact",
-            "expert_rule": "Exact, complete, gap-free match to NC_008357 plus complete component grammar.",
+            "variant_status": "rule_based_type_candidate",
+            "structural_status": "complete",
+            "expert_rule": null,
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -55,15 +58,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn1",
+            "component_type_scores": {
+              "Tn1": 99.592,
+              "Tn2": 64.818,
+              "Tn3": 98.067
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.42,
+                "Tn2": 98.96,
+                "Tn3": 98.84
+              },
+              "tnpR": {
+                "Tn1": 99.1,
+                "Tn2": 94.09,
+                "Tn3": 98.75
+              },
+              "res": {
+                "Tn1": 100.0,
+                "Tn2": 0.0,
+                "Tn3": 98.25
+              },
+              "tnpA": {
+                "Tn1": 99.57,
+                "Tn2": 98.74,
+                "Tn3": 97.17
+              }
+            },
+            "component_type_margin": 1.525
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": false,
             "no_reference_projected_components": true
           },
           "components": [
@@ -236,26 +275,29 @@
           "end": 25699,
           "strand": "+",
           "known_element_match": {
-            "best_match": "Tn2",
-            "closest_definition": "Tn2",
-            "definition_id": "Tn2_AY123253",
-            "definition_version": "2026-08-27",
-            "defined_type": "Tn2",
-            "defined_subtype": "canonical",
-            "reference_id": "Tn2_AY123253",
-            "source_accession": "AY123253",
-            "whole_locus_identity": 100.0,
-            "whole_locus_coverage": 100.0,
+            "best_match": "unresolved",
+            "rule_based_type_call": "Tn2",
+            "reference_comparison_type": null,
+            "reference_comparison_status": null,
+            "closest_definition": null,
+            "definition_id": null,
+            "definition_version": null,
+            "defined_type": null,
+            "defined_subtype": null,
+            "reference_id": null,
+            "source_accession": null,
+            "whole_locus_identity": null,
+            "whole_locus_coverage": null,
             "mismatch_bases": 0,
-            "inserted_bases": 799,
+            "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "minor_sequence_variant",
+            "variant_status": "rule_based_type_candidate",
             "structural_status": "complete_with_insertion",
-            "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
+            "expert_rule": null,
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -269,15 +311,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 799,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn2",
+            "component_type_scores": {
+              "Tn1": 65.067,
+              "Tn2": 100.0,
+              "Tn3": 64.712
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.3,
+                "Tn2": 100.0,
+                "Tn3": 99.65
+              },
+              "tnpR": {
+                "Tn1": 94.44,
+                "Tn2": 100.0,
+                "Tn3": 94.62
+              },
+              "res": {
+                "Tn1": 0.0,
+                "Tn2": 100.0,
+                "Tn3": 0.0
+              },
+              "tnpA": {
+                "Tn1": 99.14,
+                "Tn2": 100.0,
+                "Tn3": 97.84
+              }
+            },
+            "component_type_margin": 34.933
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": false,
             "no_reference_projected_components": true
           },
           "components": [
@@ -453,32 +531,35 @@
         {
           "verdict": "PASS",
           "record": "arbitrary_demo_contig",
-          "call": "Tn3",
+          "call": "Tn3-like",
           "family": "Tn3",
           "start": 31700,
           "end": 36647,
           "strand": "-",
           "known_element_match": {
-            "best_match": "Tn3",
-            "closest_definition": "Tn3",
-            "definition_id": "Tn3_HM749966",
-            "definition_version": "2026-08-27",
-            "defined_type": "Tn3",
-            "defined_subtype": "canonical",
-            "reference_id": "Tn3_HM749966",
-            "source_accession": "HM749966",
-            "whole_locus_identity": 100.0,
-            "whole_locus_coverage": 100.0,
+            "best_match": "unresolved",
+            "rule_based_type_call": "Tn3",
+            "reference_comparison_type": null,
+            "reference_comparison_status": null,
+            "closest_definition": null,
+            "definition_id": null,
+            "definition_version": null,
+            "defined_type": null,
+            "defined_subtype": null,
+            "reference_id": null,
+            "source_accession": null,
+            "whole_locus_identity": null,
+            "whole_locus_coverage": null,
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
-            "expert_rule": "Exact, complete, gap-free match to HM749966 plus complete component grammar.",
+            "variant_status": "rule_based_type_candidate",
+            "structural_status": "complete",
+            "expert_rule": null,
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -492,15 +573,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn3",
+            "component_type_scores": {
+              "Tn1": 98.476,
+              "Tn2": 64.828,
+              "Tn3": 100.0
+            },
+            "component_role_scores": {
+              "tnpA": {
+                "Tn1": 97.61,
+                "Tn2": 97.87,
+                "Tn3": 100.0
+              },
+              "res": {
+                "Tn1": 98.25,
+                "Tn2": 0.0,
+                "Tn3": 100.0
+              },
+              "tnpR": {
+                "Tn1": 99.64,
+                "Tn2": 94.98,
+                "Tn3": 100.0
+              },
+              "blaTEM": {
+                "Tn1": 99.42,
+                "Tn2": 99.88,
+                "Tn3": 100.0
+              }
+            },
+            "component_type_margin": 1.524
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": false,
             "no_reference_projected_components": true
           },
           "components": [
@@ -656,8 +773,8 @@
             }
           ],
           "outputs": {
-            "mara": "mara/arbitrary_demo_contig__Tn3__31700-36647.svg",
-            "mara_table": "mara-table/arbitrary_demo_contig__Tn3__31700-36647.svg",
+            "mara": "mara/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
+            "mara_table": "mara-table/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
             "hierarchy": "hierarchy/arbitrary_demo_contig.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",

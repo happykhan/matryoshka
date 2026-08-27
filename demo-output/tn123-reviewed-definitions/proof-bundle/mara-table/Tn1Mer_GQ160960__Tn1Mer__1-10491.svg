@@ -14,11 +14,11 @@
 <text x="528.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">GQ160960</text>
 <text x="658.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">Tn</text>
 <text x="768.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">BLAST identity=100%; reference coverage=100%; closest definition=Tn1Mer</text>
-<text x="768.0" y="96.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">(subtype Tn1Mer); reviewed subtype differences: defective Tn5036-like</text>
-<text x="768.0" y="110.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">transposon inserted into the Tn1 backbone, blaTEM-1 rather than</text>
-<text x="768.0" y="124.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">canonical Tn1 blaTEM-2; component grammar=complete; 6 independently</text>
-<text x="768.0" y="138.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-detected components; expected DR=5 bp; flanking sequence</text>
-<text x="768.0" y="152.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">unavailable</text>
+<text x="768.0" y="96.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">(subtype Tn1Mer); exact reference confirmed; complete; reviewed subtype</text>
+<text x="768.0" y="110.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">differences: defective Tn5036-like transposon inserted into the Tn1</text>
+<text x="768.0" y="124.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">backbone, blaTEM-1 rather than canonical Tn1 blaTEM-2; component</text>
+<text x="768.0" y="138.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">grammar=complete; 6 independently sequence-detected components; expected</text>
+<text x="768.0" y="152.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">DR=5 bp; flanking sequence unavailable</text>
 <rect x="18" y="160" width="1244" height="40" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
 <text x="26.0" y="178.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1..38</text>
 <text x="198.0" y="178.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRL</text>

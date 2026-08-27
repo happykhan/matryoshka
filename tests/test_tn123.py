@@ -52,6 +52,29 @@ def _write_fasta(path: Path, name: str, sequence: str) -> Path:
     return path
 
 
+def _component_first_annotation(
+    query: Path,
+    *,
+    include_reference_comparison: bool = True,
+) -> tuple[list[MGEFeature], list[MGEFeature]]:
+    """Run the Tn123 decision path with whole-locus comparison optional."""
+    features = scan_tn123_components(query)
+    if include_reference_comparison:
+        features = scan(
+            query,
+            TN123_REFERENCE,
+            min_identity=95.0,
+            min_length=100,
+        ) + features
+    features.extend(assemble_tn123_components(features))
+    parents = [
+        feature
+        for feature in features
+        if feature.element_type == "transposon"
+    ]
+    return parents, features
+
+
 def _mutate(sequence: str, count: int) -> str:
     bases = list(sequence)
     positions = random.Random(71).sample(range(50, len(bases) - 50), count)
@@ -187,8 +210,12 @@ def test_component_grammar_can_emit_parent_without_whole_locus_call():
     ]
     parents = assemble_tn123_components(components)
     assert len(parents) == 1
-    assert parents[0].name == "Tn3-family unit"
+    assert parents[0].name == "Tn1-like"
+    assert parents[0].family == "Tn1"
     assert parents[0].attributes["source"] == "component_assembly"
+    assert parents[0].attributes["classification_basis"] == "expert_component_rules"
+    assert parents[0].attributes["rule_based_type_call"] == "Tn1"
+    assert parents[0].attributes.get("closest_reference") is None
     assert parents[0].attributes["component_assembly_status"] == "complete"
     assert parents[0].attributes["component_order_valid"] is True
     assert parents[0].attributes["detected_component_count"] == 6
@@ -221,13 +248,13 @@ def test_tn1_is_detected_inside_arbitrary_long_sequence(tmp_path: Path):
     suffix = _random_dna(20_000, 2)
     tn1 = REFERENCE_SEQUENCES["Tn1_NC_008357"]
     query = _write_fasta(tmp_path / "embedded.fasta", "arbitrary_contig", prefix + tn1 + suffix)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(query)
     assert len(hits) == 1
     hit = hits[0]
     assert (hit.name, hit.start, hit.end, hit.strand) == (
         "Tn1", len(prefix) + 1, len(prefix) + len(tn1), "+",
     )
-    assert hit.attributes["variant_status"] == "exact_reference"
+    assert hit.attributes["variant_status"] == "exact_reference_confirmed"
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
@@ -235,13 +262,19 @@ def test_minor_sequence_variation_is_named_as_nearest_variant(tmp_path: Path):
     tn1 = REFERENCE_SEQUENCES["Tn1_NC_008357"]
     variant = _mutate(tn1, 25)
     query = _write_fasta(tmp_path / "variant.fasta", "minor_variant", variant)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn1-like"
-    assert hit.attributes["best_match"] == "Tn1"
-    assert hit.attributes["variant_status"] == "minor_sequence_variant"
-    assert 99.0 < float(hit.attributes["blast_identity"]) < 100.0
+    assert hit.attributes["rule_based_type_call"] == "Tn1"
+    assert hit.attributes["classification_basis"] == "expert_component_rules"
+    assert hit.attributes.get("reference_comparison_type") is None
+    assert hit.attributes.get("closest_reference") is None
+    assert hit.attributes["variant_status"] == "rule_based_type_candidate"
+    assert 99.0 < float(hit.attributes["component_type_scores"]["Tn1"]) < 100.0
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
@@ -250,16 +283,24 @@ def test_inserted_sequence_assembles_into_one_complete_locus(tmp_path: Path):
     insertion = _random_dna(800, 3)
     interrupted = tn2[:2500] + insertion + tn2[2500:]
     query = _write_fasta(tmp_path / "inserted.fasta", "tn2_with_insertion", interrupted)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, features = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn2-like"
     assert (hit.start, hit.end) == (1, len(interrupted))
     assert hit.attributes["structural_status"] == "complete_with_insertion"
     assert 790 <= int(hit.attributes["inserted_bases"]) <= 810
-    assert int(hit.attributes["blast_hsp_count"]) >= 2
+    tnpa = next(
+        component
+        for component in hit.attributes["component_evidence"]
+        if component["role"] == "tnpA"
+    )
+    assert len(tnpa["reference_segments"]) >= 2
 
-    roots = build_hierarchy(hits + annotate_tn123(hits))
+    roots = build_hierarchy(features + annotate_tn123(features))
     diagram = to_mara_svg(roots, len(interrupted), "interrupted Tn2")
     table = to_mara_table_svg(roots, "interrupted Tn2")
     assert "Tn2-like" in diagram
@@ -272,7 +313,10 @@ def test_internal_deletion_is_reported_as_one_variant_locus(tmp_path: Path):
     tn2 = REFERENCE_SEQUENCES["Tn2_AY123253"]
     deleted = tn2[:2200] + tn2[2500:]
     query = _write_fasta(tmp_path / "deleted.fasta", "tn2_with_deletion", deleted)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn2-like"
@@ -291,7 +335,10 @@ def test_reverse_locus_with_insertion_is_assembled_and_oriented(tmp_path: Path):
         "reverse_inserted_tn3",
         str(Seq(interrupted).reverse_complement()),
     )
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn3-like"
@@ -308,7 +355,7 @@ def test_reverse_complement_is_detected_on_reverse_strand(tmp_path: Path):
         "reverse_tn3",
         _random_dna(1000, 4) + str(Seq(tn3).reverse_complement()) + _random_dna(1000, 5),
     )
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(query)
     assert len(hits) == 1
     assert hits[0].name == "Tn3"
     assert hits[0].strand == "-"
@@ -342,7 +389,7 @@ def test_reviewed_real_accession_definitions_match_exactly():
         "Tn1Mer_GQ160960": ("Tn1Mer", "Tn1Mer"),
         "Tn3_V00613": ("Tn3", "V00613_legacy_9bp_duplication"),
     }
-    hits = scan(TN123_REFERENCE, TN123_REFERENCE, min_identity=95.0, min_length=100)
+    hits, _ = _component_first_annotation(TN123_REFERENCE)
     observed = {
         str(hit.attributes["seqid"]): (
             hit.name,
@@ -351,9 +398,13 @@ def test_reviewed_real_accession_definitions_match_exactly():
         for hit in hits
     }
     assert observed == expected
-    assert all(hit.attributes["variant_status"] == "exact_reference" for hit in hits)
-    assert all(hit.attributes["mismatch_bases"] == 0 for hit in hits)
-    assert all(hit.attributes["inserted_bases"] == 0 for hit in hits)
+    assert all(
+        hit.attributes["variant_status"] == "exact_reference_confirmed"
+        for hit in hits
+    )
+    assert all(hit.attributes["reference_mismatch_bases"] == 0 for hit in hits)
+    assert all(hit.attributes["reference_inserted_bases"] == 0 for hit in hits)
+    assert all(hit.attributes["reference_deleted_bases"] == 0 for hit in hits)
     assert all(hit.attributes["deleted_bases"] == 0 for hit in hits)
 
 

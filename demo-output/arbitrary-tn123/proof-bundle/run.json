@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "profile": "validated",
+  "profile": "tn123-components",
   "records": 1,
   "features": 22,
   "mara_loci": 3,
@@ -33,15 +33,15 @@
     },
     {
       "record": "arbitrary_demo_contig",
-      "call": "Tn3",
+      "call": "Tn3-like",
       "family": "Tn3",
       "element_type": "transposon",
       "start": 31700,
       "end": 36647,
       "view_start": 26700,
       "view_end": 41647,
-      "mara": "mara/arbitrary_demo_contig__Tn3__31700-36647.svg",
-      "mara_table": "mara-table/arbitrary_demo_contig__Tn3__31700-36647.svg",
+      "mara": "mara/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
+      "mara_table": "mara-table/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
       "hierarchy": "hierarchy/arbitrary_demo_contig.svg"
     }
   ],

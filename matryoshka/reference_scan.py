@@ -658,7 +658,7 @@ def _tn123_assembly_to_feature(
     definition_name = meta.get("name", type_name)
     rules = tn123_rules()["classification"]
     exact_rule = rules["exact_definition_match"]
-    type_rule = rules["type_assignment"]
+    reference_rule = rules["reference_comparison"]
     close_rule = rules["close_variant"]
     margin = (
         assembly.identity - runner_up.identity
@@ -666,7 +666,9 @@ def _tn123_assembly_to_feature(
         else assembly.identity
     )
     complete = assembly.left_end_covered and assembly.right_end_covered
-    clear_nearest = margin >= float(type_rule["minimum_type_margin_percent"])
+    clear_nearest = margin >= float(
+        reference_rule["minimum_reference_margin_percent"]
+    )
     exact = (
         complete
         and assembly.identity >= float(exact_rule["identity_percent"])
@@ -677,34 +679,33 @@ def _tn123_assembly_to_feature(
         and assembly.inserted_bases == 0
         and assembly.deleted_bases == 0
     )
-    named_variant = (
+    close_reference = (
         clear_nearest
         and complete
-        and assembly.identity >= float(type_rule["minimum_identity_percent"])
+        and assembly.identity >= float(reference_rule["minimum_identity_percent"])
         and assembly.reference_coverage >= float(
-            type_rule["minimum_reference_coverage_percent"]
+            reference_rule["minimum_reference_coverage_percent"]
         )
     )
 
     if exact:
-        name = definition_name
-        family = type_name
-        variant_status = "exact_reference"
-    elif named_variant:
-        family = type_name
-        name = str(close_rule["label_template"]).format(type=type_name)
-        variant_status = (
+        comparison_status = "exact_reference"
+    elif close_reference:
+        comparison_status = (
             "minor_sequence_variant"
             if assembly.identity >= float(close_rule["minimum_identity_percent"])
             else assembly.structural_status
         )
     else:
-        family = "Tn3_family"
-        name = "Tn1/2/3" if complete else str(rules["fragment"]["visible_label"])
-        variant_status = "ambiguous"
+        comparison_status = "ambiguous_reference"
 
     fragment = not complete or assembly.reference_coverage < float(
-        type_rule["minimum_reference_coverage_percent"]
+        reference_rule["minimum_reference_coverage_percent"]
+    )
+    name = (
+        "Tn1/Tn2/Tn3 reference-comparison candidate"
+        if complete
+        else str(rules["fragment"]["visible_label"])
     )
     definition = tn123_definition(assembly.sseqid)
     attrs: dict[str, object] = {
@@ -717,6 +718,12 @@ def _tn123_assembly_to_feature(
         "defined_type": type_name,
         "defined_subtype": meta.get("subtype", ""),
         "closest_definition": definition_name,
+        "closest_reference": assembly.sseqid,
+        "reference_comparison_type": type_name,
+        "reference_comparison_label": definition_name,
+        "reference_comparison_status": comparison_status,
+        "reference_comparison_only": True,
+        "classification_basis": "reference_comparison_only",
         "reference_kind": meta.get("reference_kind", ""),
         "expert_rule": definition.get("expert_rule", ""),
         "known_differences_from_parent": definition.get(
@@ -732,9 +739,12 @@ def _tn123_assembly_to_feature(
         "reference_length": assembly.slen,
         "reference_segments": _reference_segments(assembly),
         "variant_margin": round(margin, 2),
-        "variant_status": variant_status,
+        "variant_status": comparison_status,
         "structural_status": assembly.structural_status,
         "query_span": assembly.query_span,
+        "reference_inserted_bases": assembly.inserted_bases,
+        "reference_deleted_bases": assembly.deleted_bases,
+        "reference_mismatch_bases": assembly.mismatch_bases,
         "inserted_bases": assembly.inserted_bases,
         "deleted_bases": assembly.deleted_bases,
         "mismatch_bases": assembly.mismatch_bases,
@@ -745,15 +755,19 @@ def _tn123_assembly_to_feature(
     if fragment:
         attrs["fragment"] = True
     if not clear_nearest:
-        attrs["note"] = "Tn1, Tn2 and Tn3 reference scores are too close to distinguish"
+        attrs["note"] = (
+            "secondary Tn1, Tn2 and Tn3 reference scores are too close; "
+            "component rules must classify the locus"
+        )
     elif not exact:
         attrs["note"] = (
-            f"closest definition is {definition_name} ({type_name}); reported as a variant"
+            f"secondary closest reference is {definition_name} ({type_name}); "
+            "this comparison does not create the biological call"
         )
 
     return MGEFeature(
         element_type="transposon",
-        family=family,
+        family="Tn3_family",
         name=name,
         start=assembly.qstart,
         end=assembly.qend,
@@ -778,7 +792,7 @@ def _scan_tn123_hits(
         whole_locus_rules["minimum_assembled_reference_bases"]
     )
     minimum_type_coverage = float(
-        tn123_rules()["classification"]["type_assignment"][
+        tn123_rules()["classification"]["reference_comparison"][
             "minimum_reference_coverage_percent"
         ]
     )
@@ -1077,6 +1091,10 @@ def _component_feature(
     if assembly.inserted_bases:
         attributes["interrupted"] = True
         attributes["inserted_bases"] = assembly.inserted_bases
+    if assembly.deleted_bases:
+        attributes["deleted_bases"] = assembly.deleted_bases
+    if assembly.mismatch_bases:
+        attributes["mismatch_bases"] = assembly.mismatch_bases
     if not complete:
         attributes["fragment"] = True
     name = "Tn3-family IR" if reference.role == "terminal_IR" else reference.name
@@ -1119,7 +1137,35 @@ def _dedupe_component_features(features: list[MGEFeature]) -> list[MGEFeature]:
             feature.end - feature.start,
         )
 
-    return [max(group, key=rank) for group in groups]
+    selected: list[MGEFeature] = []
+    for group in groups:
+        best = max(group, key=rank)
+        matches_by_type: dict[str, dict[str, object]] = {}
+        for alternative in group:
+            type_name = str(alternative.attributes.get("reference_family", ""))
+            if type_name not in {"Tn1", "Tn2", "Tn3"}:
+                continue
+            identity = float(alternative.attributes.get("blast_identity", 0))
+            coverage = float(alternative.attributes.get("blast_coverage", 0))
+            profile_score = identity * coverage / 100.0
+            current = matches_by_type.get(type_name)
+            if current is not None and float(current["profile_score"]) >= profile_score:
+                continue
+            matches_by_type[type_name] = {
+                "type": type_name,
+                "component_reference": alternative.attributes.get(
+                    "component_reference", ""
+                ),
+                "identity": round(identity, 3),
+                "coverage": round(coverage, 3),
+                "profile_score": round(profile_score, 3),
+            }
+        best.attributes["component_profile_matches"] = [
+            matches_by_type[type_name]
+            for type_name in sorted(matches_by_type)
+        ]
+        selected.append(best)
+    return selected
 
 
 def scan_tn123_components(
@@ -1319,6 +1365,9 @@ VALIDATED_REFERENCE_FILES = frozenset({
 
 REFERENCE_PROFILES = {
     "validated": VALIDATED_REFERENCE_FILES,
+    # Expert-rule discovery without complete Tn1/Tn2/Tn3 reference lookup.
+    # The component models still come from reviewed canonical examples.
+    "tn123-components": (),
     "all": None,
 }
 
@@ -1425,7 +1474,11 @@ def scan_all(
     out: list[MGEFeature] = []
     for ref in refs:
         out.extend(by_name[ref.name])
-    if selected is None or "tn1_tn2_tn3.fasta" in selected:
+    if (
+        profile == "tn123-components"
+        or selected is None
+        or "tn1_tn2_tn3.fasta" in selected
+    ):
         out.extend(scan_tn123_components(query_fasta, blast_threads=1))
     # Compound-island detection (runs only over the hit set we just made)
     out.extend(_infer_acinetobacter_islands(out))

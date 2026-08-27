@@ -15,7 +15,7 @@
 | `mara-table/*.svg` | Matching annotation table per locus, including evidence notes and a compact key |
 | `proof/proof.json` | Machine-checkable Tn1/Tn2/Tn3 component, grammar, match and output verdicts |
 | `proof/components.tsv` | One row per independently sequence-detected Tn1/Tn2/Tn3 component |
-| `proof/matches.tsv` | One row per assembled and known-element-matched Tn1/Tn2/Tn3 locus, including definition ID/version, type, subtype and sequence-difference counts |
+| `proof/matches.tsv` | One row per assembled Tn1/Tn2/Tn3 locus, including the rule-based type call, optional reference context, definition ID/version and sequence-difference counts |
 | `proof/report.html` | Portable human-readable proof report linking all representations |
 | `detectors/` | Present only when Matryoshka ran optional external detectors |
 
@@ -25,10 +25,11 @@ viewport and direct relative paths to its MARA map, MARA table and hierarchy
 view. Consumers should use this index rather than guessing filenames.
 
 The proof status is `PASS` only when every required Tn1/Tn2/Tn3 component was
-detected from sequence, the component order/orientation grammar is complete, a known
-whole-element reference supports the name, and zero internal components were merely
-projected. Inputs without a Tn1/Tn2/Tn3 locus are reported as `NO_TN123_LOCI`, not as
-a false pass.
+detected from sequence, the component order/orientation grammar is complete, the
+expert component profiles support a type, and zero internal components were merely
+projected. A known whole-element reference is secondary evidence and is not required
+for `PASS`. Inputs without a Tn1/Tn2/Tn3 locus are reported as `NO_TN123_LOCI`, not
+as a false pass.
 
 An expected incomplete locus with sequence-detected components and canonical-family
 homology receives a `PARTIAL` locus verdict. A run containing only such loci reports
@@ -62,9 +63,10 @@ biological confidence solely from the feature name.
 
 ## Profiles
 
-`validated` is the default and contains the expert-example-backed alpha subset. `all`
-adds experimental and legacy references. The selected profile is embedded in both
-`annotation.json` and `run.json`.
+`validated` is the default and contains the expert-example-backed alpha subset. The
+`tn123-components` profile runs the Tn1/Tn2/Tn3 expert discovery path without any
+complete Tn1/Tn2/Tn3 reference lookup. `all` adds experimental and legacy references.
+The selected profile is embedded in both `annotation.json` and `run.json`.
 
 The diagrams are renderings of the annotation hierarchy, not independent evidence.
 For Tn1/Tn2/Tn3, solid component arrows represent independent sequence matches used

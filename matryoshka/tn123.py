@@ -269,49 +269,71 @@ def curated_internal_features(parent: MGEFeature) -> list[MGEFeature]:
 
 
 def inserted_sequence_features(parent: MGEFeature) -> list[MGEFeature]:
-    """Emit query gaps between collinear reference HSPs as inserted sequence."""
-    segments = parent.attributes.get("reference_segments")
-    if not isinstance(segments, list) or len(segments) < 2:
-        return []
-    parsed: list[tuple[int, int, int, int]] = []
-    reference_length = int(parent.attributes.get("reference_length", 0))
-    for segment in segments:
-        if not isinstance(segment, dict):
-            continue
-        try:
-            qstart, qend = sorted((int(segment["qstart"]), int(segment["qend"])))
-            sstart, send = sorted((int(segment["sstart"]), int(segment["send"])))
-        except (KeyError, TypeError, ValueError):
-            continue
-        if parent.strand == "-":
-            sstart, send = reference_length - send + 1, reference_length - sstart + 1
-        parsed.append((qstart, qend, sstart, send))
-    parsed.sort()
-
+    """Emit query gaps from whole-locus or independently detected component HSPs."""
+    evidence_sources: list[tuple[object, int, str, str]] = [(
+        parent.attributes.get("reference_segments"),
+        int(parent.attributes.get("reference_length", 0) or 0),
+        parent.strand,
+        "reference_hsp_gap",
+    )]
+    component_evidence = parent.attributes.get("component_evidence", [])
+    if isinstance(component_evidence, list):
+        for component in component_evidence:
+            if not isinstance(component, dict):
+                continue
+            evidence_sources.append((
+                component.get("reference_segments"),
+                int(component.get("reference_length", 0) or 0),
+                str(component.get("strand", parent.strand)),
+                "component_hsp_gap",
+            ))
     out: list[MGEFeature] = []
-    for index, (left, right) in enumerate(zip(parsed, parsed[1:], strict=False), start=1):
-        query_gap = right[0] - left[1] - 1
-        reference_gap = max(0, right[2] - left[3] - 1)
-        inserted = query_gap - max(0, reference_gap)
-        if inserted <= 20:
+    seen: set[tuple[int, int]] = set()
+    for segments, reference_length, strand, source in evidence_sources:
+        if not isinstance(segments, list) or len(segments) < 2:
             continue
-        start = left[1] + 1
-        end = right[0] - 1
-        out.append(MGEFeature(
-            element_type="inserted_sequence",
-            family="insertion",
-            name=f"inserted sequence {index}",
-            start=start,
-            end=end,
-            strand=".",
-            attributes={
-                "seqid": parent.attributes.get("seqid", ""),
-                "source": "reference_hsp_gap",
-                "parent_transposon": parent.name,
-                "inserted_bases": inserted,
-                "note": "sequence present between collinear Tn reference matches",
-            },
-        ))
+        parsed: list[tuple[int, int, int, int]] = []
+        for segment in segments:
+            if not isinstance(segment, dict):
+                continue
+            try:
+                qstart, qend = sorted((int(segment["qstart"]), int(segment["qend"])))
+                sstart, send = sorted((int(segment["sstart"]), int(segment["send"])))
+            except (KeyError, TypeError, ValueError):
+                continue
+            if strand == "-" and reference_length:
+                sstart, send = (
+                    reference_length - send + 1,
+                    reference_length - sstart + 1,
+                )
+            parsed.append((qstart, qend, sstart, send))
+        parsed.sort()
+        for left, right in zip(parsed, parsed[1:], strict=False):
+            query_gap = right[0] - left[1] - 1
+            reference_gap = max(0, right[2] - left[3] - 1)
+            inserted = query_gap - reference_gap
+            if inserted <= 20:
+                continue
+            start = left[1] + 1
+            end = right[0] - 1
+            if (start, end) in seen:
+                continue
+            seen.add((start, end))
+            out.append(MGEFeature(
+                element_type="inserted_sequence",
+                family="insertion",
+                name=f"inserted sequence {len(out) + 1}",
+                start=start,
+                end=end,
+                strand=".",
+                attributes={
+                    "seqid": parent.attributes.get("seqid", ""),
+                    "source": source,
+                    "parent_transposon": parent.name,
+                    "inserted_bases": inserted,
+                    "note": "sequence present between collinear component matches",
+                },
+            ))
     return out
 
 
@@ -398,12 +420,136 @@ def _select_component_path(
     return selected, requirements, order_valid
 
 
+def _component_type_scores(
+    selected: list[MGEFeature],
+) -> tuple[dict[str, float], dict[str, dict[str, float]]]:
+    """Score declared Tn types from local component-profile matches only."""
+    type_rule = tn123_rules()["classification"]["type_assignment"]
+    weights = {
+        str(role): float(weight)
+        for role, weight in type_rule["discriminator_role_weights"].items()
+    }
+    total_weight = sum(weights.values())
+    scores = {type_name: 0.0 for type_name in type_rule["compare_types"]}
+    role_scores: dict[str, dict[str, float]] = {}
+    for component in selected:
+        role = _component_role(component)
+        weight = weights.get(role)
+        if weight is None:
+            continue
+        matches = component.attributes.get("component_profile_matches", [])
+        by_type = {
+            str(match.get("type")): float(match.get("profile_score", 0.0))
+            for match in matches
+            if isinstance(match, dict)
+        }
+        role_scores[role] = {
+            type_name: round(by_type.get(type_name, 0.0), 3)
+            for type_name in scores
+        }
+        for type_name in scores:
+            scores[type_name] += weight * by_type.get(type_name, 0.0)
+    if total_weight:
+        scores = {
+            type_name: round(score / total_weight, 3)
+            for type_name, score in scores.items()
+        }
+    return scores, role_scores
+
+
+def _apply_component_rule_classification(
+    parent: MGEFeature,
+    selected: list[MGEFeature],
+    component_complete: bool,
+) -> None:
+    """Make the biological call from component rules, then attach ref context."""
+    rules = tn123_rules()["classification"]
+    type_rule = rules["type_assignment"]
+    scores, role_scores = _component_type_scores(selected)
+    ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+    best_type, best_score = ranked[0] if ranked else ("unresolved", 0.0)
+    runner_up_score = ranked[1][1] if len(ranked) > 1 else 0.0
+    margin = round(best_score - runner_up_score, 3)
+    qualified = (
+        component_complete
+        and best_score >= float(
+            type_rule["minimum_component_profile_score_percent"]
+        )
+        and margin >= float(type_rule["minimum_type_margin_percent"])
+    )
+
+    parent.attributes.update({
+        "classification_basis": "expert_component_rules",
+        "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+        "rule_based_type_call": best_type if qualified else "unresolved",
+        "component_type_scores": scores,
+        "component_role_scores": role_scores,
+        "component_type_margin": margin,
+        "naming_evidence": [
+            "component_grammar",
+            "component_type_profiles",
+        ],
+    })
+
+    if not qualified:
+        parent.family = "Tn3_family"
+        parent.name = (
+            str(rules["fragment"]["visible_label"])
+            if parent.attributes.get("fragment")
+            else "Tn1/Tn2/Tn3-group element"
+        )
+        parent.attributes["variant_status"] = (
+            "rule_incomplete" if not component_complete else "rule_type_unresolved"
+        )
+        return
+
+    parent.family = best_type
+    parent.name = str(rules["close_variant"]["label_template"]).format(
+        type=best_type
+    )
+    parent.attributes["variant_status"] = "rule_based_type_candidate"
+
+    reference_type = parent.attributes.get("reference_comparison_type")
+    reference_status = parent.attributes.get("reference_comparison_status")
+    if reference_type and reference_type != best_type:
+        parent.attributes["reference_classification_conflict"] = True
+        parent.attributes["note"] = (
+            f"component rules support {best_type}; secondary whole-locus "
+            f"comparison is closest to {reference_type}"
+        )
+        return
+    if reference_type == best_type and reference_status == "exact_reference":
+        parent.name = str(
+            parent.attributes.get("reference_comparison_label", best_type)
+        )
+        parent.attributes["variant_status"] = "exact_reference_confirmed"
+        parent.attributes["reference_confirmation"] = "exact_known_definition"
+    elif reference_type == best_type:
+        parent.attributes["reference_confirmation"] = "closest_reference_context"
+
+
 def _record_component_assembly(
     parent: MGEFeature,
     components: list[MGEFeature],
 ) -> bool:
     selected, requirements, order_valid = _select_component_path(parent, components)
     component_complete = all(requirements.values()) and order_valid
+    inserted_bases = sum(
+        int(feature.attributes.get("inserted_bases", 0) or 0)
+        for feature in selected
+    )
+    deleted_bases = sum(
+        int(feature.attributes.get("deleted_bases", 0) or 0)
+        for feature in selected
+    )
+    if component_complete and inserted_bases:
+        structural_status = "complete_with_insertion"
+    elif component_complete and deleted_bases:
+        structural_status = "complete_with_deletion"
+    elif component_complete:
+        structural_status = "complete"
+    else:
+        structural_status = "partial_or_conflicting"
     if selected:
         irs = [feature for feature in selected if _component_role(feature) == "terminal_IR"]
         if len(irs) == 2:
@@ -418,6 +564,9 @@ def _record_component_assembly(
         "component_order_valid": order_valid,
         "component_requirements": requirements,
         "detected_component_count": len(selected),
+        "structural_status": structural_status,
+        "inserted_bases": inserted_bases,
+        "deleted_bases": deleted_bases,
         "component_evidence": [
             {
                 "role": _component_role(feature),
@@ -431,8 +580,10 @@ def _record_component_assembly(
                 "status": feature.attributes.get("structural_status"),
                 "component_status": feature.attributes.get("component_status"),
                 "reference": feature.attributes.get("component_reference"),
+                "reference_length": feature.attributes.get("reference_length", 0),
                 "reference_segments": feature.attributes.get("reference_segments", []),
                 "inserted_bases": feature.attributes.get("inserted_bases", 0),
+                "deleted_bases": feature.attributes.get("deleted_bases", 0),
             }
             for feature in selected
         ],
@@ -447,6 +598,7 @@ def _record_component_assembly(
     })
     if component_complete:
         parent.attributes["evidence_class"] = "sequence_detected_and_assembled"
+    _apply_component_rule_classification(parent, selected, component_complete)
     return component_complete
 
 
@@ -467,22 +619,10 @@ def assemble_tn123_components(features: list[MGEFeature]) -> list[MGEFeature]:
         if feature.attributes.get("source") == "tn123_component_scan"
     ]
     for parent in parents:
-        complete = _record_component_assembly(
+        _record_component_assembly(
             parent,
             _components_for_parent(parent, components),
         )
-        if (
-            not complete
-            and parent.attributes.get("variant_status") == "exact_reference"
-            and not parent.attributes.get("fragment")
-        ):
-            parent.attributes["reference_assigned_name"] = parent.name
-            parent.name = f"{parent.name} reference-match candidate"
-            parent.family = "Tn3_family"
-            parent.attributes["note"] = (
-                "whole-locus reference match lacks a complete independently "
-                "detected component grammar"
-            )
 
     emitted: list[MGEFeature] = []
     for tnpa in [feature for feature in components if _component_role(feature) == "tnpA"]:

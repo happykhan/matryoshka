@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "purpose": "Audit arbitrary FASTA sequence through independent component detection, grammar assembly, known-element matching and generated outputs.",
+  "purpose": "Audit arbitrary FASTA sequence through independent component detection, expert-rule classification, secondary known-element comparison and generated outputs.",
   "summary": {
     "status": "PASS",
     "tn123_loci": 7,
@@ -23,6 +23,9 @@
           "strand": "+",
           "known_element_match": {
             "best_match": "Tn1",
+            "rule_based_type_call": "Tn1",
+            "reference_comparison_type": "Tn1",
+            "reference_comparison_status": "exact_reference",
             "closest_definition": "Tn1",
             "definition_id": "Tn1_NC_008357",
             "definition_version": "2026-08-27",
@@ -35,13 +38,13 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
+            "variant_status": "exact_reference_confirmed",
+            "structural_status": "complete",
             "expert_rule": "Exact, complete, gap-free match to NC_008357 plus complete component grammar.",
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -55,15 +58,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn1",
+            "component_type_scores": {
+              "Tn1": 100.0,
+              "Tn2": 65.182,
+              "Tn3": 98.472
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 100.0,
+                "Tn2": 99.53,
+                "Tn3": 99.42
+              },
+              "tnpR": {
+                "Tn1": 100.0,
+                "Tn2": 94.8,
+                "Tn3": 99.64
+              },
+              "res": {
+                "Tn1": 100.0,
+                "Tn2": 0.0,
+                "Tn3": 98.25
+              },
+              "tnpA": {
+                "Tn1": 100.0,
+                "Tn2": 99.17,
+                "Tn3": 97.6
+              }
+            },
+            "component_type_margin": 1.528
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [
@@ -243,6 +282,9 @@
           "strand": "+",
           "known_element_match": {
             "best_match": "Tn2",
+            "rule_based_type_call": "Tn2",
+            "reference_comparison_type": "Tn2",
+            "reference_comparison_status": "exact_reference",
             "closest_definition": "Tn2",
             "definition_id": "Tn2_AY123253",
             "definition_version": "2026-08-27",
@@ -255,13 +297,13 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
+            "variant_status": "exact_reference_confirmed",
+            "structural_status": "complete",
             "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -275,15 +317,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn2",
+            "component_type_scores": {
+              "Tn1": 65.067,
+              "Tn2": 100.0,
+              "Tn3": 64.712
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.3,
+                "Tn2": 100.0,
+                "Tn3": 99.65
+              },
+              "tnpR": {
+                "Tn1": 94.44,
+                "Tn2": 100.0,
+                "Tn3": 94.62
+              },
+              "res": {
+                "Tn1": 0.0,
+                "Tn2": 100.0,
+                "Tn3": 0.0
+              },
+              "tnpA": {
+                "Tn1": 99.14,
+                "Tn2": 100.0,
+                "Tn3": 97.84
+              }
+            },
+            "component_type_margin": 34.933
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [
@@ -463,6 +541,9 @@
           "strand": "+",
           "known_element_match": {
             "best_match": "Tn3",
+            "rule_based_type_call": "Tn3",
+            "reference_comparison_type": "Tn3",
+            "reference_comparison_status": "exact_reference",
             "closest_definition": "Tn3",
             "definition_id": "Tn3_HM749966",
             "definition_version": "2026-08-27",
@@ -475,13 +556,13 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
+            "variant_status": "exact_reference_confirmed",
+            "structural_status": "complete",
             "expert_rule": "Exact, complete, gap-free match to HM749966 plus complete component grammar.",
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -495,15 +576,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn3",
+            "component_type_scores": {
+              "Tn1": 98.476,
+              "Tn2": 64.828,
+              "Tn3": 100.0
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.42,
+                "Tn2": 99.88,
+                "Tn3": 100.0
+              },
+              "tnpR": {
+                "Tn1": 99.64,
+                "Tn2": 94.98,
+                "Tn3": 100.0
+              },
+              "res": {
+                "Tn1": 98.25,
+                "Tn2": 0.0,
+                "Tn3": 100.0
+              },
+              "tnpA": {
+                "Tn1": 97.61,
+                "Tn2": 97.87,
+                "Tn3": 100.0
+              }
+            },
+            "component_type_margin": 1.524
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [
@@ -683,6 +800,9 @@
           "strand": "+",
           "known_element_match": {
             "best_match": "Tn2",
+            "rule_based_type_call": "Tn2",
+            "reference_comparison_type": "Tn2",
+            "reference_comparison_status": "exact_reference",
             "closest_definition": "Tn2c",
             "definition_id": "Tn2c_HM749967",
             "definition_version": "2026-08-27",
@@ -695,8 +815,8 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
+            "variant_status": "exact_reference_confirmed",
+            "structural_status": "complete",
             "expert_rule": "Exact, complete, gap-free match to the 4950 bp Tn2 interval in HM749967. It retains the Tn2 grammar but carries the blaTEM-1c sequence and nine substitutions relative to AY123253.",
             "known_differences_from_parent": [
               "9 nucleotide substitutions relative to canonical Tn2 AY123253",
@@ -704,7 +824,7 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -718,15 +838,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn2",
+            "component_type_scores": {
+              "Tn1": 65.182,
+              "Tn2": 100.0,
+              "Tn3": 64.828
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.53,
+                "Tn2": 100.0,
+                "Tn3": 99.88
+              },
+              "tnpR": {
+                "Tn1": 94.8,
+                "Tn2": 100.0,
+                "Tn3": 94.98
+              },
+              "res": {
+                "Tn1": 0.0,
+                "Tn2": 100.0,
+                "Tn3": 0.0
+              },
+              "tnpA": {
+                "Tn1": 99.17,
+                "Tn2": 100.0,
+                "Tn3": 97.87
+              }
+            },
+            "component_type_margin": 34.818
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [
@@ -906,6 +1062,9 @@
           "strand": "+",
           "known_element_match": {
             "best_match": "Tn2",
+            "rule_based_type_call": "Tn2",
+            "reference_comparison_type": "Tn2",
+            "reference_comparison_status": "exact_reference",
             "closest_definition": "Tn2.1",
             "definition_id": "Tn2_1_CP028717",
             "definition_version": "2026-08-27",
@@ -918,8 +1077,8 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
+            "variant_status": "exact_reference_confirmed",
+            "structural_status": "complete",
             "expert_rule": "Exact match to the 8979 bp interrupted Tn2 structure extracted from CP028717. The Tn2 backbone is complete, including both terminal IRs, and a 4024 bp ISEcp1-associated region interrupts the sequence between canonical reference positions 124 and 129.",
             "known_differences_from_parent": [
               "4024 bp ISEcp1-associated insertion near the blaTEM end",
@@ -927,7 +1086,7 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -941,15 +1100,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 2
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn2",
+            "component_type_scores": {
+              "Tn1": 65.087,
+              "Tn2": 99.99,
+              "Tn3": 64.732
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.3,
+                "Tn2": 100.0,
+                "Tn3": 99.65
+              },
+              "tnpR": {
+                "Tn1": 94.44,
+                "Tn2": 100.0,
+                "Tn3": 94.62
+              },
+              "res": {
+                "Tn1": 0.0,
+                "Tn2": 100.0,
+                "Tn3": 0.0
+              },
+              "tnpA": {
+                "Tn1": 99.2,
+                "Tn2": 99.97,
+                "Tn3": 97.9
+              }
+            },
+            "component_type_margin": 34.903
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [
@@ -1129,6 +1324,9 @@
           "strand": "+",
           "known_element_match": {
             "best_match": "Tn1",
+            "rule_based_type_call": "Tn1",
+            "reference_comparison_type": "Tn1",
+            "reference_comparison_status": "exact_reference",
             "closest_definition": "Tn1Mer",
             "definition_id": "Tn1Mer_GQ160960",
             "definition_version": "2026-08-27",
@@ -1141,8 +1339,8 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
+            "variant_status": "exact_reference_confirmed",
+            "structural_status": "complete",
             "expert_rule": "Exact match to the 10491 bp interrupted Tn1 structure in GQ160960. The outer Tn1 grammar is complete, while a defective 5537 bp Tn5036-like transposon interrupts the Tn1 backbone. This is a named interrupted subtype, not the canonical Tn1 reference.",
             "known_differences_from_parent": [
               "defective Tn5036-like transposon inserted into the Tn1 backbone",
@@ -1150,7 +1348,7 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -1164,15 +1362,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 1
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn1",
+            "component_type_scores": {
+              "Tn1": 99.961,
+              "Tn2": 65.17,
+              "Tn3": 98.459
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.65,
+                "Tn2": 99.42,
+                "Tn3": 99.3
+              },
+              "tnpR": {
+                "Tn1": 100.0,
+                "Tn2": 94.8,
+                "Tn3": 99.64
+              },
+              "res": {
+                "Tn1": 100.0,
+                "Tn2": 0.0,
+                "Tn3": 98.25
+              },
+              "tnpA": {
+                "Tn1": 100.0,
+                "Tn2": 99.17,
+                "Tn3": 97.6
+              }
+            },
+            "component_type_margin": 1.502
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [
@@ -1352,6 +1586,9 @@
           "strand": "+",
           "known_element_match": {
             "best_match": "Tn3",
+            "rule_based_type_call": "Tn3",
+            "reference_comparison_type": "Tn3",
+            "reference_comparison_status": "exact_reference",
             "closest_definition": "Tn3",
             "definition_id": "Tn3_V00613",
             "definition_version": "2026-08-27",
@@ -1364,15 +1601,15 @@
             "mismatch_bases": 0,
             "inserted_bases": 0,
             "deleted_bases": 0,
-            "variant_status": "exact_reference",
-            "structural_status": "intact",
+            "variant_status": "exact_reference_confirmed",
+            "structural_status": "complete_with_insertion",
             "expert_rule": "Exact match to V00613 is Tn3 with the declared 9 bp duplication. It is a recognised Tn3 sequence variant, not an exact match to canonical HM749966.",
             "known_differences_from_parent": [
               "9 bp duplication relative to canonical Tn3 HM749966"
             ],
             "naming_evidence": [
               "component_grammar",
-              "whole_locus_alignment"
+              "component_type_profiles"
             ]
           },
           "assembly": {
@@ -1386,15 +1623,51 @@
               "tnpA": true
             },
             "detected_component_count": 6,
+            "inserted_bases": 9,
+            "deleted_bases": 0,
             "reference_projected_component_count": 0,
             "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "Tn3",
+            "component_type_scores": {
+              "Tn1": 98.376,
+              "Tn2": 64.731,
+              "Tn3": 99.9
+            },
+            "component_role_scores": {
+              "blaTEM": {
+                "Tn1": 99.42,
+                "Tn2": 99.88,
+                "Tn3": 100.0
+              },
+              "tnpR": {
+                "Tn1": 99.64,
+                "Tn2": 94.98,
+                "Tn3": 100.0
+              },
+              "res": {
+                "Tn1": 98.25,
+                "Tn2": 0.0,
+                "Tn3": 100.0
+              },
+              "tnpA": {
+                "Tn1": 97.31,
+                "Tn2": 97.58,
+                "Tn3": 99.7
+              }
+            },
+            "component_type_margin": 1.524
           },
           "checks": {
             "components_detected_from_sequence": true,
             "all_required_components_present": true,
             "component_order_and_orientation_valid": true,
             "component_grammar_complete": true,
-            "known_element_reference_match": true,
+            "expert_rule_type_assigned": true,
+            "secondary_reference_context_available": true,
             "no_reference_projected_components": true
           },
           "components": [

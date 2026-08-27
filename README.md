@@ -53,15 +53,19 @@ retain their evidence in the JSON and table.
 
 For these three elements, the diagram is assembled from sequence evidence rather than
 drawn from a name alone. Matryoshka independently scans for both terminal IRs,
-`blaTEM`, `tnpR`, `res` and `tnpA`; checks their order and orientation; and then uses
-the closest whole-locus reference to assign Tn1, Tn2, Tn3 or a qualified `*-like`
-name. Missing required components prevent an exact named call. Solid arrows in the
+`blaTEM`, `tnpR`, `res` and `tnpA`; checks their order and orientation; and scores
+the locally detected component profiles against the expert Tn1/Tn2/Tn3 signatures.
+That component grammar and profile score—not a whole-element hit—assigns a qualified
+`Tn1-like`, `Tn2-like` or `Tn3-like` call. A secondary whole-locus comparison can
+confirm an exact reviewed definition or record its closest context, but cannot create
+the family/type call. Missing required components prevent a complete named call. Solid arrows in the
 figure are sequence-detected components; outlined dashed arrows are reference
 projections and are used only where a supported parent lacks a component call.
 For a Tn1/Tn2/Tn3 locus to receive `PASS` in the proof report, all required
 components must be independently sequence-detected, their grammar and orientation
-must be valid, the whole locus must match a known element, and no internal component
-may be supplied only by reference projection. Expected fragments receive a
+must be valid, the component-rule classifier must assign a type, and no internal
+component may be supplied only by reference projection. A whole-element match is not
+required for `PASS`. Expected fragments receive a
 `PARTIAL` locus verdict and a `PARTIAL_TN123_EVIDENCE` run status rather than being
 misrepresented as either a complete pass or a pipeline failure.
 
@@ -110,6 +114,19 @@ The default `--profile validated` includes the Sally-backed Tn1/Tn2/Tn3, curated
 transposon, integron and ISEcp1-TPU references. `--profile all` enables broader legacy
 and experimental references and should be treated as exploratory.
 
+To exercise and audit discovery without any complete Tn1/Tn2/Tn3 lookup, use the
+component-only profile:
+
+```bash
+matryoshka run assembly.fasta --out results --profile tn123-components \
+  --detectors none
+```
+
+In that mode, a complete novel candidate can still receive a `Tn1-like`, `Tn2-like`
+or `Tn3-like` call from its detected component composition, order, orientation and
+component-profile scores. Exact reviewed subtype names require the optional secondary
+whole-locus confirmation available in the `validated` profile.
+
 BLAST-based detection is always run. Extra detector evidence can be supplied without
 rerunning tools:
 
@@ -138,7 +155,7 @@ users.
 
 | Category | Implemented support |
 |---|---|
-| Tn1/Tn2/Tn3 | YAML-defined IR/blaTEM/tnpR/res/tnpA grammar, orientation-aware component assembly, exact canonical/subtype naming, closest-reference minor variants, indels, reverse orientation and conservative partial/ambiguous calls |
+| Tn1/Tn2/Tn3 | YAML-defined IR/blaTEM/tnpR/res/tnpA grammar, orientation-aware component-profile classification, optional exact reference confirmation, indels, reverse orientation and conservative partial/ambiguous calls |
 | Curated MARA units | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
 | ISEcp1 transposition units | Seven complete supplied ISEcp1–blaCMY references and orientation-aware incomplete candidates |
 | Insertion sequences | Exact curated IS calls plus ISEScan calls, including IS26/IS257, ISEcp1, ISApl1 and IS91/ISCR families |
