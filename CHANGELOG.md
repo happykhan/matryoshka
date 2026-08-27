@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Rich staged console reporting for the one-command workflow, including detector
+  status, reference-scan progress, per-contig results and a final summary; `--quiet`
+  suppresses presentation output for automated use.
+- `matryoshka expert-rules` Markdown/HTML export and matching files in every result
+  bundle. The report translates the executable YAML into plain-language component,
+  grammar, classification, exact-name, variant and fragment decisions for review.
 - A versioned 17-target priority-transposon roadmap with machine-readable YAML,
   Markdown/JSON export, explicit component-rule evidence levels and a shared
   validation contract.

@@ -19,6 +19,8 @@
 | `proof/matches.tsv` | One row per assembled Tn1/Tn2/Tn3 locus, including the rule-based type call, optional reference context, definition ID/version and sequence-difference counts |
 | `proof/report.html` | Portable human-readable proof report linking all representations |
 | `detectors/` | Raw AMRFinderPlus, ISEScan and IntegronFinder results when those tools ran |
+| `expert-rules.md` | Plain-language review of every executable component rule used by this release |
+| `expert-rules.html` | Styled, standalone and printable rendering of the same rule review |
 
 `run.json` contains a `locus_outputs` array with one entry per generated
 locus map. Each entry records the sequence record, call, family, coordinates,
@@ -70,6 +72,9 @@ remain explicit in the two JSON documents while the built-in scan continues.
 `--detectors all` is the strict reproducibility gate and fails unless all three tools
 complete. `--detectors none` disables automatic execution without disabling supplied
 precomputed files.
+
+Interactive runs use staged Rich progress output on standard error. `--quiet`
+suppresses that presentation without changing any analysis or result file.
 
 Changing a documented schema incompatibly requires a new schema version. New optional
 fields may be added within v1. Consumers should ignore unknown fields and must not infer

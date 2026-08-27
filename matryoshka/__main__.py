@@ -24,6 +24,7 @@ from Bio import SeqIO
 from .boundaries import confirm_boundaries
 from .component_catalog import catalog_as_json, catalog_as_tsv
 from .confidence import assign_confidence
+from .console import WorkflowConsole
 from .curated_units import annotate_curated_units
 from .deduplication import suppress_redundant_inference as _suppress_redundant_inference
 from .detect import (
@@ -42,6 +43,7 @@ from .element_definitions import (
     definitions_as_markdown,
     definitions_as_yaml,
 )
+from .expert_report import expert_rules_as_html, expert_rules_as_markdown
 from .hierarchy import build_hierarchy
 from .integron_structures import infer_integron_structures
 from .locus_map import to_locus_map_svg
@@ -129,6 +131,22 @@ def definitions_command(definition_set: str, fmt: str, out: str) -> None:
     _emit(exporters[definition_set][fmt](), out, False)
 
 
+@cli.command("expert-rules")
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["html", "markdown"]),
+    default="html",
+    show_default=True,
+    help="Human-readable review format.",
+)
+@click.option("--out", "-o", default="-", help="Output file (default: stdout).")
+def expert_rules_command(fmt: str, out: str) -> None:
+    """Translate all executable YAML rules into a non-specialist review report."""
+    report = expert_rules_as_html() if fmt == "html" else expert_rules_as_markdown()
+    _emit(report, out, False)
+
+
 @cli.command()
 @click.option(
     "--format",
@@ -156,18 +174,10 @@ def preflight(fmt: str) -> None:
         }, indent=2))
         return
 
-    click.echo(
-        "Core reference/component scan: "
-        + ("ready" if core["ready"] else "missing BLAST+"),
-    )
-    for _, label, runtime in runtimes:
-        status = "configured" if runtime.available else "unavailable"
-        click.echo(
-            f"{label}: {status} — {runtime.reason}",
-        )
-    click.echo(
-        "Use --detectors available for best-effort execution, "
-        "--detectors all to require every detector, or --detectors none to disable them."
+    WorkflowConsole().preflight_summary(
+        bool(core["ready"]),
+        str(core["blastn"]) if core["blastn"] else None,
+        runtimes,
     )
 
 
@@ -319,6 +329,7 @@ def _load_detector_outputs(
     show_default=True,
     help="Flanking bases included around each locus map.",
 )
+@click.option("--quiet", is_flag=True, help="Suppress progress and status output.")
 def run_workflow(
     fasta: Path,
     out: Path,
@@ -329,13 +340,20 @@ def run_workflow(
     amrfinder: str | None,
     integrons: str | None,
     locus_flank: int,
+    quiet: bool,
 ) -> None:
     """Run a reproducible annotation and write a complete result directory."""
     if not blast_available():
         raise click.UsageError(
             "blastn and makeblastdb are required. Install BLAST+ or use the supplied Pixi environment."
         )
+    fasta_records = list(SeqIO.parse(fasta, "fasta"))
+    if not fasta_records:
+        raise click.UsageError(f"No FASTA records found in {fasta}")
     out.mkdir(parents=True, exist_ok=True)
+    reporter = WorkflowConsole(quiet=quiet)
+    reporter.header(fasta, out, profile, threads, detectors)
+    reporter.stage(1, 4, "Run optional detectors")
     detector_dir = out / "detectors"
     supplied_detector_paths: dict[str, str | None] = {
         "isescan": isescan,
@@ -343,37 +361,37 @@ def run_workflow(
         "integron": integrons,
     }
     try:
+        def _announce_detector(message: str) -> None:
+            if "unavailable" in message.lower() or "failed" in message.lower():
+                reporter.warning(message)
+            else:
+                reporter.info(message)
+
         detector_paths, detector_runs = execute_detectors(
             fasta,
             detector_dir,
             mode=detectors,
             threads=threads,
             supplied=supplied_detector_paths,
-            announce=lambda message: click.echo(message, err=True),
+            announce=_announce_detector,
         )
     except DetectorExecutionError as error:
         raise click.UsageError(str(error)) from error
 
+    reporter.detector_summary(detector_runs)
     all_features = _load_detector_outputs(
         detector_paths["isescan"],
         detector_paths["amrfinder"],
         detector_paths["integron"],
     )
-    click.echo(
-        f"Reference profile: {profile}; scanning with {threads} worker(s)…",
-        err=True,
-    )
+    reporter.stage(2, 4, "Detect sequence components")
+    with reporter.reference_progress(profile, threads) as update_progress:
+        all_features.extend(
+            scan_all(fasta, profile=profile, threads=threads, progress=update_progress)
+        )
+    reporter.success(f"Collected {len(all_features)} component-level observations")
 
-    def _progress(reference: str, completed: int, total: int) -> None:
-        click.echo(f"  [{completed}/{total}] {reference}", err=True)
-
-    all_features.extend(
-        scan_all(fasta, profile=profile, threads=threads, progress=_progress)
-    )
-    fasta_records = list(SeqIO.parse(fasta, "fasta"))
-    if not fasta_records:
-        raise click.UsageError(f"No FASTA records found in {fasta}")
-
+    reporter.stage(3, 4, "Assemble and draw loci")
     annotated: list[tuple[str, int, list[MGEFeature]]] = []
     genbank_records: list[str] = []
     locus_map_dir = out / "locus-map"
@@ -386,6 +404,7 @@ def run_workflow(
     locus_outputs: list[dict[str, object]] = []
     locus_count = 0
     for record in fasta_records:
+        loci_before = locus_count
         sequence = str(record.seq)
         contig_features = _features_on_contig(all_features, record.id)
         roots, _ = _annotate_contig(sequence, record.id, contig_features, False)
@@ -440,7 +459,14 @@ def run_workflow(
                 "hierarchy": f"hierarchy/{safe_record_id}.svg",
             })
             locus_count += 1
+        reporter.contig(
+            record.id,
+            len(sequence),
+            len(roots),
+            locus_count - loci_before,
+        )
 
+    reporter.stage(4, 4, "Write result bundle")
     detector_provenance = {
         record.name: record.output
         for record in detector_runs
@@ -482,6 +508,8 @@ def run_workflow(
         ) + "\n",
         encoding="utf-8",
     )
+    (out / "expert-rules.md").write_text(expert_rules_as_markdown(), encoding="utf-8")
+    (out / "expert-rules.html").write_text(expert_rules_as_html(), encoding="utf-8")
     proof = build_tn123_proof(annotated, proof_output_paths)
     write_proof_bundle(
         out / "proof",
@@ -509,12 +537,16 @@ def run_workflow(
             "proof_report": "proof/report.html",
             "component_ledger": "proof/components.tsv",
             "match_ledger": "proof/matches.tsv",
+            "expert_rules_markdown": "expert-rules.md",
+            "expert_rules_html": "expert-rules.html",
         },
     }
     (out / "run.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    click.echo(
-        f"Complete: {summary['features']} features and {locus_count} locus maps in {out}",
-        err=True,
+    reporter.finish(
+        int(summary["features"]),
+        locus_count,
+        len(annotated),
+        out,
     )
 
 

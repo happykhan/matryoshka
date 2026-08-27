@@ -125,6 +125,26 @@ def test_run_writes_versioned_result_directory(tmp_path):
     assert (out / "proof" / "components.tsv").is_file()
     assert (out / "proof" / "matches.tsv").is_file()
     assert (out / "proof" / "report.html").is_file()
+    assert (out / "expert-rules.md").is_file()
+    assert (out / "expert-rules.html").is_file()
+    assert summary["outputs"]["expert_rules_html"] == "expert-rules.html"
+    assert "Matryoshka analysis" in result.output
+    assert "Analysis complete" in result.output
+
+
+@SKIP_BLAST
+def test_run_quiet_suppresses_rich_progress(tmp_path: Path) -> None:
+    out = tmp_path / "quiet-result"
+    result = CliRunner().invoke(
+        cli,
+        [
+            "run", str(TN123), "--threads", "2", "--detectors", "none",
+            "--quiet", "--out", str(out),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert result.output == ""
+    assert (out / "run.json").is_file()
 
 
 @SKIP_BLAST

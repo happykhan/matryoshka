@@ -94,7 +94,9 @@ The result directory contains:
 - `locus-table/*.svg` — the corresponding locus annotation tables;
 - `proof/report.html` — a human-readable component-to-call proof report;
 - `proof/proof.json`, `components.tsv` and `matches.tsv` — machine-checkable
-  component, grammar and known-element evidence.
+  component, grammar and known-element evidence;
+- `expert-rules.md` and `expert-rules.html` — plain-language description of the
+  executable rules used to interpret the sequence.
 
 Each Tn1/Tn2/Tn3 target receives its own viewport, so the element stays legible in a
 long plasmid or chromosome. Near matches are labelled `Tn1-like`, `Tn2-like` or
@@ -127,6 +129,21 @@ matryoshka definitions --set reviewed-units --format markdown \
   --out reviewed-unit-definitions.md
 ```
 
+For a single non-specialist review document covering every currently executable
+component-driven family rule:
+
+```bash
+matryoshka expert-rules --format html --out expert-rules.html
+matryoshka expert-rules --format markdown --out expert-rules.md
+```
+
+This report is generated from the same two YAML documents used by the classifier. It
+explains the required components, copy counts, order, boundaries, optional features,
+type assignment, exact/`-like`/fragment labels, canonical accession and explicit
+limitations for Tn1, Tn2, Tn3, Tn21, Tn1721 and Tn1722. It also includes a short
+review checklist. The HTML is standalone and printable. Both formats are written
+automatically into every `matryoshka run` result directory.
+
 The current definitions include three expert-reviewed canonical elements plus
 Tn2c (HM749967), Tn2.1 (CP028717), Tn1Mer (GQ160960) and the legacy V00613 Tn3
 sequence. See the [definition and validation report](docs/tn123-definition-and-validation-report.md)
@@ -151,6 +168,11 @@ pixi run preflight
 # One FASTA in; the complete result directory out.
 pixi run analyse assembly.fasta --out results
 ```
+
+The analysis command uses a Rich terminal display with four visible stages, a live
+component-reference progress bar, an optional-detector status table, per-contig
+counts and a final result summary. Use `--quiet` when running under a scheduler or
+another program that should receive no progress output.
 
 The first analysis installs a required detector environment on demand. On its first
 AMRFinderPlus run, Matryoshka also downloads the official database when the Pixi
