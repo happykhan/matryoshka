@@ -8,39 +8,14 @@
     "strand": "+",
     "tsd_length": 5,
     "tsd_seq": null,
-    "ir_left": "GGGGTCTGACGCTCAGTGGAACGAAAACTCACGTTAAG",
-    "ir_right": "CTTAACGTGAGTTTTCGTTCCACTGAGCGTCAGACCCC",
-    "score": 99.495,
+    "ir_left": "GGGGTCTGACGCTCAGTGGA",
+    "ir_right": "TCCACTGAGCGTCAGACCCC",
+    "score": null,
     "attributes": {
       "seqid": "arbitrary_demo_contig",
-      "reference_id": "Tn1_NC_008357",
-      "source": "reference_scan",
-      "source_accession": "NC_008357",
-      "tn123_canonical": "true",
-      "best_match": "Tn1",
-      "blast_identity": 99.5,
-      "blast_coverage": 100.0,
-      "blast_subject_coverage": 100.0,
-      "blast_hsp_count": 1,
-      "reference_length": 4949,
-      "reference_segments": [
-        {
-          "qstart": 8001,
-          "qend": 12949,
-          "sstart": 1,
-          "send": 4949,
-          "identity": 99.495
-        }
-      ],
-      "variant_margin": 1.78,
-      "variant_status": "minor_sequence_variant",
-      "structural_status": "intact",
-      "query_span": 4949,
-      "inserted_bases": 0,
-      "deleted_bases": 0,
-      "left_end_covered": true,
-      "right_end_covered": true,
-      "note": "closest reference is Tn1; reported as a variant",
+      "source": "component_assembly",
+      "best_match": "unresolved",
+      "variant_status": "rule_based_type_candidate",
       "component_assembly_status": "complete",
       "component_order_valid": true,
       "component_requirements": {
@@ -51,6 +26,9 @@
         "tnpA": true
       },
       "detected_component_count": 6,
+      "structural_status": "complete",
+      "inserted_bases": 0,
+      "deleted_bases": 0,
       "component_evidence": [
         {
           "role": "terminal_IR",
@@ -61,7 +39,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_length": 38,
+          "reference_segments": [
+            {
+              "qstart": 8001,
+              "qend": 8038,
+              "sstart": 38,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "blaTEM",
@@ -72,7 +66,23 @@
           "evidence_class": "sequence_detected",
           "identity": 99.42,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__blaTEM_2__148_1008",
+          "reference_length": 861,
+          "reference_segments": [
+            {
+              "qstart": 8148,
+              "qend": 9008,
+              "sstart": 1,
+              "send": 861,
+              "identity": 99.419,
+              "mismatch_bases": 5,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "tnpR",
@@ -83,7 +93,23 @@
           "evidence_class": "sequence_detected",
           "identity": 99.1,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__tnpR__1191_1748",
+          "reference_length": 558,
+          "reference_segments": [
+            {
+              "qstart": 9191,
+              "qend": 9748,
+              "sstart": 1,
+              "send": 558,
+              "identity": 99.104,
+              "mismatch_bases": 5,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "res",
@@ -94,7 +120,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__res__1754_1867",
+          "reference_length": 114,
+          "reference_segments": [
+            {
+              "qstart": 9754,
+              "qend": 9867,
+              "sstart": 1,
+              "send": 114,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "tnpA",
@@ -105,7 +147,23 @@
           "evidence_class": "sequence_detected",
           "identity": 99.57,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn1_NC_008357__tnpA__1911_4916",
+          "reference_length": 3006,
+          "reference_segments": [
+            {
+              "qstart": 9911,
+              "qend": 12916,
+              "sstart": 1,
+              "send": 3006,
+              "identity": 99.568,
+              "mismatch_bases": 13,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "terminal_IR",
@@ -116,22 +174,69 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_length": 38,
+          "reference_segments": [
+            {
+              "qstart": 12912,
+              "qend": 12949,
+              "sstart": 1,
+              "send": 38,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         }
       ],
       "naming_evidence": [
         "component_grammar",
-        "whole_locus_alignment"
+        "component_type_profiles"
       ],
       "evidence_class": "sequence_detected_and_assembled",
+      "classification_basis": "expert_component_rules",
+      "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+      "rule_based_type_call": "Tn1",
+      "component_type_scores": {
+        "Tn1": 99.592,
+        "Tn2": 64.818,
+        "Tn3": 98.067
+      },
+      "component_role_scores": {
+        "blaTEM": {
+          "Tn1": 99.42,
+          "Tn2": 98.96,
+          "Tn3": 98.84
+        },
+        "tnpR": {
+          "Tn1": 99.1,
+          "Tn2": 94.09,
+          "Tn3": 98.75
+        },
+        "res": {
+          "Tn1": 100.0,
+          "Tn2": 0.0,
+          "Tn3": 98.25
+        },
+        "tnpA": {
+          "Tn1": 99.57,
+          "Tn2": 98.74,
+          "Tn3": 97.17
+        }
+      },
+      "component_type_margin": 1.525,
       "curated_internal_features": false,
-      "ir_length": 38,
       "independently_detected_internal_features": true,
       "reference_projected_component_count": 0,
+      "reference_projected_context_feature_count": 0,
       "ir_evidence": "sequence_matched",
       "tsd_evidence": "searched_not_found",
-      "confidence": 1.0,
-      "confidence_label": "high"
+      "confidence": 0.75,
+      "confidence_label": "medium"
     },
     "children": [
       {
@@ -151,9 +256,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -163,11 +268,36 @@
               "qend": 8038,
               "sstart": 38,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__IRR__4912_4949",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__IRR__4911_4948",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -202,11 +332,37 @@
               "qend": 9008,
               "sstart": 1,
               "send": 861,
-              "identity": 99.419
+              "identity": 99.419,
+              "mismatch_bases": 5,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "mismatch_bases": 5,
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__blaTEM_2__148_1008",
+              "identity": 99.42,
+              "coverage": 100.0,
+              "profile_score": 99.42
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__blaTEM_1c__148_1008",
+              "identity": 98.96,
+              "coverage": 100.0,
+              "profile_score": 98.96
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__blaTEM_1a__148_1008",
+              "identity": 98.84,
+              "coverage": 100.0,
+              "profile_score": 98.84
+            }
+          ],
           "confidence": 0.7,
           "confidence_label": "medium"
         },
@@ -241,11 +397,37 @@
               "qend": 9748,
               "sstart": 1,
               "send": 558,
-              "identity": 99.104
+              "identity": 99.104,
+              "mismatch_bases": 5,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "mismatch_bases": 5,
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__tnpR__1191_1748",
+              "identity": 99.1,
+              "coverage": 100.0,
+              "profile_score": 99.1
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__tnpR__1191_1748",
+              "identity": 94.09,
+              "coverage": 100.0,
+              "profile_score": 94.09
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__tnpR__1191_1748",
+              "identity": 98.75,
+              "coverage": 100.0,
+              "profile_score": 98.75
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -280,11 +462,29 @@
               "qend": 9867,
               "sstart": 1,
               "send": 114,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__res__1754_1867",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__res__1754_1867",
+              "identity": 98.25,
+              "coverage": 100.0,
+              "profile_score": 98.25
+            }
+          ],
           "confidence": 0.3,
           "confidence_label": "speculative"
         },
@@ -319,11 +519,37 @@
               "qend": 12916,
               "sstart": 1,
               "send": 3006,
-              "identity": 99.568
+              "identity": 99.568,
+              "mismatch_bases": 13,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "mismatch_bases": 13,
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__tnpA__1911_4916",
+              "identity": 99.57,
+              "coverage": 100.0,
+              "profile_score": 99.57
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__tnpA__1911_4917",
+              "identity": 98.74,
+              "coverage": 100.0,
+              "profile_score": 98.74
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__tnpA__1911_4915",
+              "identity": 97.17,
+              "coverage": 100.0,
+              "profile_score": 97.17
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -346,9 +572,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -358,11 +584,36 @@
               "qend": 12949,
               "sstart": 1,
               "send": 38,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__IRR__4912_4949",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__IRR__4911_4948",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -379,46 +630,14 @@
     "strand": "+",
     "tsd_length": 5,
     "tsd_seq": null,
-    "ir_left": "GGGGTCTGACGCTCAGTGGAACGAAAACTCACGTTAAG",
-    "ir_right": "CTTAACGTGAGTTTTCGTTCCACTGAGCGTCAGACCCC",
-    "score": 100.0,
+    "ir_left": "GGGGTCTGACGCTCAGTGGA",
+    "ir_right": "TCCACTGAGCGTCAGACCCC",
+    "score": null,
     "attributes": {
       "seqid": "arbitrary_demo_contig",
-      "reference_id": "Tn2_AY123253",
-      "source": "reference_scan",
-      "source_accession": "AY123253",
-      "tn123_canonical": "true",
-      "best_match": "Tn2",
-      "blast_identity": 100.0,
-      "blast_coverage": 100.0,
-      "blast_subject_coverage": 100.0,
-      "blast_hsp_count": 2,
-      "reference_length": 4950,
-      "reference_segments": [
-        {
-          "qstart": 19950,
-          "qend": 22450,
-          "sstart": 1,
-          "send": 2501,
-          "identity": 100.0
-        },
-        {
-          "qstart": 23250,
-          "qend": 25699,
-          "sstart": 2501,
-          "send": 4950,
-          "identity": 100.0
-        }
-      ],
-      "variant_margin": 1.8,
-      "variant_status": "minor_sequence_variant",
-      "structural_status": "complete_with_insertion",
-      "query_span": 5750,
-      "inserted_bases": 799,
-      "deleted_bases": 0,
-      "left_end_covered": true,
-      "right_end_covered": true,
-      "note": "closest reference is Tn2; reported as a variant",
+      "source": "component_assembly",
+      "best_match": "unresolved",
+      "variant_status": "rule_based_type_candidate",
       "component_assembly_status": "complete",
       "component_order_valid": true,
       "component_requirements": {
@@ -429,6 +648,9 @@
         "tnpA": true
       },
       "detected_component_count": 6,
+      "structural_status": "complete_with_insertion",
+      "inserted_bases": 799,
+      "deleted_bases": 0,
       "component_evidence": [
         {
           "role": "terminal_IR",
@@ -439,7 +661,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_length": 38,
+          "reference_segments": [
+            {
+              "qstart": 19950,
+              "qend": 19987,
+              "sstart": 38,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "blaTEM",
@@ -450,7 +688,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2_AY123253__blaTEM_1b__148_1008",
+          "reference_length": 861,
+          "reference_segments": [
+            {
+              "qstart": 20097,
+              "qend": 20957,
+              "sstart": 1,
+              "send": 861,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "tnpR",
@@ -461,7 +715,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2_AY123253__tnpR__1191_1748",
+          "reference_length": 558,
+          "reference_segments": [
+            {
+              "qstart": 21140,
+              "qend": 21697,
+              "sstart": 1,
+              "send": 558,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "res",
@@ -472,7 +742,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__res__1754_1867",
+          "reference_length": 114,
+          "reference_segments": [
+            {
+              "qstart": 21703,
+              "qend": 21816,
+              "sstart": 1,
+              "send": 114,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "tnpA",
@@ -483,7 +769,32 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "complete_with_insertion",
+          "component_status": "complete",
+          "reference": "Tn2_AY123253__tnpA__1911_4917",
+          "reference_length": 3007,
+          "reference_segments": [
+            {
+              "qstart": 21860,
+              "qend": 22450,
+              "sstart": 1,
+              "send": 591,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            },
+            {
+              "qstart": 23250,
+              "qend": 25666,
+              "sstart": 591,
+              "send": 3007,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 799,
+          "deleted_bases": 0
         },
         {
           "role": "terminal_IR",
@@ -494,22 +805,69 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_length": 38,
+          "reference_segments": [
+            {
+              "qstart": 25662,
+              "qend": 25699,
+              "sstart": 1,
+              "send": 38,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         }
       ],
       "naming_evidence": [
         "component_grammar",
-        "whole_locus_alignment"
+        "component_type_profiles"
       ],
       "evidence_class": "sequence_detected_and_assembled",
+      "classification_basis": "expert_component_rules",
+      "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+      "rule_based_type_call": "Tn2",
+      "component_type_scores": {
+        "Tn1": 65.067,
+        "Tn2": 100.0,
+        "Tn3": 64.712
+      },
+      "component_role_scores": {
+        "blaTEM": {
+          "Tn1": 99.3,
+          "Tn2": 100.0,
+          "Tn3": 99.65
+        },
+        "tnpR": {
+          "Tn1": 94.44,
+          "Tn2": 100.0,
+          "Tn3": 94.62
+        },
+        "res": {
+          "Tn1": 0.0,
+          "Tn2": 100.0,
+          "Tn3": 0.0
+        },
+        "tnpA": {
+          "Tn1": 99.14,
+          "Tn2": 100.0,
+          "Tn3": 97.84
+        }
+      },
+      "component_type_margin": 34.933,
       "curated_internal_features": false,
-      "ir_length": 38,
       "independently_detected_internal_features": true,
       "reference_projected_component_count": 0,
+      "reference_projected_context_feature_count": 0,
       "ir_evidence": "sequence_matched",
       "tsd_evidence": "searched_not_found",
-      "confidence": 1.0,
-      "confidence_label": "high"
+      "confidence": 0.75,
+      "confidence_label": "medium"
     },
     "children": [
       {
@@ -529,9 +887,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -541,11 +899,36 @@
               "qend": 19987,
               "sstart": 38,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__IRR__4912_4949",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__IRR__4911_4948",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -580,11 +963,36 @@
               "qend": 20957,
               "sstart": 1,
               "send": 861,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__blaTEM_2__148_1008",
+              "identity": 99.3,
+              "coverage": 100.0,
+              "profile_score": 99.3
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2_AY123253__blaTEM_1b__148_1008",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__blaTEM_1a__148_1008",
+              "identity": 99.65,
+              "coverage": 100.0,
+              "profile_score": 99.65
+            }
+          ],
           "confidence": 0.7,
           "confidence_label": "medium"
         },
@@ -619,11 +1027,36 @@
               "qend": 21697,
               "sstart": 1,
               "send": 558,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__tnpR__1191_1748",
+              "identity": 94.44,
+              "coverage": 100.0,
+              "profile_score": 94.44
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2_AY123253__tnpR__1191_1748",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__tnpR__1191_1748",
+              "identity": 94.62,
+              "coverage": 100.0,
+              "profile_score": 94.62
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -646,8 +1079,8 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "res",
-          "component_reference": "Tn2_AY123253__res__1754_1867",
-          "reference_parent": "Tn2_AY123253",
+          "component_reference": "Tn2c_HM749967__res__1754_1867",
+          "reference_parent": "Tn2c_HM749967",
           "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
@@ -658,11 +1091,22 @@
               "qend": 21816,
               "sstart": 1,
               "send": 114,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__res__1754_1867",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.3,
           "confidence_label": "speculative"
         },
@@ -697,20 +1141,47 @@
               "qend": 22450,
               "sstart": 1,
               "send": 591,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             },
             {
               "qstart": 23250,
               "qend": 25666,
               "sstart": 591,
               "send": 3007,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "complete_with_insertion",
           "interrupted": true,
           "inserted_bases": 799,
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__tnpA__1911_4916",
+              "identity": 99.14,
+              "coverage": 100.0,
+              "profile_score": 99.14
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2_AY123253__tnpA__1911_4917",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__tnpA__1911_4915",
+              "identity": 97.84,
+              "coverage": 100.0,
+              "profile_score": 97.84
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -729,10 +1200,10 @@
             "score": null,
             "attributes": {
               "seqid": "arbitrary_demo_contig",
-              "source": "reference_hsp_gap",
+              "source": "component_hsp_gap",
               "parent_transposon": "Tn2-like",
               "inserted_bases": 799,
-              "note": "sequence present between collinear Tn reference matches",
+              "note": "sequence present between collinear component matches",
               "confidence": 0.5,
               "confidence_label": "low"
             },
@@ -757,9 +1228,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -769,11 +1240,36 @@
               "qend": 25699,
               "sstart": 1,
               "send": 38,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__IRR__4912_4949",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__IRR__4911_4948",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -784,44 +1280,20 @@
   {
     "element_type": "transposon",
     "family": "Tn3",
-    "name": "Tn3",
+    "name": "Tn3-like",
     "start": 31700,
     "end": 36647,
     "strand": "-",
     "tsd_length": 5,
     "tsd_seq": null,
-    "ir_left": "GGGGTCTGACGCTCAGTGGAACGAAAACTCACGTTAAG",
-    "ir_right": "CTTAACGTGAGTTTTCGTTCCACTGAGCGTCAGACCCC",
-    "score": 100.0,
+    "ir_left": "GGGGTCTGACGCTCAGTGGA",
+    "ir_right": "TCCACTGAGCGTCAGACCCC",
+    "score": null,
     "attributes": {
       "seqid": "arbitrary_demo_contig",
-      "reference_id": "Tn3_HM749966",
-      "source": "reference_scan",
-      "source_accession": "HM749966",
-      "tn123_canonical": "true",
-      "best_match": "Tn3",
-      "blast_identity": 100.0,
-      "blast_coverage": 100.0,
-      "blast_subject_coverage": 100.0,
-      "blast_hsp_count": 1,
-      "reference_length": 4948,
-      "reference_segments": [
-        {
-          "qstart": 31700,
-          "qend": 36647,
-          "sstart": 4948,
-          "send": 1,
-          "identity": 100.0
-        }
-      ],
-      "variant_margin": 1.86,
-      "variant_status": "exact_reference",
-      "structural_status": "intact",
-      "query_span": 4948,
-      "inserted_bases": 0,
-      "deleted_bases": 0,
-      "left_end_covered": true,
-      "right_end_covered": true,
+      "source": "component_assembly",
+      "best_match": "unresolved",
+      "variant_status": "rule_based_type_candidate",
       "component_assembly_status": "complete",
       "component_order_valid": true,
       "component_requirements": {
@@ -832,6 +1304,9 @@
         "tnpA": true
       },
       "detected_component_count": 6,
+      "structural_status": "complete",
+      "inserted_bases": 0,
+      "deleted_bases": 0,
       "component_evidence": [
         {
           "role": "terminal_IR",
@@ -842,7 +1317,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_length": 38,
+          "reference_segments": [
+            {
+              "qstart": 31700,
+              "qend": 31737,
+              "sstart": 38,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "tnpA",
@@ -853,7 +1344,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__tnpA__1911_4915",
+          "reference_length": 3005,
+          "reference_segments": [
+            {
+              "qstart": 31733,
+              "qend": 34737,
+              "sstart": 3005,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "res",
@@ -864,7 +1371,23 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__res__1754_1867",
+          "reference_length": 114,
+          "reference_segments": [
+            {
+              "qstart": 34781,
+              "qend": 34894,
+              "sstart": 114,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "tnpR",
@@ -875,18 +1398,50 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__tnpR__1191_1748",
+          "reference_length": 558,
+          "reference_segments": [
+            {
+              "qstart": 34900,
+              "qend": 35457,
+              "sstart": 558,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "blaTEM",
-          "name": "blaTEM-1",
+          "name": "blaTEM-1a",
           "start": 35640,
           "end": 36500,
           "strand": "+",
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn3_HM749966__blaTEM_1a__148_1008",
+          "reference_length": 861,
+          "reference_segments": [
+            {
+              "qstart": 35640,
+              "qend": 36500,
+              "sstart": 861,
+              "send": 1,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         },
         {
           "role": "terminal_IR",
@@ -897,22 +1452,69 @@
           "evidence_class": "sequence_detected",
           "identity": 100.0,
           "coverage": 100.0,
-          "status": "complete"
+          "status": "intact",
+          "component_status": "complete",
+          "reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_length": 38,
+          "reference_segments": [
+            {
+              "qstart": 36610,
+              "qend": 36647,
+              "sstart": 1,
+              "send": 38,
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
+            }
+          ],
+          "inserted_bases": 0,
+          "deleted_bases": 0
         }
       ],
       "naming_evidence": [
         "component_grammar",
-        "whole_locus_alignment"
+        "component_type_profiles"
       ],
       "evidence_class": "sequence_detected_and_assembled",
+      "classification_basis": "expert_component_rules",
+      "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+      "rule_based_type_call": "Tn3",
+      "component_type_scores": {
+        "Tn1": 98.476,
+        "Tn2": 64.828,
+        "Tn3": 100.0
+      },
+      "component_role_scores": {
+        "tnpA": {
+          "Tn1": 97.61,
+          "Tn2": 97.87,
+          "Tn3": 100.0
+        },
+        "res": {
+          "Tn1": 98.25,
+          "Tn2": 0.0,
+          "Tn3": 100.0
+        },
+        "tnpR": {
+          "Tn1": 99.64,
+          "Tn2": 94.98,
+          "Tn3": 100.0
+        },
+        "blaTEM": {
+          "Tn1": 99.42,
+          "Tn2": 99.88,
+          "Tn3": 100.0
+        }
+      },
+      "component_type_margin": 1.524,
       "curated_internal_features": false,
-      "ir_length": 38,
       "independently_detected_internal_features": true,
       "reference_projected_component_count": 0,
+      "reference_projected_context_feature_count": 0,
       "ir_evidence": "sequence_matched",
       "tsd_evidence": "searched_not_found",
-      "confidence": 1.0,
-      "confidence_label": "high"
+      "confidence": 0.75,
+      "confidence_label": "medium"
     },
     "children": [
       {
@@ -932,9 +1534,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -944,11 +1546,36 @@
               "qend": 31737,
               "sstart": 38,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__IRR__4912_4949",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__IRR__4911_4948",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -983,11 +1610,36 @@
               "qend": 34737,
               "sstart": 3005,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__tnpA__1911_4916",
+              "identity": 97.61,
+              "coverage": 100.0,
+              "profile_score": 97.61
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__tnpA__1911_4917",
+              "identity": 97.87,
+              "coverage": 100.0,
+              "profile_score": 97.87
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__tnpA__1911_4915",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -1022,11 +1674,29 @@
               "qend": 34894,
               "sstart": 114,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__res__1754_1867",
+              "identity": 98.25,
+              "coverage": 100.0,
+              "profile_score": 98.25
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__res__1754_1867",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.3,
           "confidence_label": "speculative"
         },
@@ -1061,11 +1731,36 @@
               "qend": 35457,
               "sstart": 558,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__tnpR__1191_1748",
+              "identity": 99.64,
+              "coverage": 100.0,
+              "profile_score": 99.64
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__tnpR__1191_1748",
+              "identity": 94.98,
+              "coverage": 100.0,
+              "profile_score": 94.98
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__tnpR__1191_1748",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },
@@ -1074,7 +1769,7 @@
       {
         "element_type": "AMR",
         "family": "Tn3_family",
-        "name": "blaTEM-1",
+        "name": "blaTEM-1a",
         "start": 35640,
         "end": 36500,
         "strand": "+",
@@ -1088,7 +1783,7 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "blaTEM",
-          "component_reference": "Tn3_HM749966__blaTEM_1__148_1008",
+          "component_reference": "Tn3_HM749966__blaTEM_1a__148_1008",
           "reference_parent": "Tn3_HM749966",
           "reference_family": "Tn3",
           "blast_identity": 100.0,
@@ -1100,11 +1795,36 @@
               "qend": 36500,
               "sstart": 861,
               "send": 1,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__blaTEM_2__148_1008",
+              "identity": 99.42,
+              "coverage": 100.0,
+              "profile_score": 99.42
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__blaTEM_1c__148_1008",
+              "identity": 99.88,
+              "coverage": 100.0,
+              "profile_score": 99.88
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__blaTEM_1a__148_1008",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.7,
           "confidence_label": "medium"
         },
@@ -1127,9 +1847,9 @@
           "source": "tn123_component_scan",
           "evidence_class": "sequence_detected",
           "component_role": "terminal_IR",
-          "component_reference": "Tn3_HM749966__IRR__4911_4948",
-          "reference_parent": "Tn3_HM749966",
-          "reference_family": "Tn3",
+          "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+          "reference_parent": "Tn2c_HM749967",
+          "reference_family": "Tn2",
           "blast_identity": 100.0,
           "blast_coverage": 100.0,
           "reference_length": 38,
@@ -1139,11 +1859,36 @@
               "qend": 36647,
               "sstart": 1,
               "send": 38,
-              "identity": 100.0
+              "identity": 100.0,
+              "mismatch_bases": 0,
+              "gap_bases": 0
             }
           ],
           "component_status": "complete",
           "structural_status": "intact",
+          "component_profile_matches": [
+            {
+              "type": "Tn1",
+              "component_reference": "Tn1_NC_008357__IRR__4912_4949",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn2",
+              "component_reference": "Tn2c_HM749967__IRR__4913_4950",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            },
+            {
+              "type": "Tn3",
+              "component_reference": "Tn3_HM749966__IRR__4911_4948",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "profile_score": 100.0
+            }
+          ],
           "confidence": 0.5,
           "confidence_label": "low"
         },

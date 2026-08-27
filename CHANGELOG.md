@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- A self-contained Word/PDF Tn1/Tn2/Tn3 evidence report with embedded MARA
+  maps, MARA tables, hierarchy views and component ledgers for every reviewed
+  accession, plus natural pEK499 fragments and the arbitrary-contig test.
+- A reproducible pEK499 output bundle retaining Sally's two natural
+  Tn2-related regions as partial fragments.
+- Reviewable, versioned YAML expert definitions for Tn1/Tn2/Tn3 type,
+  subtype, variant and fragment rules, with JSON/Markdown export, a public
+  JSON Schema and a generic definition loader.
+- Reviewed whole-locus definitions for Tn2c (HM749967), Tn2.1 (CP028717),
+  Tn1Mer (GQ160960) and the legacy 9 bp-duplication Tn3 sequence (V00613).
+- A reproducible 14-case validation ledger and review report covering exact
+  real accessions, pEK499 fragments, minor variation, truncation and related
+  elements that must not be misnamed as Tn1/Tn2/Tn3.
+- A complete reviewed-definition demonstration bundle containing every MARA
+  locus map and table, plus a `run.json` index with direct paths for all maps.
 - A source-backed MARA component ontology with 30 raw component classes,
   18 compound-element assembly grammars, named validation examples and
   `matryoshka catalog` JSON/TSV export.
@@ -31,6 +46,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scale-accurate linear SVG visualisation with auto-scaling canvas.
 - A one-command `matryoshka run` workflow producing versioned JSON, valid
   multi-record GFF3, run metadata and paired MARA map/table directories.
+- A Tn1/Tn2/Tn3 acceptance-proof bundle linking every independent component
+  call to the assembly grammar, known-element match, MARA outputs, original
+  nested hierarchy and CellGen/Wolvercote cell-format representation. The
+  bundle includes JSON verdicts, TSV ledgers and a portable HTML report.
 - Deterministic feature IDs, a public v1 JSON Schema and embedded tool,
   reference-database, input-checksum and detector provenance.
 - A checksummed machine-readable reference manifest with validated and
@@ -79,6 +98,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CHANGELOG, LICENSE, CITATION.cff, CONTRIBUTING.md, references manifest.
 
 ### Fixed
+- Non-canonical subtype insertions can no longer create stray Tn1/Tn2/Tn3
+  fragment calls. Partial-family evidence is assessed against canonical
+  references, while subtype references require substantially complete loci.
 - The default validated profile now detects the complete Sally-supplied Tn21
   parent, rather than reporting only its internal In2 integron.
 - Fresh installations no longer depend on a missing sibling `cell-format`

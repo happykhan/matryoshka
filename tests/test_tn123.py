@@ -52,6 +52,29 @@ def _write_fasta(path: Path, name: str, sequence: str) -> Path:
     return path
 
 
+def _component_first_annotation(
+    query: Path,
+    *,
+    include_reference_comparison: bool = True,
+) -> tuple[list[MGEFeature], list[MGEFeature]]:
+    """Run the Tn123 decision path with whole-locus comparison optional."""
+    features = scan_tn123_components(query)
+    if include_reference_comparison:
+        features = scan(
+            query,
+            TN123_REFERENCE,
+            min_identity=95.0,
+            min_length=100,
+        ) + features
+    features.extend(assemble_tn123_components(features))
+    parents = [
+        feature
+        for feature in features
+        if feature.element_type == "transposon"
+    ]
+    return parents, features
+
+
 def _mutate(sequence: str, count: int) -> str:
     bases = list(sequence)
     positions = random.Random(71).sample(range(50, len(bases) - 50), count)
@@ -106,7 +129,7 @@ def test_curated_internal_layout():
 def test_reverse_strand_projection():
     parent = _parent("Tn3", "-")
     features = curated_internal_features(parent)
-    bla = next(feature for feature in features if feature.name == "blaTEM-1")
+    bla = next(feature for feature in features if feature.name == "blaTEM-1a")
     tnpa = next(feature for feature in features if feature.name == "tnpA")
     assert bla.strand == "+"
     assert tnpa.strand == "-"
@@ -187,8 +210,12 @@ def test_component_grammar_can_emit_parent_without_whole_locus_call():
     ]
     parents = assemble_tn123_components(components)
     assert len(parents) == 1
-    assert parents[0].name == "Tn3-family unit"
+    assert parents[0].name == "Tn1-like"
+    assert parents[0].family == "Tn1"
     assert parents[0].attributes["source"] == "component_assembly"
+    assert parents[0].attributes["classification_basis"] == "expert_component_rules"
+    assert parents[0].attributes["rule_based_type_call"] == "Tn1"
+    assert parents[0].attributes.get("closest_reference") is None
     assert parents[0].attributes["component_assembly_status"] == "complete"
     assert parents[0].attributes["component_order_valid"] is True
     assert parents[0].attributes["detected_component_count"] == 6
@@ -221,13 +248,13 @@ def test_tn1_is_detected_inside_arbitrary_long_sequence(tmp_path: Path):
     suffix = _random_dna(20_000, 2)
     tn1 = REFERENCE_SEQUENCES["Tn1_NC_008357"]
     query = _write_fasta(tmp_path / "embedded.fasta", "arbitrary_contig", prefix + tn1 + suffix)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(query)
     assert len(hits) == 1
     hit = hits[0]
     assert (hit.name, hit.start, hit.end, hit.strand) == (
         "Tn1", len(prefix) + 1, len(prefix) + len(tn1), "+",
     )
-    assert hit.attributes["variant_status"] == "exact_reference"
+    assert hit.attributes["variant_status"] == "exact_reference_confirmed"
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
@@ -235,13 +262,19 @@ def test_minor_sequence_variation_is_named_as_nearest_variant(tmp_path: Path):
     tn1 = REFERENCE_SEQUENCES["Tn1_NC_008357"]
     variant = _mutate(tn1, 25)
     query = _write_fasta(tmp_path / "variant.fasta", "minor_variant", variant)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn1-like"
-    assert hit.attributes["best_match"] == "Tn1"
-    assert hit.attributes["variant_status"] == "minor_sequence_variant"
-    assert 99.0 < float(hit.attributes["blast_identity"]) < 100.0
+    assert hit.attributes["rule_based_type_call"] == "Tn1"
+    assert hit.attributes["classification_basis"] == "expert_component_rules"
+    assert hit.attributes.get("reference_comparison_type") is None
+    assert hit.attributes.get("closest_reference") is None
+    assert hit.attributes["variant_status"] == "rule_based_type_candidate"
+    assert 99.0 < float(hit.attributes["component_type_scores"]["Tn1"]) < 100.0
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
@@ -250,16 +283,24 @@ def test_inserted_sequence_assembles_into_one_complete_locus(tmp_path: Path):
     insertion = _random_dna(800, 3)
     interrupted = tn2[:2500] + insertion + tn2[2500:]
     query = _write_fasta(tmp_path / "inserted.fasta", "tn2_with_insertion", interrupted)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, features = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn2-like"
     assert (hit.start, hit.end) == (1, len(interrupted))
     assert hit.attributes["structural_status"] == "complete_with_insertion"
     assert 790 <= int(hit.attributes["inserted_bases"]) <= 810
-    assert int(hit.attributes["blast_hsp_count"]) >= 2
+    tnpa = next(
+        component
+        for component in hit.attributes["component_evidence"]
+        if component["role"] == "tnpA"
+    )
+    assert len(tnpa["reference_segments"]) >= 2
 
-    roots = build_hierarchy(hits + annotate_tn123(hits))
+    roots = build_hierarchy(features + annotate_tn123(features))
     diagram = to_mara_svg(roots, len(interrupted), "interrupted Tn2")
     table = to_mara_table_svg(roots, "interrupted Tn2")
     assert "Tn2-like" in diagram
@@ -272,7 +313,10 @@ def test_internal_deletion_is_reported_as_one_variant_locus(tmp_path: Path):
     tn2 = REFERENCE_SEQUENCES["Tn2_AY123253"]
     deleted = tn2[:2200] + tn2[2500:]
     query = _write_fasta(tmp_path / "deleted.fasta", "tn2_with_deletion", deleted)
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn2-like"
@@ -291,7 +335,10 @@ def test_reverse_locus_with_insertion_is_assembled_and_oriented(tmp_path: Path):
         "reverse_inserted_tn3",
         str(Seq(interrupted).reverse_complement()),
     )
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
     assert len(hits) == 1
     hit = hits[0]
     assert hit.name == "Tn3-like"
@@ -308,7 +355,7 @@ def test_reverse_complement_is_detected_on_reverse_strand(tmp_path: Path):
         "reverse_tn3",
         _random_dna(1000, 4) + str(Seq(tn3).reverse_complement()) + _random_dna(1000, 5),
     )
-    hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
+    hits, _ = _component_first_annotation(query)
     assert len(hits) == 1
     assert hits[0].name == "Tn3"
     assert hits[0].strand == "-"
@@ -322,11 +369,88 @@ def test_partial_locus_keeps_covered_end_and_fragment_status(tmp_path: Path):
     hits = scan(query, TN123_REFERENCE, min_identity=95.0, min_length=400)
     assert len(hits) == 1
     hit = hits[0]
-    assert hit.name == "Tn1-like"
+    assert hit.name == "Tn1/2/3 fragment"
+    assert hit.family == "Tn3_family"
+    assert hit.attributes["best_match"] == "Tn1"
     assert hit.attributes["fragment"] is True
     assert hit.attributes["structural_status"] == "left_partial"
     assert hit.attributes["left_end_covered"] is False
     assert hit.attributes["right_end_covered"] is True
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_reviewed_real_accession_definitions_match_exactly():
+    expected = {
+        "Tn1_NC_008357": ("Tn1", "canonical"),
+        "Tn2_AY123253": ("Tn2", "canonical"),
+        "Tn3_HM749966": ("Tn3", "canonical"),
+        "Tn2c_HM749967": ("Tn2c", "Tn2c"),
+        "Tn2_1_CP028717": ("Tn2.1", "Tn2.1"),
+        "Tn1Mer_GQ160960": ("Tn1Mer", "Tn1Mer"),
+        "Tn3_V00613": ("Tn3", "V00613_legacy_9bp_duplication"),
+    }
+    hits, _ = _component_first_annotation(TN123_REFERENCE)
+    observed = {
+        str(hit.attributes["seqid"]): (
+            hit.name,
+            str(hit.attributes["defined_subtype"]),
+        )
+        for hit in hits
+    }
+    assert observed == expected
+    assert all(
+        hit.attributes["variant_status"] == "exact_reference_confirmed"
+        for hit in hits
+    )
+    assert all(hit.attributes["reference_mismatch_bases"] == 0 for hit in hits)
+    assert all(hit.attributes["reference_inserted_bases"] == 0 for hit in hits)
+    assert all(hit.attributes["reference_deleted_bases"] == 0 for hit in hits)
+    assert all(hit.attributes["deleted_bases"] == 0 for hit in hits)
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_pek499_retains_only_sally_reviewed_tn2_fragments(tmp_path: Path):
+    pek499 = Path(__file__).parent / "test-data" / "acceptance" / "pEK499.fasta"
+    hits = scan(pek499, TN123_REFERENCE, min_identity=95.0, min_length=100)
+    assert [
+        (hit.name, hit.start, hit.end, hit.attributes["best_match"])
+        for hit in hits
+    ] == [
+        ("Tn1/2/3 fragment", 38_747, 40_671, "Tn2"),
+        ("Tn1/2/3 fragment", 60_316, 62_561, "Tn2"),
+    ]
+    output = tmp_path / "pek499-results"
+    result = CliRunner().invoke(
+        cli,
+        ["run", str(pek499), "--out", str(output), "--detectors", "none"],
+    )
+    assert result.exit_code == 0, result.output
+    proof = json.loads((output / "proof" / "proof.json").read_text())
+    assert proof["summary"]["status"] == "PARTIAL_TN123_EVIDENCE"
+    assert proof["summary"]["partial"] == 2
+    assert [
+        (locus["start"], locus["end"], locus["verdict"])
+        for record in proof["records"]
+        for locus in record["loci"]
+    ] == [
+        (38_747, 40_671, "PARTIAL"),
+        (60_316, 62_561, "PARTIAL"),
+    ]
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_related_tn3_family_sequence_is_not_promoted_to_named_tn123():
+    related = REFERENCES_DIR / "tn3_family_extras.fasta"
+    calls = scan(related, TN123_REFERENCE, min_identity=95.0, min_length=100)
+    tn1696 = [
+        hit for hit in calls if hit.attributes.get("seqid") == "Tn1696"
+    ]
+    assert tn1696 == []
+    assert not any(
+        hit.attributes.get("seqid") in {"Tn1696", "Tn1721", "Tn5403"}
+        and hit.name in {"Tn1", "Tn2", "Tn3", "Tn1-like", "Tn2-like", "Tn3-like"}
+        for hit in calls
+    )
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")

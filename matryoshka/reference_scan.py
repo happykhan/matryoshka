@@ -28,6 +28,7 @@ from pathlib import Path
 from Bio import SeqIO
 
 from .detect import TSD_LENGTHS, MGEFeature
+from .element_definitions import tn123_definition, tn123_rules
 from .tn123 import REFERENCE_METADATA, Tn123ComponentReference, component_references
 
 REFERENCES_DIR = Path(__file__).parent / "references"
@@ -46,6 +47,9 @@ class BlastHit:
     evalue: float
     qlen: int
     slen: int
+    mismatch: int = 0
+    gapopen: int = 0
+    gaps: int = 0
 
     @property
     def qcovs(self) -> float:
@@ -68,6 +72,9 @@ class Tn123Assembly:
     hsp_count: int
     query_span: int
     aligned_query_bases: int
+    aligned_reference_bases: int
+    mismatch_bases: int
+    alignment_gap_bases: int
     inserted_bases: int
     deleted_bases: int
     left_end_covered: bool
@@ -159,7 +166,7 @@ def blastn_hits(
         )
         outfmt = (
             "6 qseqid sseqid pident length qstart qend sstart send "
-            "evalue qlen slen"
+            "evalue qlen slen mismatch gapopen gaps"
         )
         task = "blastn-short" if min_length < 50 else "blastn"
         result = subprocess.run(
@@ -172,7 +179,7 @@ def blastn_hits(
     hits: list[BlastHit] = []
     for line in result.stdout.splitlines():
         cols = line.split("\t")
-        if len(cols) < 11:
+        if len(cols) < 14:
             continue
         h = BlastHit(
             qseqid=cols[0], sseqid=cols[1],
@@ -181,6 +188,7 @@ def blastn_hits(
             sstart=int(cols[6]), send=int(cols[7]),
             evalue=float(cols[8]),
             qlen=int(cols[9]), slen=int(cols[10]),
+            mismatch=int(cols[11]), gapopen=int(cols[12]), gaps=int(cols[13]),
         )
         if h.length < min_length:
             continue
@@ -463,8 +471,14 @@ def _tn123_chain_gaps(
 ) -> tuple[int, int]:
     """Return inserted and deleted bases between consecutive HSPs."""
     ordered = sorted(hits, key=_query_interval)
-    inserted = 0
-    deleted = 0
+    inserted = sum(
+        max(0, abs(hit.qend - hit.qstart) - abs(hit.send - hit.sstart))
+        for hit in hits
+    )
+    deleted = sum(
+        max(0, abs(hit.send - hit.sstart) - abs(hit.qend - hit.qstart))
+        for hit in hits
+    )
     for left, right in zip(ordered, ordered[1:], strict=False):
         left_qend = _query_interval(left)[1]
         right_qstart = _query_interval(right)[0]
@@ -537,6 +551,8 @@ def _assemble_tn123_chain(hits: list[BlastHit]) -> Tn123Assembly:
     subject_end = max(end for _, end in s_intervals)
     reference_bases = _union_length(s_intervals)
     query_bases = _union_length(q_intervals)
+    mismatch_bases = sum(hit.mismatch for hit in hits)
+    alignment_gap_bases = sum(hit.gaps for hit in hits)
     aligned_weight = sum(hit.length for hit in hits)
     identity = (
         sum(hit.pident * hit.length for hit in hits) / aligned_weight
@@ -550,11 +566,11 @@ def _assemble_tn123_chain(hits: list[BlastHit]) -> Tn123Assembly:
     coverage = min(100.0, 100.0 * reference_bases / max(first.slen, 1))
 
     if left_covered and right_covered:
-        if inserted_bases > 20 and deleted_bases > 20:
+        if inserted_bases and deleted_bases:
             status = "complete_with_indel"
-        elif inserted_bases > 20:
+        elif inserted_bases:
             status = "complete_with_insertion"
-        elif deleted_bases > 20:
+        elif deleted_bases:
             status = "complete_with_deletion"
         else:
             status = "intact"
@@ -577,6 +593,9 @@ def _assemble_tn123_chain(hits: list[BlastHit]) -> Tn123Assembly:
         hsp_count=len(hits),
         query_span=query_span,
         aligned_query_bases=query_bases,
+        aligned_reference_bases=reference_bases,
+        mismatch_bases=mismatch_bases,
+        alignment_gap_bases=alignment_gap_bases,
         inserted_bases=inserted_bases,
         deleted_bases=deleted_bases,
         left_end_covered=left_covered,
@@ -623,6 +642,8 @@ def _reference_segments(assembly: Tn123Assembly) -> list[dict[str, int | float]]
             "sstart": hit.sstart,
             "send": hit.send,
             "identity": round(hit.pident, 3),
+            "mismatch_bases": hit.mismatch,
+            "gap_bases": hit.gaps,
         }
         for hit in assembly.hits
     ]
@@ -633,50 +654,84 @@ def _tn123_assembly_to_feature(
     runner_up: Tn123Assembly | None,
     meta: dict[str, str],
 ) -> MGEFeature:
-    family = meta.get("family", "Tn3_family")
+    type_name = meta.get("type", meta.get("family", "Tn3_family"))
+    definition_name = meta.get("name", type_name)
+    rules = tn123_rules()["classification"]
+    exact_rule = rules["exact_definition_match"]
+    reference_rule = rules["reference_comparison"]
+    close_rule = rules["close_variant"]
     margin = (
         assembly.identity - runner_up.identity
         if runner_up is not None
         else assembly.identity
     )
     complete = assembly.left_end_covered and assembly.right_end_covered
-    clear_nearest = margin >= 0.5
+    clear_nearest = margin >= float(
+        reference_rule["minimum_reference_margin_percent"]
+    )
     exact = (
+        complete
+        and assembly.identity >= float(exact_rule["identity_percent"])
+        and assembly.reference_coverage >= float(
+            exact_rule["reference_coverage_percent"]
+        )
+        and assembly.mismatch_bases == 0
+        and assembly.inserted_bases == 0
+        and assembly.deleted_bases == 0
+    )
+    close_reference = (
         clear_nearest
         and complete
-        and assembly.structural_status == "intact"
-        and assembly.identity >= 99.8
-        and assembly.reference_coverage >= 99.5
-    )
-    named_variant = (
-        clear_nearest
-        and assembly.identity >= 95.0
-        and assembly.reference_coverage >= 80.0
+        and assembly.identity >= float(reference_rule["minimum_identity_percent"])
+        and assembly.reference_coverage >= float(
+            reference_rule["minimum_reference_coverage_percent"]
+        )
     )
 
     if exact:
-        name = family
-        variant_status = "exact_reference"
-    elif named_variant:
-        name = f"{family}-like"
-        variant_status = (
+        comparison_status = "exact_reference"
+    elif close_reference:
+        comparison_status = (
             "minor_sequence_variant"
-            if complete and assembly.identity >= 98.0
+            if assembly.identity >= float(close_rule["minimum_identity_percent"])
             else assembly.structural_status
         )
     else:
-        family = "Tn3_family"
-        name = "Tn1/2/3" if complete else "Tn1/2/3 fragment"
-        variant_status = "ambiguous"
+        comparison_status = "ambiguous_reference"
 
-    fragment = not complete or assembly.reference_coverage < 80.0
+    fragment = not complete or assembly.reference_coverage < float(
+        reference_rule["minimum_reference_coverage_percent"]
+    )
+    name = (
+        "Tn1/Tn2/Tn3 reference-comparison candidate"
+        if complete
+        else str(rules["fragment"]["visible_label"])
+    )
+    definition = tn123_definition(assembly.sseqid)
     attrs: dict[str, object] = {
         "seqid": assembly.qseqid,
         "reference_id": assembly.sseqid,
         "source": "reference_scan",
         "source_accession": meta.get("source_accession", ""),
+        "definition_id": assembly.sseqid,
+        "definition_version": meta.get("definition_version", ""),
+        "defined_type": type_name,
+        "defined_subtype": meta.get("subtype", ""),
+        "closest_definition": definition_name,
+        "closest_reference": assembly.sseqid,
+        "reference_comparison_type": type_name,
+        "reference_comparison_label": definition_name,
+        "reference_comparison_status": comparison_status,
+        "reference_comparison_only": True,
+        "classification_basis": "reference_comparison_only",
+        "reference_kind": meta.get("reference_kind", ""),
+        "expert_rule": definition.get("expert_rule", ""),
+        "known_differences_from_parent": definition.get(
+            "known_differences_from_parent", []
+        ),
+        "review_status": definition.get("review_status", ""),
         "tn123_canonical": "true",
-        "best_match": meta.get("family", ""),
+        "best_match": type_name,
         "blast_identity": round(assembly.identity, 2),
         "blast_coverage": round(assembly.reference_coverage, 2),
         "blast_subject_coverage": round(assembly.reference_coverage, 2),
@@ -684,24 +739,35 @@ def _tn123_assembly_to_feature(
         "reference_length": assembly.slen,
         "reference_segments": _reference_segments(assembly),
         "variant_margin": round(margin, 2),
-        "variant_status": variant_status,
+        "variant_status": comparison_status,
         "structural_status": assembly.structural_status,
         "query_span": assembly.query_span,
+        "reference_inserted_bases": assembly.inserted_bases,
+        "reference_deleted_bases": assembly.deleted_bases,
+        "reference_mismatch_bases": assembly.mismatch_bases,
         "inserted_bases": assembly.inserted_bases,
         "deleted_bases": assembly.deleted_bases,
+        "mismatch_bases": assembly.mismatch_bases,
+        "alignment_gap_bases": assembly.alignment_gap_bases,
         "left_end_covered": assembly.left_end_covered,
         "right_end_covered": assembly.right_end_covered,
     }
     if fragment:
         attrs["fragment"] = True
     if not clear_nearest:
-        attrs["note"] = "Tn1, Tn2 and Tn3 reference scores are too close to distinguish"
+        attrs["note"] = (
+            "secondary Tn1, Tn2 and Tn3 reference scores are too close; "
+            "component rules must classify the locus"
+        )
     elif not exact:
-        attrs["note"] = f"closest reference is {meta.get('family', '')}; reported as a variant"
+        attrs["note"] = (
+            f"secondary closest reference is {definition_name} ({type_name}); "
+            "this comparison does not create the biological call"
+        )
 
     return MGEFeature(
         element_type="transposon",
-        family=family,
+        family="Tn3_family",
         name=name,
         start=assembly.qstart,
         end=assembly.qend,
@@ -715,8 +781,41 @@ def _scan_tn123_hits(
     hits: list[BlastHit],
     meta: dict[str, dict[str, str]],
 ) -> list[MGEFeature]:
-    chains = _chain_tn123_subject_hits(hits)
-    assemblies = [_assemble_tn123_chain(chain) for chain in chains]
+    whole_locus_rules = tn123_rules()["component_detection"]["whole_locus"]
+    chains = _chain_tn123_subject_hits(
+        hits,
+        max_query_insertion=int(whole_locus_rules["maximum_query_insertion_bp"]),
+        max_reference_gap=int(whole_locus_rules["maximum_reference_gap_bp"]),
+        max_reference_overlap=int(whole_locus_rules["maximum_reference_overlap_bp"]),
+    )
+    minimum_bases = int(
+        whole_locus_rules["minimum_assembled_reference_bases"]
+    )
+    minimum_type_coverage = float(
+        tn123_rules()["classification"]["reference_comparison"][
+            "minimum_reference_coverage_percent"
+        ]
+    )
+    assemblies = [
+        assembly
+        for chain in chains
+        if (assembly := _assemble_tn123_chain(chain)).aligned_reference_bases
+        >= minimum_bases
+        # Long subtype references contain inserted material that can occur
+        # elsewhere independently (for example ISEcp1-associated sequence in
+        # Tn2.1). They are therefore eligible only as substantially complete
+        # subtype matches. Partial-family evidence is always assessed against
+        # the three canonical references, preventing inserted subtype context
+        # from creating false Tn1/2/3 fragments.
+        and (
+            meta.get(assembly.sseqid, {}).get("reference_kind") == "canonical"
+            or (
+                assembly.left_end_covered
+                and assembly.right_end_covered
+                and assembly.reference_coverage >= minimum_type_coverage
+            )
+        )
+    ]
     features: list[MGEFeature] = []
     for group in _group_tn123_assemblies(assemblies):
         ranked = sorted(
@@ -730,8 +829,13 @@ def _scan_tn123_hits(
             reverse=True,
         )
         best = ranked[0]
+        best_type = meta.get(best.sseqid, {}).get("type")
         runner_up = next(
-            (item for item in ranked[1:] if item.sseqid != best.sseqid),
+            (
+                item
+                for item in ranked[1:]
+                if meta.get(item.sseqid, {}).get("type") != best_type
+            ),
             None,
         )
         features.append(_tn123_assembly_to_feature(
@@ -739,7 +843,37 @@ def _scan_tn123_hits(
             runner_up,
             meta.get(best.sseqid, {"_id": best.sseqid}),
         ))
-    return features
+    ranked_features = sorted(
+        features,
+        key=lambda feature: (
+            bool(not feature.attributes.get("fragment")),
+            float(feature.attributes.get("blast_coverage", 0) or 0),
+            feature.attributes.get("reference_kind") == "canonical",
+            float(feature.attributes.get("blast_identity", 0) or 0),
+            feature.end - feature.start,
+        ),
+        reverse=True,
+    )
+    kept: list[MGEFeature] = []
+    for feature in ranked_features:
+        redundant = False
+        for selected in kept:
+            if feature.attributes.get("seqid") != selected.attributes.get("seqid"):
+                continue
+            overlap = max(
+                0,
+                min(feature.end, selected.end) - max(feature.start, selected.start) + 1,
+            )
+            shorter = min(
+                feature.end - feature.start + 1,
+                selected.end - selected.start + 1,
+            )
+            if shorter and overlap / shorter >= 0.8:
+                redundant = True
+                break
+        if not redundant:
+            kept.append(feature)
+    return sorted(kept, key=lambda feature: (feature.start, feature.end, feature.name))
 
 
 def _generic_assembly_to_feature(
@@ -957,6 +1091,10 @@ def _component_feature(
     if assembly.inserted_bases:
         attributes["interrupted"] = True
         attributes["inserted_bases"] = assembly.inserted_bases
+    if assembly.deleted_bases:
+        attributes["deleted_bases"] = assembly.deleted_bases
+    if assembly.mismatch_bases:
+        attributes["mismatch_bases"] = assembly.mismatch_bases
     if not complete:
         attributes["fragment"] = True
     name = "Tn3-family IR" if reference.role == "terminal_IR" else reference.name
@@ -999,7 +1137,39 @@ def _dedupe_component_features(features: list[MGEFeature]) -> list[MGEFeature]:
             feature.end - feature.start,
         )
 
-    return [max(group, key=rank) for group in groups]
+    selected: list[MGEFeature] = []
+    for group in groups:
+        best = max(group, key=rank)
+        matches_by_type: dict[str, dict[str, object]] = {}
+        for alternative in group:
+            type_name = str(alternative.attributes.get("reference_family", ""))
+            if type_name not in {"Tn1", "Tn2", "Tn3"}:
+                continue
+            identity = float(alternative.attributes.get("blast_identity", 0))
+            coverage = float(alternative.attributes.get("blast_coverage", 0))
+            profile_score = identity * coverage / 100.0
+            current = matches_by_type.get(type_name)
+            current_score = current.get("profile_score") if current is not None else None
+            if (
+                isinstance(current_score, (int, float))
+                and current_score >= profile_score
+            ):
+                continue
+            matches_by_type[type_name] = {
+                "type": type_name,
+                "component_reference": alternative.attributes.get(
+                    "component_reference", ""
+                ),
+                "identity": round(identity, 3),
+                "coverage": round(coverage, 3),
+                "profile_score": round(profile_score, 3),
+            }
+        best.attributes["component_profile_matches"] = [
+            matches_by_type[type_name]
+            for type_name in sorted(matches_by_type)
+        ]
+        selected.append(best)
+    return selected
 
 
 def scan_tn123_components(
@@ -1019,16 +1189,31 @@ def scan_tn123_components(
         "res": [reference for reference in references if reference.role == "res"],
         "ir": [reference for reference in references if reference.role == "terminal_IR"],
     }
+    detection_rules = tn123_rules()["component_detection"]
     parameters = {
         # Keep partial HSPs here so interrupted components can be reassembled
         # before the component-level coverage threshold is applied.
-        "long": dict(min_identity=90.0, min_length=100, min_subject_coverage=0.0),
-        "res": dict(min_identity=85.0, min_length=80, min_subject_coverage=70.0),
+        "long": dict(
+            min_identity=float(detection_rules["long"]["minimum_identity_percent"]),
+            min_length=int(detection_rules["long"]["minimum_hsp_length"]),
+            min_subject_coverage=0.0,
+        ),
+        "res": dict(
+            min_identity=float(detection_rules["res"]["minimum_identity_percent"]),
+            min_length=int(detection_rules["res"]["minimum_hsp_length"]),
+            min_subject_coverage=float(
+                detection_rules["res"]["minimum_subject_coverage_percent"]
+            ),
+        ),
         "ir": dict(
-            min_identity=89.0,
-            min_length=34,
-            min_subject_coverage=89.0,
-            evalue=10.0,
+            min_identity=float(
+                detection_rules["terminal_IR"]["minimum_identity_percent"]
+            ),
+            min_length=int(detection_rules["terminal_IR"]["minimum_hsp_length"]),
+            min_subject_coverage=float(
+                detection_rules["terminal_IR"]["minimum_subject_coverage_percent"]
+            ),
+            evalue=float(detection_rules["terminal_IR"]["evalue"]),
         ),
     }
     hits: list[BlastHit] = []
@@ -1063,7 +1248,10 @@ def scan_tn123_components(
         if by_id[hit.sseqid].role not in {"terminal_IR", "res"}
     ]
     chains = [[hit] for hit in short_hits]
-    chains.extend(_chain_tn123_subject_hits(long_hits, max_reference_gap=100))
+    chains.extend(_chain_tn123_subject_hits(
+        long_hits,
+        max_reference_gap=int(detection_rules["long"]["maximum_reference_gap_bp"]),
+    ))
 
     features: list[MGEFeature] = []
     for chain in chains:
@@ -1071,7 +1259,13 @@ def scan_tn123_components(
         reference = by_id[assembly.sseqid]
         # Short components must be near-complete; longer coding components may
         # remain useful as explicit partial or interrupted evidence.
-        minimum_coverage = 85.0 if len(reference.sequence) < 200 else 70.0
+        minimum_coverage = (
+            float(detection_rules["res"]["minimum_assembled_coverage_percent"])
+            if len(reference.sequence) < int(
+                detection_rules["long"]["minimum_reference_length"]
+            )
+            else float(detection_rules["long"]["minimum_assembled_coverage_percent"])
+        )
         if assembly.reference_coverage < minimum_coverage:
             continue
         features.append(_component_feature(assembly, reference))
@@ -1114,8 +1308,16 @@ REFERENCE_PARAMS: dict[str, dict] = {
     # threshold permits fragment reporting, but only near-complete hits are
     # assigned an exact Tn name.
     "tn1_tn2_tn3.fasta": {
-        "min_identity": 95.0,
-        "min_length": 400,
+        "min_identity": float(
+            tn123_rules()["component_detection"]["whole_locus"][
+                "minimum_identity_percent"
+            ]
+        ),
+        "min_length": int(
+            tn123_rules()["component_detection"]["whole_locus"][
+                "minimum_hsp_length"
+            ]
+        ),
         "pick_best_variant": True,
         "prefer_identity": True,
     },
@@ -1167,6 +1369,9 @@ VALIDATED_REFERENCE_FILES = frozenset({
 
 REFERENCE_PROFILES = {
     "validated": VALIDATED_REFERENCE_FILES,
+    # Expert-rule discovery without complete Tn1/Tn2/Tn3 reference lookup.
+    # The component models still come from reviewed canonical examples.
+    "tn123-components": (),
     "all": None,
 }
 
@@ -1273,7 +1478,11 @@ def scan_all(
     out: list[MGEFeature] = []
     for ref in refs:
         out.extend(by_name[ref.name])
-    if selected is None or "tn1_tn2_tn3.fasta" in selected:
+    if (
+        profile == "tn123-components"
+        or selected is None
+        or "tn1_tn2_tn3.fasta" in selected
+    ):
         out.extend(scan_tn123_components(query_fasta, blast_threads=1))
     # Compound-island detection (runs only over the hit set we just made)
     out.extend(_infer_acinetobacter_islands(out))

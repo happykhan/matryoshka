@@ -317,6 +317,7 @@ def to_linear_svg(roots: list[MGEFeature], seq_len: int,
         f'<svg xmlns="http://www.w3.org/2000/svg" '
         f'width="{W}" height="{total_h:.0f}" '
         f'style="background:#fff;font-family:{FONT};">',
+        f'<rect x="0" y="0" width="{W}" height="{total_h:.0f}" fill="#ffffff"/>',
         _text(W / 2, TITLE_H - 4, sample_name or "MGE linear map",
               size=15, fill="#222", bold=True),
     ]

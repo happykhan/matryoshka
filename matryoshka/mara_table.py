@@ -100,6 +100,13 @@ def _notes(feature: MGEFeature) -> str:
             parts.append(f"BLAST identity={identity}%")
         if coverage:
             parts.append(f"reference coverage={coverage}%")
+        definition = attrs.get("closest_definition")
+        subtype = attrs.get("defined_subtype")
+        if definition:
+            label = f"closest definition={definition}"
+            if subtype and subtype != "canonical":
+                label += f" (subtype {subtype})"
+            parts.append(label)
         variant_status = str(attrs.get("variant_status", ""))
         structural_status = str(attrs.get("structural_status", ""))
         if variant_status and variant_status != "exact_reference":
@@ -107,8 +114,20 @@ def _notes(feature: MGEFeature) -> str:
         if structural_status and structural_status != "intact":
             parts.append(structural_status.replace("_", " "))
         inserted_bases = int(attrs.get("inserted_bases", 0) or 0)
+        deleted_bases = int(attrs.get("deleted_bases", 0) or 0)
+        mismatch_bases = int(attrs.get("mismatch_bases", 0) or 0)
+        if mismatch_bases:
+            parts.append(f"substitutions={mismatch_bases}")
         if inserted_bases:
             parts.append(f"inserted sequence≈{inserted_bases} bp")
+        if deleted_bases:
+            parts.append(f"deleted reference sequence≈{deleted_bases} bp")
+        known_differences = attrs.get("known_differences_from_parent", [])
+        if isinstance(known_differences, list) and known_differences:
+            parts.append(
+                "reviewed subtype differences: "
+                + ", ".join(str(item) for item in known_differences)
+            )
         assembly_status = attrs.get("component_assembly_status")
         if assembly_status:
             count = attrs.get("detected_component_count", 0)

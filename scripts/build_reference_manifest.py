@@ -16,7 +16,7 @@ from matryoshka.reference_scan import (
     VALIDATED_REFERENCE_FILES,
 )
 
-DATABASE_VERSION = "2026.08.26-alpha.1"
+DATABASE_VERSION = "2026.08.27-alpha.2"
 LOCAL_MOTIFS = {"rolling_circle_ter_sites.fasta", "tn3_res_site.fasta"}
 
 

@@ -1,5 +1,5 @@
 schema_version: '1.0'
-database_version: 2026.08.26-alpha.1
+database_version: 2026.08.27-alpha.2
 reference_count: 25
 references:
 - file: acinetobacter_islands.fasta
@@ -627,17 +627,29 @@ references:
     min_identity: 95.0
     min_length: 8000
 - file: tn1_tn2_tn3.fasta
-  sha256: 0322c46448381904e8b05ea94934a7800fd198bfc44bed31ae6e26999bdb392b
-  bytes: 15036
-  records: 3
+  sha256: 327f33c0d881a583e57caf1d41b7a84e2f3933df1016402b68b714914bb59322
+  bytes: 45404
+  records: 7
   record_ids:
   - Tn1_NC_008357
   - Tn2_AY123253
   - Tn3_HM749966
+  - Tn2c_HM749967
+  - Tn2_1_CP028717
+  - Tn1Mer_GQ160960
+  - Tn3_V00613
   source_accessions:
   - AY123253
+  - CP028717
+  - CP028717.1
+  - GQ160960
+  - GQ160960.2
   - HM749966
+  - HM749967
+  - HM749967.1
   - NC_008357
+  - V00613
+  - V00613.1
   profile: validated
   status: validated
   licence: source-database-terms
@@ -645,7 +657,7 @@ references:
   provenance: public accession sequence with curated annotation
   scan_parameters:
     min_identity: 95.0
-    min_length: 400
+    min_length: 100
     pick_best_variant: true
     prefer_identity: true
 - file: tn21.fasta

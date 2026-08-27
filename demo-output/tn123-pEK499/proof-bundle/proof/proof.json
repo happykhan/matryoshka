@@ -1,0 +1,305 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Audit arbitrary FASTA sequence through independent component detection, expert-rule classification, secondary known-element comparison and generated outputs.",
+  "summary": {
+    "status": "PARTIAL_TN123_EVIDENCE",
+    "tn123_loci": 2,
+    "passed": 0,
+    "partial": 2,
+    "failed": 0
+  },
+  "records": [
+    {
+      "id": "EU935739.1",
+      "length": 117536,
+      "loci": [
+        {
+          "verdict": "PARTIAL",
+          "record": "EU935739.1",
+          "call": "Tn1/2/3 fragment",
+          "family": "Tn3_family",
+          "start": 38747,
+          "end": 40671,
+          "strand": "-",
+          "known_element_match": {
+            "best_match": "Tn2",
+            "rule_based_type_call": "unresolved",
+            "reference_comparison_type": "Tn2",
+            "reference_comparison_status": "ambiguous_reference",
+            "closest_definition": "Tn2",
+            "definition_id": "Tn2_AY123253",
+            "definition_version": "2026-08-27",
+            "defined_type": "Tn2",
+            "defined_subtype": "canonical",
+            "reference_id": "Tn2_AY123253",
+            "source_accession": "AY123253",
+            "whole_locus_identity": 100.0,
+            "whole_locus_coverage": 38.89,
+            "mismatch_bases": 0,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
+            "variant_status": "rule_incomplete",
+            "structural_status": "partial_or_conflicting",
+            "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
+            "known_differences_from_parent": [],
+            "naming_evidence": [
+              "component_grammar",
+              "component_type_profiles"
+            ]
+          },
+          "assembly": {
+            "status": "partial_or_conflicting",
+            "order_valid": false,
+            "requirements": {
+              "terminal_IR": false,
+              "blaTEM": true,
+              "tnpR": true,
+              "res": true,
+              "tnpA": false
+            },
+            "detected_component_count": 3,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
+            "reference_projected_component_count": 0,
+            "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "unresolved",
+            "component_type_scores": {
+              "Tn1": 31.336,
+              "Tn2": 65.982,
+              "Tn3": 31.415
+            },
+            "component_role_scores": {
+              "res": {
+                "Tn1": 0.0,
+                "Tn2": 100.0,
+                "Tn3": 0.0
+              },
+              "tnpR": {
+                "Tn1": 94.44,
+                "Tn2": 100.0,
+                "Tn3": 94.62
+              },
+              "blaTEM": {
+                "Tn1": 93.146,
+                "Tn2": 93.84,
+                "Tn3": 93.493
+              }
+            },
+            "component_type_margin": 34.567
+          },
+          "checks": {
+            "components_detected_from_sequence": false,
+            "all_required_components_present": false,
+            "component_order_and_orientation_valid": false,
+            "component_grammar_complete": false,
+            "expert_rule_type_assigned": false,
+            "secondary_reference_context_available": true,
+            "no_reference_projected_components": true
+          },
+          "components": [
+            {
+              "role": "res",
+              "name": "res",
+              "start": 39005,
+              "end": 39118,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2c_HM749967__res__1754_1867",
+              "reference_segments": [
+                {
+                  "qstart": 39005,
+                  "qend": 39118,
+                  "sstart": 114,
+                  "send": 1,
+                  "identity": 100.0,
+                  "mismatch_bases": 0,
+                  "gap_bases": 0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "tnpR",
+              "name": "tnpR",
+              "start": 39124,
+              "end": 39681,
+              "strand": "+",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2_AY123253__tnpR__1191_1748",
+              "reference_segments": [
+                {
+                  "qstart": 39124,
+                  "qend": 39681,
+                  "sstart": 558,
+                  "send": 1,
+                  "identity": 100.0,
+                  "mismatch_bases": 0,
+                  "gap_bases": 0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "blaTEM",
+              "name": "blaTEM-1b",
+              "start": 39864,
+              "end": 40671,
+              "strand": "+",
+              "identity": 100.0,
+              "coverage": 93.84,
+              "status": "left_partial",
+              "component_status": "partial",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2_AY123253__blaTEM_1b__148_1008",
+              "reference_segments": [
+                {
+                  "qstart": 39864,
+                  "qend": 40671,
+                  "sstart": 861,
+                  "send": 54,
+                  "identity": 100.0,
+                  "mismatch_bases": 0,
+                  "gap_bases": 0
+                }
+              ],
+              "inserted_bases": 0
+            }
+          ],
+          "outputs": {
+            "mara": "mara/EU935739.1__Tn1-2-3_fragment__38747-40671.svg",
+            "mara_table": "mara-table/EU935739.1__Tn1-2-3_fragment__38747-40671.svg",
+            "hierarchy": "hierarchy/EU935739.1.svg",
+            "cell_format": "annotation.cell",
+            "annotation_json": "annotation.json",
+            "annotation_gff3": "annotation.gff3"
+          }
+        },
+        {
+          "verdict": "PARTIAL",
+          "record": "EU935739.1",
+          "call": "Tn1/2/3 fragment",
+          "family": "Tn3_family",
+          "start": 60316,
+          "end": 62561,
+          "strand": "-",
+          "known_element_match": {
+            "best_match": "Tn2",
+            "rule_based_type_call": "unresolved",
+            "reference_comparison_type": "Tn2",
+            "reference_comparison_status": "ambiguous_reference",
+            "closest_definition": "Tn2",
+            "definition_id": "Tn2_AY123253",
+            "definition_version": "2026-08-27",
+            "defined_type": "Tn2",
+            "defined_subtype": "canonical",
+            "reference_id": "Tn2_AY123253",
+            "source_accession": "AY123253",
+            "whole_locus_identity": 100.0,
+            "whole_locus_coverage": 45.37,
+            "mismatch_bases": 0,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
+            "variant_status": "rule_incomplete",
+            "structural_status": "partial_or_conflicting",
+            "expert_rule": "Exact, complete, gap-free match to AY123253 plus complete component grammar.",
+            "known_differences_from_parent": [],
+            "naming_evidence": [
+              "component_grammar",
+              "component_type_profiles"
+            ]
+          },
+          "assembly": {
+            "status": "partial_or_conflicting",
+            "order_valid": false,
+            "requirements": {
+              "terminal_IR": false,
+              "blaTEM": false,
+              "tnpR": false,
+              "res": false,
+              "tnpA": true
+            },
+            "detected_component_count": 1,
+            "inserted_bases": 0,
+            "deleted_bases": 0,
+            "reference_projected_component_count": 0,
+            "reference_projected_context_feature_count": 0
+          },
+          "classification": {
+            "basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1/Tn2/Tn3 group",
+            "rule_based_type_call": "unresolved",
+            "component_type_scores": {
+              "Tn1": 24.707,
+              "Tn2": 24.897,
+              "Tn3": 24.702
+            },
+            "component_role_scores": {
+              "tnpA": {
+                "Tn1": 74.122,
+                "Tn2": 74.69,
+                "Tn3": 74.105
+              }
+            },
+            "component_type_margin": 0.19
+          },
+          "checks": {
+            "components_detected_from_sequence": false,
+            "all_required_components_present": false,
+            "component_order_and_orientation_valid": false,
+            "component_grammar_complete": false,
+            "expert_rule_type_assigned": false,
+            "secondary_reference_context_available": true,
+            "no_reference_projected_components": true
+          },
+          "components": [
+            {
+              "role": "tnpA",
+              "name": "tnpA",
+              "start": 60316,
+              "end": 62561,
+              "strand": "-",
+              "identity": 100.0,
+              "coverage": 74.69,
+              "status": "internal_fragment",
+              "component_status": "partial",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2c_HM749967__tnpA__1911_4917",
+              "reference_segments": [
+                {
+                  "qstart": 60316,
+                  "qend": 62561,
+                  "sstart": 2456,
+                  "send": 211,
+                  "identity": 100.0,
+                  "mismatch_bases": 0,
+                  "gap_bases": 0
+                }
+              ],
+              "inserted_bases": 0
+            }
+          ],
+          "outputs": {
+            "mara": "mara/EU935739.1__Tn1-2-3_fragment__60316-62561.svg",
+            "mara_table": "mara-table/EU935739.1__Tn1-2-3_fragment__60316-62561.svg",
+            "hierarchy": "hierarchy/EU935739.1.svg",
+            "cell_format": "annotation.cell",
+            "annotation_json": "annotation.json",
+            "annotation_gff3": "annotation.gff3"
+          }
+        }
+      ]
+    }
+  ]
+}

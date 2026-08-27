@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/happykhan/matryoshka/docs/schema/tn123-definitions-v1.schema.json",
+  "title": "Matryoshka Tn1/Tn2/Tn3 expert definitions",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "definition_version",
+    "family",
+    "grammar",
+    "classification",
+    "component_detection",
+    "types",
+    "definitions",
+    "related_element_policy"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "definition_version": {"type": "string", "minLength": 1},
+    "family": {
+      "type": "object",
+      "required": ["id", "name", "expert_description", "tsd_length", "terminal_ir_length"]
+    },
+    "grammar": {
+      "type": "object",
+      "required": ["required_components", "forward_order", "reverse_order", "expert_rule"],
+      "properties": {
+        "required_components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["role", "minimum_count", "description"]
+          }
+        },
+        "forward_order": {"type": "array", "minItems": 2, "items": {"type": "string"}}
+      }
+    },
+    "classification": {
+      "type": "object",
+      "required": ["type_assignment", "reference_comparison", "exact_definition_match", "close_variant", "fragment"]
+    },
+    "component_detection": {
+      "type": "object",
+      "required": ["long", "res", "terminal_IR", "whole_locus"]
+    },
+    "types": {
+      "type": "object",
+      "required": ["Tn1", "Tn2", "Tn3"],
+      "additionalProperties": {
+        "type": "object",
+        "required": ["display_name", "expert_description", "canonical_reference", "source_accession", "components"]
+      }
+    },
+    "definitions": {
+      "type": "object",
+      "minProperties": 3,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["display_name", "type", "subtype", "source_accession", "reference_kind", "component_reference", "review_status", "expert_rule"]
+      }
+    },
+    "related_element_policy": {
+      "type": "object",
+      "required": ["expert_rule", "examples_expected_not_to_be_named_tn123"]
+    }
+  },
+  "additionalProperties": true
+}

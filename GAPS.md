@@ -33,8 +33,8 @@ Legend
 | Tn1331 (multi-AMR) | AF479774 | ✅ | Gene-signature (aac(6')-Ib + blaOXA-9 + aadA1) + BLAST |
 | Tn5393 (strAB) | AF262622 | ✅ | Sally's exact 5470 bp reference with curated terminal IRs and collinear variant assembly |
 | Tn1 (blaTEM-2) | NC_008357 | ✅ | Independent IR/blaTEM/tnpR/res/tnpA component scan, grammar assembly and whole-locus naming |
-| Tn3 itself | HM749966, V00613 | ✅ | Sally-selected canonical reference plus legacy archetype |
-| Tn2 (blaTEM-1) | AY123253 | ✅ | Independent component scan and grammar assembly; interrupted tnpA is reassembled from collinear sequence matches |
+| Tn3 itself | HM749966, V00613 | ✅ | Sally-selected canonical reference plus a declared legacy 9 bp-duplication subtype |
+| Tn2 (blaTEM-1) | AY123253, HM749967, CP028717 | ✅ | YAML-defined canonical Tn2, Tn2c and interrupted Tn2.1 definitions; independent component scan and grammar assembly |
 | Tn7 | AP002527 | ⚠️ | BLAST only | No attTn7/glmS detection (needs gene prediction) |
 | Tn552 | X52734 | ⚠️ | BLAST only | Staph-specific; no inference rule |
 | Tn_mcr1 (ISApl1-mcr-1) | CP016184 etc. | ✅ | Composite rule, 2 bp TSD |
@@ -81,7 +81,7 @@ Legend
 | Evidence-gated boundary correction | ✅ | A small offset window is opened only when independent terminal-repeat evidence supports caller-coordinate refinement; exact repeat coordinates and offsets are retained |
 | IR detection with mismatch tolerance | ✅ | `find_ir` (2 mismatch default) |
 | Hybrid promoter creation (IS26/IS257 -35 + adjacent -10) | ➖ | Regulatory, not structural |
-| Terminal IR conservation across Tn3 family (38 bp) | ⚠️ | Not explicitly annotated; BLAST picks up Tn3 backbone |
+| Terminal IR conservation across Tn3 family (38 bp) | ⚠️ | Independently detected and explicitly annotated for the validated Tn1/Tn2/Tn3 definitions; broader family diversity still needs references/models |
 | Res site (Tn3-family TnpR recognition) | ⚠️ | Independently sequence-detected for the validated Tn1/Tn2/Tn3 vertical slice; broader Tn3-family diversity still requires additional references/models |
 
 ## Plasmids
@@ -124,9 +124,10 @@ Legend
 | Wolvercote nested cell-format text | ✅ |
 | Scale-accurate linear SVG | ✅ |
 | MARA locus SVG and Position/Name/FID/Type/Notes table | ✅ | Validated for Tn1/Tn2/Tn3, ISEcp1 TPUs, Tn21, Tn1721/Tn1722, Tn4401, Tn5393 and Tn5403 |
+| Component-to-call proof bundle | ✅ | Tn1/Tn2/Tn3 only: JSON verdicts, component/match TSV ledgers and linked HTML report |
 | Per-contig output on multi-FASTA input | ✅ |
 | Confidence scores per element | ✅ | 0.0–1.0 scalar + label (high/medium/low/speculative) in `attributes.confidence` |
-| HTML / Markdown batch report | ❌ | |
+| General HTML / Markdown batch report | ⚠️ | Tn1/Tn2/Tn3 proof HTML is implemented; a general all-family report remains pending |
 | Rolling-circle ter-site motif library | ⚠️ | `rolling_circle_ter_sites.fasta` scaffolded (terIS91, terISCR1, terISCR2, oriIS91) — experimental, needs refined consensus |
 
 ## Known false-positive / false-negative modes
@@ -241,7 +242,7 @@ extended to the nearest TSD to improve boundaries.
 | In336 | IntegronFinder offset | IntegronFinder reports 392-3787 instead of 1-3989. Boundary convention mismatch |
 | Tn2012 | One-ended capture extent | ISEcp1_capture stops at cargo end (2583); element extends 157bp further with no downstream TSD |
 | TnEcp1.1 | One-ended capture extent | ISEcp1_capture stops at cargo end (2656); element extends 761bp further with no downstream TSD |
-| Tn2.1 | Complex multi-IS element | ISEcp1_capture covers 130-3392 of a complex 8979bp element with ISEcp1::IS1F structure |
+| Tn2.1 | Complex multi-IS element | The complete 8979 bp Tn2.1 whole-locus definition and Tn2 grammar are now recognised; the generic ISEcp1_capture still covers only 130-3392 and is not treated as the full inserted structure |
 
 **Root causes by category:**
 - **3 BLAST reference mismatches**: Reference is a different size than TnCentral's annotation. Fix: improve references, not boundary logic.

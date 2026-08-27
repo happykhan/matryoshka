@@ -13,6 +13,12 @@ FASTA = DATA / "acceptance" / "pOXA-48a.fasta"
 ISESCAN = DATA / "detector-output" / "pOXA-48a.isescan.tsv"
 AMRFINDER = DATA / "detector-output" / "pOXA-48a.amrfinder.tsv"
 TN123 = DATA / "partridge-examples" / "Tn1-Tn2-Tn3.fasta"
+ARBITRARY_TN123 = (
+    Path(__file__).parents[1]
+    / "demo-output"
+    / "arbitrary-tn123"
+    / "arbitrary-demo.fasta"
+)
 
 SKIP_BLAST = pytest.mark.skipif(
     __import__("shutil").which("blastn") is None,
@@ -99,5 +105,71 @@ def test_run_writes_versioned_result_directory(tmp_path):
     assert document["schema_version"] == "1.0"
     assert document["reference_database"]["profile"] == "validated"
     assert summary["mara_loci"] == 3
+    assert [locus["call"] for locus in summary["mara_locus_outputs"]] == [
+        "Tn1", "Tn2", "Tn3",
+    ]
+    for locus in summary["mara_locus_outputs"]:
+        assert (out / locus["mara"]).is_file()
+        assert (out / locus["mara_table"]).is_file()
+        assert (out / locus["hierarchy"]).is_file()
+    assert summary["proof_status"] == "PASS"
     assert len(list((out / "mara").glob("*.svg"))) == 3
     assert len(list((out / "mara-table").glob("*.svg"))) == 3
+    assert len(list((out / "hierarchy").glob("*.svg"))) == 3
+    assert (out / "annotation.cell").is_file()
+    assert (out / "proof" / "proof.json").is_file()
+    assert (out / "proof" / "components.tsv").is_file()
+    assert (out / "proof" / "matches.tsv").is_file()
+    assert (out / "proof" / "report.html").is_file()
+
+
+@SKIP_BLAST
+def test_arbitrary_sequence_proof_connects_detection_matching_and_outputs(tmp_path):
+    out = tmp_path / "arbitrary-proof"
+    result = CliRunner().invoke(
+        cli,
+        ["run", str(ARBITRARY_TN123), "--threads", "2", "--out", str(out)],
+    )
+    assert result.exit_code == 0, result.output
+
+    proof = json.loads((out / "proof" / "proof.json").read_text())
+    assert proof["summary"] == {
+        "status": "PASS",
+        "tn123_loci": 3,
+        "passed": 3,
+        "partial": 0,
+        "failed": 0,
+    }
+    loci = proof["records"][0]["loci"]
+    assert [locus["call"] for locus in loci] == ["Tn1-like", "Tn2-like", "Tn3"]
+    assert [locus["known_element_match"]["best_match"] for locus in loci] == [
+        "Tn1", "Tn2", "Tn3",
+    ]
+    assert [locus["strand"] for locus in loci] == ["+", "+", "-"]
+    for locus in loci:
+        assert locus["verdict"] == "PASS"
+        assert all(locus["checks"].values())
+        assert locus["assembly"]["detected_component_count"] == 6
+        assert locus["assembly"]["reference_projected_component_count"] == 0
+        assert {component["role"] for component in locus["components"]} == {
+            "terminal_IR", "blaTEM", "tnpR", "res", "tnpA",
+        }
+        for relative_path in locus["outputs"].values():
+            assert (out / relative_path).exists()
+
+    tn2 = loci[1]
+    tnpa = next(
+        component for component in tn2["components"] if component["role"] == "tnpA"
+    )
+    assert tnpa["status"] == "complete_with_insertion"
+    assert 790 <= tnpa["inserted_bases"] <= 810
+
+    cell_format = (out / "annotation.cell").read_text()
+    assert all(call in cell_format for call in ["Tn1-like", "Tn2-like", "Tn3"])
+    hierarchy = (out / "hierarchy" / "arbitrary_demo_contig.svg").read_text()
+    assert all(component in hierarchy for component in ["blaTEM", "tnpR", "res", "tnpA"])
+    report = (out / "proof" / "report.html").read_text()
+    assert "This report is generated from the annotation evidence" in report
+    assert report.count('class="verdict pass"') == 3
+    embedded = report.split('id="matryoshka-proof">', 1)[1].split("</script>", 1)[0]
+    assert json.loads(embedded)["summary"]["status"] == "PASS"

@@ -1,12 +1,38 @@
 # Matryoshka
 
-Nested mobile genetic element annotation and MARA-style visualisation for bacterial
-assemblies.
+Component-first mobile genetic element annotation and MARA-style visualisation for
+bacterial assemblies.
 
-Matryoshka detects known mobile-element structures, reconstructs their biological
-containment hierarchy, and writes machine-readable annotations plus one readable
-diagram per locus. The external-alpha default is deliberately conservative: it scans
-the reference sets validated against Sally Partridge's supplied worked examples.
+Matryoshka scans an arbitrary FASTA sequence for constituent mobile-element features,
+assembles compatible features into loci, applies reviewable expert rules, and draws
+the detected evidence. For the validated Tn1/Tn2/Tn3 workflow, a whole-element
+reference hit is not required to discover a locus or assign a qualified type-like
+call. Complete reviewed sequences are used separately to confirm exact names and
+subtypes.
+
+## How Tn1/Tn2/Tn3 classification works
+
+The primary classification path is component-first:
+
+| Stage | What the program does | Role of reviewed sequences |
+|---|---|---|
+| Detect components | Search independently for both terminal IRs, `blaTEM`, `tnpR`, `res` and `tnpA` | Reviewed examples supply local component profiles, not a pre-drawn locus |
+| Assemble a locus | Test component count, order, orientation, spacing and terminal boundaries on either strand | No complete-element match is required |
+| Apply expert rules | Compare the detected component profiles with the YAML-defined Tn1/Tn2/Tn3 signatures and require the configured score and margin | The component evidence assigns `Tn1-like`, `Tn2-like` or `Tn3-like` |
+| Describe variation | Retain substitutions, insertions, deletions, interruptions, missing ends and ambiguous evidence | Differences remain visible rather than being replaced by a canonical structure |
+| Confirm a reviewed name | Optionally compare the assembled complete locus with reviewed whole-element sequences | This can upgrade a compatible call to an exact type/subtype or add closest-reference context; it cannot create or override the component-rule call |
+| Render outputs | Draw the hierarchy, MARA locus map and MARA table from the detected/assembled feature record | Projected context is visually distinguished from independently detected components |
+
+The rules and thresholds are maintained in
+[`matryoshka/tn123_definitions.yaml`](matryoshka/tn123_definitions.yaml), not embedded
+as Tn1/Tn2/Tn3-specific conditionals in the classifier. This makes the biological
+definition reviewable and provides the pattern for adding further families.
+
+This is still homology-based component detection. The current profiles are intended
+to recover close and moderately varied versions of recognised Tn1/Tn2/Tn3 components,
+including split alignments and indels. Very remote homologues or entirely new component
+classes will require additional nucleotide, protein or profile-HMM detectors; the tool
+does not claim unrestricted de novo mobile-element discovery.
 
 ## Try it
 
@@ -33,26 +59,78 @@ matryoshka run tests/test-data/partridge-examples/Tn1-Tn2-Tn3.fasta \
   --out results
 ```
 
+To prove that the type-like call does not depend on complete-element lookup, run the
+44,647 bp arbitrary-contig demonstration with the component-only profile:
+
+```bash
+matryoshka run demo-output/arbitrary-tn123/arbitrary-demo.fasta \
+  --out results/arbitrary-component-only \
+  --profile tn123-components --detectors none
+```
+
+That checked-in input produces three independently assembled loci:
+
+| Result | Evidence recovered from the input | Complete-element lookup | Verdict |
+|---|---|---|---|
+| `Tn1-like` | Six required components; 25 substitutions across the Tn1-derived locus | Not run | `PASS` |
+| `Tn2-like` | Six required components; split `tnpA` alignment retaining and drawing a 799 bp insertion | Not run | `PASS` |
+| `Tn3-like` | Six required components in reverse orientation | Not run | `PASS` |
+
+The generated proof page reports the component coordinates, identities, coverage,
+grammar result, component-profile scores, structural differences and links to every
+corresponding output. The committed example is
+[`demo-output/arbitrary-tn123/proof-bundle/proof/report.html`](demo-output/arbitrary-tn123/proof-bundle/proof/report.html).
+
 The result directory contains:
 
 - `annotation.json` — versioned hierarchy with stable feature IDs and provenance;
 - `annotation.gff3` — one valid multi-record GFF3 document;
+- `annotation.cell` — nested CellGen/Wolvercote cell-format text;
 - `run.json` — short run summary;
+- `hierarchy/*.svg` — the original scale-accurate nested hierarchy view;
 - `mara/*.svg` — locus-based MARA-style maps;
-- `mara-table/*.svg` — MARA-style annotation tables.
+- `mara-table/*.svg` — MARA-style annotation tables;
+- `proof/report.html` — a human-readable component-to-call proof report;
+- `proof/proof.json`, `components.tsv` and `matches.tsv` — machine-checkable
+  component, grammar and known-element evidence.
 
 Each Tn1/Tn2/Tn3 target receives its own viewport, so the element stays legible in a
 long plasmid or chromosome. Near matches are labelled `Tn1-like`, `Tn2-like` or
 `Tn3-like`; supported insertions, deletions, fragments and reverse-complement matches
-retain their evidence in the JSON and table.
+retain their evidence in the JSON and table. Solid arrows in the figure are
+sequence-detected components; outlined dashed arrows are reference projections and
+are used only where a supported parent lacks a component call.
 
-For these three elements, the diagram is assembled from sequence evidence rather than
-drawn from a name alone. Matryoshka independently scans for both terminal IRs,
-`blaTEM`, `tnpR`, `res` and `tnpA`; checks their order and orientation; and then uses
-the closest whole-locus reference to assign Tn1, Tn2, Tn3 or a qualified `*-like`
-name. Missing required components prevent an exact named call. Solid arrows in the
-figure are sequence-detected components; outlined dashed arrows are reference
-projections and are used only where a supported parent lacks a component call.
+For a Tn1/Tn2/Tn3 locus to receive `PASS` in the proof report, all required
+components must be independently sequence-detected, their grammar and orientation
+must be valid, the component-rule classifier must assign a type, and no internal
+component may be supplied only by reference projection. A whole-element match is not
+required for `PASS`. Missing required components prevent a complete named call.
+Expected fragments receive a `PARTIAL` locus verdict and a
+`PARTIAL_TN123_EVIDENCE` run status rather than being misrepresented as either a
+complete pass or a pipeline failure.
+
+The biological naming rules are data, not embedded conditionals. They are maintained
+in [`matryoshka/tn123_definitions.yaml`](matryoshka/tn123_definitions.yaml), validated
+by the definition loader, documented by a [JSON Schema](docs/schema/tn123-definitions-v1.schema.json),
+and exportable in review-friendly or machine-readable form:
+
+```bash
+matryoshka definitions --format markdown --out tn123-definitions-review.md
+matryoshka definitions --format yaml --out tn123-definitions.yaml
+matryoshka definitions --format json --out tn123-definitions.json
+```
+
+The current definitions include the three Sally-selected canonical elements plus
+Tn2c (HM749967), Tn2.1 (CP028717), Tn1Mer (GQ160960) and the legacy V00613 Tn3
+sequence. See the [definition and validation report](docs/tn123-definition-and-validation-report.md)
+and its [real-accession ledger](docs/validation/tn123-real-accession-results.tsv).
+The [reviewed-definition demonstration](demo-output/tn123-reviewed-definitions/README.md)
+includes the complete result bundle and every generated MARA locus map/table.
+The self-contained Word/PDF evidence report in `reports/` embeds those figures,
+the original hierarchy views, component ledgers, the natural pEK499 partial
+fragments and the arbitrary-contig demonstration. The complete pEK499 bundle is
+in `demo-output/tn123-pEK499/proof-bundle/`.
 
 ### Pixi alternative
 
@@ -76,6 +154,19 @@ matryoshka run assembly.fasta --out results --threads 4
 The default `--profile validated` includes the Sally-backed Tn1/Tn2/Tn3, curated unit
 transposon, integron and ISEcp1-TPU references. `--profile all` enables broader legacy
 and experimental references and should be treated as exploratory.
+
+To exercise and audit discovery without any complete Tn1/Tn2/Tn3 lookup, use the
+component-only profile:
+
+```bash
+matryoshka run assembly.fasta --out results --profile tn123-components \
+  --detectors none
+```
+
+In that mode, a complete novel candidate can still receive a `Tn1-like`, `Tn2-like`
+or `Tn3-like` call from its detected component composition, order, orientation and
+component-profile scores. Exact reviewed subtype names require the optional secondary
+whole-locus confirmation available in the `validated` profile.
 
 BLAST-based detection is always run. Extra detector evidence can be supplied without
 rerunning tools:
@@ -105,7 +196,7 @@ users.
 
 | Category | Implemented support |
 |---|---|
-| Tn1/Tn2/Tn3 | Independent IR/blaTEM/tnpR/res/tnpA detection, orientation-aware component assembly, canonical naming, closest-reference minor variants, indels, reverse orientation and conservative partial/ambiguous calls |
+| Tn1/Tn2/Tn3 | YAML-defined IR/blaTEM/tnpR/res/tnpA grammar, orientation-aware component-profile classification, optional exact reference confirmation, indels, reverse orientation and conservative partial/ambiguous calls |
 | Curated MARA units | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
 | ISEcp1 transposition units | Seven complete supplied ISEcp1–blaCMY references and orientation-aware incomplete candidates |
 | Insertion sequences | Exact curated IS calls plus ISEScan calls, including IS26/IS257, ISEcp1, ISApl1 and IS91/ISCR families |
