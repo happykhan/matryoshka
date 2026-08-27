@@ -10,7 +10,7 @@
 <rect x="18" y="64" width="1244" height="68" fill="#e8e8e5" stroke="#ddddda" stroke-width="0.7"/>
 <text x="26.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1..4949</text>
 <text x="178.0" y="82.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Tn1</text>
-<line x1="208.0" y1="79.0" x2="242.0" y2="79.0" stroke="#000" stroke-width="6"/><polygon points="242.0,79.0 234.0,74.0 234.0,84.0" fill="#000000" stroke="#000"/>
+<line x1="208.0" y1="79.0" x2="242.0" y2="79.0" stroke="#343a40" stroke-width="6"/><polygon points="242.0,79.0 234.0,74.0 234.0,84.0" fill="#717b85" stroke="#343a40"/>
 <text x="528.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">NC_008357</text>
 <text x="658.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">Tn</text>
 <text x="768.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">BLAST identity=100%; reference coverage=100%; closest definition=Tn1;</text>
@@ -28,14 +28,14 @@
 <rect x="18" y="172" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
 <text x="26.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">148..1008</text>
 <text x="198.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">blaTEM-2</text>
-<line x1="292.0" y1="187.0" x2="258.0" y2="187.0" stroke="#000" stroke-width="6"/><polygon points="258.0,187.0 266.0,182.0 266.0,192.0" fill="#000000" stroke="#000"/>
+<line x1="292.0" y1="187.0" x2="258.0" y2="187.0" stroke="#343a40" stroke-width="6"/><polygon points="258.0,187.0 266.0,182.0 266.0,192.0" fill="#717b85" stroke="#343a40"/>
 <text x="528.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
 <text x="658.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">R_gene</text>
 <text x="768.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected blaTEM; identity=100.0%; coverage=100.0%</text>
 <rect x="18" y="200" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
 <text x="26.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1191..1748</text>
 <text x="198.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tnpR</text>
-<line x1="268.0" y1="215.0" x2="234.0" y2="215.0" stroke="#000" stroke-width="6"/><polygon points="234.0,215.0 242.0,210.0 242.0,220.0" fill="#000000" stroke="#000"/>
+<line x1="268.0" y1="215.0" x2="234.0" y2="215.0" stroke="#343a40" stroke-width="6"/><polygon points="234.0,215.0 242.0,210.0 242.0,220.0" fill="#717b85" stroke="#343a40"/>
 <text x="528.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
 <text x="658.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
 <text x="768.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected tnpR; identity=100.0%; coverage=100.0%</text>
@@ -49,7 +49,7 @@
 <rect x="18" y="256" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
 <text x="26.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1911..4916</text>
 <text x="198.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tnpA</text>
-<line x1="234.0" y1="271.0" x2="268.0" y2="271.0" stroke="#000" stroke-width="6"/><polygon points="268.0,271.0 260.0,266.0 260.0,276.0" fill="#000000" stroke="#000"/>
+<line x1="234.0" y1="271.0" x2="268.0" y2="271.0" stroke="#343a40" stroke-width="6"/><polygon points="268.0,271.0 260.0,266.0 260.0,276.0" fill="#717b85" stroke="#343a40"/>
 <text x="528.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
 <text x="658.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
 <text x="768.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected tnpA; identity=100.0%; coverage=100.0%</text>
@@ -68,7 +68,7 @@
 <line x1="760" y1="34" x2="760" y2="324" stroke="#d2d2cf" stroke-width="0.8"/>
 <line x1="1262" y1="34" x2="1262" y2="324" stroke="#d2d2cf" stroke-width="0.8"/>
 <text x="18.0" y="347.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Key:</text>
-<line x1="62.0" y1="344.0" x2="96.0" y2="344.0" stroke="#000" stroke-width="6"/><polygon points="96.0,344.0 88.0,339.0 88.0,349.0" fill="#000000" stroke="#000"/>
+<line x1="62.0" y1="344.0" x2="96.0" y2="344.0" stroke="#343a40" stroke-width="6"/><polygon points="96.0,344.0 88.0,339.0 88.0,349.0" fill="#717b85" stroke="#343a40"/>
 <text x="105.0" y="347.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">strand</text>
 <polygon points="180.0,338.0 190.0,344.0 180.0,350.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
 <text x="198.0" y="347.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat (IR)</text>

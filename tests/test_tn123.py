@@ -162,8 +162,8 @@ def test_locus_map_renderer_is_separate_single_line_output():
     assert "blaTEM-2" in svg
     assert "tnpR" in svg
     assert "tnpA" in svg
-    assert 'fill="#009b55"' in svg
-    assert 'fill="#000"' in svg
+    assert 'fill="#8fc7b5"' in svg
+    assert 'fill="#717b85"' in svg
     assert "expected 5 bp TSD; flanking sequence unavailable" in svg
 
 
@@ -517,7 +517,7 @@ def test_reference_only_cli_detects_all_three_and_writes_locus_maps(tmp_path: Pa
     assert result.exit_code == 0, result.output
     svgs = sorted(locus_map_dir.glob("*.svg"))
     assert len(svgs) == 3
-    assert all('fill="#009b55"' in svg.read_text() for svg in svgs)
+    assert all('fill="#8fc7b5"' in svg.read_text() for svg in svgs)
 
     table_dir = tmp_path / "locus-table"
     result = runner.invoke(

@@ -11,7 +11,7 @@ from matryoshka.__main__ import _suppress_redundant_inference
 from matryoshka.curated_units import UNIT_MAPS, annotate_curated_units
 from matryoshka.detect import MGEFeature
 from matryoshka.hierarchy import build_hierarchy
-from matryoshka.locus_map import to_locus_map_svg
+from matryoshka.locus_map import TRANSPOSON_COLOURS, to_locus_map_svg
 from matryoshka.locus_table import to_locus_table_svg
 from matryoshka.reference_scan import REFERENCES_DIR, blast_available, scan
 
@@ -102,8 +102,8 @@ def test_tn21_map_contains_integron_ends_segments_cassette_and_tni_fragment():
     assert "5&#x27;-CS" in svg
     assert "aadA1 cassette region" in svg
     assert "tni#" in svg
-    assert 'fill="#9f1d2d"' in svg
-    assert 'fill="#9b4b9d"' in svg
+    assert f'fill="{TRANSPOSON_COLOURS["Tn21"]}"' in svg
+    assert f'fill="{TRANSPOSON_COLOURS["Tn402"]}"' in svg
     assert ">cassette<" in table
     assert "LOCUS-REF-5CS-GGG" in table
     assert "LOCUS-REF-Tn402-tni" in table

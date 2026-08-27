@@ -7,6 +7,7 @@ import textwrap
 from dataclasses import dataclass
 
 from .detect import MGEFeature
+from .locus_map import GENE_COLOUR, OUTLINE, PROJECTED_GENE_COLOUR
 
 WIDTH = 1280
 MARGIN = 18
@@ -241,12 +242,12 @@ def _arrow(x: float, y: float, strand: str, *, projected: bool = False) -> str:
     else:
         x1, x2 = x + length, x
         head = f"{x2:.1f},{y:.1f} {x2 + 8:.1f},{y - 5:.1f} {x2 + 8:.1f},{y + 5:.1f}"
-    colour = "#ffffff" if projected else "#000000"
+    colour = PROJECTED_GENE_COLOUR if projected else GENE_COLOUR
     dash = ' stroke-dasharray="4,2"' if projected else ""
     return (
         f'<line x1="{x1:.1f}" y1="{y:.1f}" x2="{x2:.1f}" y2="{y:.1f}" '
-        f'stroke="#000" stroke-width="6"{dash}/>'
-        f'<polygon points="{head}" fill="{colour}" stroke="#000"{dash}/>'
+        f'stroke="{OUTLINE}" stroke-width="6"{dash}/>'
+        f'<polygon points="{head}" fill="{colour}" stroke="{OUTLINE}"{dash}/>'
     )
 
 

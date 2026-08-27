@@ -18,17 +18,21 @@ TRACK_Y = 66
 BLOCK_TOP = 44
 BLOCK_BOTTOM = 84
 FONT = "Arial,Helvetica,sans-serif"
-TN123_COLOUR = "#009b55"
-OUTLINE = "#111111"
-GAP_COLOUR = "#e3262e"
-CASSETTE_COLOUR = "#68c5e3"
-INTEGRON_COLOUR = "#ed873b"
-INTRON_COLOUR = "#b8b8b8"
-ISCR_COLOUR = "#fff0ad"
-REPLICON_COLOUR = "#50a6a6"
-NCRNA_COLOUR = "#7aa6d8"
-REGION_COLOUR = "#777777"
-CAPTURE_COLOUR = "#e4e4df"
+TN123_COLOUR = "#8fc7b5"
+OUTLINE = "#343a40"
+GENE_COLOUR = "#717b85"
+PROJECTED_GENE_COLOUR = "#e1e5e8"
+INSERTION_COLOUR = "#f3c6a8"
+UNRESOLVED_COLOUR = "#c9b8e8"
+GAP_COLOUR = "#c96f73"
+CASSETTE_COLOUR = "#a9d4e5"
+INTEGRON_COLOUR = "#f2be7e"
+INTRON_COLOUR = "#c7cbd1"
+ISCR_COLOUR = "#f3e4a6"
+REPLICON_COLOUR = "#9bcbc8"
+NCRNA_COLOUR = "#afc2e3"
+REGION_COLOUR = "#8c9299"
+CAPTURE_COLOUR = "#dde2d2"
 SUPPORTED_RENDER_SYMBOLS = frozenset({
     "att_site",
     "captured_region",
@@ -52,14 +56,14 @@ SUPPORTED_RENDER_SYMBOLS = frozenset({
     "site_marker",
 })
 TRANSPOSON_COLOURS = {
-    "Tn21": "#9f1d2d",
-    "Tn1696": "#758895",
-    "Tn1721": "#d74747",
-    "Tn1722": "#d74747",
-    "Tn402": "#9b4b9d",
-    "Tn4401": "#ef92dc",
-    "Tn5393": "#efce53",
-    "Tn5403": "#eceb83",
+    "Tn21": "#c98e98",
+    "Tn1696": "#9eadb8",
+    "Tn1721": "#e3a6a0",
+    "Tn1722": "#e3a6a0",
+    "Tn402": "#bca2cf",
+    "Tn4401": "#d7a8c8",
+    "Tn5393": "#e7c77a",
+    "Tn5403": "#d8d493",
 }
 
 
@@ -250,10 +254,10 @@ def _gene_arrow(feature: MGEFeature, seq_len: int) -> str:
             f"{x1:.1f},{top} {x2:.1f},{top} {x2:.1f},{bottom} {x1:.1f},{bottom}"
         )
     projected = feature.attributes.get("evidence_class") == "reference_projected"
-    fill = "#ffffff" if projected else "#000000"
+    fill = PROJECTED_GENE_COLOUR if projected else GENE_COLOUR
     dash = ' stroke-dasharray="4,2"' if projected else ""
     return (
-        f'<polygon points="{points}" fill="{fill}" stroke="#000" '
+        f'<polygon points="{points}" fill="{fill}" stroke="{OUTLINE}" '
         f'stroke-width="1"{dash}/>'
     )
 
@@ -270,7 +274,7 @@ def _res_marker(feature: MGEFeature, seq_len: int) -> str:
     )
 
 
-def _insertion_block(feature: MGEFeature, seq_len: int) -> str:
+def _insertion_block(feature: MGEFeature, seq_len: int, fill: str) -> str:
     x1, x2 = _x(feature.start, seq_len), _x(feature.end, seq_len)
     tooth = min(6.0, max((x2 - x1) / 6, 2.0))
     points = [
@@ -288,7 +292,7 @@ def _insertion_block(feature: MGEFeature, seq_len: int) -> str:
     ]
     encoded = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
     return (
-        f'<polygon points="{encoded}" fill="#ffffff" stroke="{OUTLINE}" '
+        f'<polygon points="{encoded}" fill="{fill}" stroke="{OUTLINE}" '
         'stroke-width="1.5"/>'
     )
 
@@ -350,8 +354,8 @@ def _legend() -> str:
         'stroke="#d4d4d4" stroke-width="1"/>',
         _text(LEFT, top + 18, "Key", size=10, anchor="start", weight="bold"),
         # Directional gene arrow.
-        f'<line x1="115" y1="{row1}" x2="145" y2="{row1}" stroke="#000" stroke-width="6"/>',
-        f'<polygon points="145,{row1} 137,{row1 - 5} 137,{row1 + 5}" fill="#000"/>',
+        f'<line x1="115" y1="{row1}" x2="145" y2="{row1}" stroke="{GENE_COLOUR}" stroke-width="6"/>',
+        f'<polygon points="145,{row1} 137,{row1 - 5} 137,{row1 + 5}" fill="{GENE_COLOUR}"/>',
         _text(154, row1 + 3, "gene (arrow shows strand)", size=9, anchor="start"),
         # Terminal inverted-repeat flag.
         f'<line x1="350" y1="{row1 + 7}" x2="350" y2="{row1 - 9}" stroke="#111" stroke-width="1.3"/>',
@@ -373,14 +377,16 @@ def _legend() -> str:
         _text(401, row2 + 3, "gene cassette", size=9, anchor="start"),
         f'<rect x="520" y="{row2 - 9}" width="42" height="18" fill="{INTEGRON_COLOUR}" stroke="#111"/>',
         _text(571, row2 + 3, "integron conserved segment", size=9, anchor="start"),
-        f'<polygon points="770,{row2 - 9} 800,{row2 - 9} 806,{row2 - 3} 800,{row2 + 3} 806,{row2 + 9} 770,{row2 + 9} 764,{row2 + 3} 770,{row2 - 3} 764,{row2 - 9}" fill="#fff" stroke="#111"/>',
-        _text(815, row2 + 3, "inserted / unresolved sequence", size=9, anchor="start"),
-        f'<line x1="1045" y1="{row2}" x2="1085" y2="{row2}" stroke="{GAP_COLOUR}" stroke-width="2" stroke-dasharray="6,4"/>',
-        _text(1094, row2 + 3, "unannotated flank", size=9, anchor="start"),
-        f'<line x1="115" y1="{row3}" x2="145" y2="{row3}" stroke="#000" stroke-width="6"/>',
-        f'<polygon points="145,{row3} 137,{row3 - 5} 137,{row3 + 5}" fill="#000"/>',
+        f'<polygon points="770,{row2 - 9} 800,{row2 - 9} 806,{row2 - 3} 800,{row2 + 3} 806,{row2 + 9} 770,{row2 + 9} 764,{row2 + 3} 770,{row2 - 3} 764,{row2 - 9}" fill="{INSERTION_COLOUR}" stroke="{OUTLINE}"/>',
+        _text(815, row2 + 3, "inserted sequence", size=9, anchor="start"),
+        f'<rect x="930" y="{row2 - 9}" width="28" height="18" fill="{UNRESOLVED_COLOUR}" stroke="{OUTLINE}"/>',
+        _text(967, row2 + 3, "unresolved", size=9, anchor="start"),
+        f'<line x1="1080" y1="{row2}" x2="1120" y2="{row2}" stroke="{GAP_COLOUR}" stroke-width="2" stroke-dasharray="6,4"/>',
+        _text(1129, row2 + 3, "unannotated flank", size=9, anchor="start"),
+        f'<line x1="115" y1="{row3}" x2="145" y2="{row3}" stroke="{GENE_COLOUR}" stroke-width="6"/>',
+        f'<polygon points="145,{row3} 137,{row3 - 5} 137,{row3 + 5}" fill="{GENE_COLOUR}"/>',
         _text(154, row3 + 3, "independently sequence-detected component", size=9, anchor="start"),
-        f'<polygon points="350,{row3 - 7} 380,{row3 - 7} 390,{row3} 380,{row3 + 7} 350,{row3 + 7}" fill="#fff" stroke="#111" stroke-dasharray="4,2"/>',
+        f'<polygon points="350,{row3 - 7} 380,{row3 - 7} 390,{row3} 380,{row3 + 7} 350,{row3 + 7}" fill="{PROJECTED_GENE_COLOUR}" stroke="{OUTLINE}" stroke-dasharray="4,2"/>',
         _text(400, row3 + 3, "reference-projected component", size=9, anchor="start"),
         _text(
             WIDTH / 2,
@@ -669,7 +675,7 @@ def to_locus_map_svg(
         parts.append(_text(mid, 116, feature.name, size=8))
 
     for feature in unknown_fragments:
-        parts.append(_insertion_block(feature, seq_len))
+        parts.append(_insertion_block(feature, seq_len, UNRESOLVED_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
         parts.append(_text(mid, 116, f"{feature.name}#", size=8))
 
@@ -693,7 +699,7 @@ def to_locus_map_svg(
         parts.append(_res_marker(feature, seq_len))
 
     for feature in insertions:
-        parts.append(_insertion_block(feature, seq_len))
+        parts.append(_insertion_block(feature, seq_len, INSERTION_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
         inserted = int(feature.attributes.get("inserted_bases", 0) or 0)
         parts.append(_text(mid, 105, f"insertion ≈{inserted} bp", size=8))

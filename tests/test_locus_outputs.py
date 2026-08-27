@@ -7,7 +7,17 @@ from Bio import SeqIO
 
 from matryoshka.__main__ import _annotate_contig
 from matryoshka.detect import MGEFeature, parse_amrfinder, parse_integron_finder
-from matryoshka.locus_map import to_locus_map_svg
+from matryoshka.locus_map import (
+    CASSETTE_COLOUR,
+    GENE_COLOUR,
+    INSERTION_COLOUR,
+    INTEGRON_COLOUR,
+    INTRON_COLOUR,
+    PROJECTED_GENE_COLOUR,
+    TRANSPOSON_COLOURS,
+    UNRESOLVED_COLOUR,
+    to_locus_map_svg,
+)
 from matryoshka.locus_table import to_locus_table_svg
 from matryoshka.locus_views import extract_locus_views
 from matryoshka.reference_scan import (
@@ -52,11 +62,11 @@ def test_renderer_uses_locus_symbols_for_core_feature_vocabulary():
         feature("group_II_intron", "Kl.pn.I2", 3800, 4600, strand="-"),
     ]
     svg = to_locus_map_svg([tn21], 6500, "locus vocabulary")
-    assert 'fill="#9f1d2d"' in svg
+    assert f'fill="{TRANSPOSON_COLOURS["Tn21"]}"' in svg
     assert 'fill="#ffffff"' in svg
-    assert 'fill="#ed873b"' in svg
-    assert 'fill="#68c5e3"' in svg
-    assert 'fill="#b8b8b8"' in svg
+    assert f'fill="{INTEGRON_COLOUR}"' in svg
+    assert f'fill="{CASSETTE_COLOUR}"' in svg
+    assert f'fill="{INTRON_COLOUR}"' in svg
     assert "IS1R" in svg
     assert "5&#x27;-CS" in svg
     assert "aadA1a" in svg
@@ -114,6 +124,23 @@ def test_renderer_draws_the_extended_component_ontology():
         assert label in svg
     assert "boundary-adjacent sequence-matched TSD: TATGA" in svg
     assert 'stroke-dasharray="6,3"' in svg
+    assert f'fill="{UNRESOLVED_COLOUR}"' in svg
+
+
+def test_gene_and_sequence_state_colours_are_distinct_and_non_white():
+    features = [
+        feature("gene", "detected", 100, 700, evidence_class="sequence_detected"),
+        feature("gene", "projected", 800, 1400, evidence_class="reference_projected"),
+        feature("inserted_sequence", "insertion", 1500, 1800, inserted_bases=301),
+        feature("unknown_fragment", "unresolved", 1900, 2200),
+    ]
+    svg = to_locus_map_svg(features, 2300, "colour semantics")
+    assert f'fill="{GENE_COLOUR}"' in svg
+    assert f'fill="{PROJECTED_GENE_COLOUR}"' in svg
+    assert f'fill="{INSERTION_COLOUR}"' in svg
+    assert f'fill="{UNRESOLVED_COLOUR}"' in svg
+    assert len({GENE_COLOUR, INSERTION_COLOUR, UNRESOLVED_COLOUR}) == 3
+    assert "#ffffff" not in {GENE_COLOUR, INSERTION_COLOUR, UNRESOLVED_COLOUR}
 
 
 def test_table_preserves_locus_feature_types():
