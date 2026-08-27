@@ -40,6 +40,7 @@ from .mara_table import to_mara_table_svg
 from .mara_viz import to_mara_svg
 from .output import to_genbank, to_gff3, to_json, to_wolvercote
 from .partridge_units import annotate_partridge_units
+from .proof import build_tn123_proof, write_proof_bundle
 from .reference_scan import REFERENCE_PROFILES, blast_available, scan_all
 from .report import annotation_document, annotation_gff3, count_features
 from .tn123 import annotate_tn123, assemble_tn123_components
@@ -369,14 +370,23 @@ def run_workflow(
     annotated: list[tuple[str, int, list[MGEFeature]]] = []
     mara_dir = out / "mara"
     table_dir = out / "mara-table"
+    hierarchy_dir = out / "hierarchy"
     mara_dir.mkdir(exist_ok=True)
     table_dir.mkdir(exist_ok=True)
+    hierarchy_dir.mkdir(exist_ok=True)
+    proof_output_paths: dict[tuple[str, int, int, str], dict[str, str]] = {}
     locus_count = 0
     for record in fasta_records:
         sequence = str(record.seq)
         contig_features = _features_on_contig(all_features, record.id)
         roots, _ = _annotate_contig(sequence, record.id, contig_features, False)
         annotated.append((record.id, len(sequence), roots))
+        safe_record_id = record.id.replace("/", "_").replace(" ", "_")
+        hierarchy_path = hierarchy_dir / f"{safe_record_id}.svg"
+        hierarchy_path.write_text(
+            to_linear_svg(roots, len(sequence), record.id),
+            encoding="utf-8",
+        )
         for locus in extract_mara_loci(roots, len(sequence), mara_flank):
             locus_name = f"{record.id}__{locus.suffix}"
             label = (
@@ -392,6 +402,19 @@ def run_workflow(
                 to_mara_table_svg(locus.roots, label),
                 encoding="utf-8",
             )
+            proof_output_paths[(
+                record.id,
+                locus.target.start,
+                locus.target.end,
+                locus.target.name,
+            )] = {
+                "mara": f"mara/{locus_name}.svg",
+                "mara_table": f"mara-table/{locus_name}.svg",
+                "hierarchy": f"hierarchy/{safe_record_id}.svg",
+                "cell_format": "annotation.cell",
+                "annotation_json": "annotation.json",
+                "annotation_gff3": "annotation.gff3",
+            }
             locus_count += 1
 
     detector_provenance = {
@@ -424,17 +447,37 @@ def run_workflow(
         annotation_gff3(annotated),
         encoding="utf-8",
     )
+    (out / "annotation.cell").write_text(
+        "\n".join(
+            to_wolvercote(roots, [], seqid)
+            for seqid, _, roots in annotated
+        ) + "\n",
+        encoding="utf-8",
+    )
+    proof = build_tn123_proof(annotated, proof_output_paths)
+    write_proof_bundle(
+        out / "proof",
+        proof,
+        title=f"{fasta.name} Tn1/Tn2/Tn3 proof",
+    )
     summary = {
         "schema_version": "1.0",
         "profile": profile,
         "records": len(annotated),
         "features": sum(count_features(roots) for _, _, roots in annotated),
         "mara_loci": locus_count,
+        "proof_status": proof["summary"]["status"],
         "outputs": {
             "annotation_json": "annotation.json",
             "annotation_gff3": "annotation.gff3",
+            "annotation_cell": "annotation.cell",
+            "hierarchy_directory": "hierarchy",
             "mara_directory": "mara",
             "mara_table_directory": "mara-table",
+            "proof_json": "proof/proof.json",
+            "proof_report": "proof/report.html",
+            "component_ledger": "proof/components.tsv",
+            "match_ledger": "proof/matches.tsv",
         },
     }
     (out / "run.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")

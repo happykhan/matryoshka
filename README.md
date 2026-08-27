@@ -37,9 +37,14 @@ The result directory contains:
 
 - `annotation.json` — versioned hierarchy with stable feature IDs and provenance;
 - `annotation.gff3` — one valid multi-record GFF3 document;
+- `annotation.cell` — nested CellGen/Wolvercote cell-format text;
 - `run.json` — short run summary;
+- `hierarchy/*.svg` — the original scale-accurate nested hierarchy view;
 - `mara/*.svg` — locus-based MARA-style maps;
-- `mara-table/*.svg` — MARA-style annotation tables.
+- `mara-table/*.svg` — MARA-style annotation tables;
+- `proof/report.html` — a human-readable component-to-call proof report;
+- `proof/proof.json`, `components.tsv` and `matches.tsv` — machine-checkable
+  component, grammar and known-element evidence.
 
 Each Tn1/Tn2/Tn3 target receives its own viewport, so the element stays legible in a
 long plasmid or chromosome. Near matches are labelled `Tn1-like`, `Tn2-like` or
@@ -53,6 +58,10 @@ the closest whole-locus reference to assign Tn1, Tn2, Tn3 or a qualified `*-like
 name. Missing required components prevent an exact named call. Solid arrows in the
 figure are sequence-detected components; outlined dashed arrows are reference
 projections and are used only where a supported parent lacks a component call.
+For a Tn1/Tn2/Tn3 locus to receive `PASS` in the proof report, all required
+components must be independently sequence-detected, their grammar and orientation
+must be valid, the whole locus must match a known element, and no internal component
+may be supplied only by reference projection.
 
 ### Pixi alternative
 

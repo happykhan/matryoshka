@@ -1,0 +1,598 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Audit arbitrary FASTA sequence through independent component detection, grammar assembly, known-element matching and generated outputs.",
+  "summary": {
+    "status": "PASS",
+    "tn123_loci": 3,
+    "passed": 3,
+    "failed": 0
+  },
+  "records": [
+    {
+      "id": "arbitrary_demo_contig",
+      "length": 44647,
+      "loci": [
+        {
+          "verdict": "PASS",
+          "record": "arbitrary_demo_contig",
+          "call": "Tn1-like",
+          "family": "Tn1",
+          "start": 8001,
+          "end": 12949,
+          "strand": "+",
+          "known_element_match": {
+            "best_match": "Tn1",
+            "reference_id": "Tn1_NC_008357",
+            "source_accession": "NC_008357",
+            "whole_locus_identity": 99.5,
+            "whole_locus_coverage": 100.0,
+            "variant_status": "minor_sequence_variant",
+            "structural_status": "intact",
+            "naming_evidence": [
+              "component_grammar",
+              "whole_locus_alignment"
+            ]
+          },
+          "assembly": {
+            "status": "complete",
+            "order_valid": true,
+            "requirements": {
+              "terminal_IR": true,
+              "blaTEM": true,
+              "tnpR": true,
+              "res": true,
+              "tnpA": true
+            },
+            "detected_component_count": 6,
+            "reference_projected_component_count": 0
+          },
+          "checks": {
+            "components_detected_from_sequence": true,
+            "all_required_components_present": true,
+            "component_order_and_orientation_valid": true,
+            "component_grammar_complete": true,
+            "known_element_reference_match": true,
+            "no_reference_projected_components": true
+          },
+          "components": [
+            {
+              "role": "terminal_IR",
+              "name": "IRL",
+              "start": 8001,
+              "end": 8038,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__IRR__4911_4948",
+              "reference_segments": [
+                {
+                  "qstart": 8001,
+                  "qend": 8038,
+                  "sstart": 38,
+                  "send": 1,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "blaTEM",
+              "name": "blaTEM-2",
+              "start": 8148,
+              "end": 9008,
+              "strand": "-",
+              "identity": 99.42,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn1_NC_008357__blaTEM_2__148_1008",
+              "reference_segments": [
+                {
+                  "qstart": 8148,
+                  "qend": 9008,
+                  "sstart": 1,
+                  "send": 861,
+                  "identity": 99.419
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "tnpR",
+              "name": "tnpR",
+              "start": 9191,
+              "end": 9748,
+              "strand": "-",
+              "identity": 99.1,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn1_NC_008357__tnpR__1191_1748",
+              "reference_segments": [
+                {
+                  "qstart": 9191,
+                  "qend": 9748,
+                  "sstart": 1,
+                  "send": 558,
+                  "identity": 99.104
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "res",
+              "name": "res",
+              "start": 9754,
+              "end": 9867,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn1_NC_008357__res__1754_1867",
+              "reference_segments": [
+                {
+                  "qstart": 9754,
+                  "qend": 9867,
+                  "sstart": 1,
+                  "send": 114,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "tnpA",
+              "name": "tnpA",
+              "start": 9911,
+              "end": 12916,
+              "strand": "+",
+              "identity": 99.57,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn1_NC_008357__tnpA__1911_4916",
+              "reference_segments": [
+                {
+                  "qstart": 9911,
+                  "qend": 12916,
+                  "sstart": 1,
+                  "send": 3006,
+                  "identity": 99.568
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "terminal_IR",
+              "name": "IRR",
+              "start": 12912,
+              "end": 12949,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__IRR__4911_4948",
+              "reference_segments": [
+                {
+                  "qstart": 12912,
+                  "qend": 12949,
+                  "sstart": 1,
+                  "send": 38,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            }
+          ],
+          "outputs": {
+            "mara": "mara/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+            "mara_table": "mara-table/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+            "hierarchy": "hierarchy/arbitrary_demo_contig.svg",
+            "cell_format": "annotation.cell",
+            "annotation_json": "annotation.json",
+            "annotation_gff3": "annotation.gff3"
+          }
+        },
+        {
+          "verdict": "PASS",
+          "record": "arbitrary_demo_contig",
+          "call": "Tn2-like",
+          "family": "Tn2",
+          "start": 19950,
+          "end": 25699,
+          "strand": "+",
+          "known_element_match": {
+            "best_match": "Tn2",
+            "reference_id": "Tn2_AY123253",
+            "source_accession": "AY123253",
+            "whole_locus_identity": 100.0,
+            "whole_locus_coverage": 100.0,
+            "variant_status": "minor_sequence_variant",
+            "structural_status": "complete_with_insertion",
+            "naming_evidence": [
+              "component_grammar",
+              "whole_locus_alignment"
+            ]
+          },
+          "assembly": {
+            "status": "complete",
+            "order_valid": true,
+            "requirements": {
+              "terminal_IR": true,
+              "blaTEM": true,
+              "tnpR": true,
+              "res": true,
+              "tnpA": true
+            },
+            "detected_component_count": 6,
+            "reference_projected_component_count": 0
+          },
+          "checks": {
+            "components_detected_from_sequence": true,
+            "all_required_components_present": true,
+            "component_order_and_orientation_valid": true,
+            "component_grammar_complete": true,
+            "known_element_reference_match": true,
+            "no_reference_projected_components": true
+          },
+          "components": [
+            {
+              "role": "terminal_IR",
+              "name": "IRL",
+              "start": 19950,
+              "end": 19987,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__IRR__4911_4948",
+              "reference_segments": [
+                {
+                  "qstart": 19950,
+                  "qend": 19987,
+                  "sstart": 38,
+                  "send": 1,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "blaTEM",
+              "name": "blaTEM-1b",
+              "start": 20097,
+              "end": 20957,
+              "strand": "-",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2_AY123253__blaTEM_1b__148_1008",
+              "reference_segments": [
+                {
+                  "qstart": 20097,
+                  "qend": 20957,
+                  "sstart": 1,
+                  "send": 861,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "tnpR",
+              "name": "tnpR",
+              "start": 21140,
+              "end": 21697,
+              "strand": "-",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2_AY123253__tnpR__1191_1748",
+              "reference_segments": [
+                {
+                  "qstart": 21140,
+                  "qend": 21697,
+                  "sstart": 1,
+                  "send": 558,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "res",
+              "name": "res",
+              "start": 21703,
+              "end": 21816,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2_AY123253__res__1754_1867",
+              "reference_segments": [
+                {
+                  "qstart": 21703,
+                  "qend": 21816,
+                  "sstart": 1,
+                  "send": 114,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "tnpA",
+              "name": "tnpA",
+              "start": 21860,
+              "end": 25666,
+              "strand": "+",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "complete_with_insertion",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn2_AY123253__tnpA__1911_4917",
+              "reference_segments": [
+                {
+                  "qstart": 21860,
+                  "qend": 22450,
+                  "sstart": 1,
+                  "send": 591,
+                  "identity": 100.0
+                },
+                {
+                  "qstart": 23250,
+                  "qend": 25666,
+                  "sstart": 591,
+                  "send": 3007,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 799
+            },
+            {
+              "role": "terminal_IR",
+              "name": "IRR",
+              "start": 25662,
+              "end": 25699,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__IRR__4911_4948",
+              "reference_segments": [
+                {
+                  "qstart": 25662,
+                  "qend": 25699,
+                  "sstart": 1,
+                  "send": 38,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            }
+          ],
+          "outputs": {
+            "mara": "mara/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+            "mara_table": "mara-table/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+            "hierarchy": "hierarchy/arbitrary_demo_contig.svg",
+            "cell_format": "annotation.cell",
+            "annotation_json": "annotation.json",
+            "annotation_gff3": "annotation.gff3"
+          }
+        },
+        {
+          "verdict": "PASS",
+          "record": "arbitrary_demo_contig",
+          "call": "Tn3",
+          "family": "Tn3",
+          "start": 31700,
+          "end": 36647,
+          "strand": "-",
+          "known_element_match": {
+            "best_match": "Tn3",
+            "reference_id": "Tn3_HM749966",
+            "source_accession": "HM749966",
+            "whole_locus_identity": 100.0,
+            "whole_locus_coverage": 100.0,
+            "variant_status": "exact_reference",
+            "structural_status": "intact",
+            "naming_evidence": [
+              "component_grammar",
+              "whole_locus_alignment"
+            ]
+          },
+          "assembly": {
+            "status": "complete",
+            "order_valid": true,
+            "requirements": {
+              "terminal_IR": true,
+              "blaTEM": true,
+              "tnpR": true,
+              "res": true,
+              "tnpA": true
+            },
+            "detected_component_count": 6,
+            "reference_projected_component_count": 0
+          },
+          "checks": {
+            "components_detected_from_sequence": true,
+            "all_required_components_present": true,
+            "component_order_and_orientation_valid": true,
+            "component_grammar_complete": true,
+            "known_element_reference_match": true,
+            "no_reference_projected_components": true
+          },
+          "components": [
+            {
+              "role": "terminal_IR",
+              "name": "IRR",
+              "start": 31700,
+              "end": 31737,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__IRR__4911_4948",
+              "reference_segments": [
+                {
+                  "qstart": 31700,
+                  "qend": 31737,
+                  "sstart": 38,
+                  "send": 1,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "tnpA",
+              "name": "tnpA",
+              "start": 31733,
+              "end": 34737,
+              "strand": "-",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__tnpA__1911_4915",
+              "reference_segments": [
+                {
+                  "qstart": 31733,
+                  "qend": 34737,
+                  "sstart": 3005,
+                  "send": 1,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "res",
+              "name": "res",
+              "start": 34781,
+              "end": 34894,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__res__1754_1867",
+              "reference_segments": [
+                {
+                  "qstart": 34781,
+                  "qend": 34894,
+                  "sstart": 114,
+                  "send": 1,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "tnpR",
+              "name": "tnpR",
+              "start": 34900,
+              "end": 35457,
+              "strand": "+",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__tnpR__1191_1748",
+              "reference_segments": [
+                {
+                  "qstart": 34900,
+                  "qend": 35457,
+                  "sstart": 558,
+                  "send": 1,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "blaTEM",
+              "name": "blaTEM-1",
+              "start": 35640,
+              "end": 36500,
+              "strand": "+",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__blaTEM_1__148_1008",
+              "reference_segments": [
+                {
+                  "qstart": 35640,
+                  "qend": 36500,
+                  "sstart": 861,
+                  "send": 1,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            },
+            {
+              "role": "terminal_IR",
+              "name": "IRL",
+              "start": 36610,
+              "end": 36647,
+              "strand": ".",
+              "identity": 100.0,
+              "coverage": 100.0,
+              "status": "intact",
+              "component_status": "complete",
+              "evidence_class": "sequence_detected",
+              "reference": "Tn3_HM749966__IRR__4911_4948",
+              "reference_segments": [
+                {
+                  "qstart": 36610,
+                  "qend": 36647,
+                  "sstart": 1,
+                  "send": 38,
+                  "identity": 100.0
+                }
+              ],
+              "inserted_bases": 0
+            }
+          ],
+          "outputs": {
+            "mara": "mara/arbitrary_demo_contig__Tn3__31700-36647.svg",
+            "mara_table": "mara-table/arbitrary_demo_contig__Tn3__31700-36647.svg",
+            "hierarchy": "hierarchy/arbitrary_demo_contig.svg",
+            "cell_format": "annotation.cell",
+            "annotation_json": "annotation.json",
+            "annotation_gff3": "annotation.gff3"
+          }
+        }
+      ]
+    }
+  ]
+}

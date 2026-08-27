@@ -1,0 +1,4 @@
+verdict	record	call	start	end	strand	best_match	reference_id	source_accession	whole_locus_identity	whole_locus_coverage	variant_status	structural_status	grammar_status	order_valid	detected_components	projected_components
+PASS	arbitrary_demo_contig	Tn1-like	8001	12949	+	Tn1	Tn1_NC_008357	NC_008357	99.5	100.0	minor_sequence_variant	intact	complete	True	6	0
+PASS	arbitrary_demo_contig	Tn2-like	19950	25699	+	Tn2	Tn2_AY123253	AY123253	100.0	100.0	minor_sequence_variant	complete_with_insertion	complete	True	6	0
+PASS	arbitrary_demo_contig	Tn3	31700	36647	-	Tn3	Tn3_HM749966	HM749966	100.0	100.0	exact_reference	intact	complete	True	6	0

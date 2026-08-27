@@ -15,3 +15,16 @@ an on-figure key. In all three loci, both terminal IRs, `blaTEM`, `tnpR`, `res`
 and `tnpA` are independently detected from sequence and then assembled in the
 required orientation. Solid arrows show those detected components; an outlined
 dashed arrow would identify a curated reference projection.
+
+`proof-bundle/` is the one-command acceptance result. Open
+`proof-bundle/proof/report.html` to review the full chain for each locus. The
+same directory contains the raw component ledger, known-element match ledger,
+machine-checkable PASS/FAIL proof, original hierarchical SVG, MARA map and table,
+and `annotation.cell` CellGen/Wolvercote nested cell-format output.
+
+Reproduce it with:
+
+```bash
+matryoshka run demo-output/arbitrary-tn123/arbitrary-demo.fasta \
+  --out demo-output/arbitrary-tn123/proof-bundle
+```

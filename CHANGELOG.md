@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scale-accurate linear SVG visualisation with auto-scaling canvas.
 - A one-command `matryoshka run` workflow producing versioned JSON, valid
   multi-record GFF3, run metadata and paired MARA map/table directories.
+- A Tn1/Tn2/Tn3 acceptance-proof bundle linking every independent component
+  call to the assembly grammar, known-element match, MARA outputs, original
+  nested hierarchy and CellGen/Wolvercote cell-format representation. The
+  bundle includes JSON verdicts, TSV ledgers and a portable HTML report.
 - Deterministic feature IDs, a public v1 JSON Schema and embedded tool,
   reference-database, input-checksum and detector provenance.
 - A checksummed machine-readable reference manifest with validated and

@@ -124,9 +124,10 @@ Legend
 | Wolvercote nested cell-format text | ✅ |
 | Scale-accurate linear SVG | ✅ |
 | MARA locus SVG and Position/Name/FID/Type/Notes table | ✅ | Validated for Tn1/Tn2/Tn3, ISEcp1 TPUs, Tn21, Tn1721/Tn1722, Tn4401, Tn5393 and Tn5403 |
+| Component-to-call proof bundle | ✅ | Tn1/Tn2/Tn3 only: JSON verdicts, component/match TSV ledgers and linked HTML report |
 | Per-contig output on multi-FASTA input | ✅ |
 | Confidence scores per element | ✅ | 0.0–1.0 scalar + label (high/medium/low/speculative) in `attributes.confidence` |
-| HTML / Markdown batch report | ❌ | |
+| General HTML / Markdown batch report | ⚠️ | Tn1/Tn2/Tn3 proof HTML is implemented; a general all-family report remains pending |
 | Rolling-circle ter-site motif library | ⚠️ | `rolling_circle_ter_sites.fasta` scaffolded (terIS91, terISCR1, terISCR2, oriIS91) — experimental, needs refined consensus |
 
 ## Known false-positive / false-negative modes

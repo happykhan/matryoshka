@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "profile": "validated",
+  "records": 1,
+  "features": 22,
+  "mara_loci": 3,
+  "proof_status": "PASS",
+  "outputs": {
+    "annotation_json": "annotation.json",
+    "annotation_gff3": "annotation.gff3",
+    "annotation_cell": "annotation.cell",
+    "hierarchy_directory": "hierarchy",
+    "mara_directory": "mara",
+    "mara_table_directory": "mara-table",
+    "proof_json": "proof/proof.json",
+    "proof_report": "proof/report.html",
+    "component_ledger": "proof/components.tsv",
+    "match_ledger": "proof/matches.tsv"
+  }
+}

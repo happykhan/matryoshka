@@ -8,10 +8,22 @@
 |---|---|
 | `annotation.json` | Full v1 annotation document validated by `schema/annotation-v1.schema.json` |
 | `annotation.gff3` | One GFF3 document with sequence regions, unique stable IDs and `Parent` links |
+| `annotation.cell` | Nested CellGen/Wolvercote cell-format representation of the same hierarchy |
 | `run.json` | Compact counts and relative output locations |
+| `hierarchy/*.svg` | One whole-record, scale-accurate rendering of the original nested hierarchy |
 | `mara/*.svg` | One readable MARA-style locus map per supported target, including a symbol key |
 | `mara-table/*.svg` | Matching annotation table per locus, including evidence notes and a compact key |
+| `proof/proof.json` | Machine-checkable Tn1/Tn2/Tn3 component, grammar, match and output verdicts |
+| `proof/components.tsv` | One row per independently sequence-detected Tn1/Tn2/Tn3 component |
+| `proof/matches.tsv` | One row per assembled and known-element-matched Tn1/Tn2/Tn3 locus |
+| `proof/report.html` | Portable human-readable proof report linking all representations |
 | `detectors/` | Present only when Matryoshka ran optional external detectors |
+
+The proof status is `PASS` only when every required Tn1/Tn2/Tn3 component was
+detected from sequence, the component order/orientation grammar is complete, a known
+whole-element reference supports the name, and zero internal components were merely
+projected. Inputs without a Tn1/Tn2/Tn3 locus are reported as `NO_TN123_LOCI`, not as
+a false pass.
 
 ## Coordinates and identity
 
