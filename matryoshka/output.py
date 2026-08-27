@@ -149,23 +149,21 @@ def to_json(features: list[MGEFeature], indent: int = 2) -> str:
 
 
 # ---------------------------------------------------------------------------
-# SVG / PNG output via wolvercote renderer
+# Legacy circular SVG / PNG output
 # ---------------------------------------------------------------------------
 
 def to_svg(features: list[MGEFeature], sample_name: str = "") -> str:
-    from wolvercote import parse
-    from wolvercote.renderer import render_svg
-    wol = to_wolvercote(features, [], sample_name)
-    cell_set = parse(wol)
-    return render_svg(cell_set)
+    raise RuntimeError(
+        "Circular CellGen rendering is not distributed with Matryoshka 0.1 alpha. "
+        "Use the supported 'linear' or 'mara' SVG output instead."
+    )
 
 
 def to_png(features: list[MGEFeature], sample_name: str = "", dpi: int = 200) -> bytes:
-    from wolvercote import parse
-    from wolvercote.render_png import render_png
-    wol = to_wolvercote(features, [], sample_name)
-    cell_set = parse(wol)
-    return render_png(cell_set, dpi=dpi)
+    raise RuntimeError(
+        "Circular CellGen rendering is not distributed with Matryoshka 0.1 alpha. "
+        "Use the supported SVG outputs and convert them with your preferred renderer."
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,10 @@
+.git
+.github
+.venv
+dist
+build
+demo-output
+smoke-output
+__pycache__
+*.pyc
+*.docx

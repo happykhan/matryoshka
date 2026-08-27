@@ -1,0 +1,788 @@
+schema_version: '1.0'
+database_version: 2026.08.26-alpha.1
+reference_count: 25
+references:
+- file: acinetobacter_islands.fasta
+  sha256: c343d398457ccae91c156f9b6650e1a027286e29127fb3730005aa46ec63f86b
+  bytes: 4525999
+  records: 4
+  record_ids:
+  - Tn6022_context
+  - Tn6022_delta
+  - Tn6172_context
+  - Tn6019
+  source_accessions:
+  - CP012952
+  - FJ172370
+  - JN247441
+  - KU744946
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 10000
+- file: gi_sul2.fasta
+  sha256: dcd71a65308e34d067f1928b272687ae185dd283c345d71592eeca0a45a07c83
+  bytes: 170026
+  records: 1
+  record_ids:
+  - GIsul2
+  source_accessions:
+  - KX709966
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 5000
+- file: integron_archetypes.fasta
+  sha256: b45ade73bc7eb64fc7ed6069c83dc111dc1deeb67e61b1e83e436838fd310f87
+  bytes: 11399
+  records: 1
+  record_ids:
+  - In2_AF071413_4040_15039
+  source_accessions:
+  - AF071413
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 90.0
+    min_length: 2000
+- file: is26.fasta
+  sha256: 5f6fccc5f1fe2e980fcb504aa9756d2bba7337b31a0d64203544599188ba29df
+  bytes: 881
+  records: 1
+  record_ids:
+  - IS26
+  source_accessions:
+  - X00011
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 600
+- file: isaba125.fasta
+  sha256: 648e0305412624c78d5442f1ca803fb1c0d0823cb3e1fafafde6fd503761e681
+  bytes: 1166
+  records: 1
+  record_ids:
+  - ISAba125
+  source_accessions:
+  - AY751533
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 90.0
+    min_length: 800
+- file: isecp1.fasta
+  sha256: f56015843a548469f235d54629ea8d6de148eed5f10104bdab2b6a15e2fa7420
+  bytes: 1851
+  records: 1
+  record_ids:
+  - ISEcp1_FJ621588
+  source_accessions:
+  - FJ621588
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 90.0
+    min_length: 1000
+- file: mara_exact_is.fasta
+  sha256: 4065d19777d550397714050ddb237ef56ff15fde63b35e6078ab1992f96734a2
+  bytes: 5323
+  records: 3
+  record_ids:
+  - ISKpn6_EU176011_12118_13657
+  - ISKpn7_GU595196
+  - IS1999_JN626286_2704_4031
+  source_accessions:
+  - EU176011
+  - GU595196
+  - JN626286
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 98.0
+    min_length: 500
+- file: mara_integron_ends.fasta
+  sha256: 48930b558d91866a6ae80937408980ed65cdba31538391c585f2eb19da06ca18
+  bytes: 354
+  records: 2
+  record_ids:
+  - IRi_AF071413
+  - IRt_AF071413
+  source_accessions:
+  - AF071413
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 100.0
+    min_length: 25
+    evalue: 10.0
+- file: mara_integron_segments.fasta
+  sha256: 95765580e21c098759115e529cc9a701e4f06700d025742440c13d628b2d87d8
+  bytes: 5575
+  records: 3
+  record_ids:
+  - 3-CS_2239bp_U12338
+  - 5-CS_GGG_AF071413
+  - 5-CS_std
+  source_accessions:
+  - AF071413
+  - MARA
+  - U12338
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 98.0
+    min_length: 200
+- file: mara_integron_tni.fasta
+  sha256: d9d83fff3c255e93ff795e84b6a1be3dbc80ebc6cf859f6afd15897035ab2324
+  bytes: 4988
+  records: 1
+  record_ids:
+  - Tn402tni_U67194
+  source_accessions:
+  - U67194
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 98.0
+    min_length: 500
+    assemble_collinear: true
+- file: mara_isecp1_tpu.fasta
+  sha256: 7a535a4466ae52c3cfaf07677dc50b4dfc8069dc323aa98fd8e9ea87bd23a202
+  bytes: 30323
+  records: 7
+  record_ids:
+  - TPU_CMY-2_3078+503_FM246884
+  - TPU_CMY-2_3910_CP001121
+  - TPU_CMY-2_4025_constructed
+  - TPU_CMY-2_4087_AY509004
+  - TPU_CMY-2_4479_FJ621588
+  - TPU_CMY-31_4025_EU331425
+  - TPU_CMY-36_4025_EU331426
+  source_accessions:
+  - AY509004
+  - CP001121
+  - EU331425
+  - EU331426
+  - FJ621588
+  - FM246884
+  - constructed
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 98.0
+    min_length: 1000
+    min_subject_coverage: 70.0
+    pick_best_variant: true
+    prefer_identity: true
+- file: mara_partridge_units.fasta
+  sha256: 171ef426f8e45fa44427b9b923c65fd445f03d9885068e193a9bc990817ef831
+  bytes: 37472
+  records: 5
+  record_ids:
+  - Tn1721_AB366441
+  - Tn1722_AB366441
+  - Tn4401_GU595196
+  - Tn5393_AF262622
+  - Tn5403_X75779
+  source_accessions:
+  - AB366441
+  - AF262622
+  - GU595196
+  - X75779
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 500
+    assemble_collinear: true
+- file: mcr1_exemplars.fasta
+  sha256: 538bc43cbbe36ee0ecc71c239eb9418f89c3f663937f537b8a39044e5b90a591
+  bytes: 238861
+  records: 1
+  record_ids:
+  - mcr1_plasmid_single_ISApl1
+  source_accessions:
+  - CP016184
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 97.0
+    min_length: 5000
+- file: plasmidfinder_enterobacteriales.fasta
+  sha256: da668f9dcc9b59c04c29a0fb87484a404401cc58899bf7d2aead044b897698b2
+  bytes: 80757
+  records: 159
+  record_ids:
+  - pKPC-CAV1321_1__CP011611
+  - IncHI1B(R27)_1_R27_AF250878
+  - IncHI1B(pNDM-CIT)_1__JX182975
+  - IncHI2_1__BX664015
+  - IncI1-I(Alpha)_1__AP005147
+  - IncB/O/K/Z_1__CU928147
+  - IncB/O/K/Z_3__GQ259888
+  - IncB/O/K/Z_2__GU256641
+  - IncB/O/K/Z_4__FN868832
+  - IncL_1__JN626286
+  - IncM2_1__AF550415
+  - IncI2(Delta)_1__AP002527
+  - IncN_1__AY046276
+  - IncFIA_1__AP001918
+  - IncW_1__EF633507
+  - IncC_1__JN157804
+  - IncP1_1__BN000925
+  - IncP1_3__KX377410
+  - IncT_1__AP004237
+  - IncR_1__DQ449578
+  - IncFII(S)_1__CP000858
+  - IncFII(K)_1__CP000648
+  - IncU_1__DQ401103
+  - IncX1_1__EU370913
+  - IncX2_1__JQ269335
+  - IncY_1__K02380
+  - IncFIB(AP001918)_1__AP001918
+  - IncFII_1__AY458016
+  - IncFIC(FII)_1__AP001918
+  - IncFII(pKPX1)_1__AP012055
+  - IncFII(Yp)_1__CP000670
+  - IncHI1A_1__AF250878
+  - IncHI2A_1__BX664015
+  - IncHI1B(pNDM-MAR)_1__JN420336
+  - IncFIA(HI1)_1__AF250878
+  - IncHI1A(NDM-CIT)_1__JX182975
+  - IncN2_1__JF785549
+  - IncN3_1__EF219134
+  - IncX3_1__JN247852
+  - IncX3(pEC14)_1__JN935899
+  - IncX4_1__CP002895
+  - IncFIB(S)_1__FN432031
+  - IncFIB(pNDM-Mar)_1__JN420336
+  - IncFIB(pHCM2)_1__AL513384
+  - IncFIB(pQil)_1__JN233705
+  - IncFIB(K)_1__JN233704
+  - IncFII(Y)_1__CP001049
+  - IncM1_1__U27345
+  - IncP1_2__U67194
+  - IncP6_1__JF785550
+  - IncA_1__FJ705807
+  - IncX5_1__JX193302
+  - IncX5_2__MF062700
+  - IncX6_1__KU302800
+  - IncX7_1__NC_015054
+  - IncX8_1__AM942760
+  - IncX9_1__NC_010257
+  - p0111_1__AP010962
+  - IncFIB(pECLA)_1__CP001919
+  - IncFIB(pLF82-PhagePlasmid)_1__CU638872
+  - IncFIB(pKPHS1)_1__CP003223
+  - IncFIB(pCTU1)_1__FN543094
+  - IncFIB(pCTU3)_1__FN543096
+  - IncFIB(pENTE01)_1__CP000654
+  - IncFIB(pB171)_1__AB024946
+  - IncFIB(pENTAS01)_1__CP003027
+  - IncFII(pHN7A8)_1__JN232517
+  - IncFII(pRSB107)_1__AJ851089
+  - IncFII(pSE11)_1__AP009242
+  - IncFII(pENTA)_1__CP003027
+  - IncFII(pECLA)_1__CP001919
+  - IncFII(pseudo)_1__NC_011759
+  - IncFII(pCTU2)_1__FN543095
+  - IncFII(pYVa12790)_1__AY150843
+  - IncFII(pMET)_1__EU383016
+  - IncFII(pCRY)_1__NC_005814
+  - IncFII(Serratia)_1__NC_009829
+  - IncFII(pCoo)_1__CR942285
+  - IncFII(p96A)_1__JQ418521
+  - IncFII(SARC14)_1__JQ418540
+  - IncFII(p14)_1__JQ418538
+  - IncFII(29)_1__CP003035
+  - IncFII(pSFO)_1__AF401292
+  - IncFII(pKP91)_1__CP000966
+  - IncFII(pAMA1167-NDM-5)_1__CP024805
+  - IncX4_2__FN543504
+  - pADAP_1__AF135182
+  - pXuzhou21_1__CP001927
+  - pSL483_1__CP001137
+  - pYE854_1__AM905950
+  - pIP32953_1__BX936400
+  - pIP31758(p153)_1__CP000719
+  - pIP31758(p59)_1__CP000718
+  - pESA2_1__CP000784
+  - pENTAS02_1__CP003028
+  - pEC4115_1__NC_011351
+  - pJARS36_1__NC_015068
+  - pSM22_1__NC_015972
+  - IncQ2_1__FJ696404
+  - IncQ1_1__M28829
+  - IncX1_3__CP001123
+  - IncX1_2__CP003417
+  - IncX1_4__JN935898
+  - ColRNAI_1__DQ298019
+  - Col3M_1__JX514065
+  - Col156_1__NC_009781
+  - Col8282_1__DQ995352
+  - Col(MG828)_1__NC_008486
+  - ColpVC_1__JX133088
+  - ColKP3_1__JN205800
+  - Col(IMGS31)_1__NC_011406
+  - Col(BS512)_1__NC_010656
+  - ColE10_1__X01654
+  - Col(IRGK)_1__AY543071
+  - Col(SD853)_1__NC_015392
+  - Col(YC)_1_YC_NC_002144
+  - Col(pWES)_1__DQ268764
+  - Col(Ye4449)_1__FJ696405
+  - Col(YF27601)_1__JF937655
+  - Col(MP18)_1__NC_013652
+  - Col(KPHS6)_1__NC_016841
+  - Col(VCM04)_1__HM231165
+  - Col(MGD2)_1__NC_003789
+  - IncI2_1__KP347127
+  - pKPC-CAV1193_1__CP013325
+  - pKP1433_1__JX397875
+  - pKPC-CAV1320_1__CP011573
+  - IncFII(pBK30683)_1__KF954760
+  - IncFIA(pBK30683)_1__KF954760
+  - Col440I_1__CP023920
+  - Col440II_1__CP023921
+  - IncI(Gamma)_1__AP011954
+  - Col(pHAD28)_1__KU674895
+  - IncFIB(pN55391)_1__CP016411
+  - IncFIB(H89-PhagePlasmid)_1__HG530657
+  - repA(pENTd4a)_1__CP008900
+  - repA(p447)_1__KY978631
+  - repA(pKOX)_1_pKOX_CP026273
+  - IncFIB(K)(pCAV1099-114)_1__CP011596
+  - repB_KLEB_VIR_AP006726
+  - IncFII(Cf)_1__CP056911
+  - IncFII(pEH01)_1__CP063521.1
+  - repB(R1701)_1__CP039970
+  - repA(dmsm701b_NDM1)_1__CP095679
+  - repE(pEh60-7)_1__CP088228
+  - IncFIB(pCS2)__CP012255
+  - ColpEC648__CP008718
+  - IncP1_4__CM007914
+  - IncFII(pAR0022)_1__CP024882
+  - IncFIA(HI1)(pAR0022)_1__CP024882
+  - IncN4_1__JQ996149
+  - IncN5_1__KC511628.1
+  - IncX10_1__OQ821188.1
+  - repFIB_1_pC39__CP061701
+  - repHI5B_1_pC39__CP061701
+  - RepB_1_pC39_CP061702.1
+  - Col(CriePir75)_1__CP063021.1
+  - Col(pB8919)_1__CP094996.1
+  - IncFII(pSDP9R)_1__MW940621
+  source_accessions:
+  - AB024946
+  - AF135182
+  - AF250878
+  - AF401292
+  - AF550415
+  - AJ851089
+  - AL513384
+  - AM905950
+  - AM942760
+  - AP001918
+  - AP002527
+  - AP004237
+  - AP005147
+  - AP006726
+  - AP009242
+  - AP010962
+  - AP011954
+  - AP012055
+  - AY046276
+  - AY150843
+  - AY458016
+  - AY543071
+  - BK30683
+  - BN000925
+  - BX664015
+  - BX936400
+  - CM007914
+  - CP000648
+  - CP000654
+  - CP000670
+  - CP000718
+  - CP000719
+  - CP000784
+  - CP000858
+  - CP000966
+  - CP001049
+  - CP001123
+  - CP001137
+  - CP001919
+  - CP001927
+  - CP002895
+  - CP003027
+  - CP003028
+  - CP003035
+  - CP003223
+  - CP003417
+  - CP008718
+  - CP008900
+  - CP011573
+  - CP011596
+  - CP011611
+  - CP012255
+  - CP013325
+  - CP016411
+  - CP023920
+  - CP023921
+  - CP024805
+  - CP024882
+  - CP026273
+  - CP039970
+  - CP056911
+  - CP061701
+  - CP061702.1
+  - CP063021.1
+  - CP063521.1
+  - CP088228
+  - CP094996.1
+  - CP095679
+  - CR942285
+  - CU638872
+  - CU928147
+  - DQ268764
+  - DQ298019
+  - DQ401103
+  - DQ449578
+  - DQ995352
+  - EF219134
+  - EF633507
+  - EU370913
+  - EU383016
+  - FJ696404
+  - FJ696405
+  - FJ705807
+  - FN432031
+  - FN543094
+  - FN543095
+  - FN543096
+  - FN543504
+  - FN868832
+  - GQ259888
+  - GU256641
+  - HG530657
+  - HM231165
+  - IP31758
+  - IP32953
+  - JF785549
+  - JF785550
+  - JF937655
+  - JN157804
+  - JN205800
+  - JN232517
+  - JN233704
+  - JN233705
+  - JN247852
+  - JN420336
+  - JN626286
+  - JN935898
+  - JN935899
+  - JQ269335
+  - JQ418521
+  - JQ418538
+  - JQ418540
+  - JQ996149
+  - JX133088
+  - JX182975
+  - JX193302
+  - JX397875
+  - JX514065
+  - K02380
+  - KC511628.1
+  - KF954760
+  - KP347127
+  - KU302800
+  - KU674895
+  - KX377410
+  - KY978631
+  - M28829
+  - MF062700
+  - MW940621
+  - N55391
+  - NC_002144
+  - NC_003789
+  - NC_005814
+  - NC_008486
+  - NC_009781
+  - NC_009829
+  - NC_010257
+  - NC_010656
+  - NC_011351
+  - NC_011406
+  - NC_011759
+  - NC_013652
+  - NC_015054
+  - NC_015068
+  - NC_015392
+  - NC_015972
+  - NC_016841
+  - OQ821188.1
+  - U27345
+  - U67194
+  - X01654
+  - YF27601
+  profile: all
+  status: experimental_or_legacy
+  licence: Apache-2.0
+  redistribution_status: redistributable
+  provenance: PlasmidFinder database
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 200
+    min_subject_coverage: 60.0
+- file: rolling_circle_ter_sites.fasta
+  sha256: b3ca286759313d706df8e61fe3477d131e94474ade82ae8474bc8bf544c6ebaa
+  bytes: 484
+  records: 4
+  record_ids:
+  - terIS91
+  - terISCR1
+  - terISCR2
+  - oriIS91
+  source_accessions: []
+  profile: all
+  status: experimental_or_legacy
+  licence: project-generated-derived-consensus
+  redistribution_status: redistributable_with_project
+  provenance: locally derived motif; see MANIFEST.md
+  scan_parameters:
+    min_identity: 85.0
+    min_length: 20
+- file: tn1331.fasta
+  sha256: fc80785161a0659e8ff77412685f56571d91f43de5db7b4dc0d91a79874fd04b
+  bytes: 11572
+  records: 1
+  record_ids:
+  - Tn1331
+  source_accessions:
+  - AF479774
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 5000
+- file: tn1546.fasta
+  sha256: 93c33aa89c9e29dd688f69ad9e518a42dc6e57ebe3cf4df271ea90789b8cb4c5
+  bytes: 11071
+  records: 1
+  record_ids:
+  - Tn1546
+  source_accessions:
+  - M97297
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 8000
+- file: tn1_tn2_tn3.fasta
+  sha256: 0322c46448381904e8b05ea94934a7800fd198bfc44bed31ae6e26999bdb392b
+  bytes: 15036
+  records: 3
+  record_ids:
+  - Tn1_NC_008357
+  - Tn2_AY123253
+  - Tn3_HM749966
+  source_accessions:
+  - AY123253
+  - HM749966
+  - NC_008357
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 400
+    pick_best_variant: true
+    prefer_identity: true
+- file: tn21.fasta
+  sha256: 2b576f09b3a2b5a3322a86f0b0f8043a30ceda0d33bceadc3c3121f69298a829
+  bytes: 20154
+  records: 1
+  record_ids:
+  - Tn21
+  source_accessions:
+  - AF071413
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 90.0
+    min_length: 5000
+- file: tn3_family_extras.fasta
+  sha256: ff1dce1efacaf76e1841c36781198f219da385557a8ab49fbe9cc00ed83df5fa
+  bytes: 85620
+  records: 8
+  record_ids:
+  - Tn3
+  - Tn2
+  - Tn1696
+  - Tn1721
+  - Tn6452
+  - Tn1412
+  - Tn1
+  - Tn5403
+  source_accessions:
+  - AY123253
+  - KY807920
+  - L36547
+  - NC_008357
+  - U12338
+  - V00613
+  - X61367
+  - X75779
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 90.0
+    min_length: 3000
+    min_subject_coverage: 60.0
+    exclude_ids:
+    - Tn1
+    - Tn2
+    - Tn3
+- file: tn3_res_site.fasta
+  sha256: 62b5de0af62265884bc46151f1f13365522830d9a9abe012f6aa425a4ff8bb91
+  bytes: 202
+  records: 1
+  record_ids:
+  - Tn3_res_site
+  source_accessions: []
+  profile: all
+  status: experimental_or_legacy
+  licence: project-generated-derived-consensus
+  redistribution_status: redistributable_with_project
+  provenance: locally derived motif; see MANIFEST.md
+  scan_parameters:
+    min_identity: 75.0
+    min_length: 80
+- file: tn4401.fasta
+  sha256: f1253e521f8bb81aa71b31046f7db1ba72bcaac65017e024db92c28486ab7130
+  bytes: 30789
+  records: 3
+  record_ids:
+  - Tn4401a_EU176011
+  - Tn4401a_GU386376
+  - Tn4401b_CP069050
+  source_accessions:
+  - CP069050
+  - CP069050:59180-69185
+  - EU176011
+  - EU176011:4054-13959
+  - GU386376
+  - GU386376:1-9803
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 1000
+    pick_best_variant: true
+- file: tn5393.fasta
+  sha256: 7c07eae62bc6091ea25f1bc9f640d2f681b57b0eabe0153b838df8cf602cff5c
+  bytes: 5818
+  records: 1
+  record_ids:
+  - Tn5393
+  source_accessions:
+  - AF262622
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 3000
+- file: tn552.fasta
+  sha256: 38ca06210a7d8e97cccadb04af422c118a072c69d28c5fc356a46eb5a01e5739
+  bytes: 6690
+  records: 1
+  record_ids:
+  - Tn552
+  source_accessions:
+  - X52734
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 2000
+- file: tn7.fasta
+  sha256: c4a9dd99eed6b6d468b83e0892c015596210b10d86eda8c8a714e4e02a84fd51
+  bytes: 76711
+  records: 1
+  record_ids:
+  - Tn7
+  source_accessions:
+  - AP002527
+  profile: all
+  status: experimental_or_legacy
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 90.0
+    min_length: 3000

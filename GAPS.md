@@ -15,8 +15,8 @@ Legend
 
 | Family | TSD length | Covered? | Notes |
 |--------|-----------|----------|-------|
-| IS6 (IS26, IS257) | 8 bp | ✅ | ISEScan + boundary confirm + IS26_island composite |
-| IS1380 (ISEcp1, ISKpn23) | 5 bp | ✅ | ISEScan + ISEcp1_capture one-ended rule + BLAST hit for ISEcp1 reference |
+| IS6 (IS26, IS257) | 8 bp | ✅ | ISEScan + boundary confirmation; exact directly oriented IS26 pairs emit individual pseudo-compound candidates, never a merged island |
+| IS1380 (ISEcp1, ISKpn23) | 5 bp | ✅ | Exact 1656 bp ISEcp1 reference plus orientation-aware, boundary-incomplete capture rule and seven complete CMY-like TPU references |
 | IS30 (ISApl1) | 2 bp | ✅ | Tn_mcr1 composite rule |
 | IS91 / ISCR (rolling-circle) | 0 bp | ✅ | No TSD expected (family-specific). ISCR_capture rule fires on adjacent AMR |
 | IS3 | varies | ⚠️ | Detected by ISEScan; no composite rule |
@@ -29,11 +29,11 @@ Legend
 | Tn4401 (blaKPC) | EU176011, CP069050, GU386376 | ✅ | BLAST + IS-flanked rule | Variants **a** and **b** shipped (clean Tn4401 sub-regions extracted from GenBank). Best-variant picker discriminates by subject coverage + HSP count. Variants c/d/e/f/g/h flagged `variant=unknown` with deletion_bp |
 | Tn1999 (blaOXA-48) | — | ✅ | IS4-flanked rule | Composite transposon — no res site |
 | Tn1546 (vanA) | M97297 | ✅ | vanA signature + BLAST | |
-| Tn21 (class 1 integron + mer) | AF071413 | ⚠️ | BLAST only | No signature rule (needs mer/Hg gene calls not in AMRFinder) |
+| Tn21 (class 1 integron + mer) | AF071413 | ✅ | BLAST + curated map | tnp, terminal IRs, In2 IRi/IRt, 5'-CS, aadA1 cassette region, partial 3'-CS/tni and mer rendered separately |
 | Tn1331 (multi-AMR) | AF479774 | ✅ | Gene-signature (aac(6')-Ib + blaOXA-9 + aadA1) + BLAST |
-| Tn5393 (strAB) | AF262622 | ✅ | BLAST reference hit |
-| Tn3 itself | V00613 | ❌ | No explicit reference shipped |
-| Tn2 (blaTEM) | AY123253 | ❌ | No rule |
+| Tn5393 (strAB) | AF262622 | ✅ | Sally's exact 5470 bp reference with curated terminal IRs and collinear variant assembly |
+| Tn3 itself | HM749966, V00613 | ✅ | Sally-selected canonical reference plus legacy archetype |
+| Tn2 (blaTEM) | AY123253 | ✅ | Sally-selected canonical reference and curated internal map |
 | Tn7 | AP002527 | ⚠️ | BLAST only | No attTn7/glmS detection (needs gene prediction) |
 | Tn552 | X52734 | ⚠️ | BLAST only | Staph-specific; no inference rule |
 | Tn_mcr1 (ISApl1-mcr-1) | CP016184 etc. | ✅ | Composite rule, 2 bp TSD |
@@ -48,10 +48,10 @@ Legend
 
 | Concept | Covered? | Notes |
 |---------|----------|-------|
-| Class 1 integrons (intI1 + attI + cassettes + attC) | ✅ | IntegronFinder parser |
+| Class 1 integrons (intI1 + attI + cassettes + attC) | ✅ | IntegronFinder plus whole-cassette ORF-to-attC reconstruction; exact 5'-CS/3'-CS/IRi/IRt component scan |
 | Class 2 integrons (intI2 with internal stop codon) | ✅ | IntegronFinder parser |
 | Class 3 integrons | ✅ | IntegronFinder parser |
-| In2 archetype (reference) | ⚠️ | U67194 shipped but no subtype classifier |
+| In2 archetype (reference) | ✅ | Exact 11 kb AF071413 IRi-to-IRt region; the previous 53 kb accession-scale reference was removed |
 | In2-like vs In4-like vs complex | ❌ | Requires 3'-CS structure analysis |
 | 3'-CS partial duplications (ISCR1-driven) | ❌ | |
 | attC disruptions (IS1111, group II introns) | ❌ | |
@@ -63,8 +63,8 @@ Legend
 
 | Mechanism | Covered? | Notes |
 |-----------|----------|-------|
-| Composite transposon (two-IS flanked) | ✅ | FLANKED_RULES + IS26_island |
-| Translocatable unit (single-IS26 TU) | ⚠️ | `infer_is26_translocatable_units` emits low-confidence TUs for cargo not covered by an IS26 island. Confidence=0.40. Partridge's "50×-preferred" targeting bias not modelled |
+| Composite transposon (two-IS flanked) | ✅ | Exact-name-aware flanked rules plus separately reported IS26 pseudo-compound candidates |
+| Translocatable unit (single-IS26 TU) | ⚠️ | `infer_is26_translocatable_units` emits explicitly low-confidence candidates only where cargo is not already covered by a pseudo-compound candidate. Exact boundary reconstruction remains pending |
 | One-ended transposition (ISEcp1) | ✅ | ONE_ENDED_RULES |
 | Rolling-circle (IS91 / ISCR) | ✅ | ROLLING_CIRCLE_RULES |
 | Cointegrate formation & resolution | ❌ | Not inferrable from structural snapshots |
@@ -119,8 +119,9 @@ Legend
 | GFF3 with IR / TSD / parent attributes | ✅ |
 | JSON hierarchy with attributes | ✅ |
 | GenBank flat file output | ✅ |
-| Wolvercote cell-format (circular schematic) | ✅ |
-| Scale-accurate linear SVG / PNG | ✅ |
+| Wolvercote nested cell-format text | ✅ |
+| Scale-accurate linear SVG | ✅ |
+| MARA locus SVG and Position/Name/FID/Type/Notes table | ✅ | Validated for Tn1/Tn2/Tn3, ISEcp1 TPUs, Tn21, Tn1721/Tn1722, Tn4401, Tn5393 and Tn5403 |
 | Per-contig output on multi-FASTA input | ✅ |
 | Confidence scores per element | ✅ | 0.0–1.0 scalar + label (high/medium/low/speculative) in `attributes.confidence` |
 | HTML / Markdown batch report | ❌ | |
@@ -128,10 +129,10 @@ Legend
 
 ## Known false-positive / false-negative modes
 
-- **ISEcp1 BLAST boundaries** come from a whole-plasmid reference (FJ621588) and can run ~500 bp long. This sometimes places flanking AMR genes inside the ISEcp1 coordinate span; the hierarchy uses a type-based filter to prevent IS → AMR parent nesting, but the visible coordinates remain oversized.
-- **Tn4401 variant calling** requires the full set of a–h references. Currently only Tn4401b is shipped; non-b hits are flagged `variant=unknown` with deletion size in bp.
+- **ISEcp1 reference boundaries** are fixed: the bundled reference is Sally's exact 1656 bp ISfinder sequence, not the former 166 kb accession-scale sequence.
+- **Tn4401 variant calling** requires the full set of a–h references. Variants a and b are shipped; other near matches remain `variant=unknown` rather than receiving an unsupported subtype.
 - **Cross-family Tn3 backbone matches** (e.g. Tn6019 hit in E. coli) are suppressed by a 10 kb minimum alignment length on the Acinetobacter references. Tighter thresholds elsewhere may be needed as the reference library grows.
-- **Single-IS26 translocatable units** are not emitted. Only IS26/IS26 *pairs* (merged into islands) are detected. A single IS26 adjacent to cargo is reported as two separate features.
+- **Single-IS26 translocatable units** remain deliberately speculative: they are emitted separately at low confidence and are never used to merge a whole IS26-rich region.
 - **Plasmid features (MOB, oriT, ICE)** are entirely uncovered pending a memory-safe plasmid-backbone caller. mobsuite crashed the VM and is intentionally disabled.
 - **Promoter / regulatory calls** (hybrid promoters, P2 class-1-integron variants, SOS-responsive intI1 expression) are out of scope: matryoshka annotates structural elements, not regulatory behaviour.
 
@@ -147,7 +148,7 @@ Legend
 | Tn6330 (ISApl1-mcr-1, canonical name) | CP016184 | ✅ | Flanked rule (renamed from Tn_mcr1) |
 | Tn2006 (ISAba1-blaOXA-23) | — | ✅ | Flanked rule (IS4 + blaOXA-23, 9bp TSD) |
 | Tn125 (ISAba125-blaNDM) | — | ✅ | Flanked rule (IS30 + NDM, 3bp TSD) |
-| Tn402 / Tn5053 (class-1 integron progenitor) | — | ❌ | Needs tniA/B/Q/R profile — medium complexity |
+| Tn402 / Tn5053 (class-1 integron progenitor) | — | ⚠️ | Exact/partial 4733 bp tni reference plus IRi/IRt; complete Tn402 requires both ends and complete tni, but broader Tn5053 variant profiling is pending |
 | Tn916 family (tet(M), vanB2, erm(B)) | — | ❌ | Needs backbone BLAST; Gram+ |
 | SXT/R391 ICE (attB in prfC) | — | ❌ | Needs integrase HMM — hard |
 | SCCmec (ccr + mecA) | — | ❌ | Needs ccr typing — hard |
@@ -169,6 +170,7 @@ Legend
 ## Integron enhancements
 
 - **Canonical cassette-array string output** ✅ — `attributes.cassette_array` emits `|gene1|gene2|gene3|` on every integron feature. `attributes.cassette_count` gives the count.
+- **Whole-cassette boundaries** ✅ — an IntegronFinder ORF is paired with the nearest oriented attC; ORF-only evidence is retained as an explicit fragment rather than promoted to a complete cassette.
 - **In2-like vs In4-like vs complex class-1 subtyping** ❌ — requires IS1326/IS1353/ISCR1/IS6100 position analysis
 - **Class 4 / 5 mobile integrons** ❌ — rare, low priority
 

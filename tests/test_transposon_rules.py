@@ -20,10 +20,10 @@ from matryoshka.transposon import (
 )
 
 
-def is_elem(family, start, end, name=None, complete=True):
+def is_elem(family, start, end, name=None, complete=True, strand="+"):
     return MGEFeature(
         element_type="IS", family=family, name=name or f"{family}_elem",
-        start=start, end=end, strand="+",
+        start=start, end=end, strand=strand,
         attributes={"type": "c" if complete else "p"},
     )
 
@@ -161,14 +161,23 @@ class TestISEcp1Capture:
         assert out[0].family == "ISEcp1_capture"
         assert out[0].start == 1000 and out[0].end == 3700
 
-    def test_isecp1_downstream_also_counts(self):
+    def test_forward_isecp1_downstream_of_cargo_does_not_count(self):
         feats = [
             amr("blaCTX-M-15", 1000, 1900),
             is_elem("IS1380", 2100, 3700, "ISEcp1"),
         ]
+        assert infer_one_ended(self._rule(), feats) == []
+
+    def test_reverse_isecp1_captures_upstream_cargo(self):
+        feats = [
+            amr("blaCTX-M-15", 1000, 1900),
+            is_elem("IS1380", 2100, 3700, "ISEcp1", strand="-"),
+        ]
         out = infer_one_ended(self._rule(), feats)
         assert len(out) == 1
         assert out[0].start == 1000 and out[0].end == 3700
+        assert out[0].strand == "-"
+        assert out[0].attributes["structural_status"] == "candidate_missing_capture_boundary"
 
     def test_no_match_on_blatem(self):
         # Bug-regression: "LAT" substring was hitting blaTEM
@@ -279,9 +288,11 @@ class TestResSite:
         assert res[0].family == "Tn4401"
         assert 5000 < res[0].start < res[0].end < 15000
 
-    def test_is26_island_no_res_site(self):
+    def test_is26_pseudocomposite_no_res_site(self):
         tn = MGEFeature(
-            element_type="transposon", family="IS26_island", name="IS26_island_1",
+            element_type="transposon",
+            family="IS26_pseudocomposite",
+            name="IS26_pseudocomposite_1",
             start=5000, end=15000, strand=".",
         )
         assert annotate_res_sites([tn]) == []
@@ -321,18 +332,67 @@ class TestInferTransposonsIntegration:
         tn4401 = [f for f in out if f.family == "Tn4401"]
         assert len(tn4401) == 1
 
+    def test_family_level_is_calls_do_not_create_tn4401(self):
+        features = [
+            is_elem("IS21", 1000, 2500, "IS21_203"),
+            amr("blaKPC", 2600, 3500),
+            is_elem("IS1182", 3600, 5000, "IS1182_family"),
+        ]
+        assert not any(
+            feature.family == "Tn4401"
+            for feature in infer_transposons(features)
+        )
+
     def test_multiple_rules_fire(self):
-        # Tn4401 + vanA signature + IS26 island all present in one feature set
+        # Tn4401 + vanA signature + IS26 pseudo-compound candidate
         feats = [
             is_elem("IS21", 1000, 2500, "ISKpn7"),
             amr("blaKPC", 2600, 3500),
             is_elem("IS1182", 3600, 5000, "ISKpn6"),
             amr("vanA", 10_000, 11_000),
-            is_elem("IS6", 20_000, 21_000, "IS26_a"),
+            is_elem("IS6", 20_000, 21_000, "IS26"),
             amr("blaTEM", 22_000, 23_000),
-            is_elem("IS6", 24_000, 25_000, "IS26_b"),
+            is_elem("IS6", 24_000, 25_000, "IS26"),
         ]
         families = {f.family for f in infer_transposons(feats)}
         assert "Tn4401" in families
         assert "Tn1546" in families
-        assert "IS26_island" in families
+        assert "IS26_pseudocomposite" in families
+
+
+class TestIS26BiologicalConstraints:
+    def test_direct_exact_is26_pair_emits_individual_candidate(self):
+        features = [
+            is_elem("IS6", 1000, 1819, "IS26", strand="+"),
+            amr("blaTEM-1", 2200, 3050),
+            is_elem("IS6", 4000, 4819, "IS26", strand="+"),
+        ]
+        candidates = [
+            feature
+            for feature in infer_transposons(features)
+            if feature.family == "IS26_pseudocomposite"
+        ]
+        assert len(candidates) == 1
+        assert candidates[0].attributes["outer_direct_repeat_status"] == "unconfirmed"
+
+    def test_opposite_orientation_is26_pair_is_not_collapsed(self):
+        features = [
+            is_elem("IS6", 1000, 1819, "IS26", strand="+"),
+            amr("blaTEM-1", 2200, 3050),
+            is_elem("IS6", 4000, 4819, "IS26", strand="-"),
+        ]
+        assert not any(
+            feature.family == "IS26_pseudocomposite"
+            for feature in infer_transposons(features)
+        )
+
+    def test_generic_is6_family_call_is_not_treated_as_is26(self):
+        features = [
+            is_elem("IS6", 1000, 1819, "IS6_292", strand="+"),
+            amr("blaTEM-1", 2200, 3050),
+            is_elem("IS6", 4000, 4819, "IS6_292", strand="+"),
+        ]
+        assert not any(
+            feature.family.startswith("IS26_")
+            for feature in infer_transposons(features)
+        )

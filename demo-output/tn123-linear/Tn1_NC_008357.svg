@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="242" style="background:#fff;font-family:monospace;">
+<text x="700.00" y="28.00" font-size="15" font-family="monospace" text-anchor="middle" fill="#222" font-weight="bold">Tn1_NC_008357</text>
+<line x1="60" y1="40" x2="1360" y2="40" stroke="#bbb" stroke-width="1.5"/>
+<line x1="60.00" y1="36" x2="60.00" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="60.00" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">0</text>
+<line x1="319.79" y1="36" x2="319.79" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="319.79" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">0k</text>
+<line x1="579.84" y1="36" x2="579.84" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="579.84" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">1k</text>
+<line x1="839.89" y1="36" x2="839.89" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="839.89" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">2k</text>
+<line x1="1099.95" y1="36" x2="1099.95" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="1099.95" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">3k</text>
+<line x1="1360.00" y1="36" x2="1360.00" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="1360.00" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">4k</text>
+<line x1="60" y1="70" x2="1360" y2="70" stroke="#ccc" stroke-width="3"/>
+<line x1="60.26" y1="70" x2="60.26" y2="80.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<line x1="1360.00" y1="70" x2="1360.00" y2="80.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<g><title>transposon: Tn1 (1–4949) IR=GGGGTCTGAC</title>
+<rect x="60.26" y="80.00" width="1299.74" height="62.00" fill="#27ae60" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="0.1"/>
+<rect x="60.26" y="80.00" width="1299.74" height="62.00" fill="none" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="1.0"/>
+<text x="64.26" y="93.00" font-size="11" font-family="monospace" text-anchor="start" fill="#27ae60" font-weight="bold">Tn1  (4.9 kb)</text>
+<g><title>IR: IRL (1–38)</title>
+<rect x="60.26" y="100.00" width="9.72" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<g><title>AMR: blaTEM-2 (148–1008)</title>
+<rect x="98.88" y="100.00" width="225.90" height="34.00" fill="#e74c3c" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="211.83" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white" font-weight="bold">blaTEM-2</text>
+</g>
+<g><title>gene: tnpR (1191–1748)</title>
+<rect x="372.85" y="100.00" width="146.31" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="446.01" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">tnpR</text>
+</g>
+<g><title>res_site: res (1754–1867)</title>
+<rect x="520.74" y="100.00" width="29.68" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="535.58" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">res</text>
+</g>
+<g><title>gene: tnpA (1911–4916)</title>
+<rect x="561.98" y="100.00" width="789.35" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="956.66" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">tnpA</text>
+</g>
+<g><title>IR: IRR (4913–4949)</title>
+<rect x="1350.54" y="100.00" width="9.46" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+</g>
+<rect x="60.00" y="212.00" width="14.00" height="14.00" fill="#4a90d9" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="78.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">IS element</text>
+<rect x="180.00" y="212.00" width="14.00" height="14.00" fill="#e74c3c" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="198.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">AMR gene</text>
+<rect x="300.00" y="212.00" width="14.00" height="14.00" fill="#27ae60" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="318.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Transposon</text>
+<rect x="420.00" y="212.00" width="14.00" height="14.00" fill="#8e44ad" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="438.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Integron</text>
+<rect x="540.00" y="212.00" width="14.00" height="14.00" fill="#f39c12" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="558.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Cassette</text>
+<rect x="660.00" y="212.00" width="14.00" height="14.00" fill="#7f8c8d" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="678.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">attC site</text>
+<rect x="780.00" y="212.00" width="14.00" height="14.00" fill="#f1c40f" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="798.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">TSD</text>
+</svg>

@@ -1,7 +1,9 @@
 __pycache__/
 *.py[cod]
 .pixi/
-pixi.lock
 *.egg-info/
 taxdump.tar.gz
 data/
+.DS_Store
+*.list
+smoke-output/

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="184" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1280" height="184" fill="#ffffff"/>
+<rect x="432.7" y="44" width="414.7" height="40" fill="#009b55" stroke="#111111" stroke-width="2"/>
+<text x="640.0" y="20.0" text-anchor="middle" font-size="12" font-weight="bold" font-style="normal" fill="#111111">Tn2-like</text>
+<line x1="559.1" y1="47" x2="559.1" y2="81" stroke="#111111" stroke-width="1" stroke-dasharray="2,2"/><line x1="567.3" y1="47" x2="567.3" y2="81" stroke="#111111" stroke-width="1" stroke-dasharray="2,2"/>
+<polygon points="619.1,44.0 664.6,44.0 670.6,51.0 664.6,58.0 670.6,65.0 664.6,84.0 619.1,84.0 613.1,77.0 619.1,70.0 613.1,63.0 619.1,54.0" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="641.8" y="105.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="normal" fill="#111111">insertion ≈799 bp</text>
+<polygon points="443.3,66 458.3,58 505.3,58 505.3,74 458.3,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="474.3" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">blaTEM-1b</text>
+<polygon points="518.5,66 532.6,58 558.7,58 558.7,74 532.6,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="538.6" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">tnpR</text>
+<polygon points="570.4,58 830.0,58 845.0,66 830.0,74 570.4,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="707.7" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">tnpA</text>
+<text x="563.2" y="105.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="italic" fill="#111111">res</text>
+<line x1="432.7" y1="44" x2="432.7" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="432.7,23 442.7,29 432.7,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<line x1="847.3" y1="44" x2="847.3" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="847.3,23 837.3,29 847.3,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<line x1="72.0" y1="66" x2="432.6" y2="66" stroke="#e3262e" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="252.3" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#e3262e">5000</text>
+<line x1="847.4" y1="66" x2="1208.0" y2="66" stroke="#e3262e" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="1027.7" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#e3262e">5000</text>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="432.7" y1="44" x2="432.7" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="432.7" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="847.3" y1="44" x2="847.3" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="847.3" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<text x="1208.0" y="151.0" text-anchor="end" font-size="9" font-weight="normal" font-style="normal" fill="#555">arbitrary_demo_contig • Tn2-like 19950..25699 • view 14950..30699</text>
+</svg>

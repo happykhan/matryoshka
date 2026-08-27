@@ -1,9 +1,13 @@
 # Reference sequence manifest
 
-Reference FASTAs bundled with Matryoshka. All are derived from public databases
-(NCBI GenBank, PlasmidFinder) and redistributed under the source databases'
-respective terms — NCBI records are in the public domain; PlasmidFinder DB is
-licensed under Apache-2.0 (Camacho / Carattoli et al.).
+Reference FASTAs bundled with Matryoshka. They are traceable to public database
+accessions or documented project-derived motifs and remain subject to the source
+databases' terms. The PlasmidFinder database is Apache-2.0 licensed. This manifest
+does not make a blanket public-domain claim for contributed sequence records.
+
+The complete machine-readable inventory, including SHA-256 checksums, record
+IDs, source accessions, validation profile and scan thresholds, is
+[`manifest.yaml`](manifest.yaml). CI verifies it against every bundled FASTA.
 
 To re-fetch or update:
 
@@ -31,15 +35,23 @@ NCBI_EMAIL=you@example.org pixi run python scripts/fetch_mge_references.py --for
 | `is26.fasta` | IS26 (IS6 family) reference — ISEScan fails at sequence boundaries | X00011 (via KC964607) |
 | `tn3_family_extras.fasta` | Tn3-family extras — Tn3, Tn2, Tn1696, Tn1721, Tn6452, Tn1412, Tn1, Tn5403 | V00613, AY123253, U12338, X61367, KY807920, L36547, NC_008357, X75779 |
 | `rolling_circle_ter_sites.fasta` | terIS91, terISCR1, terISCR2, oriIS91 consensus motifs (~30bp) | Local motif (experimental) |
+| `tn1_tn2_tn3.fasta` | Sally-selected canonical Tn1, Tn2 and Tn3 references | NC_008357, AY123253, HM749966 |
+| `mara_partridge_units.fasta` | Curated complete Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 units | AB366441, GU595196, AF262622, X75779 |
+| `mara_isecp1_tpu.fasta` | Seven complete ISEcp1-blaCMY TPU exemplars | FM246884, CP001121, AY509004, FJ621588, EU331425, EU331426 |
+| `mara_exact_is.fasta` | Exact ISKpn6, ISKpn7 and IS1999 references | ISfinder, GU595196, JN626286 |
+| `mara_integron_segments.fasta` | 5'-CS/3'-CS components and 5'-CS GGG variant | U12338, AF071413 |
+| `mara_integron_ends.fasta` | Exact 25 bp IRi and IRt ends | AF071413 |
+| `mara_integron_tni.fasta` | Complete Tn402 tni component | U67194 |
 
 All accessions are cited from Partridge et al. 2018 (Clin Microbiol Rev,
 PMC6148190) — the paper whose framework Matryoshka implements.
 
 ## Versioning
 
-Current reference set: 2026-04 snapshot. Downloads pinned to these accession
-versions. To bump, re-run `fetch_mge_references.py --force` and update this
-file with the new date.
+Current reference set: `2026.08.26-alpha.1` (25 FASTA files). Downloads and
+curated components are pinned to the accessions and checksums in
+`manifest.yaml`. To bump, update the underlying FASTAs and run
+`PYTHONPATH=. python scripts/build_reference_manifest.py`.
 
 ## Licensing of redistributed data
 

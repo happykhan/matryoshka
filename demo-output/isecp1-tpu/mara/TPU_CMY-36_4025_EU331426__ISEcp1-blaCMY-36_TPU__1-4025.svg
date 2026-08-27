@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="164" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="920" height="164" fill="#ffffff"/>
+<rect x="72.0" y="44" width="776.0" height="40" fill="#009b55" stroke="#111111" stroke-width="2"/>
+<text x="460.0" y="37.0" text-anchor="middle" font-size="12" font-weight="bold" font-style="normal" fill="#111111">ISEcp1-blaCMY-36_TPU</text>
+<polygon points="72.0,48.0 375.2,48.0 391.2,64.0 375.2,80.0 72.0,80.0" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="231.6" y="103.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#111111">ISEcp1</text>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="72.0" y1="44" x2="72.0" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="72.0" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="848.0" y1="44" x2="848.0" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="848.0" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="72.0" y1="44" x2="72.0" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="72.0" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="391.2" y1="44" x2="391.2" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="391.2" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<text x="848.0" y="151.0" text-anchor="end" font-size="9" font-weight="normal" font-style="normal" fill="#555">TPU_CMY-36_4025_EU331426 • ISEcp1-blaCMY-36_TPU 1..4025 • view 1..4025</text>
+</svg>

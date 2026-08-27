@@ -20,7 +20,6 @@ jobs:
         run: ruff check matryoshka tests scripts
       - name: mypy
         run: mypy matryoshka
-        continue-on-error: true
 
   test:
     runs-on: ubuntu-latest
@@ -47,3 +46,42 @@ jobs:
           files: coverage.xml
           fail_ci_if_error: false
         continue-on-error: true
+
+  clean-wheel-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install BLAST+ and build tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ncbi-blast+
+          python -m pip install build
+      - name: Build wheel
+        run: python -m build
+      - name: Install wheel into a clean environment
+        run: |
+          python -m venv /tmp/matryoshka-smoke
+          /tmp/matryoshka-smoke/bin/pip install dist/*.whl
+      - name: Run complete bundled workflow
+        run: |
+          /tmp/matryoshka-smoke/bin/matryoshka run \
+            tests/test-data/partridge-examples/Tn1-Tn2-Tn3.fasta \
+            --threads 2 --out /tmp/matryoshka-results
+          /tmp/matryoshka-smoke/bin/python - <<'PY'
+          import json
+          from pathlib import Path
+
+          out = Path("/tmp/matryoshka-results")
+          annotation = json.loads((out / "annotation.json").read_text())
+          summary = json.loads((out / "run.json").read_text())
+          assert annotation["schema_version"] == "1.0"
+          assert annotation["reference_database"]["profile"] == "validated"
+          assert summary["mara_loci"] == 3
+          assert len(list((out / "mara").glob("*.svg"))) == 3
+          assert len(list((out / "mara-table").glob("*.svg"))) == 3
+          PY
+      - name: Build core container
+        run: docker build -t matryoshka:ci .

@@ -2,17 +2,14 @@
 
 from pathlib import Path
 
-import pytest
-
 from matryoshka.detect import parse_amrfinder, parse_integron_finder, parse_isescan
 
-DATA = Path(__file__).parent.parent / "data"
-ISESCAN_TSV = DATA / "isescan_test/reference_plasmids/pEK499.fasta.tsv"
-AMRFINDER_TSV = DATA / "amrfinder_test/pEK499.tsv"
-INTEGRONS_FILE = DATA / "integron_test/Results_Integron_Finder_pEK499/pEK499.integrons"
+DATA = Path(__file__).parent / "test-data" / "detector-output"
+ISESCAN_TSV = DATA / "pEK499.isescan.tsv"
+AMRFINDER_TSV = DATA / "pEK499.amrfinder.tsv"
+INTEGRONS_FILE = DATA / "pEK499.integrons"
 
 
-@pytest.mark.skipif(not ISESCAN_TSV.exists(), reason="ISEScan test data not present")
 class TestParseISEScan:
     def test_count(self):
         feats = parse_isescan(ISESCAN_TSV)
@@ -45,7 +42,6 @@ class TestParseISEScan:
         assert all(f.ir_left is None for f in partials)
 
 
-@pytest.mark.skipif(not AMRFINDER_TSV.exists(), reason="AMRFinder test data not present")
 class TestParseAMRFinder:
     def test_count(self):
         feats = parse_amrfinder(AMRFINDER_TSV)
@@ -71,7 +67,6 @@ class TestParseAMRFinder:
             assert f.strand in ("+", "-", ".")
 
 
-@pytest.mark.skipif(not INTEGRONS_FILE.exists(), reason="IntegronFinder test data not present")
 class TestParseIntegronFinder:
     def test_one_integron(self):
         feats = parse_integron_finder(INTEGRONS_FILE)

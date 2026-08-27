@@ -1,0 +1,497 @@
+{
+  "Tn1_NC_008357": [
+  {
+    "element_type": "transposon",
+    "family": "Tn1",
+    "name": "Tn1",
+    "start": 1,
+    "end": 4949,
+    "strand": "+",
+    "tsd_length": 5,
+    "tsd_seq": null,
+    "ir_left": "GGGGTCTGACGCTCAGTGGA",
+    "ir_right": "TCCACTGAGCGTCAGACCCC",
+    "score": 100.0,
+    "attributes": {
+      "seqid": "Tn1_NC_008357",
+      "reference_id": "Tn1_NC_008357",
+      "blast_identity": 100.0,
+      "blast_coverage": 100.0,
+      "reference_length": 4949,
+      "source": "reference_scan",
+      "source_accession": "NC_008357",
+      "tn123_canonical": "true",
+      "blast_subject_coverage": "100.0",
+      "blast_hsp_count": "1",
+      "curated_internal_features": true,
+      "ir_length": 38,
+      "confidence": 1.0,
+      "confidence_label": "high"
+    },
+    "children": [
+      {
+        "element_type": "IR",
+        "family": "Tn1",
+        "name": "IRL",
+        "start": 1,
+        "end": 38,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn1_NC_008357",
+          "source": "curated_reference",
+          "source_accession": "NC_008357",
+          "parent_transposon": "Tn1",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "AMR",
+        "family": "Tn1",
+        "name": "blaTEM-2",
+        "start": 148,
+        "end": 1008,
+        "strand": "-",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn1_NC_008357",
+          "source": "curated_reference",
+          "source_accession": "NC_008357",
+          "parent_transposon": "Tn1",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "gene",
+        "family": "Tn1",
+        "name": "tnpR",
+        "start": 1191,
+        "end": 1748,
+        "strand": "-",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn1_NC_008357",
+          "source": "curated_reference",
+          "source_accession": "NC_008357",
+          "parent_transposon": "Tn1",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "res_site",
+        "family": "Tn1",
+        "name": "res",
+        "start": 1754,
+        "end": 1867,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn1_NC_008357",
+          "source": "curated_reference",
+          "source_accession": "NC_008357",
+          "parent_transposon": "Tn1",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "gene",
+        "family": "Tn1",
+        "name": "tnpA",
+        "start": 1911,
+        "end": 4916,
+        "strand": "+",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn1_NC_008357",
+          "source": "curated_reference",
+          "source_accession": "NC_008357",
+          "parent_transposon": "Tn1",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "IR",
+        "family": "Tn1",
+        "name": "IRR",
+        "start": 4912,
+        "end": 4949,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn1_NC_008357",
+          "source": "curated_reference",
+          "source_accession": "NC_008357",
+          "parent_transposon": "Tn1",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      }
+    ]
+  }
+],
+  "Tn2_AY123253": [
+  {
+    "element_type": "transposon",
+    "family": "Tn2",
+    "name": "Tn2",
+    "start": 1,
+    "end": 4950,
+    "strand": "+",
+    "tsd_length": 5,
+    "tsd_seq": null,
+    "ir_left": "GGGGTCTGACGCTCAGTGGA",
+    "ir_right": "TCCACTGAGCGTCAGACCCC",
+    "score": 100.0,
+    "attributes": {
+      "seqid": "Tn2_AY123253",
+      "reference_id": "Tn2_AY123253",
+      "blast_identity": 100.0,
+      "blast_coverage": 100.0,
+      "reference_length": 4950,
+      "source": "reference_scan",
+      "source_accession": "AY123253",
+      "tn123_canonical": "true",
+      "blast_subject_coverage": "100.0",
+      "blast_hsp_count": "1",
+      "curated_internal_features": true,
+      "ir_length": 38,
+      "confidence": 1.0,
+      "confidence_label": "high"
+    },
+    "children": [
+      {
+        "element_type": "IR",
+        "family": "Tn2",
+        "name": "IRL",
+        "start": 1,
+        "end": 38,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn2_AY123253",
+          "source": "curated_reference",
+          "source_accession": "AY123253",
+          "parent_transposon": "Tn2",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "AMR",
+        "family": "Tn2",
+        "name": "blaTEM-1b",
+        "start": 148,
+        "end": 1008,
+        "strand": "-",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn2_AY123253",
+          "source": "curated_reference",
+          "source_accession": "AY123253",
+          "parent_transposon": "Tn2",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "gene",
+        "family": "Tn2",
+        "name": "tnpR",
+        "start": 1191,
+        "end": 1748,
+        "strand": "-",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn2_AY123253",
+          "source": "curated_reference",
+          "source_accession": "AY123253",
+          "parent_transposon": "Tn2",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "res_site",
+        "family": "Tn2",
+        "name": "res",
+        "start": 1754,
+        "end": 1867,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn2_AY123253",
+          "source": "curated_reference",
+          "source_accession": "AY123253",
+          "parent_transposon": "Tn2",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "gene",
+        "family": "Tn2",
+        "name": "tnpA",
+        "start": 1911,
+        "end": 4917,
+        "strand": "+",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn2_AY123253",
+          "source": "curated_reference",
+          "source_accession": "AY123253",
+          "parent_transposon": "Tn2",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "IR",
+        "family": "Tn2",
+        "name": "IRR",
+        "start": 4913,
+        "end": 4950,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn2_AY123253",
+          "source": "curated_reference",
+          "source_accession": "AY123253",
+          "parent_transposon": "Tn2",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      }
+    ]
+  }
+],
+  "Tn3_HM749966": [
+  {
+    "element_type": "transposon",
+    "family": "Tn3",
+    "name": "Tn3",
+    "start": 1,
+    "end": 4948,
+    "strand": "+",
+    "tsd_length": 5,
+    "tsd_seq": null,
+    "ir_left": "GGGGTCTGACGCTCAGTGGA",
+    "ir_right": "TCCACTGAGCGTCAGACCCC",
+    "score": 100.0,
+    "attributes": {
+      "seqid": "Tn3_HM749966",
+      "reference_id": "Tn3_HM749966",
+      "blast_identity": 100.0,
+      "blast_coverage": 100.0,
+      "reference_length": 4948,
+      "source": "reference_scan",
+      "source_accession": "HM749966",
+      "tn123_canonical": "true",
+      "blast_subject_coverage": "100.0",
+      "blast_hsp_count": "1",
+      "curated_internal_features": true,
+      "ir_length": 38,
+      "confidence": 1.0,
+      "confidence_label": "high"
+    },
+    "children": [
+      {
+        "element_type": "IR",
+        "family": "Tn3",
+        "name": "IRL",
+        "start": 1,
+        "end": 38,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn3_HM749966",
+          "source": "curated_reference",
+          "source_accession": "HM749966",
+          "parent_transposon": "Tn3",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "AMR",
+        "family": "Tn3",
+        "name": "blaTEM-1",
+        "start": 148,
+        "end": 1008,
+        "strand": "-",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn3_HM749966",
+          "source": "curated_reference",
+          "source_accession": "HM749966",
+          "parent_transposon": "Tn3",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "gene",
+        "family": "Tn3",
+        "name": "tnpR",
+        "start": 1191,
+        "end": 1748,
+        "strand": "-",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn3_HM749966",
+          "source": "curated_reference",
+          "source_accession": "HM749966",
+          "parent_transposon": "Tn3",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "res_site",
+        "family": "Tn3",
+        "name": "res",
+        "start": 1754,
+        "end": 1867,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn3_HM749966",
+          "source": "curated_reference",
+          "source_accession": "HM749966",
+          "parent_transposon": "Tn3",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "gene",
+        "family": "Tn3",
+        "name": "tnpA",
+        "start": 1911,
+        "end": 4915,
+        "strand": "+",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn3_HM749966",
+          "source": "curated_reference",
+          "source_accession": "HM749966",
+          "parent_transposon": "Tn3",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      },
+      {
+        "element_type": "IR",
+        "family": "Tn3",
+        "name": "IRR",
+        "start": 4911,
+        "end": 4948,
+        "strand": ".",
+        "tsd_length": null,
+        "tsd_seq": null,
+        "ir_left": null,
+        "ir_right": null,
+        "score": null,
+        "attributes": {
+          "seqid": "Tn3_HM749966",
+          "source": "curated_reference",
+          "source_accession": "HM749966",
+          "parent_transposon": "Tn3",
+          "confidence": 1.0,
+          "confidence_label": "high"
+        },
+        "children": []
+      }
+    ]
+  }
+]
+}

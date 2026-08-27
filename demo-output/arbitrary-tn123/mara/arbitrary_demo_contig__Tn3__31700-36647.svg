@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="184" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1280" height="184" fill="#ffffff"/>
+<rect x="452.0" y="44" width="376.0" height="40" fill="#009b55" stroke="#111111" stroke-width="2"/>
+<text x="640.0" y="20.0" text-anchor="middle" font-size="12" font-weight="bold" font-style="normal" fill="#111111">Tn3</text>
+<line x1="686.2" y1="47" x2="686.2" y2="81" stroke="#111111" stroke-width="1" stroke-dasharray="2,2"/><line x1="694.8" y1="47" x2="694.8" y2="81" stroke="#111111" stroke-width="1" stroke-dasharray="2,2"/>
+<polygon points="454.5,66 469.5,58 682.8,58 682.8,74 469.5,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="568.7" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">tnpA</text>
+<polygon points="695.2,58 722.7,58 737.5,66 722.7,74 695.2,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="716.4" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">tnpR</text>
+<polygon points="751.5,58 801.8,58 816.8,66 801.8,74 751.5,74" fill="#000" stroke="#000" stroke-width="1"/>
+<text x="784.1" y="105.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#111111">blaTEM-1</text>
+<text x="690.5" y="105.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="italic" fill="#111111">res</text>
+<line x1="454.8" y1="44" x2="454.8" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="454.8,23 444.8,29 454.8,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<line x1="825.2" y1="44" x2="825.2" y2="21" stroke="#111111" stroke-width="1.5"/><polygon points="825.2,23 835.2,29 825.2,35" fill="#ffffff" stroke="#111111" stroke-width="1.2"/>
+<line x1="72.0" y1="66" x2="451.9" y2="66" stroke="#e3262e" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="262.0" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#e3262e">5000</text>
+<line x1="828.1" y1="66" x2="1208.0" y2="66" stroke="#e3262e" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="1018.0" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#e3262e">5000</text>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="452.0" y1="44" x2="452.0" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="452.0" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<g><title>expected 5 bp TSD; flanking sequence unavailable</title><line x1="828.0" y1="44" x2="828.0" y2="18" stroke="#737b83" stroke-width="1.4"/><circle cx="828.0" cy="13" r="5" fill="#ffffff" stroke="#737b83" stroke-width="1.2"/></g>
+<text x="1208.0" y="151.0" text-anchor="end" font-size="9" font-weight="normal" font-style="normal" fill="#555">arbitrary_demo_contig • Tn3 31700..36647 • view 26700..41647</text>
+</svg>

@@ -83,7 +83,7 @@ def build_hierarchy(features: list[MGEFeature]) -> list[MGEFeature]:
             if not contains(cand, child):
                 continue
             cl = _length(cand)
-            if best is None or cl < best_len:
+            if best is None or best_len is None or cl < best_len:
                 best = cand
                 best_len = cl
         if best is not None:
