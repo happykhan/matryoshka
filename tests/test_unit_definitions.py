@@ -103,7 +103,10 @@ def test_run_bundle_contains_gff3_and_genbank(tmp_path: Path) -> None:
     out = tmp_path / "results"
     result = CliRunner().invoke(
         cli,
-        ["run", str(fasta), "--profile", "component-rules", "--out", str(out)],
+        [
+            "run", str(fasta), "--profile", "component-rules",
+            "--detectors", "none", "--out", str(out),
+        ],
     )
     assert result.exit_code == 0, result.output
     assert (out / "annotation.gff3").read_text().startswith("##gff-version 3")

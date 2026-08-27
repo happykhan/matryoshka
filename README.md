@@ -140,22 +140,59 @@ in `demo-output/tn123-pEK499/proof-bundle/`.
 
 ### Pixi alternative
 
-[Pixi](https://pixi.sh) provides a locked core environment for Linux and Intel/Apple
-Silicon macOS:
+[Pixi](https://pixi.sh) provides the reproducible core environment and isolated
+third-party detector environments. A new user does not have to install each
+bioinformatics program by hand:
 
 ```bash
 pixi install
-pixi run smoke
+pixi run preflight
+
+# One FASTA in; the complete result directory out.
+pixi run analyse assembly.fasta --out results
 ```
 
-ISEScan, AMRFinder+ and IntegronFinder environments are currently Linux-only. The core
-validated-reference workflow works on all listed platforms.
+The first analysis installs a required detector environment on demand. On its first
+AMRFinderPlus run, Matryoshka also downloads the official database when the Pixi
+environment does not yet contain one; an existing valid or explicitly selected
+database is not updated automatically. Linux can run
+AMRFinderPlus, ISEScan and IntegronFinder. Intel macOS can run AMRFinderPlus; Apple
+silicon uses its Bioconda `osx-64` build through Rosetta. The core component/reference
+workflow works on every listed platform even when a particular optional detector is
+not packaged for that host.
 
 ## Run your own sequence
 
 ```bash
 matryoshka run assembly.fasta --out results --threads 4
 ```
+
+This is the do-everything command. By default, it runs every installed or
+Pixi-managed detector supported on the current platform, then combines their calls
+with the built-in component and reference scans before classification and rendering.
+AMRFinderPlus is invoked on the nucleotide FASTA with `--plus`; its AMR, stress and
+virulence gene coordinates become independent component evidence in the JSON, GFF3,
+GenBank, CellGen, hierarchy, locus maps and locus tables. No organism is assumed, so
+organism-specific point-mutation screening is not performed.
+
+The result records whether each detector was completed, supplied, unavailable,
+disabled or failed. In best-effort mode a third-party failure is visible but does not
+discard the core result:
+
+```bash
+# Default: run all detectors supported here; retain unavailable/failure provenance.
+matryoshka run assembly.fasta --out results --detectors available
+
+# Reproducibility gate: require all three detectors to complete.
+matryoshka run assembly.fasta --out results --detectors all
+
+# Core component/reference workflow only.
+matryoshka run assembly.fasta --out results --detectors none
+```
+
+Raw third-party results are retained under `results/detectors/`; their resolved paths
+and execution states are also recorded in `annotation.json` and `run.json`. Run
+`matryoshka preflight` before a batch to see which tools will run.
 
 The default `--profile validated` includes the expert-reviewed Tn1/Tn2/Tn3, curated unit
 transposon, integron and ISEcp1-TPU references. `--profile all` enables broader legacy
@@ -185,10 +222,10 @@ matryoshka run assembly.fasta --out results \
   --integrons sample.integrons
 ```
 
-On Linux, installed detectors can be invoked automatically:
+Installed or bundled detectors can also be controlled explicitly:
 
 ```bash
-# Run any detector available on PATH (or through this checkout's Pixi environments).
+# Run every detector available on PATH or through this checkout's Pixi environments.
 matryoshka run assembly.fasta --out results --detectors available
 
 # Require all three; fail clearly if one is unavailable.
@@ -198,6 +235,26 @@ matryoshka run assembly.fasta --out results --detectors all
 The lower-level `matryoshka annotate` command emits one selected format and remains
 useful for scripts. `matryoshka run` is the supported reproducible workflow for new
 users.
+
+## Priority transposon roadmap
+
+Seventeen named elements from the supplied expert material form the priority scope:
+Tn1, Tn2, Tn3, Tn7, Tn10, Tn21, Tn402, Tn1331, Tn1696, Tn1721, Tn1722,
+Tn1999, Tn2670, Tn4401, Tn5393, Tn5403 and Tn6029. They do not all have the
+same evidence level yet. The machine-readable roadmap distinguishes validated
+component rules, incomplete component/signature rules, reference-supported calls and
+definitions still requiring expert review.
+
+```bash
+matryoshka roadmap --format markdown --out priority-roadmap.md
+matryoshka roadmap --format yaml --out priority-roadmap.yaml
+```
+
+Every target must pass canonical, component-only, reverse-orientation, close-variant,
+structural-variation, partial, long-contig and related-family-negative tests before it
+is described as validated. Whole-element matching may confirm an exact reviewed name;
+it cannot satisfy that acceptance contract by itself. The concise human-readable plan
+is in [docs/priority-transposon-roadmap.md](docs/priority-transposon-roadmap.md).
 
 ## What it currently identifies
 

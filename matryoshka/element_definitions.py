@@ -41,6 +41,53 @@ _REQUIRED_COMPONENT_FIELDS = frozenset({
 })
 
 
+def _validate_type_definition(
+    type_name: str,
+    type_definition: object,
+    definitions: dict[str, Any],
+) -> None:
+    if not isinstance(type_definition, dict):
+        raise ValueError(f"type {type_name} must be a mapping")
+    components = type_definition.get("components")
+    if not isinstance(components, list) or not components:
+        raise ValueError(f"type {type_name} has no component definitions")
+    for component in components:
+        if not isinstance(component, dict):
+            raise ValueError(f"type {type_name} has an invalid component")
+        missing = _REQUIRED_COMPONENT_FIELDS - set(component)
+        if missing:
+            raise ValueError(
+                f"type {type_name} component is missing: {', '.join(sorted(missing))}"
+            )
+    canonical = type_definition.get("canonical_reference")
+    if canonical not in definitions:
+        raise ValueError(f"type {type_name} canonical reference is undefined: {canonical}")
+
+
+def _validate_named_definition(
+    reference_id: str,
+    definition: object,
+    types: dict[str, Any],
+) -> None:
+    if not isinstance(definition, dict):
+        raise ValueError(f"definition {reference_id} must be a mapping")
+    missing = _REQUIRED_DEFINITION_FIELDS - set(definition)
+    if missing:
+        raise ValueError(f"definition {reference_id} is missing: {', '.join(sorted(missing))}")
+    if definition["type"] not in types:
+        raise ValueError(f"definition {reference_id} uses unknown type {definition['type']}")
+    required_feature_fields = {"element_type", "family", "name", "start", "end", "strand"}
+    for feature in definition.get("additional_features", []):
+        if not isinstance(feature, dict):
+            raise ValueError(f"definition {reference_id} has an invalid additional feature")
+        feature_missing = required_feature_fields - set(feature)
+        if feature_missing:
+            raise ValueError(
+                f"definition {reference_id} additional feature is missing: "
+                f"{', '.join(sorted(feature_missing))}"
+            )
+
+
 def load_tn123_definitions() -> dict[str, Any]:
     """Return the bundled Tn1/Tn2/Tn3 definitions after contract validation."""
     resource = files("matryoshka").joinpath("tn123_definitions.yaml")
@@ -61,47 +108,10 @@ def load_tn123_definitions() -> dict[str, Any]:
         raise ValueError("Tn1/Tn2/Tn3 named definitions must be a mapping")
 
     for type_name, type_definition in types.items():
-        if not isinstance(type_definition, dict):
-            raise ValueError(f"type {type_name} must be a mapping")
-        components = type_definition.get("components")
-        if not isinstance(components, list) or not components:
-            raise ValueError(f"type {type_name} has no component definitions")
-        for component in components:
-            if not isinstance(component, dict):
-                raise ValueError(f"type {type_name} has an invalid component")
-            component_missing = _REQUIRED_COMPONENT_FIELDS - set(component)
-            if component_missing:
-                raise ValueError(
-                    f"type {type_name} component is missing: "
-                    f"{', '.join(sorted(component_missing))}"
-                )
-        canonical = type_definition.get("canonical_reference")
-        if canonical not in definitions:
-            raise ValueError(f"type {type_name} canonical reference is undefined: {canonical}")
+        _validate_type_definition(type_name, type_definition, definitions)
 
     for reference_id, definition in definitions.items():
-        if not isinstance(definition, dict):
-            raise ValueError(f"definition {reference_id} must be a mapping")
-        definition_missing = _REQUIRED_DEFINITION_FIELDS - set(definition)
-        if definition_missing:
-            raise ValueError(
-                f"definition {reference_id} is missing: "
-                f"{', '.join(sorted(definition_missing))}"
-            )
-        if definition["type"] not in types:
-            raise ValueError(
-                f"definition {reference_id} uses unknown type {definition['type']}"
-            )
-        for feature in definition.get("additional_features", []):
-            if not isinstance(feature, dict):
-                raise ValueError(f"definition {reference_id} has an invalid additional feature")
-            required = {"element_type", "family", "name", "start", "end", "strand"}
-            feature_missing = required - set(feature)
-            if feature_missing:
-                raise ValueError(
-                    f"definition {reference_id} additional feature is missing: "
-                    f"{', '.join(sorted(feature_missing))}"
-                )
+        _validate_named_definition(reference_id, definition, types)
     return document
 
 

@@ -19,7 +19,7 @@
       "required": ["version", "profile"],
       "properties": {
         "version": {"type": "string"},
-        "profile": {"enum": ["validated", "all"]}
+        "profile": {"enum": ["validated", "component-rules", "tn123-components", "all"]}
       }
     },
     "run": {"type": "object"},

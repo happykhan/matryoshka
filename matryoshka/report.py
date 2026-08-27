@@ -95,6 +95,7 @@ def annotation_document(
     profile: str,
     command: list[str] | None = None,
     detector_outputs: dict[str, str] | None = None,
+    detector_runs: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build the stable v1 JSON annotation envelope."""
     path = Path(input_path)
@@ -115,6 +116,7 @@ def annotation_document(
             "python": platform.python_version(),
             "platform": platform.platform(),
             "detector_outputs": detector_outputs or {},
+            "detectors": detector_runs or [],
         },
         "records": [
             {

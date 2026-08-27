@@ -10,7 +10,7 @@
 | `annotation.gff3` | One GFF3 document with sequence regions, unique stable IDs and `Parent` links |
 | `annotation.gbk` | One multi-record GenBank document with mobile-element, CDS, repeat and nested feature annotations |
 | `annotation.cell` | Nested CellGen/Wolvercote cell-format representation of the same hierarchy |
-| `run.json` | Compact counts and relative output locations |
+| `run.json` | Compact counts, detector execution states and relative output locations |
 | `hierarchy/*.svg` | One whole-record, scale-accurate rendering of the original nested hierarchy |
 | `locus-map/*.svg` | One readable locus map per supported target, including a symbol key |
 | `locus-table/*.svg` | Matching annotation table per locus, including evidence notes and a compact key |
@@ -18,7 +18,7 @@
 | `proof/components.tsv` | One row per independently sequence-detected Tn1/Tn2/Tn3 component |
 | `proof/matches.tsv` | One row per assembled Tn1/Tn2/Tn3 locus, including the rule-based type call, optional reference context, definition ID/version and sequence-difference counts |
 | `proof/report.html` | Portable human-readable proof report linking all representations |
-| `detectors/` | Present only when Matryoshka ran optional external detectors |
+| `detectors/` | Raw AMRFinderPlus, ISEScan and IntegronFinder results when those tools ran |
 
 `run.json` contains a `locus_outputs` array with one entry per generated
 locus map. Each entry records the sequence record, call, family, coordinates,
@@ -56,7 +56,20 @@ The JSON envelope records:
 - reference-database version and selected profile;
 - input path and SHA-256 checksum;
 - command, Python and platform provenance;
-- paths to any supplied or generated detector outputs.
+- paths to any supplied or generated detector outputs;
+- for each optional detector: completed, provided, unavailable, failed or disabled
+  state, execution source, runtime/platform description and available tool/database
+  version provenance.
+
+Generated detector paths are relative to the result directory so a complete bundle
+can be moved. User-supplied precomputed files outside the bundle retain their absolute
+source path.
+
+`--detectors available` is the default. It is best-effort: optional-tool failures
+remain explicit in the two JSON documents while the built-in scan continues.
+`--detectors all` is the strict reproducibility gate and fails unless all three tools
+complete. `--detectors none` disables automatic execution without disabling supplied
+precomputed files.
 
 Changing a documented schema incompatibly requires a new schema version. New optional
 fields may be added within v1. Consumers should ignore unknown fields and must not infer

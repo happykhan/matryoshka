@@ -89,91 +89,101 @@ def _number(value: object) -> str:
     return f"{number:.2f}".rstrip("0").rstrip(".")
 
 
+def _tsd_note(feature: MGEFeature) -> str | None:
+    attrs = feature.attributes
+    if feature.tsd_seq:
+        strength = attrs.get("tsd_evidence_strength", "supporting")
+        left = f"{attrs.get('tsd_left_start', '?')}..{attrs.get('tsd_left_end', '?')}"
+        right = f"{attrs.get('tsd_right_start', '?')}..{attrs.get('tsd_right_end', '?')}"
+        return (
+            f"boundary-adjacent DR={feature.tsd_seq} ({strength} evidence; "
+            f"left={left}; right={right})"
+        )
+    if not feature.tsd_length:
+        return None
+    expected = f"expected DR={feature.tsd_length} bp"
+    evidence = attrs.get("tsd_evidence")
+    if evidence == "short_repeat_candidate":
+        return f"{expected}; short-repeat candidate={attrs.get('tsd_candidate_seq', '')}; weak evidence"
+    if evidence == "searched_not_found":
+        return f"{expected}; searched but not found"
+    if evidence == "untestable_missing_flank":
+        return f"{expected}; flanking sequence unavailable"
+    return f"{expected}; not sequence-confirmed"
+
+
+def _append_sequence_change_notes(parts: list[str], attrs: dict) -> None:
+    for key, ignored in (("variant_status", "exact_reference"), ("structural_status", "intact")):
+        value = str(attrs.get(key, ""))
+        if value and value != ignored:
+            parts.append(value.replace("_", " "))
+    for key, label in (
+        ("mismatch_bases", "substitutions"),
+        ("inserted_bases", "inserted sequence≈"),
+        ("deleted_bases", "deleted reference sequence≈"),
+    ):
+        count = int(attrs.get(key, 0) or 0)
+        if not count:
+            continue
+        suffix = " bp" if key != "mismatch_bases" else ""
+        parts.append(
+            f"{label}={count}{suffix}"
+            if key == "mismatch_bases"
+            else f"{label}{count}{suffix}"
+        )
+
+
+def _transposon_notes(feature: MGEFeature) -> str:
+    attrs = feature.attributes
+    parts: list[str] = []
+    identity = _number(attrs.get("blast_identity"))
+    coverage = _number(attrs.get("blast_subject_coverage") or attrs.get("blast_coverage"))
+    if identity:
+        parts.append(f"BLAST identity={identity}%")
+    if coverage:
+        parts.append(f"reference coverage={coverage}%")
+    definition = attrs.get("closest_definition")
+    subtype = attrs.get("defined_subtype")
+    if definition:
+        label = f"closest definition={definition}"
+        if subtype and subtype != "canonical":
+            label += f" (subtype {subtype})"
+        parts.append(label)
+    _append_sequence_change_notes(parts, attrs)
+    known_differences = attrs.get("known_differences_from_parent", [])
+    if isinstance(known_differences, list) and known_differences:
+        parts.append("reviewed subtype differences: " + ", ".join(map(str, known_differences)))
+    if assembly_status := attrs.get("component_assembly_status"):
+        count = attrs.get("detected_component_count", 0)
+        parts.append(
+            f"component grammar={assembly_status}; {count} independently sequence-detected components"
+        )
+    if tsd_note := _tsd_note(feature):
+        parts.append(tsd_note)
+    if attrs.get("fragment"):
+        parts.append("exact Tn1/Tn2/Tn3 identity unresolved")
+    return "; ".join(parts)
+
+
+def _component_scan_note(feature: MGEFeature) -> str:
+    attrs = feature.attributes
+    detail = (
+        f"independently sequence-detected {attrs.get('component_role', 'component')}; "
+        f"identity={attrs.get('blast_identity', '')}%; "
+        f"coverage={attrs.get('blast_coverage', '')}%"
+    )
+    status = attrs.get("structural_status", "")
+    if status and status != "intact":
+        detail += f"; {str(status).replace('_', ' ')}"
+    return detail
+
+
 def _notes(feature: MGEFeature) -> str:
     attrs = feature.attributes
     if feature.element_type in {"transposon", "transposition_unit"}:
-        parts: list[str] = []
-        identity = _number(attrs.get("blast_identity"))
-        coverage = _number(
-            attrs.get("blast_subject_coverage") or attrs.get("blast_coverage")
-        )
-        if identity:
-            parts.append(f"BLAST identity={identity}%")
-        if coverage:
-            parts.append(f"reference coverage={coverage}%")
-        definition = attrs.get("closest_definition")
-        subtype = attrs.get("defined_subtype")
-        if definition:
-            label = f"closest definition={definition}"
-            if subtype and subtype != "canonical":
-                label += f" (subtype {subtype})"
-            parts.append(label)
-        variant_status = str(attrs.get("variant_status", ""))
-        structural_status = str(attrs.get("structural_status", ""))
-        if variant_status and variant_status != "exact_reference":
-            parts.append(variant_status.replace("_", " "))
-        if structural_status and structural_status != "intact":
-            parts.append(structural_status.replace("_", " "))
-        inserted_bases = int(attrs.get("inserted_bases", 0) or 0)
-        deleted_bases = int(attrs.get("deleted_bases", 0) or 0)
-        mismatch_bases = int(attrs.get("mismatch_bases", 0) or 0)
-        if mismatch_bases:
-            parts.append(f"substitutions={mismatch_bases}")
-        if inserted_bases:
-            parts.append(f"inserted sequence≈{inserted_bases} bp")
-        if deleted_bases:
-            parts.append(f"deleted reference sequence≈{deleted_bases} bp")
-        known_differences = attrs.get("known_differences_from_parent", [])
-        if isinstance(known_differences, list) and known_differences:
-            parts.append(
-                "reviewed subtype differences: "
-                + ", ".join(str(item) for item in known_differences)
-            )
-        assembly_status = attrs.get("component_assembly_status")
-        if assembly_status:
-            count = attrs.get("detected_component_count", 0)
-            parts.append(
-                f"component grammar={assembly_status}; "
-                f"{count} independently sequence-detected components"
-            )
-        if feature.tsd_seq:
-            strength = attrs.get("tsd_evidence_strength", "supporting")
-            left = f"{attrs.get('tsd_left_start', '?')}..{attrs.get('tsd_left_end', '?')}"
-            right = f"{attrs.get('tsd_right_start', '?')}..{attrs.get('tsd_right_end', '?')}"
-            parts.append(
-                f"boundary-adjacent DR={feature.tsd_seq} ({strength} evidence; "
-                f"left={left}; right={right})"
-            )
-        elif feature.tsd_length:
-            evidence = attrs.get("tsd_evidence")
-            if evidence == "short_repeat_candidate":
-                candidate = attrs.get("tsd_candidate_seq", "")
-                parts.append(
-                    f"expected DR={feature.tsd_length} bp; short-repeat "
-                    f"candidate={candidate}; weak evidence"
-                )
-            elif evidence == "searched_not_found":
-                parts.append(f"expected DR={feature.tsd_length} bp; searched but not found")
-            elif evidence == "untestable_missing_flank":
-                parts.append(
-                    f"expected DR={feature.tsd_length} bp; flanking sequence unavailable"
-                )
-            else:
-                parts.append(f"expected DR={feature.tsd_length} bp; not sequence-confirmed")
-        if attrs.get("fragment"):
-            parts.append("exact Tn1/Tn2/Tn3 identity unresolved")
-        return "; ".join(parts)
+        return _transposon_notes(feature)
     if attrs.get("source") == "tn123_component_scan":
-        identity = attrs.get("blast_identity", "")
-        coverage = attrs.get("blast_coverage", "")
-        status = attrs.get("structural_status", "")
-        detail = (
-            f"independently sequence-detected {attrs.get('component_role', 'component')}; "
-            f"identity={identity}%; coverage={coverage}%"
-        )
-        if status and status != "intact":
-            detail += f"; {str(status).replace('_', ' ')}"
-        return detail
+        return _component_scan_note(feature)
     if feature.element_type == "IR":
         return f"terminal inverted repeat; IR={feature.end - feature.start + 1} bp"
     if feature.element_type == "res_site":

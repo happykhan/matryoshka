@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- A versioned 17-target priority-transposon roadmap with machine-readable YAML,
+  Markdown/JSON export, explicit component-rule evidence levels and a shared
+  validation contract.
+- BactScout-style detector orchestration: `matryoshka run` now executes supported
+  AMRFinderPlus, ISEScan and IntegronFinder environments by default, retains raw
+  outputs and records completed/provided/unavailable/failed/disabled provenance.
+- `matryoshka preflight` and Pixi `preflight`/`analyse` tasks for a one-FASTA,
+  one-command workflow.
+- Pixi-managed AMRFinderPlus on Intel macOS and Apple silicon through the osx-64
+  Bioconda build/Rosetta, in addition to the Linux detector environments.
+- First-run AMRFinderPlus database initialisation when Bioconda has installed the
+  executable but no valid default database; existing databases are left untouched.
+- AMRFinderPlus software and database versions in the detector provenance stored in
+  `annotation.json` and `run.json`.
 - Reviewable component grammars for Tn21, Tn1721 and Tn1722, with independent
   component scans and `*-like` assembly under the whole-locus-free
   `component-rules` profile.

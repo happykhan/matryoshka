@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import sys
 from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version as _pkg_version
@@ -24,15 +25,17 @@ from .boundaries import confirm_boundaries
 from .component_catalog import catalog_as_json, catalog_as_tsv
 from .confidence import assign_confidence
 from .curated_units import annotate_curated_units
+from .deduplication import suppress_redundant_inference as _suppress_redundant_inference
 from .detect import (
     MGEFeature,
-    detector_available,
     parse_amrfinder,
     parse_integron_finder,
     parse_isescan,
-    run_amrfinder,
-    run_integron_finder,
-    run_isescan,
+)
+from .detector_workflow import (
+    DetectorExecutionError,
+    execute_detectors,
+    preflight_runtimes,
 )
 from .element_definitions import (
     definitions_as_json,
@@ -45,6 +48,11 @@ from .locus_map import to_locus_map_svg
 from .locus_table import to_locus_table_svg
 from .locus_views import extract_locus_views
 from .output import to_genbank, to_gff3, to_json, to_wolvercote
+from .priority_transposons import (
+    priority_transposons_as_json,
+    priority_transposons_as_markdown,
+    priority_transposons_as_yaml,
+)
 from .proof import build_tn123_proof, write_proof_bundle
 from .reference_scan import REFERENCE_PROFILES, blast_available, scan_all
 from .report import annotation_document, annotation_gff3, count_features
@@ -121,6 +129,68 @@ def definitions_command(definition_set: str, fmt: str, out: str) -> None:
     _emit(exporters[definition_set][fmt](), out, False)
 
 
+@cli.command()
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    show_default=True,
+    help="Readiness-report format.",
+)
+def preflight(fmt: str) -> None:
+    """Check the core runtime and optional detector availability."""
+    runtimes = preflight_runtimes()
+    core = {
+        "blastn": shutil.which("blastn"),
+        "makeblastdb": shutil.which("makeblastdb"),
+        "ready": blast_available(),
+    }
+    if fmt == "json":
+        click.echo(json.dumps({
+            "core": core,
+            "detectors": [
+                {"name": name, "label": label, **runtime.document()}
+                for name, label, runtime in runtimes
+            ],
+        }, indent=2))
+        return
+
+    click.echo(
+        "Core reference/component scan: "
+        + ("ready" if core["ready"] else "missing BLAST+"),
+    )
+    for _, label, runtime in runtimes:
+        status = "configured" if runtime.available else "unavailable"
+        click.echo(
+            f"{label}: {status} — {runtime.reason}",
+        )
+    click.echo(
+        "Use --detectors available for best-effort execution, "
+        "--detectors all to require every detector, or --detectors none to disable them."
+    )
+
+
+@cli.command()
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["yaml", "json", "markdown"]),
+    default="markdown",
+    show_default=True,
+    help="Roadmap output format.",
+)
+@click.option("--out", "-o", default="-", help="Output file (default: stdout).")
+def roadmap(fmt: str, out: str) -> None:
+    """Export the 17-target biological coverage and validation roadmap."""
+    exporters = {
+        "yaml": priority_transposons_as_yaml,
+        "json": priority_transposons_as_json,
+        "markdown": priority_transposons_as_markdown,
+    }
+    _emit(exporters[fmt](), out, False)
+
+
 def _features_on_contig(
     all_features: list[MGEFeature], contig_id: str
 ) -> list[MGEFeature]:
@@ -150,112 +220,6 @@ def _flatten_feature_inputs(features: list[MGEFeature]) -> list[MGEFeature]:
     for feature in features:
         _visit(feature)
     return flattened
-
-
-def _suppress_redundant_inference(features: list[MGEFeature]) -> list[MGEFeature]:
-    """Drop rule-inferred transposons that overlap a BLAST-confirmed call of
-    the same family. The BLAST boundaries are authoritative.
-    """
-    blast_by_family: dict[str, list[MGEFeature]] = {}
-    exact_reference_is = [
-        feature
-        for feature in features
-        if feature.element_type == "IS"
-        and feature.attributes.get("source") == "reference_scan"
-    ]
-    for f in features:
-        if f.attributes.get("source") == "reference_scan" and f.element_type == "transposon":
-            blast_by_family.setdefault(f.family, []).append(f)
-
-    def _overlap(a: MGEFeature, b: MGEFeature) -> bool:
-        if a.end < b.start or b.end < a.start:
-            return False
-        ovl = min(a.end, b.end) - max(a.start, b.start)
-        short = min(a.end - a.start, b.end - b.start)
-        return short > 0 and ovl / short > 0.5
-
-    def _same_reference_unit(a: MGEFeature, b: MGEFeature) -> bool:
-        if a.attributes.get("seqid") != b.attributes.get("seqid"):
-            return False
-        if not _overlap(a, b):
-            return False
-        return (
-            a.family == b.family
-            or a.name == b.name
-            or (a.family == "Tn3" and a.name in {b.family, b.name})
-            or (b.family == "Tn3" and b.name in {a.family, a.name})
-        )
-
-    def _reference_rank(feature: MGEFeature) -> tuple[float, float, float, int]:
-        provenance = 1.0 if feature.attributes.get("provenance") == "expert_reviewed" else 0.0
-        coverage = float(
-            feature.attributes.get("blast_subject_coverage")
-            or feature.attributes.get("blast_coverage")
-            or 0
-        )
-        identity = float(feature.attributes.get("blast_identity") or 0)
-        return provenance, coverage, identity, feature.end - feature.start
-
-    reference_units = [
-        feature
-        for feature in features
-        if feature.element_type == "transposon"
-        and feature.attributes.get("source") == "reference_scan"
-    ]
-    selected_reference_ids: set[int] = set()
-    for candidate in sorted(reference_units, key=_reference_rank, reverse=True):
-        if any(
-            _same_reference_unit(candidate, selected)
-            for selected in reference_units
-            if id(selected) in selected_reference_ids
-        ):
-            continue
-        selected_reference_ids.add(id(candidate))
-
-    kept: list[MGEFeature] = []
-    curated_components = [
-        feature
-        for feature in features
-        if feature.attributes.get("source") == "curated_reference"
-    ]
-    for f in features:
-        if (
-            f.element_type == "transposon"
-            and f.attributes.get("source") == "reference_scan"
-            and id(f) not in selected_reference_ids
-        ):
-            continue
-        if (
-            f.attributes.get("source") == "reference_scan"
-            and any(
-                f.element_type == curated.element_type
-                and (
-                    f.name == curated.name
-                    or (
-                        f.attributes.get("fid")
-                        and f.attributes.get("fid") == curated.attributes.get("fid")
-                    )
-                )
-                and _overlap(f, curated)
-                for curated in curated_components
-            )
-        ):
-            continue
-        if (
-            f.element_type == "IS"
-            and f.attributes.get("source") not in {"reference_scan", "curated_reference"}
-            and any(_overlap(f, exact) for exact in exact_reference_is)
-        ):
-            continue
-        if (
-            f.element_type == "transposon"
-            and f.attributes.get("source") != "reference_scan"
-            and f.family in blast_by_family
-            and any(_overlap(f, b) for b in blast_by_family[f.family])
-        ):
-            continue
-        kept.append(f)
-    return kept
 
 
 def _annotate_contig(
@@ -340,9 +304,9 @@ def _load_detector_outputs(
 @click.option(
     "--detectors",
     type=click.Choice(["none", "available", "all"]),
-    default="none",
+    default="available",
     show_default=True,
-    help="Optionally run ISEScan, AMRFinder+ and IntegronFinder from PATH/Pixi.",
+    help="Run bundled/installed AMRFinderPlus, ISEScan and IntegronFinder.",
 )
 @click.option("--isescan", type=click.Path(exists=True), help="Precomputed ISEScan TSV.")
 @click.option("--amrfinder", type=click.Path(exists=True), help="Precomputed AMRFinder+ TSV.")
@@ -373,30 +337,22 @@ def run_workflow(
         )
     out.mkdir(parents=True, exist_ok=True)
     detector_dir = out / "detectors"
-    detector_paths: dict[str, str | None] = {
+    supplied_detector_paths: dict[str, str | None] = {
         "isescan": isescan,
         "amrfinder": amrfinder,
         "integron": integrons,
     }
-    runners = {
-        "isescan": run_isescan,
-        "amrfinder": run_amrfinder,
-        "integron": run_integron_finder,
-    }
-    if detectors != "none":
-        detector_dir.mkdir(parents=True, exist_ok=True)
-        for name, runner in runners.items():
-            if detector_paths[name]:
-                continue
-            if not detector_available(name):
-                if detectors == "all":
-                    raise click.UsageError(
-                        f"--detectors all requested, but {name} is not installed."
-                    )
-                click.echo(f"Detector unavailable; skipping {name}.", err=True)
-                continue
-            click.echo(f"Running {name}…", err=True)
-            detector_paths[name] = str(runner(fasta, detector_dir / name))
+    try:
+        detector_paths, detector_runs = execute_detectors(
+            fasta,
+            detector_dir,
+            mode=detectors,
+            threads=threads,
+            supplied=supplied_detector_paths,
+            announce=lambda message: click.echo(message, err=True),
+        )
+    except DetectorExecutionError as error:
+        raise click.UsageError(str(error)) from error
 
     all_features = _load_detector_outputs(
         detector_paths["isescan"],
@@ -486,9 +442,9 @@ def run_workflow(
             locus_count += 1
 
     detector_provenance = {
-        name: str(Path(path).resolve())
-        for name, path in detector_paths.items()
-        if path
+        record.name: record.output
+        for record in detector_runs
+        if record.output
     }
     document = annotation_document(
         annotated,
@@ -502,10 +458,13 @@ def run_workflow(
             profile,
             "--threads",
             str(threads),
+            "--detectors",
+            detectors,
             "--out",
             str(out),
         ],
         detector_outputs=detector_provenance,
+        detector_runs=[record.document() for record in detector_runs],
     )
     (out / "annotation.json").write_text(
         json.dumps(document, indent=2) + "\n",
@@ -537,6 +496,7 @@ def run_workflow(
         "locus_views": locus_count,
         "locus_outputs": locus_outputs,
         "proof_status": proof["summary"]["status"],
+        "detectors": [record.document() for record in detector_runs],
         "outputs": {
             "annotation_json": "annotation.json",
             "annotation_gff3": "annotation.gff3",

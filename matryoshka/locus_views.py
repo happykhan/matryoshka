@@ -7,8 +7,9 @@ from dataclasses import dataclass
 from .detect import MGEFeature
 
 TN123_FAMILIES = frozenset({"Tn1", "Tn2", "Tn3", "Tn3_family"})
-VALIDATED_LOCUS_FAMILIES = TN123_FAMILIES | frozenset({
-    "Tn21", "Tn1721", "Tn1722", "Tn4401", "Tn5393", "Tn5403",
+PRIORITY_LOCUS_FAMILIES = TN123_FAMILIES | frozenset({
+    "Tn7", "Tn10", "Tn21", "Tn402", "Tn1331", "Tn1696", "Tn1721",
+    "Tn1722", "Tn1999", "Tn2670", "Tn4401", "Tn5393", "Tn5403", "Tn6029",
 })
 STRUCTURAL_LOCUS_TARGETS = frozenset({
     "transposition_unit",
@@ -52,7 +53,7 @@ def _is_locus_target(feature: MGEFeature) -> bool:
     return (
         feature.element_type == "transposon"
         and (
-            feature.family in VALIDATED_LOCUS_FAMILIES
+            feature.family in PRIORITY_LOCUS_FAMILIES
             or feature.attributes.get("tn123_canonical") == "true"
         )
     )

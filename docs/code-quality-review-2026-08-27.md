@@ -31,11 +31,37 @@ adapters, and split map primitives from document composition. That refactor is
 not required to add or review another biological definition: the extension
 surface is YAML plus canonical component sequences.
 
+## Strict second pass: one-command workflow and priority roadmap
+
+The detector-orchestration change received a second maintainability audit with a
+McCabe threshold of 12. The implementation was restructured before acceptance:
+
+- optional detector execution, state transitions and best-effort/strict failure
+  policy live in `detector_workflow.py`, not in the already large CLI module;
+- detector runtimes and versions are typed records rather than loosely shaped
+  dictionaries; AMRFinderPlus software/database versions and portable output paths
+  are part of the result provenance;
+- overlapping reference/rule/curated calls moved out of `__main__.py` into a focused
+  deduplication policy, reducing the CLI module from roughly 850 to 750 lines and
+  removing its only McCabe violation;
+- expert-definition validation was split into named type/unit/component validators,
+  so extending YAML does not add another condition chain to a monolithic loader;
+- IR/TSD boundary confirmation and locus-table evidence notes were decomposed into
+  small evidence-specific helpers without changing their tested behaviour.
+
+Four pre-existing functions remain above the deliberately strict complexity threshold:
+the IntegronFinder parser, locus-map document composer, GenBank feature converter,
+and Tn1/Tn2/Tn3 insertion extractor. The map composer is the largest concern at 841
+lines/module and complexity 32; it should be separated into a typed feature partition
+and track renderers before substantially expanding the drawing vocabulary again. These
+are maintainability debt, not hidden biological coverage, and are not blockers for the
+isolated detector/roadmap change.
+
 ## Verification
 
 - `ruff check matryoshka tests scripts`: pass
 - `mypy matryoshka`: pass
-- `pytest -q`: pass (176 tests)
+- `pytest -q`: pass (188 tests)
 - Python byte-code compilation: pass
 - `git diff --check`: pass
 - Component-only exact controls: Tn21-like, Tn1721-like and Tn1722-like

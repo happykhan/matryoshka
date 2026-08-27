@@ -97,7 +97,10 @@ def test_run_writes_versioned_result_directory(tmp_path):
     out = tmp_path / "result"
     result = CliRunner().invoke(
         cli,
-        ["run", str(TN123), "--threads", "2", "--out", str(out)],
+        [
+            "run", str(TN123), "--threads", "2", "--detectors", "none",
+            "--out", str(out),
+        ],
     )
     assert result.exit_code == 0, result.output
     document = json.loads((out / "annotation.json").read_text())
@@ -113,6 +116,7 @@ def test_run_writes_versioned_result_directory(tmp_path):
         assert (out / locus["locus_table"]).is_file()
         assert (out / locus["hierarchy"]).is_file()
     assert summary["proof_status"] == "PASS"
+    assert {item["status"] for item in summary["detectors"]} == {"disabled"}
     assert len(list((out / "locus-map").glob("*.svg"))) == 3
     assert len(list((out / "locus-table").glob("*.svg"))) == 3
     assert len(list((out / "hierarchy").glob("*.svg"))) == 3
@@ -128,7 +132,10 @@ def test_arbitrary_sequence_proof_connects_detection_matching_and_outputs(tmp_pa
     out = tmp_path / "arbitrary-proof"
     result = CliRunner().invoke(
         cli,
-        ["run", str(ARBITRARY_TN123), "--threads", "2", "--out", str(out)],
+        [
+            "run", str(ARBITRARY_TN123), "--threads", "2",
+            "--detectors", "none", "--out", str(out),
+        ],
     )
     assert result.exit_code == 0, result.output
 
@@ -173,3 +180,13 @@ def test_arbitrary_sequence_proof_connects_detection_matching_and_outputs(tmp_pa
     assert report.count('class="verdict pass"') == 3
     embedded = report.split('id="matryoshka-proof">', 1)[1].split("</script>", 1)[0]
     assert json.loads(embedded)["summary"]["status"] == "PASS"
+
+
+def test_preflight_reports_core_and_optional_detectors() -> None:
+    result = CliRunner().invoke(cli, ["preflight", "--format", "json"])
+    assert result.exit_code == 0, result.output
+    document = json.loads(result.output)
+    assert document["core"]["ready"] is True
+    assert [item["name"] for item in document["detectors"]] == [
+        "amrfinder", "isescan", "integron",
+    ]

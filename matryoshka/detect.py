@@ -16,9 +16,10 @@ from __future__ import annotations
 import csv
 import io
 import platform
+import re
 import shutil
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 
@@ -412,29 +413,141 @@ DETECTOR_EXECUTABLES = {
     "integron": "integron_finder",
 }
 
-
-def detector_available(detector: str) -> bool:
-    executable = DETECTOR_EXECUTABLES[detector]
-    if shutil.which(executable):
-        return True
-    project_manifest = Path(__file__).parents[1] / "pixi.toml"
-    return (
-        platform.system() == "Linux"
-        and project_manifest.exists()
-        and shutil.which("pixi") is not None
-    )
+_PIXI_PLATFORMS = {
+    "isescan": frozenset({"linux-64"}),
+    "amrfinder": frozenset({"linux-64", "osx-64"}),
+    "integron": frozenset({"linux-64"}),
+}
 
 
-def _detector_command(detector: str) -> list[str]:
+@dataclass(frozen=True)
+class DetectorRuntime:
+    available: bool
+    source: str
+    executable: str
+    platform: str
+    reason: str
+    manifest: str | None = None
+
+    def document(self) -> dict[str, str | bool | None]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class DetectorVersion:
+    tool_version: str | None = None
+    database_version: str | None = None
+
+
+def _project_manifest() -> Path:
+    return Path(__file__).parents[1] / "pixi.toml"
+
+
+def _native_pixi_platform() -> str | None:
+    system = platform.system()
+    machine = platform.machine().lower()
+    if system == "Linux" and machine in {"x86_64", "amd64"}:
+        return "linux-64"
+    if system == "Darwin" and machine in {"x86_64", "amd64"}:
+        return "osx-64"
+    if system == "Darwin" and machine in {"arm64", "aarch64"}:
+        # AMRFinderPlus is currently distributed by Bioconda for osx-64.
+        # Pixi can run that environment through Rosetta on Apple silicon.
+        return "osx-64"
+    return None
+
+
+def detector_runtime(detector: str) -> DetectorRuntime:
+    """Describe how a detector would run without installing or executing it."""
+    if detector not in DETECTOR_EXECUTABLES:
+        raise KeyError(f"unknown detector: {detector}")
     executable = DETECTOR_EXECUTABLES[detector]
     direct = shutil.which(executable)
     if direct:
-        return [direct]
-    project_manifest = Path(__file__).parents[1] / "pixi.toml"
-    if platform.system() == "Linux" and project_manifest.exists() and shutil.which("pixi"):
-        return ["pixi", "run", "-e", detector, executable]
+        return DetectorRuntime(
+            available=True,
+            source="path",
+            executable=direct,
+            platform=_native_pixi_platform() or platform.system().lower(),
+            reason="installed executable",
+        )
+
+    manifest = _project_manifest()
+    pixi = shutil.which("pixi")
+    target = _native_pixi_platform()
+    if (
+        pixi
+        and manifest.exists()
+        and target in _PIXI_PLATFORMS[detector]
+    ):
+        reason = "Pixi-managed environment"
+        if platform.system() == "Darwin" and platform.machine().lower() in {"arm64", "aarch64"}:
+            reason += " (osx-64 through Rosetta)"
+        return DetectorRuntime(
+            available=True,
+            source="pixi",
+            executable=executable,
+            platform=target,
+            manifest=str(manifest),
+            reason=reason,
+        )
+
+    supported = ", ".join(sorted(_PIXI_PLATFORMS[detector]))
+    return DetectorRuntime(
+        available=False,
+        source="unavailable",
+        executable=executable,
+        platform=target or "unsupported",
+        reason=(
+            f"not on PATH and no runnable Pixi environment for this host; "
+            f"bundled platforms: {supported}"
+        ),
+    )
+
+
+def detector_available(detector: str) -> bool:
+    return detector_runtime(detector).available
+
+
+def _detector_command(detector: str) -> list[str]:
+    runtime = detector_runtime(detector)
+    executable = runtime.executable
+    if runtime.source == "path":
+        return [executable]
+    if runtime.source == "pixi":
+        return [
+            str(shutil.which("pixi")),
+            "run",
+            "--manifest-path",
+            str(runtime.manifest),
+            "--environment",
+            detector,
+            "--platform",
+            runtime.platform,
+            executable,
+        ]
     raise FileNotFoundError(
-        f"{executable} is not on PATH. Install the detector or use its precomputed output."
+        f"{executable} is unavailable: {runtime.reason}. "
+        "Install the detector or use its precomputed output."
+    )
+
+
+def detector_version(detector: str) -> DetectorVersion:
+    """Return machine-readable version provenance when a tool exposes it."""
+    if detector != "amrfinder":
+        return DetectorVersion()
+    result = subprocess.run(
+        [*_detector_command(detector), "-V"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    text = f"{result.stdout}\n{result.stderr}"
+    software = re.search(r"Software version:\s*'?([^'\n]+)", text)
+    database = re.search(r"Database version:\s*'?([^'\n]+)", text)
+    return DetectorVersion(
+        tool_version=software.group(1).strip() if software else None,
+        database_version=database.group(1).strip() if database else None,
     )
 
 _ISESCAN_HEADER = (
@@ -521,7 +634,11 @@ def _adjust_isescan_coordinates(
             writer.writerow(adjusted)
 
 
-def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
+def run_isescan(
+    fasta: str | Path,
+    outdir: str | Path,
+    threads: int = 4,
+) -> Path:
     """Run ISEScan from PATH or a Linux Pixi environment. Return its TSV.
 
     The input FASTA is padded with N bases on both sides so that IS elements
@@ -551,7 +668,8 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
 
     subprocess.run(
         [*_detector_command("isescan"),
-         "--seqfile", str(padded_fasta), "--output", str(outdir), "--nthread", "4"],
+         "--seqfile", str(padded_fasta), "--output", str(outdir),
+         "--nthread", str(threads)],
         check=True,
     )
     raw_tsv = outdir / padded_fasta.name / (padded_fasta.name + ".tsv")
@@ -577,28 +695,66 @@ def run_isescan(fasta: str | Path, outdir: str | Path) -> Path:
     return tsv
 
 
-def run_amrfinder(fasta: str | Path, outdir: str | Path) -> Path:
+def run_amrfinder(
+    fasta: str | Path,
+    outdir: str | Path,
+    threads: int = 4,
+) -> Path:
     """Run AMRFinder+ from PATH or a Linux Pixi environment. Return its TSV."""
     fasta = Path(fasta)
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     out_tsv = outdir / (fasta.stem + ".tsv")
+    command = _detector_command("amrfinder")
+    _ensure_amrfinder_database(command)
     subprocess.run(
-        [*_detector_command("amrfinder"),
-         "-n", str(fasta), "-o", str(out_tsv), "--plus"],
+        [*command,
+         "-n", str(fasta), "-o", str(out_tsv), "--plus",
+         "--threads", str(threads)],
         check=True,
     )
     return out_tsv
 
 
-def run_integron_finder(fasta: str | Path, outdir: str | Path) -> Path:
+def _ensure_amrfinder_database(command: list[str]) -> None:
+    """Initialise the default AMRFinderPlus database on first use.
+
+    The Bioconda package supplies the executable but intentionally leaves the
+    versioned database to ``amrfinder -u``. Existing valid or user-selected
+    databases are never updated automatically.
+    """
+    probe = subprocess.run(
+        [*command, "-V"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if probe.returncode == 0:
+        return
+    diagnostic = f"{probe.stdout}\n{probe.stderr}"
+    if "No valid AMRFinder database" not in diagnostic:
+        raise subprocess.CalledProcessError(
+            probe.returncode,
+            [*command, "-V"],
+            output=probe.stdout,
+            stderr=probe.stderr,
+        )
+    subprocess.run([*command, "-u"], check=True)
+    subprocess.run([*command, "-V"], check=True)
+
+
+def run_integron_finder(
+    fasta: str | Path,
+    outdir: str | Path,
+    threads: int = 4,
+) -> Path:
     """Run IntegronFinder from PATH or a Linux Pixi environment. Return its output."""
     fasta = Path(fasta)
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         [*_detector_command("integron"),
-         "--outdir", str(outdir), "--circ", str(fasta)],
+         "--outdir", str(outdir), "--circ", "--cpu", str(threads), str(fasta)],
         check=True,
     )
     candidates = list(outdir.rglob("*.integrons"))

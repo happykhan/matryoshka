@@ -217,6 +217,20 @@ def test_broad_region_and_mobile_child_get_views_without_duplicate_integron_view
     assert [locus.target.name for locus in loci] == ["MRR", "Tn1"]
 
 
+def test_every_detected_priority_transposon_gets_a_locus_view():
+    priorities = [
+        "Tn7", "Tn10", "Tn21", "Tn402", "Tn1331", "Tn1696", "Tn1721",
+        "Tn1722", "Tn1999", "Tn2670", "Tn4401", "Tn5393", "Tn5403", "Tn6029",
+    ]
+    features = [
+        feature("transposon", name, 1_000 + index * 20_000, 9_000 + index * 20_000,
+                family=name)
+        for index, name in enumerate(priorities)
+    ]
+    loci = extract_locus_views(features, 300_000, flank=1_000)
+    assert [locus.target.family for locus in loci] == priorities
+
+
 def test_bundled_isecp1_reference_is_the_exact_is_not_a_whole_accession():
     records = list(SeqIO.parse(REFERENCES_DIR / "isecp1.fasta", "fasta"))
     assert len(records) == 1
