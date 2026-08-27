@@ -88,6 +88,34 @@ def _validate_named_definition(
             )
 
 
+def _validate_type_assignment(classification: object) -> None:
+    if not isinstance(classification, dict):
+        raise ValueError("classification rules must be a mapping")
+    assignment = classification.get("type_assignment")
+    if not isinstance(assignment, dict):
+        raise ValueError("type assignment rules must be a mapping")
+    primary = {str(role) for role in assignment.get("primary_discriminator_roles", [])}
+    supporting = {
+        str(role) for role in assignment.get("supporting_discriminator_roles", [])
+    }
+    context = {str(role) for role in assignment.get("unweighted_context_roles", [])}
+    non_discriminators = {
+        str(role) for role in assignment.get("non_discriminator_roles", [])
+    }
+    weights = assignment.get("discriminator_role_weights")
+    if not isinstance(weights, dict) or not weights:
+        raise ValueError("type assignment must declare discriminator weights")
+    weighted = {str(role) for role in weights}
+    if weighted != primary | supporting:
+        raise ValueError("weighted roles must equal primary plus supporting discriminators")
+    if weighted & non_discriminators:
+        raise ValueError("non-discriminator roles cannot contribute to the type score")
+    if weighted & context:
+        raise ValueError("unweighted context roles cannot contribute to the type score")
+    if any(float(weight) <= 0 for weight in weights.values()):
+        raise ValueError("discriminator weights must be positive")
+
+
 def load_tn123_definitions() -> dict[str, Any]:
     """Return the bundled Tn1/Tn2/Tn3 definitions after contract validation."""
     resource = files("matryoshka").joinpath("tn123_definitions.yaml")
@@ -106,6 +134,8 @@ def load_tn123_definitions() -> dict[str, Any]:
         raise ValueError("Tn1/Tn2/Tn3 type definitions are incomplete")
     if not isinstance(definitions, dict):
         raise ValueError("Tn1/Tn2/Tn3 named definitions must be a mapping")
+
+    _validate_type_assignment(document["classification"])
 
     for type_name, type_definition in types.items():
         _validate_type_definition(type_name, type_definition, definitions)

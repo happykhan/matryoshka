@@ -18,6 +18,10 @@ def test_plain_language_report_covers_every_executable_rule_family() -> None:
     for family in ["Tn1", "Tn2", "Tn3", "Tn21", "Tn1721", "Tn1722"]:
         assert family in report
     assert "terminal_IR → blaTEM → tnpR → res → tnpA → terminal_IR" in report
+    assert "res and blaTEM have zero type weight" in report
+    assert "tnpR 50%, tnpA 50%" in report
+    assert "Primarily separates Tn2" in report
+    assert "Primarily separates Tn3" in report
     assert "Questions for expert review" in report
     assert "matryoshka/tn123_definitions.yaml" in report
 

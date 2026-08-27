@@ -27,7 +27,7 @@ arbitrary FASTA
     |
     +-- check the required component order and both element ends
     |
-    +-- score local blaTEM, tnpR, res and tnpA profiles against expert type rules
+    +-- score local tnpR and tnpA backbone profiles equally
     |
     +-- assign a qualified type-like call, unresolved unit or fragment
     |
@@ -78,7 +78,7 @@ This is deliberately strict. One substitution makes the sequence a variant unles
 
 ### Rule-based Tn1, Tn2 or Tn3 type
 
-A complete candidate is scored against the local component profiles defined by the canonical Tn1, Tn2 and Tn3 examples. The weighted roles are `blaTEM` 1, `tnpR` 2, `res` 3 and `tnpA` 3. The best weighted component score must reach 90% and exceed the next type by at least 0.5 percentage points. The combined profile includes the informative differences around `res` described by Partridge and Hall; it is not a single-gene or whole-element lookup.
+A complete candidate is scored against the local transposition-backbone profiles defined by the canonical Tn1, Tn2 and Tn3 examples. The only weighted roles are `tnpR` 5 and `tnpA` 5. The short `res` site remains required structural context and `blaTEM` remains required cargo, but neither has weight in the Tn1/Tn2/Tn3 type score. The best weighted backbone score must reach 90% and exceed the next type by at least 0.5 percentage points. In the declared canonical sequences, `tnpR` primarily separates Tn2 from Tn1/Tn3, while `tnpA` primarily separates Tn3 from Tn1/Tn2. This is not a cargo-gene or whole-element lookup.
 
 When those expert rules support a type, the visible name is `Tn1-like`, `Tn2-like` or `Tn3-like`. Split component matches retain insertions and deletions. If the optional secondary comparison is 100% identical across a reviewed complete definition, the call can be confirmed as exact.
 
@@ -107,15 +107,19 @@ A different transposon may contain one or more shared genes, IRs or sequence blo
 
 Expert review selected the Tn1 sequence from accession NC_008357. The human rule is:
 
-> Call Tn1-like when the complete six-part grammar is independently supported and the weighted local component profiles meet the Tn1 score and margin rules. Confirm exact Tn1 only when the optional whole-locus comparison is a complete, gap-free, mismatch-free match to NC_008357. The element carries `blaTEM-2`.
+> Call Tn1-like when the complete six-part grammar is independently supported and the equally weighted local `tnpR`/`tnpA` backbone profiles meet the Tn1 score and margin rules. Confirm exact Tn1 only when the optional whole-locus comparison is a complete, gap-free, mismatch-free match to NC_008357. The element carries `blaTEM-2`, but that allele does not determine its type.
 
 The corresponding reviewable definition is:
 
 ```yaml
 classification:
   type_assignment:
-    method: weighted component profiles
-    discriminator_role_weights: {blaTEM: 1, tnpR: 2, res: 3, tnpA: 3}
+    method: weighted transposition-backbone profiles
+    primary_discriminator_roles: [tnpR, tnpA]
+    supporting_discriminator_roles: []
+    unweighted_context_roles: [res]
+    non_discriminator_roles: [blaTEM]
+    discriminator_role_weights: {tnpR: 5, tnpA: 5}
     minimum_component_profile_score_percent: 90
     minimum_type_margin_percent: 0.5
   reference_comparison:

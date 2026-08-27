@@ -16,7 +16,7 @@ A complete group-level call requires all six component occurrences in the stated
 
 ## Classification rules
 
-Type assignment: First establish a complete Tn1/Tn2/Tn3-group locus from independently detected components. Score Tn1, Tn2 and Tn3 using the locally detected blaTEM, tnpR, res and tnpA component profiles and the declared weights. Assign a rule-based type only when the best component profile clears the score and margin thresholds. The score threshold permits a locally interrupted or deleted component while the required-component and order rules remain satisfied. Otherwise retain a complete but unresolved Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required to discover or type a candidate.
+Type assignment: First establish a complete Tn1/Tn2/Tn3-group locus from independently detected components. Score Tn1, Tn2 and Tn3 from the locally detected tnpR and tnpA backbone sequences. res is retained as shorter structural context but is not scored. blaTEM is required cargo for this group and its allele is reported, but it contributes no weight to the Tn1/Tn2/Tn3 type call. Assign a rule-based type only when the best backbone profile clears the score and margin thresholds. The score threshold permits a locally interrupted or deleted component while the required-component and order rules remain satisfied. Otherwise retain a complete but unresolved Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required to discover or type a candidate.
 
 Secondary reference comparison: Compare an assembled candidate with reviewed whole-element references only after component-rule classification. Record the closest reference, identity, coverage and differences. An exact match may confirm a known definition, but a closest match must not create the family or type call.
 
@@ -28,7 +28,7 @@ Fragment: Partial homology is retained with coordinates, detected components and
 
 ## Type: Tn1
 
-Canonical Tn1 uses the expert-reviewed NC_008357 sequence. It has the complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local blaTEM, tnpR, res and tnpA profiles define the Tn1 component signature. Exact Tn1 additionally requires a gap-free, mismatch-free match to this declared sequence.
+Canonical Tn1 uses the expert-reviewed NC_008357 sequence. It has the complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local tnpR and tnpA backbone profiles define the Tn1 component signature. The blaTEM allele is reported cargo rather than a type discriminator. Exact Tn1 additionally requires a gap-free, mismatch-free match to this declared sequence.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -41,7 +41,7 @@ Canonical Tn1 uses the expert-reviewed NC_008357 sequence. It has the complete T
 
 ## Type: Tn2
 
-Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the complete group grammar and carries blaTEM-1b. Its local component profiles, particularly the diagnostic sequence around res, distinguish a Tn2-like candidate from Tn1 and Tn3 without requiring a whole-element match.
+Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the complete group grammar and carries blaTEM-1b. Its divergent tnpR backbone profile, together with tnpA, distinguishes a Tn2-like candidate from Tn1 and Tn3. The diagnostic sequence around res is retained as unweighted context. Classification does not use the blaTEM allele or require a whole-element match.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -54,7 +54,7 @@ Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as Tn2* in t
 
 ## Type: Tn3
 
-Canonical Tn3 uses HM749966, selected during expert review in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. The combined local component profiles, not blaTEM protein identity or gene order alone, distinguish a Tn3-like candidate from Tn1 and Tn2.
+Canonical Tn3 uses HM749966, selected during expert review in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. Its divergent tnpA backbone profile, together with tnpR, distinguishes a Tn3-like candidate from Tn1 and Tn2. The res site is retained as unweighted context. The blaTEM allele is reported but does not contribute to the type score.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |

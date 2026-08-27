@@ -234,6 +234,10 @@ component composition, order, orientation, spacing and component-profile scores.
 Exact reviewed subtype names require the optional secondary whole-locus confirmation
 available in the `validated` profile.
 
+For Tn1/Tn2/Tn3, the type score is derived equally from `tnpR` and `tnpA`.
+The required `res` site is retained as structural context, and `blaTEM` and its allele
+are reported as cargo, but neither contributes to the Tn1/Tn2/Tn3 type score.
+
 BLAST-based detection is always run. Extra detector evidence can be supplied without
 rerunning tools:
 

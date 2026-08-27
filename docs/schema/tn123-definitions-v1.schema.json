@@ -38,7 +38,13 @@
     },
     "classification": {
       "type": "object",
-      "required": ["type_assignment", "reference_comparison", "exact_definition_match", "close_variant", "fragment"]
+      "required": ["type_assignment", "reference_comparison", "exact_definition_match", "close_variant", "fragment"],
+      "properties": {
+        "type_assignment": {
+          "type": "object",
+          "required": ["method", "compare_types", "primary_discriminator_roles", "supporting_discriminator_roles", "unweighted_context_roles", "non_discriminator_roles", "discriminator_role_weights", "discriminator_evidence", "minimum_component_profile_score_percent", "minimum_type_margin_percent", "expert_rule"]
+        }
+      }
     },
     "component_detection": {
       "type": "object",

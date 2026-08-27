@@ -87,22 +87,52 @@ def _tn123_section(document: dict[str, Any]) -> list[str]:
         "",
         "### How Tn1, Tn2 and Tn3 are separated",
         "",
-        "| Reported type | Canonical example | Resistance allele | Local evidence compared |",
+        "The resistance gene is required cargo for this group, but its allele does "
+        "**not** determine the transposon type. Classification uses the transposition "
+        "backbone sequences.",
+        "",
+        "| Reported type | Canonical example | Primary backbone evidence | Cargo reported separately |",
         "| --- | --- | --- | --- |",
     ]
     for type_name, definition in types.items():
         lines.append(
             f"| {type_name} | `{definition['source_accession']}` | "
-            f"{definition['bla_allele']} | blaTEM, tnpR, res and tnpA profiles |"
+            f"tnpR and tnpA; res shown as context | {definition['bla_allele']} |"
         )
     assignment = classification["type_assignment"]
+    weights = assignment["discriminator_role_weights"]
+    total_weight = sum(float(weight) for weight in weights.values())
+    weight_summary = ", ".join(
+        f"{role} {100 * float(weight) / total_weight:g}%"
+        for role, weight in weights.items()
+    )
+    evidence = assignment["discriminator_evidence"]
+    identity = evidence["pairwise_identity_percent"]
     lines.extend([
         "",
-        f"The best local component profile must score at least "
+        f"The type score is weighted as {weight_summary}. res and blaTEM have zero type weight. "
+        f"The best local backbone profile must score at least "
         f"{assignment['minimum_component_profile_score_percent']:g}% and beat the "
         f"next-best type by at least {assignment['minimum_type_margin_percent']:g} percentage "
-        "points. The res and tnpA profiles receive the greatest weight. If this is "
+        "points. If this is "
         "ambiguous, the locus remains an unresolved member of the group.",
+        "",
+        "The canonical component sequences support that choice:",
+        "",
+        "| Component | Tn1 vs Tn2 | Tn1 vs Tn3 | Tn2 vs Tn3 | Interpretation |",
+        "| --- | ---: | ---: | ---: | --- |",
+        f"| tnpR | {identity['tnpR']['Tn1_vs_Tn2']:.3f}% | "
+        f"{identity['tnpR']['Tn1_vs_Tn3']:.3f}% | "
+        f"{identity['tnpR']['Tn2_vs_Tn3']:.3f}% | Primarily separates Tn2 |",
+        f"| tnpA | {identity['tnpA']['Tn1_vs_Tn2']:.3f}% | "
+        f"{identity['tnpA']['Tn1_vs_Tn3']:.3f}% | "
+        f"{identity['tnpA']['Tn2_vs_Tn3']:.3f}% | Primarily separates Tn3 |",
+        f"| res | {identity['res']['Tn1_vs_Tn2']:.3f}% | "
+        f"{identity['res']['Tn1_vs_Tn3']:.3f}% | "
+        f"{identity['res']['Tn2_vs_Tn3']:.3f}% | Context hotspot; not scored |",
+        f"| blaTEM | {identity['blaTEM']['Tn1_vs_Tn2']:.3f}% | "
+        f"{identity['blaTEM']['Tn1_vs_Tn3']:.3f}% | "
+        f"{identity['blaTEM']['Tn2_vs_Tn3']:.3f}% | Cargo only; not scored |",
         "",
         "### Reviewed exact names and subtypes",
         "",

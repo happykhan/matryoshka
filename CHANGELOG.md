@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Tn1/Tn2/Tn3 type assignment now uses `tnpR` and `tnpA` equally as the only
+  transposition-backbone discriminators. `res` remains required structural context
+  and `blaTEM` remains required cargo, but neither has type weight; the rule report
+  includes the measured canonical component identities that justify this distinction.
 - Rich staged console reporting for the one-command workflow, including detector
   status, reference-scan progress, per-contig results and a final summary; `--quiet`
   suppresses presentation output for automated use.

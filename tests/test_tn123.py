@@ -232,6 +232,7 @@ def test_component_grammar_can_emit_parent_without_whole_locus_call():
     assert parents[0].attributes["component_assembly_status"] == "complete"
     assert parents[0].attributes["component_order_valid"] is True
     assert parents[0].attributes["detected_component_count"] == 6
+    assert set(parents[0].attributes["component_role_scores"]) == {"tnpR", "tnpA"}
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
