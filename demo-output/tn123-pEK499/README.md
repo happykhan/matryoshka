@@ -5,7 +5,7 @@ This is the complete `matryoshka run` output for the natural pEK499 sequence
 retain two separate Tn2-related regions at 38,747–40,671 and 60,316–62,561.
 Both are reported as `Tn1/2/3 fragment`; neither is promoted to complete Tn2.
 
-The two fragment calls have MARA locus maps and MARA tables in the proof
+The two fragment calls have locus maps and locus tables in the proof
 bundle. Other validated-profile mobile-element loci found in the same record
 are also drawn, demonstrating that the output is locus based rather than
 restricted to a single expected element.

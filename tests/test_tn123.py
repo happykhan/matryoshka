@@ -1,4 +1,4 @@
-"""Tests for Sally Partridge's canonical Tn1/Tn2/Tn3 workflow."""
+"""Tests for expert-reviewed canonical Tn1/Tn2/Tn3 workflow."""
 
 from __future__ import annotations
 
@@ -14,8 +14,8 @@ from click.testing import CliRunner
 from matryoshka.__main__ import cli
 from matryoshka.detect import MGEFeature
 from matryoshka.hierarchy import build_hierarchy
-from matryoshka.mara_table import to_mara_table_svg
-from matryoshka.mara_viz import to_mara_svg
+from matryoshka.locus_map import to_locus_map_svg
+from matryoshka.locus_table import to_locus_table_svg
 from matryoshka.reference_scan import (
     REFERENCES_DIR,
     BlastHit,
@@ -32,8 +32,8 @@ from matryoshka.tn123 import (
     curated_internal_features,
 )
 
-PARTRIDGE_FASTA = (
-    Path(__file__).parent / "test-data" / "partridge-examples" / "Tn1-Tn2-Tn3.fasta"
+REVIEWED_FASTA = (
+    Path(__file__).parent / "test-data" / "reviewed-examples" / "Tn1-Tn2-Tn3.fasta"
 )
 TN123_REFERENCE = REFERENCES_DIR / "tn1_tn2_tn3.fasta"
 REFERENCE_SEQUENCES = {
@@ -153,24 +153,24 @@ def test_variant_groups_do_not_mix_contigs():
     assert len(_group_by_query_region([one, two])) == 2
 
 
-def test_mara_renderer_is_separate_single_line_output():
+def test_locus_map_renderer_is_separate_single_line_output():
     parent = _parent("Tn1")
     parent.children = curated_internal_features(parent)
-    svg = to_mara_svg([parent], parent.end, "Tn1 example")
+    svg = to_locus_map_svg([parent], parent.end, "Tn1 example")
     assert svg.startswith("<svg")
     assert "Tn1 example" in svg
     assert "blaTEM-2" in svg
     assert "tnpR" in svg
     assert "tnpA" in svg
-    assert 'fill="#009b55"' in svg
-    assert 'fill="#000"' in svg
+    assert 'fill="#8fc7b5"' in svg
+    assert 'fill="#717b85"' in svg
     assert "expected 5 bp TSD; flanking sequence unavailable" in svg
 
 
-def test_mara_table_contains_hierarchy_and_evidence_columns():
+def test_locus_table_contains_hierarchy_and_evidence_columns():
     parent = _parent("Tn2")
     parent.children = curated_internal_features(parent)
-    svg = to_mara_table_svg([parent], "Tn2 example")
+    svg = to_locus_table_svg([parent], "Tn2 example")
     assert svg.startswith("<svg")
     assert "Position" in svg
     assert "Name*" in svg
@@ -184,7 +184,7 @@ def test_mara_table_contains_hierarchy_and_evidence_columns():
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
 def test_components_are_independently_detected_across_canonical_records():
-    components = scan_tn123_components(PARTRIDGE_FASTA)
+    components = scan_tn123_components(REVIEWED_FASTA)
     by_contig: dict[str, list[MGEFeature]] = {}
     for component in components:
         by_contig.setdefault(str(component.attributes["seqid"]), []).append(component)
@@ -202,10 +202,23 @@ def test_components_are_independently_detected_across_canonical_records():
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_component_assembly_accepts_large_internal_tn1mer_insertion():
+    components = scan_tn123_components(TN123_REFERENCE)
+    calls = [
+        feature
+        for feature in assemble_tn123_components(components)
+        if feature.attributes.get("seqid") == "Tn1Mer_GQ160960"
+    ]
+    assert len(calls) == 1
+    assert calls[0].name == "Tn1-like"
+    assert calls[0].attributes["component_order_valid"] is True
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
 def test_component_grammar_can_emit_parent_without_whole_locus_call():
     components = [
         feature
-        for feature in scan_tn123_components(PARTRIDGE_FASTA)
+        for feature in scan_tn123_components(REVIEWED_FASTA)
         if feature.attributes["seqid"] == "Tn1_NC_008357"
     ]
     parents = assemble_tn123_components(components)
@@ -219,13 +232,47 @@ def test_component_grammar_can_emit_parent_without_whole_locus_call():
     assert parents[0].attributes["component_assembly_status"] == "complete"
     assert parents[0].attributes["component_order_valid"] is True
     assert parents[0].attributes["detected_component_count"] == 6
+    assert parents[0].attributes["backbone_haplotype"] == {
+        "tnpR": "tnpR_Tn1_Tn3",
+        "tnpA": "tnpA_Tn1_Tn2",
+    }
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_canonical_types_are_called_from_component_haplotypes_without_locus_lookup():
+    hits, _ = _component_first_annotation(
+        REVIEWED_FASTA,
+        include_reference_comparison=False,
+    )
+    observed = {
+        str(hit.attributes["seqid"]): (
+            hit.name,
+            hit.attributes["backbone_haplotype"],
+        )
+        for hit in hits
+    }
+    assert observed == {
+        "Tn1_NC_008357": (
+            "Tn1-like",
+            {"tnpR": "tnpR_Tn1_Tn3", "tnpA": "tnpA_Tn1_Tn2"},
+        ),
+        "Tn2_AY123253": (
+            "Tn2-like",
+            {"tnpR": "tnpR_Tn2", "tnpA": "tnpA_Tn1_Tn2"},
+        ),
+        "Tn3_HM749966": (
+            "Tn3-like",
+            {"tnpR": "tnpR_Tn1_Tn3", "tnpA": "tnpA_Tn3"},
+        ),
+    }
+    assert all(hit.attributes.get("closest_reference") is None for hit in hits)
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
 def test_component_grammar_rejects_missing_required_res_site():
     components = [
         feature
-        for feature in scan_tn123_components(PARTRIDGE_FASTA)
+        for feature in scan_tn123_components(REVIEWED_FASTA)
         if feature.attributes["seqid"] == "Tn1_NC_008357"
         and feature.attributes["component_role"] != "res"
     ]
@@ -274,7 +321,35 @@ def test_minor_sequence_variation_is_named_as_nearest_variant(tmp_path: Path):
     assert hit.attributes.get("reference_comparison_type") is None
     assert hit.attributes.get("closest_reference") is None
     assert hit.attributes["variant_status"] == "rule_based_type_candidate"
-    assert 99.0 < float(hit.attributes["component_type_scores"]["Tn1"]) < 100.0
+    assert hit.attributes["backbone_haplotype"] == {
+        "tnpR": "tnpR_Tn1_Tn3",
+        "tnpA": "tnpA_Tn1_Tn2",
+    }
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_novel_backbone_combination_is_retained_as_mosaic(tmp_path: Path):
+    """Tn2 tnpR plus Tn3 tnpA must not be averaged into a known type."""
+    tn2 = REFERENCE_SEQUENCES["Tn2_AY123253"]
+    tn3 = REFERENCE_SEQUENCES["Tn3_HM749966"]
+    mosaic = tn2[:1910] + tn3[1910:-33] + tn2[-33:]
+    query = _write_fasta(tmp_path / "mosaic.fasta", "novel_mosaic", mosaic)
+
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
+
+    assert len(hits) == 1
+    hit = hits[0]
+    assert hit.name == "Tn1/Tn2/Tn3-group mosaic"
+    assert hit.family == "Tn3_family"
+    assert hit.attributes["rule_based_type_call"] == "unresolved"
+    assert hit.attributes["variant_status"] == "rule_haplotype_mosaic"
+    assert hit.attributes["backbone_haplotype"] == {
+        "tnpR": "tnpR_Tn2",
+        "tnpA": "tnpA_Tn3",
+    }
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
@@ -301,8 +376,8 @@ def test_inserted_sequence_assembles_into_one_complete_locus(tmp_path: Path):
     assert len(tnpa["reference_segments"]) >= 2
 
     roots = build_hierarchy(features + annotate_tn123(features))
-    diagram = to_mara_svg(roots, len(interrupted), "interrupted Tn2")
-    table = to_mara_table_svg(roots, "interrupted Tn2")
+    diagram = to_locus_map_svg(roots, len(interrupted), "interrupted Tn2")
+    table = to_locus_table_svg(roots, "interrupted Tn2")
     assert "Tn2-like" in diagram
     assert "insertion ≈" in diagram
     assert "inserted sequence" in table
@@ -409,7 +484,7 @@ def test_reviewed_real_accession_definitions_match_exactly():
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
-def test_pek499_retains_only_sally_reviewed_tn2_fragments(tmp_path: Path):
+def test_pek499_retains_only_expert_reviewed_tn2_fragments(tmp_path: Path):
     pek499 = Path(__file__).parent / "test-data" / "acceptance" / "pEK499.fasta"
     hits = scan(pek499, TN123_REFERENCE, min_identity=95.0, min_length=100)
     assert [
@@ -454,7 +529,7 @@ def test_related_tn3_family_sequence_is_not_promoted_to_named_tn123():
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
-def test_two_loci_on_one_contig_get_separate_mara_outputs(tmp_path: Path):
+def test_two_loci_on_one_contig_get_separate_locus_outputs(tmp_path: Path):
     tn1 = REFERENCE_SEQUENCES["Tn1_NC_008357"]
     tn3 = REFERENCE_SEQUENCES["Tn3_HM749966"]
     sequence = (
@@ -462,10 +537,10 @@ def test_two_loci_on_one_contig_get_separate_mara_outputs(tmp_path: Path):
         + tn3 + _random_dna(3000, 8)
     )
     query = _write_fasta(tmp_path / "two.fasta", "two_loci", sequence)
-    out_dir = tmp_path / "mara-loci"
+    out_dir = tmp_path / "locus_map-loci"
     result = CliRunner().invoke(
         cli,
-        ["annotate", str(query), "--format", "mara", "--mara-flank", "1000",
+        ["annotate", str(query), "--format", "locus-map", "--locus-flank", "1000",
          "--out", str(out_dir)],
     )
     assert result.exit_code == 0, result.output
@@ -476,12 +551,12 @@ def test_two_loci_on_one_contig_get_separate_mara_outputs(tmp_path: Path):
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
-def test_reference_only_cli_detects_all_three_and_writes_mara(tmp_path: Path):
+def test_reference_only_cli_detects_all_three_and_writes_locus_maps(tmp_path: Path):
     json_out = tmp_path / "tn123.json"
     runner = CliRunner()
     result = runner.invoke(
         cli,
-        ["annotate", str(PARTRIDGE_FASTA), "--format", "json", "-o", str(json_out)],
+        ["annotate", str(REVIEWED_FASTA), "--format", "json", "-o", str(json_out)],
     )
     assert result.exit_code == 0, result.output
     detected = json.loads(json_out.read_text())
@@ -509,20 +584,20 @@ def test_reference_only_cli_detects_all_three_and_writes_mara(tmp_path: Path):
             if child["element_type"] in {"IR", "AMR", "gene", "res_site"}
         } == {"sequence_detected"}
 
-    mara_dir = tmp_path / "mara"
+    locus_map_dir = tmp_path / "locus-map"
     result = runner.invoke(
         cli,
-        ["annotate", str(PARTRIDGE_FASTA), "--format", "mara", "-o", str(mara_dir)],
+        ["annotate", str(REVIEWED_FASTA), "--format", "locus-map", "-o", str(locus_map_dir)],
     )
     assert result.exit_code == 0, result.output
-    svgs = sorted(mara_dir.glob("*.svg"))
+    svgs = sorted(locus_map_dir.glob("*.svg"))
     assert len(svgs) == 3
-    assert all('fill="#009b55"' in svg.read_text() for svg in svgs)
+    assert all('fill="#8fc7b5"' in svg.read_text() for svg in svgs)
 
-    table_dir = tmp_path / "mara-table"
+    table_dir = tmp_path / "locus-table"
     result = runner.invoke(
         cli,
-        ["annotate", str(PARTRIDGE_FASTA), "--format", "mara-table", "-o", str(table_dir)],
+        ["annotate", str(REVIEWED_FASTA), "--format", "locus-table", "-o", str(table_dir)],
     )
     assert result.exit_code == 0, result.output
     tables = sorted(table_dir.glob("*.svg"))

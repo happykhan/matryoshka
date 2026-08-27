@@ -68,7 +68,7 @@ jobs:
       - name: Run complete bundled workflow
         run: |
           /tmp/matryoshka-smoke/bin/matryoshka run \
-            tests/test-data/partridge-examples/Tn1-Tn2-Tn3.fasta \
+            tests/test-data/reviewed-examples/Tn1-Tn2-Tn3.fasta \
             --threads 2 --out /tmp/matryoshka-results
           /tmp/matryoshka-smoke/bin/python - <<'PY'
           import json
@@ -79,9 +79,9 @@ jobs:
           summary = json.loads((out / "run.json").read_text())
           assert annotation["schema_version"] == "1.0"
           assert annotation["reference_database"]["profile"] == "validated"
-          assert summary["mara_loci"] == 3
-          assert len(list((out / "mara").glob("*.svg"))) == 3
-          assert len(list((out / "mara-table").glob("*.svg"))) == 3
+          assert summary["locus_views"] == 3
+          assert len(list((out / "locus-map").glob("*.svg"))) == 3
+          assert len(list((out / "locus-table").glob("*.svg"))) == 3
           PY
       - name: Build core container
         run: docker build -t matryoshka:ci .

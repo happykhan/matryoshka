@@ -3,8 +3,8 @@
   "profile": "tn123-components",
   "records": 1,
   "features": 22,
-  "mara_loci": 3,
-  "mara_locus_outputs": [
+  "locus_views": 3,
+  "locus_outputs": [
     {
       "record": "arbitrary_demo_contig",
       "call": "Tn1-like",
@@ -14,8 +14,8 @@
       "end": 12949,
       "view_start": 3001,
       "view_end": 17949,
-      "mara": "mara/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
-      "mara_table": "mara-table/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+      "locus_map": "locus-map/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
+      "locus_table": "locus-table/arbitrary_demo_contig__Tn1-like__8001-12949.svg",
       "hierarchy": "hierarchy/arbitrary_demo_contig.svg"
     },
     {
@@ -27,8 +27,8 @@
       "end": 25699,
       "view_start": 14950,
       "view_end": 30699,
-      "mara": "mara/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
-      "mara_table": "mara-table/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+      "locus_map": "locus-map/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
+      "locus_table": "locus-table/arbitrary_demo_contig__Tn2-like__19950-25699.svg",
       "hierarchy": "hierarchy/arbitrary_demo_contig.svg"
     },
     {
@@ -40,22 +40,60 @@
       "end": 36647,
       "view_start": 26700,
       "view_end": 41647,
-      "mara": "mara/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
-      "mara_table": "mara-table/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
+      "locus_map": "locus-map/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
+      "locus_table": "locus-table/arbitrary_demo_contig__Tn3-like__31700-36647.svg",
       "hierarchy": "hierarchy/arbitrary_demo_contig.svg"
     }
   ],
   "proof_status": "PASS",
+  "detectors": [
+    {
+      "name": "amrfinder",
+      "label": "AMRFinderPlus",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "isescan",
+      "label": "ISEScan",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "integron",
+      "label": "IntegronFinder",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    }
+  ],
   "outputs": {
     "annotation_json": "annotation.json",
     "annotation_gff3": "annotation.gff3",
+    "annotation_genbank": "annotation.gbk",
     "annotation_cell": "annotation.cell",
     "hierarchy_directory": "hierarchy",
-    "mara_directory": "mara",
-    "mara_table_directory": "mara-table",
+    "locus_map_directory": "locus-map",
+    "locus_table_directory": "locus-table",
     "proof_json": "proof/proof.json",
     "proof_report": "proof/report.html",
     "component_ledger": "proof/components.tsv",
-    "match_ledger": "proof/matches.tsv"
+    "match_ledger": "proof/matches.tsv",
+    "expert_rules_markdown": "expert-rules.md",
+    "expert_rules_html": "expert-rules.html"
   }
 }

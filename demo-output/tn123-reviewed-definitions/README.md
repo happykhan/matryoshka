@@ -12,13 +12,13 @@ whole-element definitions in `matryoshka/references/tn1_tn2_tn3.fasta`:
 - the declared V00613 legacy Tn3 subtype.
 
 Open `proof-bundle/proof/report.html` for the linked evidence report. The
-`proof-bundle/mara/` directory contains a MARA locus SVG for each definition;
-`proof-bundle/mara-table/` contains the corresponding tables. Tn2.1 also has a
+`proof-bundle/locus-map/` directory contains a locus SVG for each definition;
+`proof-bundle/locus-table/` contains the corresponding tables. Tn2.1 also has a
 separate locus entry for its nested ISEcp1-associated insertion, so the bundle
 contains eight locus maps in total.
 
-`proof-bundle/run.json` has a `mara_locus_outputs` index giving the record,
-call, coordinates and exact relative path of every MARA map and table. All seven
+`proof-bundle/run.json` has a `locus_outputs` index giving the record,
+call, coordinates and exact relative path of every locus map and table. All seven
 Tn1/Tn2/Tn3 whole-element calls receive a proof `PASS`.
 
 Reproduce the bundle with:

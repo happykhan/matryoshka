@@ -234,14 +234,14 @@ def build_tn123_proof(
                         "rule_based_family_call"
                     ),
                     "rule_based_type_call": rule_type,
-                    "component_type_scores": attributes.get(
-                        "component_type_scores", {}
+                    "backbone_role_group_calls": attributes.get(
+                        "backbone_role_group_calls", {}
                     ),
-                    "component_role_scores": attributes.get(
-                        "component_role_scores", {}
+                    "backbone_haplotype": attributes.get(
+                        "backbone_haplotype", {}
                     ),
-                    "component_type_margin": attributes.get(
-                        "component_type_margin"
+                    "backbone_haplotype_match": attributes.get(
+                        "backbone_haplotype_match"
                     ),
                 },
                 "checks": checks,
@@ -321,7 +321,7 @@ def proof_matches_tsv(proof: dict[str, Any]) -> str:
     output = io.StringIO()
     fields = [
         "verdict", "record", "call", "start", "end", "strand",
-        "rule_based_type_call", "component_type_scores", "best_match",
+        "rule_based_type_call", "backbone_haplotype", "best_match",
         "defined_type", "defined_subtype", "definition_id", "definition_version",
         "reference_id", "source_accession", "whole_locus_identity",
         "whole_locus_coverage", "mismatch_bases", "inserted_bases",
@@ -343,8 +343,8 @@ def proof_matches_tsv(proof: dict[str, Any]) -> str:
                 "end": locus["end"],
                 "strand": locus["strand"],
                 "rule_based_type_call": match["rule_based_type_call"],
-                "component_type_scores": json.dumps(
-                    locus["classification"]["component_type_scores"],
+                "backbone_haplotype": json.dumps(
+                    locus["classification"]["backbone_haplotype"],
                     sort_keys=True,
                 ),
                 "best_match": match["best_match"],
@@ -399,13 +399,13 @@ def proof_html(proof: dict[str, Any], title: str = "Matryoshka proof report") ->
                 f'<a href="../{html.escape(path)}">{html.escape(name.replace("_", " "))}</a>'
                 for name, path in outputs.items()
             )
-            mara = outputs.get("mara")
+            locus_map = outputs.get("locus_map")
             hierarchy = outputs.get("hierarchy")
             figures = ""
-            if mara:
+            if locus_map:
                 figures += (
-                    '<h3>MARA locus map</h3>'
-                    f'<img src="../{html.escape(mara)}" alt="MARA locus map">'
+                    '<h3>Locus map</h3>'
+                    f'<img src="../{html.escape(locus_map)}" alt="Locus map">'
                 )
             if hierarchy:
                 figures += (
@@ -421,8 +421,8 @@ def proof_html(proof: dict[str, Any], title: str = "Matryoshka proof report") ->
                 else ""
             )
             classification = locus["classification"]
-            component_scores = html.escape(json.dumps(
-                classification.get("component_type_scores", {}),
+            backbone_haplotype = html.escape(json.dumps(
+                classification.get("backbone_haplotype", {}),
                 sort_keys=True,
             ))
             reference_context = (
@@ -439,7 +439,7 @@ def proof_html(proof: dict[str, Any], title: str = "Matryoshka proof report") ->
                 f'({html.escape(str(locus["strand"]))})</p>'
                 '<div class="facts">'
                 f'<span>rule-based type <b>{html.escape(str(match["rule_based_type_call"]))}</b></span>'
-                f'<span>component scores <b>{component_scores}</b></span>'
+                f'<span>backbone haplotype <b>{backbone_haplotype}</b></span>'
                 f'{reference_context}'
                 f'<span>component structure <b>{assembly["inserted_bases"]} inserted bp; '
                 f'{assembly["deleted_bases"]} deleted bp</b></span>'

@@ -1,7 +1,7 @@
 """Curated annotations for the canonical Tn1, Tn2 and Tn3 references.
 
 The reference choices and feature layouts follow the material supplied by
-Sally Partridge. Coordinates are 1-based and relative to each complete
+expert-reviewed source material. Coordinates are 1-based and relative to each complete
 transposon reference sequence.
 """
 
@@ -420,22 +420,19 @@ def _select_component_path(
     return selected, requirements, order_valid
 
 
-def _component_type_scores(
+def _backbone_role_group_calls(
     selected: list[MGEFeature],
-) -> tuple[dict[str, float], dict[str, dict[str, float]]]:
-    """Score declared Tn types from local component-profile matches only."""
+) -> dict[str, dict[str, object]]:
+    """Assign each discriminator gene to an expert-declared profile group."""
     type_rule = tn123_rules()["classification"]["type_assignment"]
-    weights = {
-        str(role): float(weight)
-        for role, weight in type_rule["discriminator_role_weights"].items()
-    }
-    total_weight = sum(weights.values())
-    scores = {type_name: 0.0 for type_name in type_rule["compare_types"]}
-    role_scores: dict[str, dict[str, float]] = {}
-    for component in selected:
-        role = _component_role(component)
-        weight = weights.get(role)
-        if weight is None:
+    components = {_component_role(component): component for component in selected}
+    minimum_score = float(type_rule["minimum_role_profile_score_percent"])
+    minimum_margin = float(type_rule["minimum_role_group_margin_percent"])
+    calls: dict[str, dict[str, object]] = {}
+    for role in type_rule["required_discriminator_roles"]:
+        component = components.get(str(role))
+        if component is None:
+            calls[str(role)] = {"call": "missing", "group_scores": {}, "margin": 0.0}
             continue
         matches = component.attributes.get("component_profile_matches", [])
         by_type = {
@@ -443,18 +440,26 @@ def _component_type_scores(
             for match in matches
             if isinstance(match, dict)
         }
-        role_scores[role] = {
-            type_name: round(by_type.get(type_name, 0.0), 3)
-            for type_name in scores
+        group_scores = {
+            str(group): round(max(by_type.get(str(member), 0.0) for member in members), 3)
+            for group, members in type_rule["role_profile_groups"][role].items()
         }
-        for type_name in scores:
-            scores[type_name] += weight * by_type.get(type_name, 0.0)
-    if total_weight:
-        scores = {
-            type_name: round(score / total_weight, 3)
-            for type_name, score in scores.items()
+        ranked = sorted(group_scores.items(), key=lambda item: item[1], reverse=True)
+        best_group, best_score = ranked[0]
+        runner_up = ranked[1][1] if len(ranked) > 1 else 0.0
+        margin = round(best_score - runner_up, 3)
+        call = (
+            best_group
+            if best_score >= minimum_score and margin >= minimum_margin
+            else "ambiguous"
+        )
+        calls[str(role)] = {
+            "call": call,
+            "group_scores": group_scores,
+            "margin": margin,
+            "best_score": best_score,
         }
-    return scores, role_scores
+    return calls
 
 
 def _apply_component_rule_classification(
@@ -465,29 +470,32 @@ def _apply_component_rule_classification(
     """Make the biological call from component rules, then attach ref context."""
     rules = tn123_rules()["classification"]
     type_rule = rules["type_assignment"]
-    scores, role_scores = _component_type_scores(selected)
-    ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)
-    best_type, best_score = ranked[0] if ranked else ("unresolved", 0.0)
-    runner_up_score = ranked[1][1] if len(ranked) > 1 else 0.0
-    margin = round(best_score - runner_up_score, 3)
-    qualified = (
-        component_complete
-        and best_score >= float(
-            type_rule["minimum_component_profile_score_percent"]
-        )
-        and margin >= float(type_rule["minimum_type_margin_percent"])
+    role_calls = _backbone_role_group_calls(selected)
+    haplotype = {
+        role: str(role_calls.get(role, {}).get("call", "missing"))
+        for role in type_rule["required_discriminator_roles"]
+    }
+    best_type = next((
+        str(type_name)
+        for type_name, declared in type_rule["type_haplotypes"].items()
+        if haplotype == {str(role): str(group) for role, group in declared.items()}
+    ), "unresolved")
+    all_roles_called = all(
+        call not in {"missing", "ambiguous"} for call in haplotype.values()
     )
+    qualified = component_complete and best_type != "unresolved"
+    mosaic = component_complete and all_roles_called and not qualified
 
     parent.attributes.update({
         "classification_basis": "expert_component_rules",
         "rule_based_family_call": "Tn1/Tn2/Tn3 group",
         "rule_based_type_call": best_type if qualified else "unresolved",
-        "component_type_scores": scores,
-        "component_role_scores": role_scores,
-        "component_type_margin": margin,
+        "backbone_role_group_calls": role_calls,
+        "backbone_haplotype": haplotype,
+        "backbone_haplotype_match": best_type,
         "naming_evidence": [
             "component_grammar",
-            "component_type_profiles",
+            "backbone_haplotype",
         ],
     })
 
@@ -496,10 +504,14 @@ def _apply_component_rule_classification(
         parent.name = (
             str(rules["fragment"]["visible_label"])
             if parent.attributes.get("fragment")
-            else "Tn1/Tn2/Tn3-group element"
+            else str(type_rule[
+                "mosaic_haplotype_label" if mosaic else "unresolved_haplotype_label"
+            ])
         )
         parent.attributes["variant_status"] = (
-            "rule_incomplete" if not component_complete else "rule_type_unresolved"
+            "rule_incomplete" if not component_complete
+            else "rule_haplotype_mosaic" if mosaic
+            else "rule_type_unresolved"
         )
         return
 
@@ -625,6 +637,10 @@ def assemble_tn123_components(features: list[MGEFeature]) -> list[MGEFeature]:
         )
 
     emitted: list[MGEFeature] = []
+    emitted_loci: set[tuple[object, int, int]] = set()
+    grammar = tn123_rules()["grammar"]
+    window = int(grammar["candidate_component_window_bp"])
+    maximum_span = int(grammar["candidate_maximum_span_bp"])
     for tnpa in [feature for feature in components if _component_role(feature) == "tnpA"]:
         if any(_overlap_fraction(parent, tnpa) >= 0.8 for parent in parents):
             continue
@@ -634,36 +650,66 @@ def assemble_tn123_components(features: list[MGEFeature]) -> list[MGEFeature]:
             for component in components
             if component.attributes.get("seqid") == seqid
             and component.start >= tnpa.start - int(
-                tn123_rules()["grammar"]["candidate_component_window_bp"]
+                window
             )
             and component.end <= tnpa.end + int(
-                tn123_rules()["grammar"]["candidate_component_window_bp"]
+                window
             )
         ]
         irs = sorted(
             (feature for feature in nearby if _component_role(feature) == "terminal_IR"),
             key=lambda item: item.start,
         )
-        if len(irs) < 2:
+        valid_candidates: list[MGEFeature] = []
+        for left_index, left in enumerate(irs):
+            for right in irs[left_index + 1:]:
+                span = right.end - left.start + 1
+                if span > maximum_span or not (
+                    left.start <= tnpa.start and tnpa.end <= right.end
+                ):
+                    continue
+                contained = [
+                    component
+                    for component in nearby
+                    if left.start <= component.start and component.end <= right.end
+                ]
+                candidate = MGEFeature(
+                    element_type="transposon",
+                    family="Tn3_family",
+                    name="Tn3-family unit",
+                    start=left.start,
+                    end=right.end,
+                    strand=tnpa.strand,
+                    tsd_length=5,
+                    attributes={
+                        "seqid": seqid,
+                        "source": "component_assembly",
+                        "best_match": "unresolved",
+                        "variant_status": "component_assembled",
+                    },
+                )
+                if _record_component_assembly(candidate, contained):
+                    valid_candidates.append(candidate)
+        if valid_candidates:
+            candidate = min(valid_candidates, key=lambda item: item.end - item.start)
+            locus_key = (seqid, candidate.start, candidate.end)
+            if locus_key not in emitted_loci:
+                emitted.append(candidate)
+                emitted_loci.add(locus_key)
+    # Repeated homologous IRs can create a valid larger pair around a complete
+    # shorter locus. Prefer the tightest component-complete boundary while
+    # retaining genuinely separate loci on the same record.
+    selected: list[MGEFeature] = []
+    for candidate in sorted(emitted, key=lambda item: item.end - item.start):
+        if any(
+            inner.attributes.get("seqid") == candidate.attributes.get("seqid")
+            and candidate.start <= inner.start
+            and inner.end <= candidate.end
+            for inner in selected
+        ):
             continue
-        candidate = MGEFeature(
-            element_type="transposon",
-            family="Tn3_family",
-            name="Tn3-family unit",
-            start=irs[0].start,
-            end=irs[-1].end,
-            strand=tnpa.strand,
-            tsd_length=5,
-            attributes={
-                "seqid": seqid,
-                "source": "component_assembly",
-                "best_match": "unresolved",
-                "variant_status": "component_assembled",
-            },
-        )
-        if _record_component_assembly(candidate, nearby):
-            emitted.append(candidate)
-    return emitted
+        selected.append(candidate)
+    return selected
 
 
 def annotate_tn123(features: list[MGEFeature]) -> list[MGEFeature]:

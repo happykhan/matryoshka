@@ -11,12 +11,12 @@ sources:
     citation: Partridge and Hall 2005, Evolution of Transposons Containing blaTEM Genes
     file: Partridge_Tn1-2-3_2005.pdf
     scope: Tn1, Tn2 and Tn3 mosaic structure and sequence differences around res
-  - id: sally_tn123_working_document
-    citation: Sally Partridge, Sequences to use for Tn1, Tn2 and Tn3
+  - id: expert_tn123_working_document
+    citation: Expert-reviewed working document, Sequences to use for Tn1, Tn2 and Tn3
     file: Tn1_Tn2_Tn3.docx
     scope: canonical accessions, named variants and sequences to avoid as canonical exemplars
-  - id: sally_feedback
-    citation: Sally Partridge comments on the Matryoshka demonstration
+  - id: expert_feedback
+    citation: Expert review comments on the Matryoshka demonstration
     file: matryoshka_demo_SP_comments.pdf
     scope: fragment boundaries, complete-feature precedence and pEK499 Tn2 fragments
 
@@ -43,7 +43,8 @@ grammar:
   forward_order: [terminal_IR, blaTEM, tnpR, res, tnpA, terminal_IR]
   reverse_order: reverse_of_forward
   candidate_anchor_role: tnpA
-  candidate_component_window_bp: 2500
+  candidate_component_window_bp: 50000
+  candidate_maximum_span_bp: 60000
   expert_rule: >-
     A complete group-level call requires all six component occurrences in the
     stated order. Reverse-complement copies use the reversed order. Missing
@@ -52,25 +53,53 @@ grammar:
 
 classification:
   type_assignment:
-    method: weighted component profiles after component grammar validation
+    method: categorical transposition-backbone haplotype after component grammar validation
     compare_types: [Tn1, Tn2, Tn3]
-    discriminator_role_weights:
-      blaTEM: 1.0
-      tnpR: 2.0
-      res: 3.0
-      tnpA: 3.0
-    minimum_component_profile_score_percent: 90.0
-    minimum_type_margin_percent: 0.5
+    required_discriminator_roles: [tnpR, tnpA]
+    unweighted_context_roles: [res]
+    non_discriminator_roles: [blaTEM]
+    role_profile_groups:
+      tnpR:
+        tnpR_Tn1_Tn3: [Tn1, Tn3]
+        tnpR_Tn2: [Tn2]
+      tnpA:
+        tnpA_Tn1_Tn2: [Tn1, Tn2]
+        tnpA_Tn3: [Tn3]
+    type_haplotypes:
+      Tn1: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn1_Tn2}
+      Tn2: {tnpR: tnpR_Tn2, tnpA: tnpA_Tn1_Tn2}
+      Tn3: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn3}
+    minimum_role_profile_score_percent: 90.0
+    minimum_role_group_margin_percent: 0.5
+    unresolved_haplotype_label: Tn1/Tn2/Tn3-group element
+    mosaic_haplotype_label: Tn1/Tn2/Tn3-group mosaic
+    discriminator_evidence:
+      method: global nucleotide alignment of the declared canonical component sequences
+      source_definition_version: "2026-08-27"
+      pairwise_identity_percent:
+        blaTEM: {Tn1_vs_Tn2: 99.303, Tn1_vs_Tn3: 99.419, Tn2_vs_Tn3: 99.652}
+        tnpR: {Tn1_vs_Tn2: 94.444, Tn1_vs_Tn3: 99.642, Tn2_vs_Tn3: 94.624}
+        res: {Tn1_vs_Tn2: 79.130, Tn1_vs_Tn3: 96.522, Tn2_vs_Tn3: 79.825}
+        tnpA: {Tn1_vs_Tn2: 99.102, Tn1_vs_Tn3: 97.572, Tn2_vs_Tn3: 97.772}
+      interpretation: >-
+        tnpR separates Tn2 from Tn1/Tn3, while tnpA separates Tn3 from
+        Tn1/Tn2. The short res site is retained as context around the documented
+        recombination hotspot but is not used to assign the categorical
+        haplotype. The
+        blaTEM alleles differ by only three to six nucleotides and are recorded
+        as cargo, not used to assign the transposon type.
     expert_rule: >-
       First establish a complete Tn1/Tn2/Tn3-group locus from independently
-      detected components. Score Tn1, Tn2 and Tn3 using the locally detected
-      blaTEM, tnpR, res and tnpA component profiles and the declared weights.
-      Assign a rule-based type only when the best component profile clears the
-      score and margin thresholds. The score threshold permits a locally
-      interrupted or deleted component while the required-component and order
-      rules remain satisfied. Otherwise retain a complete but unresolved
-      Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required
-      to discover or type a candidate.
+      detected components. Assign the detected tnpR and tnpA independently to
+      their declared sequence-profile groups. The pair of group calls is a
+      categorical backbone haplotype: the Tn1/Tn3 tnpR group plus the Tn1/Tn2
+      tnpA group is Tn1-like; Tn2 tnpR plus Tn1/Tn2 tnpA is Tn2-like; and
+      Tn1/Tn3 tnpR plus Tn3 tnpA is Tn3-like. No percentage weight is assigned
+      to either gene and their scores are not averaged. A different confident
+      combination is reported as a mosaic; a missing or ambiguous group call
+      remains unresolved. res is structural context and blaTEM is required
+      cargo, but neither determines the type. A whole-locus reference match is
+      not required to discover or type a candidate.
   reference_comparison:
     role: secondary context after rule-based classification
     minimum_identity_percent: 95.0
@@ -137,15 +166,16 @@ types:
   Tn1:
     display_name: Tn1
     expert_description: >-
-      Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the
-      complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local blaTEM,
-      tnpR, res and tnpA profiles define the Tn1 component signature. Exact
-      Tn1 additionally requires a gap-free, mismatch-free match to this
-      declared sequence.
+      Canonical Tn1 uses the expert-reviewed NC_008357 sequence. It has the
+      complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local tnpR and
+      tnpA backbone profiles define the Tn1 component signature. The blaTEM
+      allele is reported cargo rather than a type
+      discriminator. Exact Tn1 additionally requires a gap-free,
+      mismatch-free match to this declared sequence.
     canonical_reference: Tn1_NC_008357
     source_accession: NC_008357
     bla_allele: blaTEM-2
-    sources: [sally_tn123_working_document, partridge_2005]
+    sources: [expert_tn123_working_document, partridge_2005]
     components:
       - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
       - {role: blaTEM, name: blaTEM-2, element_type: AMR, start: 148, end: 1008, strand: "-"}
@@ -156,16 +186,18 @@ types:
   Tn2:
     display_name: Tn2
     expert_description: >-
-      Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the
-      2005 paper and selected as Tn2 in her working document. It has the
-      complete group grammar and carries blaTEM-1b. Its local component
-      profiles, particularly the diagnostic sequence around res, distinguish
-      a Tn2-like candidate from Tn1 and Tn3 without requiring a whole-element
-      match.
+      Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as
+      Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the
+      complete group grammar and carries blaTEM-1b. Its divergent tnpR
+      profile places it in the Tn2-specific tnpR group; its tnpA belongs to the
+      shared Tn1/Tn2 group. That categorical combination defines a Tn2-like
+      candidate. The diagnostic sequence around res is retained as structural
+      context. Classification does not use the blaTEM allele or require a
+      whole-element match.
     canonical_reference: Tn2_AY123253
     source_accession: AY123253
     bla_allele: blaTEM-1b
-    sources: [sally_tn123_working_document, partridge_2005]
+    sources: [expert_tn123_working_document, partridge_2005]
     components:
       - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
       - {role: blaTEM, name: blaTEM-1b, element_type: AMR, start: 148, end: 1008, strand: "-"}
@@ -176,15 +208,17 @@ types:
   Tn3:
     display_name: Tn3
     expert_description: >-
-      Canonical Tn3 uses HM749966, the sequence Sally selected in preference
+      Canonical Tn3 uses HM749966, selected during expert review in preference
       to the older V00613 record. It has the complete group grammar and
-      carries blaTEM-1a. The combined local component profiles, not blaTEM
-      protein identity or gene order alone, distinguish a Tn3-like candidate
-      from Tn1 and Tn2.
+      carries blaTEM-1a. Its tnpR belongs to the shared Tn1/Tn3 group and its
+      divergent tnpA belongs to the Tn3-specific group. That categorical
+      combination defines a Tn3-like candidate. The res site is retained as
+      structural context. The blaTEM allele is reported cargo and does not
+      determine the type.
     canonical_reference: Tn3_HM749966
     source_accession: HM749966
     bla_allele: blaTEM-1a
-    sources: [sally_tn123_working_document, partridge_2005]
+    sources: [expert_tn123_working_document, partridge_2005]
     components:
       - {role: terminal_IR, name: IRL, element_type: IR, start: 1, end: 38, strand: "."}
       - {role: blaTEM, name: blaTEM-1a, element_type: AMR, start: 148, end: 1008, strand: "-"}
@@ -201,7 +235,7 @@ definitions:
     source_accession: NC_008357
     reference_kind: canonical
     component_reference: true
-    review_status: Sally-selected canonical sequence
+    review_status: expert-selected canonical sequence
     expert_rule: Exact, complete, gap-free match to NC_008357 plus complete component grammar.
   Tn2_AY123253:
     display_name: Tn2
@@ -210,7 +244,7 @@ definitions:
     source_accession: AY123253
     reference_kind: canonical
     component_reference: true
-    review_status: Sally-selected canonical sequence
+    review_status: expert-selected canonical sequence
     expert_rule: Exact, complete, gap-free match to AY123253 plus complete component grammar.
   Tn3_HM749966:
     display_name: Tn3
@@ -219,7 +253,7 @@ definitions:
     source_accession: HM749966
     reference_kind: canonical
     component_reference: true
-    review_status: Sally-selected canonical sequence
+    review_status: expert-selected canonical sequence
     expert_rule: Exact, complete, gap-free match to HM749966 plus complete component grammar.
   Tn2c_HM749967:
     display_name: Tn2c
@@ -229,7 +263,7 @@ definitions:
     reference_kind: reviewed_subtype_candidate
     component_reference: true
     bla_allele: blaTEM-1c
-    review_status: Sally called this Tn2c in MARA and marked it for later addition
+    review_status: Expert-reviewed Tn2c candidate retained for later validation
     expert_rule: >-
       Exact, complete, gap-free match to the 4950 bp Tn2 interval in HM749967.
       It retains the Tn2 grammar but carries the blaTEM-1c sequence and nine
@@ -244,7 +278,7 @@ definitions:
     source_accession: CP028717
     reference_kind: reviewed_subtype_candidate
     component_reference: false
-    review_status: Sally described this as Tn2 with an inserted ISEcp1 TPU
+    review_status: Expert-reviewed Tn2 with an inserted ISEcp1 TPU
     expert_rule: >-
       Exact match to the 8979 bp interrupted Tn2 structure extracted from
       CP028717. The Tn2 backbone is complete, including both terminal IRs,
@@ -263,7 +297,7 @@ definitions:
     source_accession: GQ160960
     reference_kind: reviewed_subtype_candidate
     component_reference: false
-    review_status: Sally said to ignore this as the canonical Tn1 because it contains Tn5036-like
+    review_status: Excluded as canonical Tn1 because it contains a Tn5036-like insertion
     expert_rule: >-
       Exact match to the 10491 bp interrupted Tn1 structure in GQ160960.
       The outer Tn1 grammar is complete, while a defective 5537 bp
@@ -281,7 +315,7 @@ definitions:
     source_accession: V00613
     reference_kind: reviewed_subtype_candidate
     component_reference: false
-    review_status: Sally noted the 9 bp duplication and preferred HM749966 as canonical
+    review_status: Expert review noted the 9 bp duplication and retained HM749966 as canonical
     expert_rule: >-
       Exact match to V00613 is Tn3 with the declared 9 bp duplication. It is
       a recognised Tn3 sequence variant, not an exact match to canonical

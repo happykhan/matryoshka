@@ -26,9 +26,9 @@ def main() -> None:
         id="In2_AF071413_4040_15039",
         description=(
             "element_type=integron family=class1_integron name=In2 "
-            "fid=MARA-SP-In2 source_accession=AF071413 "
+            "fid=LOCUS-REF-In2 source_accession=AF071413 "
             "coordinates=4040..15039 ir_length=25 "
-            "provenance=Sally_Partridge feature_db_version=2026-08-26"
+            "provenance=expert_reviewed feature_db_version=2026-08-26"
         ),
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)

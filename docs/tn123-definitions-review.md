@@ -16,7 +16,7 @@ A complete group-level call requires all six component occurrences in the stated
 
 ## Classification rules
 
-Type assignment: First establish a complete Tn1/Tn2/Tn3-group locus from independently detected components. Score Tn1, Tn2 and Tn3 using the locally detected blaTEM, tnpR, res and tnpA component profiles and the declared weights. Assign a rule-based type only when the best component profile clears the score and margin thresholds. The score threshold permits a locally interrupted or deleted component while the required-component and order rules remain satisfied. Otherwise retain a complete but unresolved Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required to discover or type a candidate.
+Type assignment: First establish a complete Tn1/Tn2/Tn3-group locus from independently detected components. Assign the detected tnpR and tnpA independently to their declared sequence-profile groups. The pair of group calls is a categorical backbone haplotype: the Tn1/Tn3 tnpR group plus the Tn1/Tn2 tnpA group is Tn1-like; Tn2 tnpR plus Tn1/Tn2 tnpA is Tn2-like; and Tn1/Tn3 tnpR plus Tn3 tnpA is Tn3-like. No percentage weight is assigned to either gene and their scores are not averaged. A different confident combination is reported as a mosaic; a missing or ambiguous group call remains unresolved. res is structural context and blaTEM is required cargo, but neither determines the type. A whole-locus reference match is not required to discover or type a candidate.
 
 Secondary reference comparison: Compare an assembled candidate with reviewed whole-element references only after component-rule classification. Record the closest reference, identity, coverage and differences. An exact match may confirm a known definition, but a closest match must not create the family or type call.
 
@@ -28,7 +28,7 @@ Fragment: Partial homology is retained with coordinates, detected components and
 
 ## Type: Tn1
 
-Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local blaTEM, tnpR, res and tnpA profiles define the Tn1 component signature. Exact Tn1 additionally requires a gap-free, mismatch-free match to this declared sequence.
+Canonical Tn1 uses the expert-reviewed NC_008357 sequence. It has the complete Tn1/Tn2/Tn3 grammar and carries blaTEM-2. Its local tnpR and tnpA backbone profiles define the Tn1 component signature. The blaTEM allele is reported cargo rather than a type discriminator. Exact Tn1 additionally requires a gap-free, mismatch-free match to this declared sequence.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -41,7 +41,7 @@ Canonical Tn1 uses the NC_008357 sequence selected by Sally. It has the complete
 
 ## Type: Tn2
 
-Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in her working document. It has the complete group grammar and carries blaTEM-1b. Its local component profiles, particularly the diagnostic sequence around res, distinguish a Tn2-like candidate from Tn1 and Tn3 without requiring a whole-element match.
+Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the complete group grammar and carries blaTEM-1b. Its divergent tnpR profile places it in the Tn2-specific tnpR group; its tnpA belongs to the shared Tn1/Tn2 group. That categorical combination defines a Tn2-like candidate. The diagnostic sequence around res is retained as structural context. Classification does not use the blaTEM allele or require a whole-element match.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -54,7 +54,7 @@ Canonical Tn2 uses Sally's AY123253 sequence, described as Tn2* in the 2005 pape
 
 ## Type: Tn3
 
-Canonical Tn3 uses HM749966, the sequence Sally selected in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. The combined local component profiles, not blaTEM protein identity or gene order alone, distinguish a Tn3-like candidate from Tn1 and Tn2.
+Canonical Tn3 uses HM749966, selected during expert review in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. Its tnpR belongs to the shared Tn1/Tn3 group and its divergent tnpA belongs to the Tn3-specific group. That categorical combination defines a Tn3-like candidate. The res site is retained as structural context. The blaTEM allele is reported cargo and does not determine the type.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -73,7 +73,7 @@ Type: `Tn1`. Subtype: `canonical`. Source accession: `NC_008357`.
 
 Exact, complete, gap-free match to NC_008357 plus complete component grammar.
 
-Review status: Sally-selected canonical sequence.
+Review status: expert-selected canonical sequence.
 
 ### Tn2 (`Tn2_AY123253`)
 
@@ -81,7 +81,7 @@ Type: `Tn2`. Subtype: `canonical`. Source accession: `AY123253`.
 
 Exact, complete, gap-free match to AY123253 plus complete component grammar.
 
-Review status: Sally-selected canonical sequence.
+Review status: expert-selected canonical sequence.
 
 ### Tn3 (`Tn3_HM749966`)
 
@@ -89,7 +89,7 @@ Type: `Tn3`. Subtype: `canonical`. Source accession: `HM749966`.
 
 Exact, complete, gap-free match to HM749966 plus complete component grammar.
 
-Review status: Sally-selected canonical sequence.
+Review status: expert-selected canonical sequence.
 
 ### Tn2c (`Tn2c_HM749967`)
 
@@ -97,7 +97,7 @@ Type: `Tn2`. Subtype: `Tn2c`. Source accession: `HM749967`.
 
 Exact, complete, gap-free match to the 4950 bp Tn2 interval in HM749967. It retains the Tn2 grammar but carries the blaTEM-1c sequence and nine substitutions relative to AY123253.
 
-Review status: Sally called this Tn2c in MARA and marked it for later addition.
+Review status: Expert-reviewed Tn2c candidate retained for later validation.
 
 Known differences from the parent definition:
 
@@ -110,7 +110,7 @@ Type: `Tn2`. Subtype: `Tn2.1`. Source accession: `CP028717`.
 
 Exact match to the 8979 bp interrupted Tn2 structure extracted from CP028717. The Tn2 backbone is complete, including both terminal IRs, and a 4024 bp ISEcp1-associated region interrupts the sequence between canonical reference positions 124 and 129.
 
-Review status: Sally described this as Tn2 with an inserted ISEcp1 TPU.
+Review status: Expert-reviewed Tn2 with an inserted ISEcp1 TPU.
 
 Known differences from the parent definition:
 
@@ -123,7 +123,7 @@ Type: `Tn1`. Subtype: `Tn1Mer`. Source accession: `GQ160960`.
 
 Exact match to the 10491 bp interrupted Tn1 structure in GQ160960. The outer Tn1 grammar is complete, while a defective 5537 bp Tn5036-like transposon interrupts the Tn1 backbone. This is a named interrupted subtype, not the canonical Tn1 reference.
 
-Review status: Sally said to ignore this as the canonical Tn1 because it contains Tn5036-like.
+Review status: Excluded as canonical Tn1 because it contains a Tn5036-like insertion.
 
 Known differences from the parent definition:
 
@@ -136,7 +136,7 @@ Type: `Tn3`. Subtype: `V00613_legacy_9bp_duplication`. Source accession: `V00613
 
 Exact match to V00613 is Tn3 with the declared 9 bp duplication. It is a recognised Tn3 sequence variant, not an exact match to canonical HM749966.
 
-Review status: Sally noted the 9 bp duplication and preferred HM749966 as canonical.
+Review status: Expert review noted the 9 bp duplication and retained HM749966 as canonical.
 
 Known differences from the parent definition:
 

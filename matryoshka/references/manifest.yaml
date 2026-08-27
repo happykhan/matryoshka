@@ -41,8 +41,8 @@ references:
     min_identity: 95.0
     min_length: 5000
 - file: integron_archetypes.fasta
-  sha256: b45ade73bc7eb64fc7ed6069c83dc111dc1deeb67e61b1e83e436838fd310f87
-  bytes: 11399
+  sha256: 46475c4d4e3dbbe38c1767e1edf9d0380db4c5a942b343646182bae050abff0e
+  bytes: 11401
   records: 1
   record_ids:
   - In2_AF071413_4040_15039
@@ -89,7 +89,7 @@ references:
     min_identity: 90.0
     min_length: 800
 - file: isecp1.fasta
-  sha256: f56015843a548469f235d54629ea8d6de148eed5f10104bdab2b6a15e2fa7420
+  sha256: 58edbc6d860beedfb5deb90a1a4941789155be3d7e2f80def64b2092ac444516
   bytes: 1851
   records: 1
   record_ids:
@@ -104,8 +104,8 @@ references:
   scan_parameters:
     min_identity: 90.0
     min_length: 1000
-- file: mara_exact_is.fasta
-  sha256: 4065d19777d550397714050ddb237ef56ff15fde63b35e6078ab1992f96734a2
+- file: locus_exact_is.fasta
+  sha256: 9a79932aacfbccabef40352eeccd010c0732ddd9cc0122e3cdb4959a8912b01e
   bytes: 5323
   records: 3
   record_ids:
@@ -124,9 +124,9 @@ references:
   scan_parameters:
     min_identity: 98.0
     min_length: 500
-- file: mara_integron_ends.fasta
-  sha256: 48930b558d91866a6ae80937408980ed65cdba31538391c585f2eb19da06ca18
-  bytes: 354
+- file: locus_integron_ends.fasta
+  sha256: 7a50b83c193b02e904e3d19833bf06d041949b002854775ddb9e09d7b2b707f4
+  bytes: 358
   records: 2
   record_ids:
   - IRi_AF071413
@@ -142,9 +142,9 @@ references:
     min_identity: 100.0
     min_length: 25
     evalue: 10.0
-- file: mara_integron_segments.fasta
-  sha256: 95765580e21c098759115e529cc9a701e4f06700d025742440c13d628b2d87d8
-  bytes: 5575
+- file: locus_integron_segments.fasta
+  sha256: 41a041b3bfd7ec860b03c6c57f0b604b24a0a1e55f26f9ee815f4745c1a3f312
+  bytes: 5594
   records: 3
   record_ids:
   - 3-CS_2239bp_U12338
@@ -152,8 +152,8 @@ references:
   - 5-CS_std
   source_accessions:
   - AF071413
-  - MARA
   - U12338
+  - literature_review
   profile: validated
   status: validated
   licence: source-database-terms
@@ -162,9 +162,9 @@ references:
   scan_parameters:
     min_identity: 98.0
     min_length: 200
-- file: mara_integron_tni.fasta
-  sha256: d9d83fff3c255e93ff795e84b6a1be3dbc80ebc6cf859f6afd15897035ab2324
-  bytes: 4988
+- file: locus_integron_tni.fasta
+  sha256: ffd74ffd7b06f2060083ddb146af0f9e2e9131c80d3a4c55020dd6c94b5155c7
+  bytes: 4990
   records: 1
   record_ids:
   - Tn402tni_U67194
@@ -179,8 +179,8 @@ references:
     min_identity: 98.0
     min_length: 500
     assemble_collinear: true
-- file: mara_isecp1_tpu.fasta
-  sha256: 7a535a4466ae52c3cfaf07677dc50b4dfc8069dc323aa98fd8e9ea87bd23a202
+- file: locus_isecp1_tpu.fasta
+  sha256: ace17adc01331653025c4c9017a9f07e3912a2b47f4f5421cd5cf0103556fb46
   bytes: 30323
   records: 7
   record_ids:
@@ -210,30 +210,6 @@ references:
     min_subject_coverage: 70.0
     pick_best_variant: true
     prefer_identity: true
-- file: mara_partridge_units.fasta
-  sha256: 171ef426f8e45fa44427b9b923c65fd445f03d9885068e193a9bc990817ef831
-  bytes: 37472
-  records: 5
-  record_ids:
-  - Tn1721_AB366441
-  - Tn1722_AB366441
-  - Tn4401_GU595196
-  - Tn5393_AF262622
-  - Tn5403_X75779
-  source_accessions:
-  - AB366441
-  - AF262622
-  - GU595196
-  - X75779
-  profile: validated
-  status: validated
-  licence: source-database-terms
-  redistribution_status: public_accession_traceable
-  provenance: public accession sequence with curated annotation
-  scan_parameters:
-    min_identity: 95.0
-    min_length: 500
-    assemble_collinear: true
 - file: mcr1_exemplars.fasta
   sha256: 538bc43cbbe36ee0ecc71c239eb9418f89c3f663937f537b8a39044e5b90a591
   bytes: 238861
@@ -576,6 +552,30 @@ references:
     min_identity: 95.0
     min_length: 200
     min_subject_coverage: 60.0
+- file: reviewed_units.fasta
+  sha256: 6f889e878b4fcd6e5c19711a5242a5a64f060589f86f8c3314475d5f029fa899
+  bytes: 37482
+  records: 5
+  record_ids:
+  - Tn1721_AB366441
+  - Tn1722_AB366441
+  - Tn4401_GU595196
+  - Tn5393_AF262622
+  - Tn5403_X75779
+  source_accessions:
+  - AB366441
+  - AF262622
+  - GU595196
+  - X75779
+  profile: validated
+  status: validated
+  licence: source-database-terms
+  redistribution_status: public_accession_traceable
+  provenance: public accession sequence with curated annotation
+  scan_parameters:
+    min_identity: 95.0
+    min_length: 500
+    assemble_collinear: true
 - file: rolling_circle_ter_sites.fasta
   sha256: b3ca286759313d706df8e61fe3477d131e94474ade82ae8474bc8bf544c6ebaa
   bytes: 484
@@ -661,8 +661,8 @@ references:
     pick_best_variant: true
     prefer_identity: true
 - file: tn21.fasta
-  sha256: 2b576f09b3a2b5a3322a86f0b0f8043a30ceda0d33bceadc3c3121f69298a829
-  bytes: 20154
+  sha256: 53ef21da7367f6c745c7086ee201d99ac48f84ce81a321425c731630f11a6520
+  bytes: 20156
   records: 1
   record_ids:
   - Tn21

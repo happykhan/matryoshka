@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="300" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1280" height="300" fill="#fff"/>
+<text x="18.0" y="23.0" font-size="14" font-weight="bold" text-anchor="start" fill="#171717">Tn1721_AB366441 • Tn1721 1..11128 • view 1..11128</text>
+<rect x="18" y="34" width="1244" height="30" fill="#eeeeec" stroke="#c9c9c6"/>
+<text x="26.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Position</text>
+<text x="178.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Name*</text>
+<text x="528.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">FID</text>
+<text x="658.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Type</text>
+<text x="768.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Notes</text>
+<rect x="18" y="64" width="1244" height="40" fill="#e8e8e5" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1..11128</text>
+<text x="178.0" y="82.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Tn1721</text>
+<line x1="226.0" y1="79.0" x2="260.0" y2="79.0" stroke="#343a40" stroke-width="6"/><polygon points="260.0,79.0 252.0,74.0 252.0,84.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-Tn1721_AB366441</text>
+<text x="658.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">Tn</text>
+<text x="768.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">BLAST identity=100%; reference coverage=100%; expected DR=5 bp; flanking</text>
+<text x="768.0" y="96.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence unavailable</text>
+<rect x="18" y="104" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="122.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1..5640</text>
+<text x="198.0" y="122.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">Tn1722-like backbone</text>
+
+<text x="528.0" y="122.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-Tn1722-backbone</text>
+<text x="658.0" y="122.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">region</text>
+<text x="768.0" y="122.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">curated internal feature from AB366441</text>
+<rect x="18" y="132" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="150.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1..38</text>
+<text x="218.0" y="150.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRL</text>
+<polygon points="248.0,141.0 258.0,147.0 248.0,153.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="150.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-Tn1721-IRL</text>
+<text x="658.0" y="150.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="150.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=38 bp</text>
+<rect x="18" y="160" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="178.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">5603..5640</text>
+<text x="218.0" y="178.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRR</text>
+<polygon points="248.0,169.0 238.0,175.0 248.0,181.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="178.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-Tn1721-IRR-internal</text>
+<text x="658.0" y="178.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="178.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=38 bp</text>
+<rect x="18" y="188" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="206.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">5641..11128</text>
+<text x="198.0" y="206.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tet(A)-tnp duplicated region</text>
+
+<text x="528.0" y="206.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-Tn1721-tet</text>
+<text x="658.0" y="206.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">region</text>
+<text x="768.0" y="206.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">curated internal feature from AB366441</text>
+<rect x="18" y="216" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="234.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">11091..11128</text>
+<text x="218.0" y="234.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRR</text>
+<polygon points="248.0,225.0 238.0,231.0 248.0,237.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="234.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-Tn1721-IRR-terminal</text>
+<text x="658.0" y="234.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="234.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=38 bp</text>
+<line x1="18" y1="34" x2="18" y2="244" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="170" y1="34" x2="170" y2="244" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="520" y1="34" x2="520" y2="244" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="650" y1="34" x2="650" y2="244" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="760" y1="34" x2="760" y2="244" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="1262" y1="34" x2="1262" y2="244" stroke="#d2d2cf" stroke-width="0.8"/>
+<text x="18.0" y="267.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Key:</text>
+<line x1="62.0" y1="264.0" x2="96.0" y2="264.0" stroke="#343a40" stroke-width="6"/><polygon points="96.0,264.0 88.0,259.0 88.0,269.0" fill="#717b85" stroke="#343a40"/>
+<text x="105.0" y="267.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">strand</text>
+<polygon points="180.0,258.0 190.0,264.0 180.0,270.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="198.0" y="267.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat (IR)</text>
+<circle cx="430" cy="262" r="5" fill="#9ca3aa" stroke="#111"/>
+<text x="443.0" y="267.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-matched DR/TSD</text>
+<circle cx="590" cy="262" r="5" fill="#fff" stroke="#737b83"/>
+<text x="603.0" y="267.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">expected, unconfirmed DR/TSD</text>
+<text x="850.0" y="267.0" font-size="10" font-weight="normal" text-anchor="start" fill="#555555">Solid components are sequence-detected; dashed/outlined components are reference-projected.</text>
+</svg>

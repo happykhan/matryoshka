@@ -35,13 +35,13 @@ NCBI_EMAIL=you@example.org pixi run python scripts/fetch_mge_references.py --for
 | `is26.fasta` | IS26 (IS6 family) reference — ISEScan fails at sequence boundaries | X00011 (via KC964607) |
 | `tn3_family_extras.fasta` | Tn3-family extras — Tn3, Tn2, Tn1696, Tn1721, Tn6452, Tn1412, Tn1, Tn5403 | V00613, AY123253, U12338, X61367, KY807920, L36547, NC_008357, X75779 |
 | `rolling_circle_ter_sites.fasta` | terIS91, terISCR1, terISCR2, oriIS91 consensus motifs (~30bp) | Local motif (experimental) |
-| `tn1_tn2_tn3.fasta` | Sally-selected canonical Tn1, Tn2 and Tn3 plus reviewed subtype candidates Tn2c, Tn2.1, Tn1Mer and legacy V00613 Tn3 | NC_008357, AY123253, HM749966, HM749967, CP028717, GQ160960, V00613 |
-| `mara_partridge_units.fasta` | Curated complete Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 units | AB366441, GU595196, AF262622, X75779 |
-| `mara_isecp1_tpu.fasta` | Seven complete ISEcp1-blaCMY TPU exemplars | FM246884, CP001121, AY509004, FJ621588, EU331425, EU331426 |
-| `mara_exact_is.fasta` | Exact ISKpn6, ISKpn7 and IS1999 references | ISfinder, GU595196, JN626286 |
-| `mara_integron_segments.fasta` | 5'-CS/3'-CS components and 5'-CS GGG variant | U12338, AF071413 |
-| `mara_integron_ends.fasta` | Exact 25 bp IRi and IRt ends | AF071413 |
-| `mara_integron_tni.fasta` | Complete Tn402 tni component | U67194 |
+| `tn1_tn2_tn3.fasta` | expert-selected canonical Tn1, Tn2 and Tn3 plus reviewed subtype candidates Tn2c, Tn2.1, Tn1Mer and legacy V00613 Tn3 | NC_008357, AY123253, HM749966, HM749967, CP028717, GQ160960, V00613 |
+| `reviewed_units.fasta` | Curated complete Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 units | AB366441, GU595196, AF262622, X75779 |
+| `locus_isecp1_tpu.fasta` | Seven complete ISEcp1-blaCMY TPU exemplars | FM246884, CP001121, AY509004, FJ621588, EU331425, EU331426 |
+| `locus_exact_is.fasta` | Exact ISKpn6, ISKpn7 and IS1999 references | ISfinder, GU595196, JN626286 |
+| `locus_integron_segments.fasta` | 5'-CS/3'-CS components and 5'-CS GGG variant | U12338, AF071413 |
+| `locus_integron_ends.fasta` | Exact 25 bp IRi and IRt ends | AF071413 |
+| `locus_integron_tni.fasta` | Complete Tn402 tni component | U67194 |
 
 All accessions are cited from Partridge et al. 2018 (Clin Microbiol Rev,
 PMC6148190) — the paper whose framework Matryoshka implements.

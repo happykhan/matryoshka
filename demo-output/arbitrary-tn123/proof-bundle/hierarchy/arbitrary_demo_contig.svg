@@ -25,7 +25,7 @@
 <rect x="292.97" y="80.00" width="144.07" height="62.00" fill="#27ae60" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="0.1"/>
 <rect x="292.97" y="80.00" width="144.07" height="62.00" fill="none" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="1.0"/>
 <text x="296.97" y="93.00" font-size="11" font-family="monospace" text-anchor="start" fill="#27ae60" font-weight="bold">Tn1-like  (4.9 kb)</text>
-<g><title>IR: IRL (8001–8038)</title>
+<g><title>IR: IRR (8001–8038)</title>
 <rect x="292.97" y="100.00" width="1.08" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 <g><title>AMR: blaTEM-2 (8148–9008)</title>
@@ -50,7 +50,7 @@
 <rect x="640.89" y="156.00" width="167.40" height="90.00" fill="#27ae60" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="0.1"/>
 <rect x="640.89" y="156.00" width="167.40" height="90.00" fill="none" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="1.0"/>
 <text x="644.89" y="169.00" font-size="11" font-family="monospace" text-anchor="start" fill="#27ae60" font-weight="bold">Tn2-like  (5.7 kb)</text>
-<g><title>IR: IRL (19950–19987)</title>
+<g><title>IR: IRR (19950–19987)</title>
 <rect x="640.89" y="176.00" width="1.08" height="62.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 <g><title>AMR: blaTEM-1b (20097–20957)</title>

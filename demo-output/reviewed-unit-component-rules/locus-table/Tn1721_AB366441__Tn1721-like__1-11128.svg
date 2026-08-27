@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="454" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1280" height="454" fill="#fff"/>
+<text x="18.0" y="23.0" font-size="14" font-weight="bold" text-anchor="start" fill="#171717">Tn1721_AB366441 • Tn1721-like 1..11128 • view 1..11128</text>
+<rect x="18" y="34" width="1244" height="30" fill="#eeeeec" stroke="#c9c9c6"/>
+<text x="26.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Position</text>
+<text x="178.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Name*</text>
+<text x="528.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">FID</text>
+<text x="658.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Type</text>
+<text x="768.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Notes</text>
+<rect x="18" y="64" width="1244" height="54" fill="#e8e8e5" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1..11128</text>
+<text x="178.0" y="82.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Tn1721-like</text>
+<line x1="256.0" y1="79.0" x2="290.0" y2="79.0" stroke="#343a40" stroke-width="6"/><polygon points="290.0,79.0 282.0,74.0 282.0,84.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">Tn</text>
+<text x="768.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">rule based family candidate; component grammar=complete; 10</text>
+<text x="768.0" y="96.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected components; expected DR=5 bp; flanking</text>
+<text x="768.0" y="110.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence unavailable</text>
+<rect x="18" y="118" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">1..38</text>
+<text x="198.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRL</text>
+<polygon points="228.0,127.0 238.0,133.0 228.0,139.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=38 bp</text>
+<rect x="18" y="146" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="164.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">190..1767</text>
+<text x="198.0" y="164.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">mcp</text>
+<line x1="262.0" y1="161.0" x2="228.0" y2="161.0" stroke="#343a40" stroke-width="6"/><polygon points="228.0,161.0 236.0,156.0 236.0,166.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="164.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="164.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
+<text x="768.0" y="164.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="174" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="192.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">2077..2637</text>
+<text x="198.0" y="192.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tnpR</text>
+<line x1="234.0" y1="189.0" x2="268.0" y2="189.0" stroke="#343a40" stroke-width="6"/><polygon points="268.0,189.0 260.0,184.0 260.0,194.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="192.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="192.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
+<text x="768.0" y="192.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="202" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="220.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">2641..5607</text>
+<text x="198.0" y="220.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tnpA</text>
+<line x1="234.0" y1="217.0" x2="268.0" y2="217.0" stroke="#343a40" stroke-width="6"/><polygon points="268.0,217.0 260.0,212.0 260.0,222.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="220.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="220.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
+<text x="768.0" y="220.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="230" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="248.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">5603..5640</text>
+<text x="198.0" y="248.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRR</text>
+<polygon points="228.0,239.0 218.0,245.0 228.0,251.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="248.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="248.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="248.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=38 bp</text>
+<rect x="18" y="258" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="276.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">5939..6589</text>
+<text x="198.0" y="276.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tetR</text>
+<line x1="268.0" y1="273.0" x2="234.0" y2="273.0" stroke="#343a40" stroke-width="6"/><polygon points="234.0,273.0 242.0,268.0 242.0,278.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="276.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="276.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
+<text x="768.0" y="276.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="286" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="304.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">6695..7894</text>
+<text x="198.0" y="304.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tet(A)</text>
+<line x1="246.0" y1="301.0" x2="280.0" y2="301.0" stroke="#343a40" stroke-width="6"/><polygon points="280.0,301.0 272.0,296.0 272.0,306.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="304.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="304.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">R_gene</text>
+<text x="768.0" y="304.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="314" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="332.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">7926..8810</text>
+<text x="198.0" y="332.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">pecM</text>
+<line x1="268.0" y1="329.0" x2="234.0" y2="329.0" stroke="#343a40" stroke-width="6"/><polygon points="234.0,329.0 242.0,324.0 242.0,334.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="332.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="332.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
+<text x="768.0" y="332.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="342" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="360.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">9140..9540</text>
+<text x="198.0" y="360.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tet-to-tnp duplication junction</text>
+<line x1="396.0" y1="357.0" x2="430.0" y2="357.0" stroke="#343a40" stroke-width="6"/><polygon points="430.0,357.0 422.0,352.0 422.0,362.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="360.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="360.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">region</text>
+<text x="768.0" y="360.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="370" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="388.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">11091..11128</text>
+<text x="198.0" y="388.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRR</text>
+<polygon points="228.0,379.0 218.0,385.0 228.0,391.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="388.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="388.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="388.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=38 bp</text>
+<line x1="18" y1="34" x2="18" y2="398" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="170" y1="34" x2="170" y2="398" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="520" y1="34" x2="520" y2="398" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="650" y1="34" x2="650" y2="398" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="760" y1="34" x2="760" y2="398" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="1262" y1="34" x2="1262" y2="398" stroke="#d2d2cf" stroke-width="0.8"/>
+<text x="18.0" y="421.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Key:</text>
+<line x1="62.0" y1="418.0" x2="96.0" y2="418.0" stroke="#343a40" stroke-width="6"/><polygon points="96.0,418.0 88.0,413.0 88.0,423.0" fill="#717b85" stroke="#343a40"/>
+<text x="105.0" y="421.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">strand</text>
+<polygon points="180.0,412.0 190.0,418.0 180.0,424.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="198.0" y="421.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat (IR)</text>
+<circle cx="430" cy="416" r="5" fill="#9ca3aa" stroke="#111"/>
+<text x="443.0" y="421.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-matched DR/TSD</text>
+<circle cx="590" cy="416" r="5" fill="#fff" stroke="#737b83"/>
+<text x="603.0" y="421.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">expected, unconfirmed DR/TSD</text>
+<text x="850.0" y="421.0" font-size="10" font-weight="normal" text-anchor="start" fill="#555555">Solid components are sequence-detected; dashed/outlined components are reference-projected.</text>
+</svg>

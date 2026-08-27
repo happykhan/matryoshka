@@ -44,7 +44,7 @@
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -67,34 +67,31 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn1",
-            "component_type_scores": {
-              "Tn1": 100.0,
-              "Tn2": 65.182,
-              "Tn3": 98.472
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 100.0,
-                "Tn2": 99.53,
-                "Tn3": 99.42
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 100.0,
-                "Tn2": 94.8,
-                "Tn3": 99.64
-              },
-              "res": {
-                "Tn1": 100.0,
-                "Tn2": 0.0,
-                "Tn3": 98.25
+                "call": "tnpR_Tn1_Tn3",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 100.0,
+                  "tnpR_Tn2": 94.8
+                },
+                "margin": 5.2,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 100.0,
-                "Tn2": 99.17,
-                "Tn3": 97.6
+                "call": "tnpA_Tn1_Tn2",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 100.0,
+                  "tnpA_Tn3": 97.6
+                },
+                "margin": 2.4,
+                "best_score": 100.0
               }
             },
-            "component_type_margin": 1.528
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn1_Tn3",
+              "tnpA": "tnpA_Tn1_Tn2"
+            },
+            "backbone_haplotype_match": "Tn1"
           },
           "checks": {
             "components_detected_from_sequence": true,
@@ -258,12 +255,13 @@
             }
           ],
           "outputs": {
-            "mara": "mara/Tn1_NC_008357__Tn1__1-4949.svg",
-            "mara_table": "mara-table/Tn1_NC_008357__Tn1__1-4949.svg",
+            "locus_map": "locus-map/Tn1_NC_008357__Tn1__1-4949.svg",
+            "locus_table": "locus-table/Tn1_NC_008357__Tn1__1-4949.svg",
             "hierarchy": "hierarchy/Tn1_NC_008357.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]
@@ -303,7 +301,7 @@
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -326,34 +324,31 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn2",
-            "component_type_scores": {
-              "Tn1": 65.067,
-              "Tn2": 100.0,
-              "Tn3": 64.712
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.3,
-                "Tn2": 100.0,
-                "Tn3": 99.65
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 94.44,
-                "Tn2": 100.0,
-                "Tn3": 94.62
-              },
-              "res": {
-                "Tn1": 0.0,
-                "Tn2": 100.0,
-                "Tn3": 0.0
+                "call": "tnpR_Tn2",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 94.62,
+                  "tnpR_Tn2": 100.0
+                },
+                "margin": 5.38,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 99.14,
-                "Tn2": 100.0,
-                "Tn3": 97.84
+                "call": "tnpA_Tn1_Tn2",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 100.0,
+                  "tnpA_Tn3": 97.84
+                },
+                "margin": 2.16,
+                "best_score": 100.0
               }
             },
-            "component_type_margin": 34.933
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn2",
+              "tnpA": "tnpA_Tn1_Tn2"
+            },
+            "backbone_haplotype_match": "Tn2"
           },
           "checks": {
             "components_detected_from_sequence": true,
@@ -517,12 +512,13 @@
             }
           ],
           "outputs": {
-            "mara": "mara/Tn2_AY123253__Tn2__1-4950.svg",
-            "mara_table": "mara-table/Tn2_AY123253__Tn2__1-4950.svg",
+            "locus_map": "locus-map/Tn2_AY123253__Tn2__1-4950.svg",
+            "locus_table": "locus-table/Tn2_AY123253__Tn2__1-4950.svg",
             "hierarchy": "hierarchy/Tn2_AY123253.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]
@@ -562,7 +558,7 @@
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -585,34 +581,31 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn3",
-            "component_type_scores": {
-              "Tn1": 98.476,
-              "Tn2": 64.828,
-              "Tn3": 100.0
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.42,
-                "Tn2": 99.88,
-                "Tn3": 100.0
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 99.64,
-                "Tn2": 94.98,
-                "Tn3": 100.0
-              },
-              "res": {
-                "Tn1": 98.25,
-                "Tn2": 0.0,
-                "Tn3": 100.0
+                "call": "tnpR_Tn1_Tn3",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 100.0,
+                  "tnpR_Tn2": 94.98
+                },
+                "margin": 5.02,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 97.61,
-                "Tn2": 97.87,
-                "Tn3": 100.0
+                "call": "tnpA_Tn3",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 97.87,
+                  "tnpA_Tn3": 100.0
+                },
+                "margin": 2.13,
+                "best_score": 100.0
               }
             },
-            "component_type_margin": 1.524
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn1_Tn3",
+              "tnpA": "tnpA_Tn3"
+            },
+            "backbone_haplotype_match": "Tn3"
           },
           "checks": {
             "components_detected_from_sequence": true,
@@ -776,12 +769,13 @@
             }
           ],
           "outputs": {
-            "mara": "mara/Tn3_HM749966__Tn3__1-4948.svg",
-            "mara_table": "mara-table/Tn3_HM749966__Tn3__1-4948.svg",
+            "locus_map": "locus-map/Tn3_HM749966__Tn3__1-4948.svg",
+            "locus_table": "locus-table/Tn3_HM749966__Tn3__1-4948.svg",
             "hierarchy": "hierarchy/Tn3_HM749966.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]
@@ -824,7 +818,7 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -847,34 +841,31 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn2",
-            "component_type_scores": {
-              "Tn1": 65.182,
-              "Tn2": 100.0,
-              "Tn3": 64.828
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.53,
-                "Tn2": 100.0,
-                "Tn3": 99.88
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 94.8,
-                "Tn2": 100.0,
-                "Tn3": 94.98
-              },
-              "res": {
-                "Tn1": 0.0,
-                "Tn2": 100.0,
-                "Tn3": 0.0
+                "call": "tnpR_Tn2",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 94.98,
+                  "tnpR_Tn2": 100.0
+                },
+                "margin": 5.02,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 99.17,
-                "Tn2": 100.0,
-                "Tn3": 97.87
+                "call": "tnpA_Tn1_Tn2",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 100.0,
+                  "tnpA_Tn3": 97.87
+                },
+                "margin": 2.13,
+                "best_score": 100.0
               }
             },
-            "component_type_margin": 34.818
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn2",
+              "tnpA": "tnpA_Tn1_Tn2"
+            },
+            "backbone_haplotype_match": "Tn2"
           },
           "checks": {
             "components_detected_from_sequence": true,
@@ -1038,12 +1029,13 @@
             }
           ],
           "outputs": {
-            "mara": "mara/Tn2c_HM749967__Tn2c__1-4950.svg",
-            "mara_table": "mara-table/Tn2c_HM749967__Tn2c__1-4950.svg",
+            "locus_map": "locus-map/Tn2c_HM749967__Tn2c__1-4950.svg",
+            "locus_table": "locus-table/Tn2c_HM749967__Tn2c__1-4950.svg",
             "hierarchy": "hierarchy/Tn2c_HM749967.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]
@@ -1086,7 +1078,7 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -1109,34 +1101,31 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn2",
-            "component_type_scores": {
-              "Tn1": 65.087,
-              "Tn2": 99.99,
-              "Tn3": 64.732
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.3,
-                "Tn2": 100.0,
-                "Tn3": 99.65
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 94.44,
-                "Tn2": 100.0,
-                "Tn3": 94.62
-              },
-              "res": {
-                "Tn1": 0.0,
-                "Tn2": 100.0,
-                "Tn3": 0.0
+                "call": "tnpR_Tn2",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 94.62,
+                  "tnpR_Tn2": 100.0
+                },
+                "margin": 5.38,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 99.2,
-                "Tn2": 99.97,
-                "Tn3": 97.9
+                "call": "tnpA_Tn1_Tn2",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 99.97,
+                  "tnpA_Tn3": 97.9
+                },
+                "margin": 2.07,
+                "best_score": 99.97
               }
             },
-            "component_type_margin": 34.903
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn2",
+              "tnpA": "tnpA_Tn1_Tn2"
+            },
+            "backbone_haplotype_match": "Tn2"
           },
           "checks": {
             "components_detected_from_sequence": true,
@@ -1300,12 +1289,13 @@
             }
           ],
           "outputs": {
-            "mara": "mara/Tn2_1_CP028717__Tn2.1__1-8979.svg",
-            "mara_table": "mara-table/Tn2_1_CP028717__Tn2.1__1-8979.svg",
+            "locus_map": "locus-map/Tn2_1_CP028717__Tn2.1__1-8979.svg",
+            "locus_table": "locus-table/Tn2_1_CP028717__Tn2.1__1-8979.svg",
             "hierarchy": "hierarchy/Tn2_1_CP028717.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]
@@ -1348,7 +1338,7 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -1371,34 +1361,31 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn1",
-            "component_type_scores": {
-              "Tn1": 99.961,
-              "Tn2": 65.17,
-              "Tn3": 98.459
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.65,
-                "Tn2": 99.42,
-                "Tn3": 99.3
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 100.0,
-                "Tn2": 94.8,
-                "Tn3": 99.64
-              },
-              "res": {
-                "Tn1": 100.0,
-                "Tn2": 0.0,
-                "Tn3": 98.25
+                "call": "tnpR_Tn1_Tn3",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 100.0,
+                  "tnpR_Tn2": 94.8
+                },
+                "margin": 5.2,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 100.0,
-                "Tn2": 99.17,
-                "Tn3": 97.6
+                "call": "tnpA_Tn1_Tn2",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 100.0,
+                  "tnpA_Tn3": 97.6
+                },
+                "margin": 2.4,
+                "best_score": 100.0
               }
             },
-            "component_type_margin": 1.502
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn1_Tn3",
+              "tnpA": "tnpA_Tn1_Tn2"
+            },
+            "backbone_haplotype_match": "Tn1"
           },
           "checks": {
             "components_detected_from_sequence": true,
@@ -1562,12 +1549,13 @@
             }
           ],
           "outputs": {
-            "mara": "mara/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
-            "mara_table": "mara-table/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
+            "locus_map": "locus-map/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
+            "locus_table": "locus-table/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
             "hierarchy": "hierarchy/Tn1Mer_GQ160960.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]
@@ -1609,7 +1597,7 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -1632,34 +1620,31 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn3",
-            "component_type_scores": {
-              "Tn1": 98.376,
-              "Tn2": 64.731,
-              "Tn3": 99.9
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.42,
-                "Tn2": 99.88,
-                "Tn3": 100.0
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 99.64,
-                "Tn2": 94.98,
-                "Tn3": 100.0
-              },
-              "res": {
-                "Tn1": 98.25,
-                "Tn2": 0.0,
-                "Tn3": 100.0
+                "call": "tnpR_Tn1_Tn3",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 100.0,
+                  "tnpR_Tn2": 94.98
+                },
+                "margin": 5.02,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 97.31,
-                "Tn2": 97.58,
-                "Tn3": 99.7
+                "call": "tnpA_Tn3",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 97.58,
+                  "tnpA_Tn3": 99.7
+                },
+                "margin": 2.12,
+                "best_score": 99.7
               }
             },
-            "component_type_margin": 1.524
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn1_Tn3",
+              "tnpA": "tnpA_Tn3"
+            },
+            "backbone_haplotype_match": "Tn3"
           },
           "checks": {
             "components_detected_from_sequence": true,
@@ -1823,12 +1808,13 @@
             }
           ],
           "outputs": {
-            "mara": "mara/Tn3_V00613__Tn3__1-4957.svg",
-            "mara_table": "mara-table/Tn3_V00613__Tn3__1-4957.svg",
+            "locus_map": "locus-map/Tn3_V00613__Tn3__1-4957.svg",
+            "locus_table": "locus-table/Tn3_V00613__Tn3__1-4957.svg",
             "hierarchy": "hierarchy/Tn3_V00613.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]

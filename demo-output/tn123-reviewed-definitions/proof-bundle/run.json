@@ -2,9 +2,9 @@
   "schema_version": "1.0",
   "profile": "validated",
   "records": 7,
-  "features": 52,
-  "mara_loci": 8,
-  "mara_locus_outputs": [
+  "features": 54,
+  "locus_views": 8,
+  "locus_outputs": [
     {
       "record": "Tn1_NC_008357",
       "call": "Tn1",
@@ -14,8 +14,8 @@
       "end": 4949,
       "view_start": 1,
       "view_end": 4949,
-      "mara": "mara/Tn1_NC_008357__Tn1__1-4949.svg",
-      "mara_table": "mara-table/Tn1_NC_008357__Tn1__1-4949.svg",
+      "locus_map": "locus-map/Tn1_NC_008357__Tn1__1-4949.svg",
+      "locus_table": "locus-table/Tn1_NC_008357__Tn1__1-4949.svg",
       "hierarchy": "hierarchy/Tn1_NC_008357.svg"
     },
     {
@@ -27,8 +27,8 @@
       "end": 4950,
       "view_start": 1,
       "view_end": 4950,
-      "mara": "mara/Tn2_AY123253__Tn2__1-4950.svg",
-      "mara_table": "mara-table/Tn2_AY123253__Tn2__1-4950.svg",
+      "locus_map": "locus-map/Tn2_AY123253__Tn2__1-4950.svg",
+      "locus_table": "locus-table/Tn2_AY123253__Tn2__1-4950.svg",
       "hierarchy": "hierarchy/Tn2_AY123253.svg"
     },
     {
@@ -40,8 +40,8 @@
       "end": 4948,
       "view_start": 1,
       "view_end": 4948,
-      "mara": "mara/Tn3_HM749966__Tn3__1-4948.svg",
-      "mara_table": "mara-table/Tn3_HM749966__Tn3__1-4948.svg",
+      "locus_map": "locus-map/Tn3_HM749966__Tn3__1-4948.svg",
+      "locus_table": "locus-table/Tn3_HM749966__Tn3__1-4948.svg",
       "hierarchy": "hierarchy/Tn3_HM749966.svg"
     },
     {
@@ -53,8 +53,8 @@
       "end": 4950,
       "view_start": 1,
       "view_end": 4950,
-      "mara": "mara/Tn2c_HM749967__Tn2c__1-4950.svg",
-      "mara_table": "mara-table/Tn2c_HM749967__Tn2c__1-4950.svg",
+      "locus_map": "locus-map/Tn2c_HM749967__Tn2c__1-4950.svg",
+      "locus_table": "locus-table/Tn2c_HM749967__Tn2c__1-4950.svg",
       "hierarchy": "hierarchy/Tn2c_HM749967.svg"
     },
     {
@@ -66,8 +66,8 @@
       "end": 8979,
       "view_start": 1,
       "view_end": 8979,
-      "mara": "mara/Tn2_1_CP028717__Tn2.1__1-8979.svg",
-      "mara_table": "mara-table/Tn2_1_CP028717__Tn2.1__1-8979.svg",
+      "locus_map": "locus-map/Tn2_1_CP028717__Tn2.1__1-8979.svg",
+      "locus_table": "locus-table/Tn2_1_CP028717__Tn2.1__1-8979.svg",
       "hierarchy": "hierarchy/Tn2_1_CP028717.svg"
     },
     {
@@ -79,8 +79,8 @@
       "end": 4153,
       "view_start": 1,
       "view_end": 8979,
-      "mara": "mara/Tn2_1_CP028717__ISEcp1-associated_insertion__130-4153.svg",
-      "mara_table": "mara-table/Tn2_1_CP028717__ISEcp1-associated_insertion__130-4153.svg",
+      "locus_map": "locus-map/Tn2_1_CP028717__ISEcp1-associated_insertion__130-4153.svg",
+      "locus_table": "locus-table/Tn2_1_CP028717__ISEcp1-associated_insertion__130-4153.svg",
       "hierarchy": "hierarchy/Tn2_1_CP028717.svg"
     },
     {
@@ -92,8 +92,8 @@
       "end": 10491,
       "view_start": 1,
       "view_end": 10491,
-      "mara": "mara/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
-      "mara_table": "mara-table/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
+      "locus_map": "locus-map/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
+      "locus_table": "locus-table/Tn1Mer_GQ160960__Tn1Mer__1-10491.svg",
       "hierarchy": "hierarchy/Tn1Mer_GQ160960.svg"
     },
     {
@@ -105,22 +105,60 @@
       "end": 4957,
       "view_start": 1,
       "view_end": 4957,
-      "mara": "mara/Tn3_V00613__Tn3__1-4957.svg",
-      "mara_table": "mara-table/Tn3_V00613__Tn3__1-4957.svg",
+      "locus_map": "locus-map/Tn3_V00613__Tn3__1-4957.svg",
+      "locus_table": "locus-table/Tn3_V00613__Tn3__1-4957.svg",
       "hierarchy": "hierarchy/Tn3_V00613.svg"
     }
   ],
   "proof_status": "PASS",
+  "detectors": [
+    {
+      "name": "amrfinder",
+      "label": "AMRFinderPlus",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "isescan",
+      "label": "ISEScan",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "integron",
+      "label": "IntegronFinder",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    }
+  ],
   "outputs": {
     "annotation_json": "annotation.json",
     "annotation_gff3": "annotation.gff3",
+    "annotation_genbank": "annotation.gbk",
     "annotation_cell": "annotation.cell",
     "hierarchy_directory": "hierarchy",
-    "mara_directory": "mara",
-    "mara_table_directory": "mara-table",
+    "locus_map_directory": "locus-map",
+    "locus_table_directory": "locus-table",
     "proof_json": "proof/proof.json",
     "proof_report": "proof/report.html",
     "component_ledger": "proof/components.tsv",
-    "match_ledger": "proof/matches.tsv"
+    "match_ledger": "proof/matches.tsv",
+    "expert_rules_markdown": "expert-rules.md",
+    "expert_rules_html": "expert-rules.html"
   }
 }

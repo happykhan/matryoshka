@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="422" style="background:#fff;font-family:monospace;">
-<rect x="0" y="0" width="1400" height="422" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="498" style="background:#fff;font-family:monospace;">
+<rect x="0" y="0" width="1400" height="498" fill="#ffffff"/>
 <text x="700.00" y="28.00" font-size="15" font-family="monospace" text-anchor="middle" fill="#222" font-weight="bold">EU935739.1</text>
 <line x1="60" y1="40" x2="1360" y2="40" stroke="#bbb" stroke-width="1.5"/>
 <line x1="60.00" y1="36" x2="60.00" y2="44" stroke="#bbb" stroke-width="1.5"/>
@@ -19,8 +19,10 @@
 <line x1="509.84" y1="70" x2="509.84" y2="80.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
 <line x1="578.17" y1="70" x2="578.17" y2="156.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
 <line x1="618.68" y1="70" x2="618.68" y2="156.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
-<line x1="782.97" y1="70" x2="782.97" y2="232.00" stroke="#8e44ad" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
-<line x1="832.25" y1="70" x2="832.25" y2="232.00" stroke="#8e44ad" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<line x1="667.66" y1="70" x2="667.66" y2="232.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<line x1="684.83" y1="70" x2="684.83" y2="232.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<line x1="782.97" y1="70" x2="782.97" y2="308.00" stroke="#8e44ad" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<line x1="832.25" y1="70" x2="832.25" y2="308.00" stroke="#8e44ad" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
 <g><title>transposon: Tn1/2/3 fragment (38747–40671)</title>
 <rect x="488.56" y="80.00" width="21.28" height="62.00" fill="#27ae60" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="0.1"/>
 <rect x="488.56" y="80.00" width="21.28" height="62.00" fill="none" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="1.0"/>
@@ -46,61 +48,100 @@
 <rect x="618.28" y="176.00" width="1.00" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 </g>
-<g><title>integron: class 1 integron candidate (65365–69821)</title>
-<rect x="782.97" y="232.00" width="49.29" height="90.00" fill="#8e44ad" stroke="#8e44ad" stroke-width="2.5" rx="4" opacity="0.1"/>
-<rect x="782.97" y="232.00" width="49.29" height="90.00" fill="none" stroke="#8e44ad" stroke-width="2.5" rx="4" opacity="1.0"/>
-<text x="786.97" y="245.00" font-size="11" font-family="monospace" text-anchor="start" fill="#8e44ad" font-weight="bold">class 1 integron candidate  (4.5 kb)</text>
-<g><title>integron_segment: 5'-CS (65365–66716)</title>
-<rect x="782.97" y="252.00" width="14.94" height="62.00" fill="#95a5a6" stroke="#95a5a6" stroke-width="2.0" rx="4" opacity="0.1"/>
-<rect x="782.97" y="252.00" width="14.94" height="62.00" fill="none" stroke="#95a5a6" stroke-width="2.0" rx="4" opacity="1.0"/>
-<text x="786.97" y="264.00" font-size="10" font-family="monospace" text-anchor="start" fill="#95a5a6" font-weight="bold">5'-CS  (1.4 kb)</text>
-<g><title>IR: IRi (65365–65389)</title>
-<rect x="782.97" y="272.00" width="1.00" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<g><title>transposon: Tn1722 fragment (54940–56492)</title>
+<rect x="667.66" y="232.00" width="17.17" height="62.00" fill="#27ae60" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="0.1"/>
+<rect x="667.66" y="232.00" width="17.17" height="62.00" fill="none" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="1.0"/>
+<text x="671.66" y="245.00" font-size="11" font-family="monospace" text-anchor="start" fill="#27ae60" font-weight="bold">Tn1722 fragment  (1.6 kb)</text>
+<g><title>IR: IRR (54940–54977)</title>
+<rect x="667.66" y="252.00" width="1.00" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
+</g>
+<g><title>integron: class 1 integron candidate (65365–69821)</title>
+<rect x="782.97" y="308.00" width="49.29" height="90.00" fill="#8e44ad" stroke="#8e44ad" stroke-width="2.5" rx="4" opacity="0.1"/>
+<rect x="782.97" y="308.00" width="49.29" height="90.00" fill="none" stroke="#8e44ad" stroke-width="2.5" rx="4" opacity="1.0"/>
+<text x="786.97" y="321.00" font-size="11" font-family="monospace" text-anchor="start" fill="#8e44ad" font-weight="bold">class 1 integron candidate  (4.5 kb)</text>
+<g><title>integron_segment: 5'-CS (65365–66716)</title>
+<rect x="782.97" y="328.00" width="14.94" height="62.00" fill="#95a5a6" stroke="#95a5a6" stroke-width="2.0" rx="4" opacity="0.1"/>
+<rect x="782.97" y="328.00" width="14.94" height="62.00" fill="none" stroke="#95a5a6" stroke-width="2.0" rx="4" opacity="1.0"/>
+<text x="786.97" y="340.00" font-size="10" font-family="monospace" text-anchor="start" fill="#95a5a6" font-weight="bold">5'-CS  (1.4 kb)</text>
+<g><title>IR: IRi (65365–65389)</title>
+<rect x="782.97" y="348.00" width="1.00" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+</g>
+<g><title>integron_segment: 5'-CS (65365–66716)</title>
+<rect x="782.97" y="328.00" width="14.94" height="62.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 <g><title>integron_segment: 3'-CS (68228–69821)</title>
-<rect x="814.63" y="252.00" width="17.62" height="62.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<rect x="814.63" y="328.00" width="17.62" height="62.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<g><title>integron_segment: 3'-CS (68228–69821)</title>
+<rect x="814.63" y="328.00" width="17.62" height="62.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 </g>
 <g><title>IS: ISEcp1 (37107–38746)</title>
-<polygon points="475.42,336.00 488.55,336.00 488.55,370.00 475.42,370.00 470.42,353.00" fill="#4a90d9" stroke="white" stroke-width="0.8"/>
-<text x="479.48" y="357.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">I…</text>
+<polygon points="475.42,412.00 488.55,412.00 488.55,446.00 475.42,446.00 470.42,429.00" fill="#4a90d9" stroke="white" stroke-width="0.8"/>
+<text x="479.48" y="433.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">I…</text>
 </g>
 <line x1="479.48" y1="66" x2="479.48" y2="74" stroke="#4a90d9" stroke-width="2"/>
 <g><title>transposon: Tn1722 fragment (50511–51256)</title>
-<rect x="618.67" y="336.00" width="8.24" height="34.00" fill="#27ae60" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<rect x="618.67" y="412.00" width="8.24" height="34.00" fill="#27ae60" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 <line x1="622.79" y1="66" x2="622.79" y2="74" stroke="#27ae60" stroke-width="2"/>
-<g><title>transposon: Tn1722 fragment (54940–56492)</title>
-<rect x="667.66" y="336.00" width="17.17" height="34.00" fill="#27ae60" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<g><title>transposon_component: tet-to-tnp duplication junction (51056–51456)</title>
+<rect x="624.70" y="412.00" width="4.42" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
-<line x1="676.24" y1="66" x2="676.24" y2="74" stroke="#27ae60" stroke-width="2"/>
+<line x1="626.91" y1="66" x2="626.91" y2="74" stroke="#95a5a6" stroke-width="2"/>
+<g><title>gene: pecM (51786–52670)</title>
+<rect x="632.78" y="412.00" width="9.78" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<line x1="637.66" y1="66" x2="637.66" y2="74" stroke="#95a5a6" stroke-width="2"/>
+<g><title>AMR: tet(A) (52702–53901)</title>
+<rect x="642.91" y="412.00" width="13.26" height="34.00" fill="#e74c3c" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<line x1="649.54" y1="66" x2="649.54" y2="74" stroke="#e74c3c" stroke-width="2"/>
+<g><title>gene: tetR (54007–54657)</title>
+<rect x="657.34" y="412.00" width="7.19" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<line x1="660.94" y1="66" x2="660.94" y2="74" stroke="#95a5a6" stroke-width="2"/>
 <g><title>gene: tnpA (60316–62561)</title>
-<rect x="727.12" y="336.00" width="24.83" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
-<text x="739.54" y="357.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">t…</text>
+<rect x="727.12" y="412.00" width="24.83" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="739.54" y="433.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">t…</text>
 </g>
 <line x1="739.54" y1="66" x2="739.54" y2="74" stroke="#95a5a6" stroke-width="2"/>
 <g><title>transposon: Tn1/2/3 fragment (60316–62561)</title>
-<rect x="727.12" y="336.00" width="24.83" height="34.00" fill="#27ae60" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
-<text x="739.54" y="357.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">T…</text>
+<rect x="727.12" y="412.00" width="24.83" height="34.00" fill="#27ae60" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="739.54" y="433.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">T…</text>
 </g>
 <line x1="739.54" y1="66" x2="739.54" y2="74" stroke="#27ae60" stroke-width="2"/>
+<g><title>res_site: res (64901–65029)</title>
+<rect x="777.83" y="412.00" width="1.42" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<line x1="778.54" y1="66" x2="778.54" y2="74" stroke="#95a5a6" stroke-width="2"/>
+<g><title>transposition_gene: tnpM (65014–65364)</title>
+<rect x="779.08" y="412.00" width="3.87" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<line x1="781.02" y1="66" x2="781.02" y2="74" stroke="#95a5a6" stroke-width="2"/>
+<g><title>integron: class 1 integron candidate (65365–69821)</title>
+<rect x="782.97" y="412.00" width="49.29" height="34.00" fill="#8e44ad" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="807.61" y="433.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">class…</text>
+</g>
+<line x1="807.61" y1="66" x2="807.61" y2="74" stroke="#8e44ad" stroke-width="2"/>
 <g><title>IR: IRt (71567–71591)</title>
-<rect x="851.56" y="336.00" width="1.00" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<rect x="851.56" y="412.00" width="1.00" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
 </g>
 <line x1="851.70" y1="66" x2="851.70" y2="74" stroke="#95a5a6" stroke-width="2"/>
-<rect x="60.00" y="392.00" width="14.00" height="14.00" fill="#4a90d9" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
-<text x="78.00" y="403.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">IS element</text>
-<rect x="180.00" y="392.00" width="14.00" height="14.00" fill="#e74c3c" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
-<text x="198.00" y="403.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">AMR gene</text>
-<rect x="300.00" y="392.00" width="14.00" height="14.00" fill="#27ae60" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
-<text x="318.00" y="403.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Transposon</text>
-<rect x="420.00" y="392.00" width="14.00" height="14.00" fill="#8e44ad" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
-<text x="438.00" y="403.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Integron</text>
-<rect x="540.00" y="392.00" width="14.00" height="14.00" fill="#f39c12" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
-<text x="558.00" y="403.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Cassette</text>
-<rect x="660.00" y="392.00" width="14.00" height="14.00" fill="#7f8c8d" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
-<text x="678.00" y="403.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">attC site</text>
-<rect x="780.00" y="392.00" width="14.00" height="14.00" fill="#f1c40f" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
-<text x="798.00" y="403.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">TSD</text>
+<rect x="60.00" y="468.00" width="14.00" height="14.00" fill="#4a90d9" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="78.00" y="479.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">IS element</text>
+<rect x="180.00" y="468.00" width="14.00" height="14.00" fill="#e74c3c" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="198.00" y="479.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">AMR gene</text>
+<rect x="300.00" y="468.00" width="14.00" height="14.00" fill="#27ae60" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="318.00" y="479.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Transposon</text>
+<rect x="420.00" y="468.00" width="14.00" height="14.00" fill="#8e44ad" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="438.00" y="479.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Integron</text>
+<rect x="540.00" y="468.00" width="14.00" height="14.00" fill="#f39c12" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="558.00" y="479.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Cassette</text>
+<rect x="660.00" y="468.00" width="14.00" height="14.00" fill="#7f8c8d" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="678.00" y="479.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">attC site</text>
+<rect x="780.00" y="468.00" width="14.00" height="14.00" fill="#f1c40f" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="798.00" y="479.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">TSD</text>
 </svg>

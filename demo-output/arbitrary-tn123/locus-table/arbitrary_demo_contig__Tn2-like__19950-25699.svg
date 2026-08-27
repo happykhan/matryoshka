@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="406" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1280" height="406" fill="#fff"/>
+<text x="18.0" y="23.0" font-size="14" font-weight="bold" text-anchor="start" fill="#171717">arbitrary_demo_contig • Tn2-like 19950..25699 • view 14950..30699</text>
+<rect x="18" y="34" width="1244" height="30" fill="#eeeeec" stroke="#c9c9c6"/>
+<text x="26.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Position</text>
+<text x="178.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Name*</text>
+<text x="528.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">FID</text>
+<text x="658.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Type</text>
+<text x="768.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Notes</text>
+<rect x="18" y="64" width="1244" height="54" fill="#e8e8e5" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">19950..25699</text>
+<text x="178.0" y="82.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Tn2-like</text>
+<line x1="238.0" y1="79.0" x2="272.0" y2="79.0" stroke="#343a40" stroke-width="6"/><polygon points="272.0,79.0 264.0,74.0 264.0,84.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">Tn</text>
+<text x="768.0" y="82.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">rule based type candidate; complete with insertion; inserted</text>
+<text x="768.0" y="96.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence≈799 bp; component grammar=complete; 6 independently</text>
+<text x="768.0" y="110.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-detected components; expected DR=5 bp; searched but not found</text>
+<rect x="18" y="118" width="1244" height="40" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">19950..19987</text>
+<text x="198.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRL</text>
+<polygon points="228.0,127.0 238.0,133.0 228.0,139.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected terminal_IR; identity=100.0%;</text>
+<text x="768.0" y="150.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">coverage=100.0%</text>
+<rect x="18" y="158" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="176.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">20097..20957</text>
+<text x="198.0" y="176.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">blaTEM-1b</text>
+<line x1="298.0" y1="173.0" x2="264.0" y2="173.0" stroke="#343a40" stroke-width="6"/><polygon points="264.0,173.0 272.0,168.0 272.0,178.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="176.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="176.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">R_gene</text>
+<text x="768.0" y="176.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected blaTEM; identity=100.0%; coverage=100.0%</text>
+<rect x="18" y="186" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="204.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">21140..21697</text>
+<text x="198.0" y="204.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tnpR</text>
+<line x1="268.0" y1="201.0" x2="234.0" y2="201.0" stroke="#343a40" stroke-width="6"/><polygon points="234.0,201.0 242.0,196.0 242.0,206.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="204.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="204.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
+<text x="768.0" y="204.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected tnpR; identity=100.0%; coverage=100.0%</text>
+<rect x="18" y="214" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="232.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">21703..21816</text>
+<text x="198.0" y="232.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">res</text>
+
+<text x="528.0" y="232.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="232.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">res</text>
+<text x="768.0" y="232.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected res; identity=100.0%; coverage=100.0%</text>
+<rect x="18" y="242" width="1244" height="40" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="260.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">21860..25666</text>
+<text x="198.0" y="260.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tnpA</text>
+<line x1="234.0" y1="257.0" x2="268.0" y2="257.0" stroke="#343a40" stroke-width="6"/><polygon points="268.0,257.0 260.0,252.0 260.0,262.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="260.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="260.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
+<text x="768.0" y="260.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected tnpA; identity=100.0%; coverage=100.0%;</text>
+<text x="768.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">complete with insertion</text>
+<rect x="18" y="282" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="300.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">22451..23249</text>
+<text x="218.0" y="300.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">inserted sequence 1</text>
+
+<text x="528.0" y="300.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="300.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">inserted</text>
+<text x="768.0" y="300.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">unclassified insertion; estimated inserted sequence=799 bp</text>
+<rect x="18" y="310" width="1244" height="40" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="328.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">25662..25699</text>
+<text x="198.0" y="328.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRR</text>
+<polygon points="228.0,319.0 218.0,325.0 228.0,331.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="328.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="328.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="328.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected terminal_IR; identity=100.0%;</text>
+<text x="768.0" y="342.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">coverage=100.0%</text>
+<line x1="18" y1="34" x2="18" y2="350" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="170" y1="34" x2="170" y2="350" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="520" y1="34" x2="520" y2="350" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="650" y1="34" x2="650" y2="350" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="760" y1="34" x2="760" y2="350" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="1262" y1="34" x2="1262" y2="350" stroke="#d2d2cf" stroke-width="0.8"/>
+<text x="18.0" y="373.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Key:</text>
+<line x1="62.0" y1="370.0" x2="96.0" y2="370.0" stroke="#343a40" stroke-width="6"/><polygon points="96.0,370.0 88.0,365.0 88.0,375.0" fill="#717b85" stroke="#343a40"/>
+<text x="105.0" y="373.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">strand</text>
+<polygon points="180.0,364.0 190.0,370.0 180.0,376.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="198.0" y="373.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat (IR)</text>
+<circle cx="430" cy="368" r="5" fill="#9ca3aa" stroke="#111"/>
+<text x="443.0" y="373.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-matched DR/TSD</text>
+<circle cx="590" cy="368" r="5" fill="#fff" stroke="#737b83"/>
+<text x="603.0" y="373.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">expected, unconfirmed DR/TSD</text>
+<text x="850.0" y="373.0" font-size="10" font-weight="normal" text-anchor="start" fill="#555555">Solid components are sequence-detected; dashed/outlined components are reference-projected.</text>
+</svg>

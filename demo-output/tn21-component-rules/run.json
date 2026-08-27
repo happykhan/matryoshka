@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "profile": "component-rules",
+  "records": 1,
+  "features": 13,
+  "locus_views": 1,
+  "locus_outputs": [
+    {
+      "record": "Tn21",
+      "call": "Tn21-like",
+      "family": "Tn21",
+      "element_type": "transposon",
+      "start": 1,
+      "end": 19672,
+      "view_start": 1,
+      "view_end": 19672,
+      "locus_map": "locus-map/Tn21__Tn21-like__1-19672.svg",
+      "locus_table": "locus-table/Tn21__Tn21-like__1-19672.svg",
+      "hierarchy": "hierarchy/Tn21.svg"
+    }
+  ],
+  "proof_status": "NO_TN123_LOCI",
+  "detectors": [
+    {
+      "name": "amrfinder",
+      "label": "AMRFinderPlus",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "isescan",
+      "label": "ISEScan",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "integron",
+      "label": "IntegronFinder",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    }
+  ],
+  "outputs": {
+    "annotation_json": "annotation.json",
+    "annotation_gff3": "annotation.gff3",
+    "annotation_genbank": "annotation.gbk",
+    "annotation_cell": "annotation.cell",
+    "hierarchy_directory": "hierarchy",
+    "locus_map_directory": "locus-map",
+    "locus_table_directory": "locus-table",
+    "proof_json": "proof/proof.json",
+    "proof_report": "proof/report.html",
+    "component_ledger": "proof/components.tsv",
+    "match_ledger": "proof/matches.tsv",
+    "expert_rules_markdown": "expert-rules.md",
+    "expert_rules_html": "expert-rules.html"
+  }
+}

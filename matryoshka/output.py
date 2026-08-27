@@ -16,6 +16,7 @@ from io import StringIO
 from typing import Any
 
 from .detect import MGEFeature
+from .report import annotation_gff3
 
 # ---------------------------------------------------------------------------
 # Wolvercote output
@@ -67,59 +68,14 @@ def to_wolvercote(
 # GFF3 output
 # ---------------------------------------------------------------------------
 
-def _gff_escape(s: str) -> str:
-    return (
-        s.replace("%", "%25")
-         .replace(";", "%3B")
-         .replace("=", "%3D")
-         .replace("&", "%26")
-         .replace(",", "%2C")
-    )
-
-
-def _feature_to_gff3_rows(
-    f: MGEFeature,
-    seqid: str,
-    parent_id: str | None = None,
-) -> list[str]:
-    feat_id = f"{f.element_type}_{f.start}_{f.end}"
-    attrs: list[str] = [
-        f"ID={_gff_escape(feat_id)}",
-        f"Name={_gff_escape(f.name)}",
-        f"family={_gff_escape(f.family)}",
-    ]
-    if parent_id:
-        attrs.append(f"Parent={_gff_escape(parent_id)}")
-    if f.tsd_seq:
-        attrs.append(f"tsd={f.tsd_seq}")
-    if f.ir_left:
-        attrs.append(f"ir_left={f.ir_left}")
-    if f.ir_right:
-        attrs.append(f"ir_right={f.ir_right}")
-    if f.score is not None:
-        attrs.append(f"score={f.score}")
-    # Domain-specific attributes (seqid is meta — skip in output)
-    for k, v in (f.attributes or {}).items():
-        if k == "seqid" or v in (None, ""):
-            continue
-        attrs.append(f"{_gff_escape(k)}={_gff_escape(str(v))}")
-
-    score_col = f"{f.score}" if f.score is not None else "."
-    row = (
-        f"{seqid}\tMatryoshka\t{f.element_type}\t{f.start}\t{f.end}\t"
-        f"{score_col}\t{f.strand}\t.\t{';'.join(attrs)}"
-    )
-    rows = [row]
-    for child in f.children:
-        rows.extend(_feature_to_gff3_rows(child, seqid, feat_id))
-    return rows
-
-
-def to_gff3(features: list[MGEFeature], seqid: str = "sequence") -> str:
-    rows = ["##gff-version 3"]
-    for f in features:
-        rows.extend(_feature_to_gff3_rows(f, seqid))
-    return "\n".join(rows)
+def to_gff3(
+    features: list[MGEFeature],
+    seqid: str = "sequence",
+    sequence_length: int | None = None,
+) -> str:
+    """Render GFF3 through the same stable writer used by result bundles."""
+    length = sequence_length or max((feature.end for feature in features), default=1)
+    return annotation_gff3([(seqid, length, features)])
 
 
 # ---------------------------------------------------------------------------
@@ -155,7 +111,7 @@ def to_json(features: list[MGEFeature], indent: int = 2) -> str:
 def to_svg(features: list[MGEFeature], sample_name: str = "") -> str:
     raise RuntimeError(
         "Circular CellGen rendering is not distributed with Matryoshka 0.1 alpha. "
-        "Use the supported 'linear' or 'mara' SVG output instead."
+        "Use the supported 'linear' or 'locus-map' SVG output instead."
     )
 
 
@@ -192,9 +148,13 @@ def _feature_to_seqfeatures(f: MGEFeature) -> list:
         "attC": "misc_feature",
         "integrase": "CDS",
         "transposase": "CDS",
+        "transposition_gene": "CDS",
+        "gene": "CDS",
         "AMR": "CDS",
         "replicon": "rep_origin",
         "res_site": "misc_feature",
+        "IR": "repeat_region",
+        "direct_repeat": "repeat_region",
     }
     ftype = feature_type_map.get(f.element_type, "misc_feature")
 
@@ -229,6 +189,12 @@ def _feature_to_seqfeatures(f: MGEFeature) -> list:
         aclass = (f.attributes or {}).get("subclass") or (f.attributes or {}).get("class") or f.family
         if aclass:
             qualifiers["note"] = [f"Class={aclass}"]
+
+    elif ftype == "repeat_region":
+        qualifiers["rpt_type"] = [
+            "inverted" if f.element_type == "IR" else "direct"
+        ]
+        qualifiers["note"] = [f"{f.element_type}:{f.name}"]
 
     elif ftype == "misc_feature":
         qualifiers["note"] = [f"{f.element_type}:{f.name}"]

@@ -12,7 +12,7 @@ DATA = Path(__file__).parent / "test-data"
 FASTA = DATA / "acceptance" / "pOXA-48a.fasta"
 ISESCAN = DATA / "detector-output" / "pOXA-48a.isescan.tsv"
 AMRFINDER = DATA / "detector-output" / "pOXA-48a.amrfinder.tsv"
-TN123 = DATA / "partridge-examples" / "Tn1-Tn2-Tn3.fasta"
+TN123 = DATA / "reviewed-examples" / "Tn1-Tn2-Tn3.fasta"
 ARBITRARY_TN123 = (
     Path(__file__).parents[1]
     / "demo-output"
@@ -97,30 +97,54 @@ def test_run_writes_versioned_result_directory(tmp_path):
     out = tmp_path / "result"
     result = CliRunner().invoke(
         cli,
-        ["run", str(TN123), "--threads", "2", "--out", str(out)],
+        [
+            "run", str(TN123), "--threads", "2", "--detectors", "none",
+            "--out", str(out),
+        ],
     )
     assert result.exit_code == 0, result.output
     document = json.loads((out / "annotation.json").read_text())
     summary = json.loads((out / "run.json").read_text())
     assert document["schema_version"] == "1.0"
     assert document["reference_database"]["profile"] == "validated"
-    assert summary["mara_loci"] == 3
-    assert [locus["call"] for locus in summary["mara_locus_outputs"]] == [
+    assert summary["locus_views"] == 3
+    assert [locus["call"] for locus in summary["locus_outputs"]] == [
         "Tn1", "Tn2", "Tn3",
     ]
-    for locus in summary["mara_locus_outputs"]:
-        assert (out / locus["mara"]).is_file()
-        assert (out / locus["mara_table"]).is_file()
+    for locus in summary["locus_outputs"]:
+        assert (out / locus["locus_map"]).is_file()
+        assert (out / locus["locus_table"]).is_file()
         assert (out / locus["hierarchy"]).is_file()
     assert summary["proof_status"] == "PASS"
-    assert len(list((out / "mara").glob("*.svg"))) == 3
-    assert len(list((out / "mara-table").glob("*.svg"))) == 3
+    assert {item["status"] for item in summary["detectors"]} == {"disabled"}
+    assert len(list((out / "locus-map").glob("*.svg"))) == 3
+    assert len(list((out / "locus-table").glob("*.svg"))) == 3
     assert len(list((out / "hierarchy").glob("*.svg"))) == 3
     assert (out / "annotation.cell").is_file()
     assert (out / "proof" / "proof.json").is_file()
     assert (out / "proof" / "components.tsv").is_file()
     assert (out / "proof" / "matches.tsv").is_file()
     assert (out / "proof" / "report.html").is_file()
+    assert (out / "expert-rules.md").is_file()
+    assert (out / "expert-rules.html").is_file()
+    assert summary["outputs"]["expert_rules_html"] == "expert-rules.html"
+    assert "Matryoshka analysis" in result.output
+    assert "Analysis complete" in result.output
+
+
+@SKIP_BLAST
+def test_run_quiet_suppresses_rich_progress(tmp_path: Path) -> None:
+    out = tmp_path / "quiet-result"
+    result = CliRunner().invoke(
+        cli,
+        [
+            "run", str(TN123), "--threads", "2", "--detectors", "none",
+            "--quiet", "--out", str(out),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert result.output == ""
+    assert (out / "run.json").is_file()
 
 
 @SKIP_BLAST
@@ -128,7 +152,10 @@ def test_arbitrary_sequence_proof_connects_detection_matching_and_outputs(tmp_pa
     out = tmp_path / "arbitrary-proof"
     result = CliRunner().invoke(
         cli,
-        ["run", str(ARBITRARY_TN123), "--threads", "2", "--out", str(out)],
+        [
+            "run", str(ARBITRARY_TN123), "--threads", "2",
+            "--detectors", "none", "--out", str(out),
+        ],
     )
     assert result.exit_code == 0, result.output
 
@@ -173,3 +200,13 @@ def test_arbitrary_sequence_proof_connects_detection_matching_and_outputs(tmp_pa
     assert report.count('class="verdict pass"') == 3
     embedded = report.split('id="matryoshka-proof">', 1)[1].split("</script>", 1)[0]
     assert json.loads(embedded)["summary"]["status"] == "PASS"
+
+
+def test_preflight_reports_core_and_optional_detectors() -> None:
+    result = CliRunner().invoke(cli, ["preflight", "--format", "json"])
+    assert result.exit_code == 0, result.output
+    document = json.loads(result.output)
+    assert document["core"]["ready"] is True
+    assert [item["name"] for item in document["detectors"]] == [
+        "amrfinder", "isescan", "integron",
+    ]

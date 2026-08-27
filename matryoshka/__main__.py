@@ -4,7 +4,7 @@ Matryoshka CLI — detect and annotate nested MGEs in bacterial genomes.
 Usage:
     matryoshka annotate <fasta> [--isescan <tsv>] [--amrfinder <tsv>]
                                 [--integrons <file>]
-                                [--format gff3|json|wolvercote|linear|mara|mara-table]
+                                [--format gff3|json|wolvercote|linear|locus-map|locus-table]
                                 [--out <path>]
 """
 
@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import sys
 from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version as _pkg_version
@@ -23,33 +24,48 @@ from Bio import SeqIO
 from .boundaries import confirm_boundaries
 from .component_catalog import catalog_as_json, catalog_as_tsv
 from .confidence import assign_confidence
+from .console import WorkflowConsole
+from .curated_units import annotate_curated_units
+from .deduplication import suppress_redundant_inference as _suppress_redundant_inference
 from .detect import (
     MGEFeature,
-    detector_available,
     parse_amrfinder,
     parse_integron_finder,
     parse_isescan,
-    run_amrfinder,
-    run_integron_finder,
-    run_isescan,
+)
+from .detector_workflow import (
+    DetectorExecutionError,
+    execute_detectors,
+    preflight_runtimes,
 )
 from .element_definitions import (
     definitions_as_json,
     definitions_as_markdown,
     definitions_as_yaml,
 )
+from .expert_report import expert_rules_as_html, expert_rules_as_markdown
 from .hierarchy import build_hierarchy
 from .integron_structures import infer_integron_structures
-from .mara_loci import extract_mara_loci
-from .mara_table import to_mara_table_svg
-from .mara_viz import to_mara_svg
+from .locus_map import to_locus_map_svg
+from .locus_table import to_locus_table_svg
+from .locus_views import extract_locus_views
 from .output import to_genbank, to_gff3, to_json, to_wolvercote
-from .partridge_units import annotate_partridge_units
+from .priority_transposons import (
+    priority_transposons_as_json,
+    priority_transposons_as_markdown,
+    priority_transposons_as_yaml,
+)
 from .proof import build_tn123_proof, write_proof_bundle
 from .reference_scan import REFERENCE_PROFILES, blast_available, scan_all
 from .report import annotation_document, annotation_gff3, count_features
 from .tn123 import annotate_tn123, assemble_tn123_components
 from .transposon import annotate_res_sites, infer_transposons
+from .unit_components import assemble_reviewed_unit_components
+from .unit_definitions import (
+    unit_definitions_as_json,
+    unit_definitions_as_markdown,
+    unit_definitions_as_yaml,
+)
 from .viz import to_linear_svg
 
 try:
@@ -75,12 +91,20 @@ def cli() -> None:
 )
 @click.option("--out", "-o", default="-", help="Output file (default: stdout).")
 def catalog(fmt: str, out: str) -> None:
-    """List the MARA raw components and compound assembly grammar."""
+    """List the raw components and compound assembly grammar."""
     data = catalog_as_json() if fmt == "json" else catalog_as_tsv()
     _emit(data, out, False)
 
 
 @cli.command("definitions")
+@click.option(
+    "--set",
+    "definition_set",
+    type=click.Choice(["tn123", "reviewed-units"]),
+    default="tn123",
+    show_default=True,
+    help="Definition collection to export for expert review.",
+)
 @click.option(
     "--format",
     "fmt",
@@ -90,12 +114,89 @@ def catalog(fmt: str, out: str) -> None:
     help="Expert-definition output format.",
 )
 @click.option("--out", "-o", default="-", help="Output file (default: stdout).")
-def definitions_command(fmt: str, out: str) -> None:
-    """Show the biological rules used to call Tn1, Tn2 and Tn3."""
+def definitions_command(definition_set: str, fmt: str, out: str) -> None:
+    """Show the biological rules used for component-driven family calls."""
     exporters = {
-        "yaml": definitions_as_yaml,
-        "json": definitions_as_json,
-        "markdown": definitions_as_markdown,
+        "tn123": {
+            "yaml": definitions_as_yaml,
+            "json": definitions_as_json,
+            "markdown": definitions_as_markdown,
+        },
+        "reviewed-units": {
+            "yaml": unit_definitions_as_yaml,
+            "json": unit_definitions_as_json,
+            "markdown": unit_definitions_as_markdown,
+        },
+    }
+    _emit(exporters[definition_set][fmt](), out, False)
+
+
+@cli.command("expert-rules")
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["html", "markdown"]),
+    default="html",
+    show_default=True,
+    help="Human-readable review format.",
+)
+@click.option("--out", "-o", default="-", help="Output file (default: stdout).")
+def expert_rules_command(fmt: str, out: str) -> None:
+    """Translate all executable YAML rules into a non-specialist review report."""
+    report = expert_rules_as_html() if fmt == "html" else expert_rules_as_markdown()
+    _emit(report, out, False)
+
+
+@cli.command()
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    show_default=True,
+    help="Readiness-report format.",
+)
+def preflight(fmt: str) -> None:
+    """Check the core runtime and optional detector availability."""
+    runtimes = preflight_runtimes()
+    core = {
+        "blastn": shutil.which("blastn"),
+        "makeblastdb": shutil.which("makeblastdb"),
+        "ready": blast_available(),
+    }
+    if fmt == "json":
+        click.echo(json.dumps({
+            "core": core,
+            "detectors": [
+                {"name": name, "label": label, **runtime.document()}
+                for name, label, runtime in runtimes
+            ],
+        }, indent=2))
+        return
+
+    WorkflowConsole().preflight_summary(
+        bool(core["ready"]),
+        str(core["blastn"]) if core["blastn"] else None,
+        runtimes,
+    )
+
+
+@cli.command()
+@click.option(
+    "--format",
+    "fmt",
+    type=click.Choice(["yaml", "json", "markdown"]),
+    default="markdown",
+    show_default=True,
+    help="Roadmap output format.",
+)
+@click.option("--out", "-o", default="-", help="Output file (default: stdout).")
+def roadmap(fmt: str, out: str) -> None:
+    """Export the 17-target biological coverage and validation roadmap."""
+    exporters = {
+        "yaml": priority_transposons_as_yaml,
+        "json": priority_transposons_as_json,
+        "markdown": priority_transposons_as_markdown,
     }
     _emit(exporters[fmt](), out, False)
 
@@ -131,112 +232,6 @@ def _flatten_feature_inputs(features: list[MGEFeature]) -> list[MGEFeature]:
     return flattened
 
 
-def _suppress_redundant_inference(features: list[MGEFeature]) -> list[MGEFeature]:
-    """Drop rule-inferred transposons that overlap a BLAST-confirmed call of
-    the same family. The BLAST boundaries are authoritative.
-    """
-    blast_by_family: dict[str, list[MGEFeature]] = {}
-    exact_reference_is = [
-        feature
-        for feature in features
-        if feature.element_type == "IS"
-        and feature.attributes.get("source") == "reference_scan"
-    ]
-    for f in features:
-        if f.attributes.get("source") == "reference_scan" and f.element_type == "transposon":
-            blast_by_family.setdefault(f.family, []).append(f)
-
-    def _overlap(a: MGEFeature, b: MGEFeature) -> bool:
-        if a.end < b.start or b.end < a.start:
-            return False
-        ovl = min(a.end, b.end) - max(a.start, b.start)
-        short = min(a.end - a.start, b.end - b.start)
-        return short > 0 and ovl / short > 0.5
-
-    def _same_reference_unit(a: MGEFeature, b: MGEFeature) -> bool:
-        if a.attributes.get("seqid") != b.attributes.get("seqid"):
-            return False
-        if not _overlap(a, b):
-            return False
-        return (
-            a.family == b.family
-            or a.name == b.name
-            or (a.family == "Tn3" and a.name in {b.family, b.name})
-            or (b.family == "Tn3" and b.name in {a.family, a.name})
-        )
-
-    def _reference_rank(feature: MGEFeature) -> tuple[float, float, float, int]:
-        provenance = 1.0 if feature.attributes.get("provenance") == "Sally_Partridge" else 0.0
-        coverage = float(
-            feature.attributes.get("blast_subject_coverage")
-            or feature.attributes.get("blast_coverage")
-            or 0
-        )
-        identity = float(feature.attributes.get("blast_identity") or 0)
-        return provenance, coverage, identity, feature.end - feature.start
-
-    reference_units = [
-        feature
-        for feature in features
-        if feature.element_type == "transposon"
-        and feature.attributes.get("source") == "reference_scan"
-    ]
-    selected_reference_ids: set[int] = set()
-    for candidate in sorted(reference_units, key=_reference_rank, reverse=True):
-        if any(
-            _same_reference_unit(candidate, selected)
-            for selected in reference_units
-            if id(selected) in selected_reference_ids
-        ):
-            continue
-        selected_reference_ids.add(id(candidate))
-
-    kept: list[MGEFeature] = []
-    curated_components = [
-        feature
-        for feature in features
-        if feature.attributes.get("source") == "curated_reference"
-    ]
-    for f in features:
-        if (
-            f.element_type == "transposon"
-            and f.attributes.get("source") == "reference_scan"
-            and id(f) not in selected_reference_ids
-        ):
-            continue
-        if (
-            f.attributes.get("source") == "reference_scan"
-            and any(
-                f.element_type == curated.element_type
-                and (
-                    f.name == curated.name
-                    or (
-                        f.attributes.get("fid")
-                        and f.attributes.get("fid") == curated.attributes.get("fid")
-                    )
-                )
-                and _overlap(f, curated)
-                for curated in curated_components
-            )
-        ):
-            continue
-        if (
-            f.element_type == "IS"
-            and f.attributes.get("source") not in {"reference_scan", "curated_reference"}
-            and any(_overlap(f, exact) for exact in exact_reference_is)
-        ):
-            continue
-        if (
-            f.element_type == "transposon"
-            and f.attributes.get("source") != "reference_scan"
-            and f.family in blast_by_family
-            and any(_overlap(f, b) for b in blast_by_family[f.family])
-        ):
-            continue
-        kept.append(f)
-    return kept
-
-
 def _annotate_contig(
     seq: str,
     contig_id: str,
@@ -253,11 +248,12 @@ def _annotate_contig(
     # res and cargo components. Whole-locus homology remains corroborating
     # naming evidence rather than the source of their internal annotation.
     all_feats.extend(assemble_tn123_components(all_feats))
+    all_feats.extend(assemble_reviewed_unit_components(all_feats))
 
     # Projection is now a labelled fallback only for components that the
     # independent scan could not recover.
     all_feats.extend(annotate_tn123(all_feats))
-    all_feats.extend(annotate_partridge_units(all_feats))
+    all_feats.extend(annotate_curated_units(all_feats))
     all_feats = _suppress_redundant_inference(all_feats)
 
     # Res sites are positioned from the surviving (post-dedup) transposons
@@ -304,7 +300,7 @@ def _load_detector_outputs(
     default="validated",
     show_default=True,
     help=(
-        "Validated references, component-only Tn1/Tn2/Tn3 discovery, "
+        "Validated references, component-rule discovery, "
         "or every experimental/legacy reference."
     ),
 )
@@ -318,20 +314,22 @@ def _load_detector_outputs(
 @click.option(
     "--detectors",
     type=click.Choice(["none", "available", "all"]),
-    default="none",
+    default="available",
     show_default=True,
-    help="Optionally run ISEScan, AMRFinder+ and IntegronFinder from PATH/Pixi.",
+    help="Run bundled/installed AMRFinderPlus, ISEScan and IntegronFinder.",
 )
 @click.option("--isescan", type=click.Path(exists=True), help="Precomputed ISEScan TSV.")
 @click.option("--amrfinder", type=click.Path(exists=True), help="Precomputed AMRFinder+ TSV.")
 @click.option("--integrons", type=click.Path(exists=True), help="Precomputed IntegronFinder file.")
 @click.option(
-    "--mara-flank",
+    "--locus-flank",
+    "locus_flank",
     type=click.IntRange(min=0),
     default=5_000,
     show_default=True,
-    help="Flanking bases included around each MARA locus.",
+    help="Flanking bases included around each locus map.",
 )
+@click.option("--quiet", is_flag=True, help="Suppress progress and status output.")
 def run_workflow(
     fasta: Path,
     out: Path,
@@ -341,94 +339,96 @@ def run_workflow(
     isescan: str | None,
     amrfinder: str | None,
     integrons: str | None,
-    mara_flank: int,
+    locus_flank: int,
+    quiet: bool,
 ) -> None:
     """Run a reproducible annotation and write a complete result directory."""
     if not blast_available():
         raise click.UsageError(
             "blastn and makeblastdb are required. Install BLAST+ or use the supplied Pixi environment."
         )
+    fasta_records = list(SeqIO.parse(fasta, "fasta"))
+    if not fasta_records:
+        raise click.UsageError(f"No FASTA records found in {fasta}")
     out.mkdir(parents=True, exist_ok=True)
+    reporter = WorkflowConsole(quiet=quiet)
+    reporter.header(fasta, out, profile, threads, detectors)
+    reporter.stage(1, 4, "Run optional detectors")
     detector_dir = out / "detectors"
-    detector_paths: dict[str, str | None] = {
+    supplied_detector_paths: dict[str, str | None] = {
         "isescan": isescan,
         "amrfinder": amrfinder,
         "integron": integrons,
     }
-    runners = {
-        "isescan": run_isescan,
-        "amrfinder": run_amrfinder,
-        "integron": run_integron_finder,
-    }
-    if detectors != "none":
-        detector_dir.mkdir(parents=True, exist_ok=True)
-        for name, runner in runners.items():
-            if detector_paths[name]:
-                continue
-            if not detector_available(name):
-                if detectors == "all":
-                    raise click.UsageError(
-                        f"--detectors all requested, but {name} is not installed."
-                    )
-                click.echo(f"Detector unavailable; skipping {name}.", err=True)
-                continue
-            click.echo(f"Running {name}…", err=True)
-            detector_paths[name] = str(runner(fasta, detector_dir / name))
+    try:
+        def _announce_detector(message: str) -> None:
+            if "unavailable" in message.lower() or "failed" in message.lower():
+                reporter.warning(message)
+            else:
+                reporter.info(message)
 
+        detector_paths, detector_runs = execute_detectors(
+            fasta,
+            detector_dir,
+            mode=detectors,
+            threads=threads,
+            supplied=supplied_detector_paths,
+            announce=_announce_detector,
+        )
+    except DetectorExecutionError as error:
+        raise click.UsageError(str(error)) from error
+
+    reporter.detector_summary(detector_runs)
     all_features = _load_detector_outputs(
         detector_paths["isescan"],
         detector_paths["amrfinder"],
         detector_paths["integron"],
     )
-    click.echo(
-        f"Reference profile: {profile}; scanning with {threads} worker(s)…",
-        err=True,
-    )
+    reporter.stage(2, 4, "Detect sequence components")
+    with reporter.reference_progress(profile, threads) as update_progress:
+        all_features.extend(
+            scan_all(fasta, profile=profile, threads=threads, progress=update_progress)
+        )
+    reporter.success(f"Collected {len(all_features)} component-level observations")
 
-    def _progress(reference: str, completed: int, total: int) -> None:
-        click.echo(f"  [{completed}/{total}] {reference}", err=True)
-
-    all_features.extend(
-        scan_all(fasta, profile=profile, threads=threads, progress=_progress)
-    )
-    fasta_records = list(SeqIO.parse(fasta, "fasta"))
-    if not fasta_records:
-        raise click.UsageError(f"No FASTA records found in {fasta}")
-
+    reporter.stage(3, 4, "Assemble and draw loci")
     annotated: list[tuple[str, int, list[MGEFeature]]] = []
-    mara_dir = out / "mara"
-    table_dir = out / "mara-table"
+    genbank_records: list[str] = []
+    locus_map_dir = out / "locus-map"
+    table_dir = out / "locus-table"
     hierarchy_dir = out / "hierarchy"
-    mara_dir.mkdir(exist_ok=True)
+    locus_map_dir.mkdir(exist_ok=True)
     table_dir.mkdir(exist_ok=True)
     hierarchy_dir.mkdir(exist_ok=True)
     proof_output_paths: dict[tuple[str, int, int, str], dict[str, str]] = {}
-    mara_locus_outputs: list[dict[str, object]] = []
+    locus_outputs: list[dict[str, object]] = []
     locus_count = 0
     for record in fasta_records:
+        loci_before = locus_count
         sequence = str(record.seq)
         contig_features = _features_on_contig(all_features, record.id)
         roots, _ = _annotate_contig(sequence, record.id, contig_features, False)
         annotated.append((record.id, len(sequence), roots))
+        genbank_records.append(to_genbank(roots, sequence, record.id))
         safe_record_id = record.id.replace("/", "_").replace(" ", "_")
         hierarchy_path = hierarchy_dir / f"{safe_record_id}.svg"
         hierarchy_path.write_text(
             to_linear_svg(roots, len(sequence), record.id),
             encoding="utf-8",
         )
-        for locus in extract_mara_loci(roots, len(sequence), mara_flank):
+        for locus in extract_locus_views(roots, len(sequence), locus_flank):
             locus_name = f"{record.id}__{locus.suffix}"
             label = (
                 f"{record.id} • {locus.target.name} "
                 f"{locus.target.start}..{locus.target.end} • "
                 f"view {locus.view_start}..{locus.view_end}"
             )
-            (mara_dir / f"{locus_name}.svg").write_text(
-                to_mara_svg(locus.roots, locus.view_length, label),
+            (locus_map_dir / f"{locus_name}.svg").write_text(
+                to_locus_map_svg(locus.roots, locus.view_length, label),
                 encoding="utf-8",
             )
             (table_dir / f"{locus_name}.svg").write_text(
-                to_mara_table_svg(locus.roots, label),
+                to_locus_table_svg(locus.roots, label),
                 encoding="utf-8",
             )
             proof_output_paths[(
@@ -437,14 +437,15 @@ def run_workflow(
                 locus.target.end,
                 locus.target.name,
             )] = {
-                "mara": f"mara/{locus_name}.svg",
-                "mara_table": f"mara-table/{locus_name}.svg",
+                "locus_map": f"locus-map/{locus_name}.svg",
+                "locus_table": f"locus-table/{locus_name}.svg",
                 "hierarchy": f"hierarchy/{safe_record_id}.svg",
                 "cell_format": "annotation.cell",
                 "annotation_json": "annotation.json",
                 "annotation_gff3": "annotation.gff3",
+                "annotation_genbank": "annotation.gbk",
             }
-            mara_locus_outputs.append({
+            locus_outputs.append({
                 "record": record.id,
                 "call": locus.target.name,
                 "family": locus.target.family,
@@ -453,16 +454,23 @@ def run_workflow(
                 "end": locus.target.end,
                 "view_start": locus.view_start,
                 "view_end": locus.view_end,
-                "mara": f"mara/{locus_name}.svg",
-                "mara_table": f"mara-table/{locus_name}.svg",
+                "locus_map": f"locus-map/{locus_name}.svg",
+                "locus_table": f"locus-table/{locus_name}.svg",
                 "hierarchy": f"hierarchy/{safe_record_id}.svg",
             })
             locus_count += 1
+        reporter.contig(
+            record.id,
+            len(sequence),
+            len(roots),
+            locus_count - loci_before,
+        )
 
+    reporter.stage(4, 4, "Write result bundle")
     detector_provenance = {
-        name: str(Path(path).resolve())
-        for name, path in detector_paths.items()
-        if path
+        record.name: record.output
+        for record in detector_runs
+        if record.output
     }
     document = annotation_document(
         annotated,
@@ -476,10 +484,13 @@ def run_workflow(
             profile,
             "--threads",
             str(threads),
+            "--detectors",
+            detectors,
             "--out",
             str(out),
         ],
         detector_outputs=detector_provenance,
+        detector_runs=[record.document() for record in detector_runs],
     )
     (out / "annotation.json").write_text(
         json.dumps(document, indent=2) + "\n",
@@ -489,6 +500,7 @@ def run_workflow(
         annotation_gff3(annotated),
         encoding="utf-8",
     )
+    (out / "annotation.gbk").write_text("".join(genbank_records), encoding="utf-8")
     (out / "annotation.cell").write_text(
         "\n".join(
             to_wolvercote(roots, [], seqid)
@@ -496,6 +508,8 @@ def run_workflow(
         ) + "\n",
         encoding="utf-8",
     )
+    (out / "expert-rules.md").write_text(expert_rules_as_markdown(), encoding="utf-8")
+    (out / "expert-rules.html").write_text(expert_rules_as_html(), encoding="utf-8")
     proof = build_tn123_proof(annotated, proof_output_paths)
     write_proof_bundle(
         out / "proof",
@@ -507,26 +521,32 @@ def run_workflow(
         "profile": profile,
         "records": len(annotated),
         "features": sum(count_features(roots) for _, _, roots in annotated),
-        "mara_loci": locus_count,
-        "mara_locus_outputs": mara_locus_outputs,
+        "locus_views": locus_count,
+        "locus_outputs": locus_outputs,
         "proof_status": proof["summary"]["status"],
+        "detectors": [record.document() for record in detector_runs],
         "outputs": {
             "annotation_json": "annotation.json",
             "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk",
             "annotation_cell": "annotation.cell",
             "hierarchy_directory": "hierarchy",
-            "mara_directory": "mara",
-            "mara_table_directory": "mara-table",
+            "locus_map_directory": "locus-map",
+            "locus_table_directory": "locus-table",
             "proof_json": "proof/proof.json",
             "proof_report": "proof/report.html",
             "component_ledger": "proof/components.tsv",
             "match_ledger": "proof/matches.tsv",
+            "expert_rules_markdown": "expert-rules.md",
+            "expert_rules_html": "expert-rules.html",
         },
     }
     (out / "run.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    click.echo(
-        f"Complete: {summary['features']} features and {locus_count} MARA loci in {out}",
-        err=True,
+    reporter.finish(
+        int(summary["features"]),
+        locus_count,
+        len(annotated),
+        out,
     )
 
 
@@ -539,17 +559,17 @@ def _render(
     if fmt == "json":
         return to_json(roots)
     if fmt == "gff3":
-        return to_gff3(roots, seqid=sample_name)
+        return to_gff3(roots, seqid=sample_name, sequence_length=len(seq))
     if fmt == "genbank":
         return to_genbank(roots, seq, sample_name)
     if fmt == "wolvercote":
         return to_wolvercote(roots, [], sample_name)
     if fmt == "linear":
         return to_linear_svg(roots, len(seq), sample_name)
-    if fmt == "mara":
-        return to_mara_svg(roots, len(seq), sample_name)
-    if fmt == "mara-table":
-        return to_mara_table_svg(roots, sample_name)
+    if fmt == "locus-map":
+        return to_locus_map_svg(roots, len(seq), sample_name)
+    if fmt == "locus-table":
+        return to_locus_table_svg(roots, sample_name)
     raise click.BadParameter(f"unknown format: {fmt}")
 
 
@@ -561,8 +581,8 @@ def _render(
 @click.option(
     "--format", "fmt", default="json",
     type=click.Choice([
-        "json", "gff3", "genbank", "wolvercote", "linear", "mara",
-        "mara-table",
+        "json", "gff3", "genbank", "wolvercote", "linear", "locus-map",
+        "locus-table",
     ]),
     show_default=True, help="Output format",
 )
@@ -575,7 +595,7 @@ def _render(
     type=click.Choice(sorted(REFERENCE_PROFILES)),
     default="validated",
     show_default=True,
-    help="Detection profile; tn123-components excludes complete-element lookup.",
+    help="Detection profile; component-rules excludes complete-element lookup.",
 )
 @click.option(
     "--threads",
@@ -585,11 +605,12 @@ def _render(
     help="Concurrent reference scans.",
 )
 @click.option(
-    "--mara-flank",
+    "--locus-flank",
+    "locus_flank",
     type=click.IntRange(min=0),
     default=5_000,
     show_default=True,
-    help="Flanking bases included around each validated MARA target locus.",
+    help="Flanking bases included around each validated target locus.",
 )
 @click.option("--out", "-o", default="-", help="Output file or directory (default: stdout)")
 def annotate(
@@ -602,7 +623,7 @@ def annotate(
     reference_scan: bool,
     profile: str,
     threads: int,
-    mara_flank: int,
+    locus_flank: int,
     out: str,
 ) -> None:
     """Combine detection tool outputs into a nested MGE annotation.
@@ -658,8 +679,8 @@ def annotate(
             f"{len(roots)} root-level elements from {len(contig_feats)} features",
             err=True,
         )
-        if fmt in {"mara", "mara-table"}:
-            loci = extract_mara_loci(roots, len(seq), mara_flank)
+        if fmt in {"locus-map", "locus-table"}:
+            loci = extract_locus_views(roots, len(seq), locus_flank)
             if loci:
                 for locus in loci:
                     locus_name = f"{contig_id}__{locus.suffix}"
@@ -669,9 +690,9 @@ def annotate(
                         f"view {locus.view_start}..{locus.view_end}"
                     )
                     rendered: str | bytes = (
-                        to_mara_svg(locus.roots, locus.view_length, label)
-                        if fmt == "mara"
-                        else to_mara_table_svg(locus.roots, label)
+                        to_locus_map_svg(locus.roots, locus.view_length, label)
+                        if fmt == "locus-map"
+                        else to_locus_table_svg(locus.roots, label)
                     )
                     outputs.append((locus_name, rendered))
                 continue
@@ -684,7 +705,7 @@ def annotate(
         outputs.append((contig_id, rendered))
 
     directory_requested = (
-        fmt in {"mara", "mara-table"}
+        fmt in {"locus-map", "locus-table"}
         and out != "-"
         and Path(out).suffix.lower() != ".svg"
     )

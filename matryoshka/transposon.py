@@ -257,8 +257,8 @@ def _complete_is_of(features: list[MGEFeature], family: str) -> list[MGEFeature]
 def _complete_named_is(features: list[MGEFeature], name: str) -> list[MGEFeature]:
     """Return complete, explicitly named IS copies.
 
-    Family-level ISEScan calls are deliberately insufficient here. Sally
-    Partridge's review requires exact IS identity before interpreting an
+    Family-level ISEScan calls are deliberately insufficient here. Expert review
+    requires exact IS identity before interpreting an
     IS26-associated mobility structure.
     """
     expected = name.casefold()

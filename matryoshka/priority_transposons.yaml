@@ -1,0 +1,151 @@
+schema_version: "1.0"
+roadmap_version: "2026-08-27"
+scope: >-
+  Priority named elements repeatedly used as worked examples or major comparison
+  cases in the supplied expert material. A target is validated only when an
+  arbitrary locus can be assembled from independently detected components;
+  whole-element similarity is secondary naming evidence.
+
+status_levels:
+  validated_component_rule: Component detection, grammar, variation and negative controls are tested.
+  implemented_needs_validation: A component/signature rule exists but its boundaries or variation panel are incomplete.
+  reference_supported: Whole-reference or curated feature-map support exists, without a complete general component grammar.
+  definition_required: The element is in scope but still needs a reviewable component definition and validation panel.
+
+acceptance_contract:
+  required_cases:
+    - canonical positive control
+    - component-only run with complete-element lookup disabled
+    - reverse-orientation locus
+    - close variant with substitutions
+    - internal insertion or deletion where biologically permitted
+    - partial or interrupted locus that retains components without a complete name
+    - long arbitrary contig containing the locus and realistic flanks
+    - related-family negative control
+  required_outputs:
+    - annotation.json
+    - annotation.gff3
+    - annotation.gbk
+    - annotation.cell
+    - hierarchy SVG
+    - locus map SVG
+    - locus table SVG
+    - component and classification evidence ledger
+
+milestones:
+  A:
+    objective: Finish and broaden the supplied component definitions.
+    targets: [Tn1, Tn2, Tn3, Tn21, Tn1721, Tn1722, Tn402, Tn4401, Tn5393, Tn5403]
+  B:
+    objective: Replace broad signatures and reference-only calls with bounded component grammars.
+    targets: [Tn7, Tn10, Tn1696, Tn1331, Tn1999, Tn6029]
+  C:
+    objective: Validate nested/hybrid assembly on a complex worked locus.
+    targets: [Tn2670]
+
+targets:
+  - name: Tn1
+    architecture: tn3_family_unit
+    status: validated_component_rule
+    canonical_accession: NC_008357
+    required_components: [terminal_IR x2, blaTEM, tnpR, res, tnpA]
+    remaining_work: Expand the natural-accession panel and review Tn1f/Tn1Mer subtype thresholds.
+  - name: Tn2
+    architecture: tn3_family_unit
+    status: validated_component_rule
+    canonical_accession: AY123253
+    required_components: [terminal_IR x2, blaTEM, tnpR, res, tnpA]
+    remaining_work: Expand natural Tn2, Tn2.1 and Tn2a/Tn2c panels.
+  - name: Tn3
+    architecture: tn3_family_unit
+    status: validated_component_rule
+    canonical_accession: HM749966
+    required_components: [terminal_IR x2, blaTEM, tnpR, res, tnpA]
+    remaining_work: Expand natural Tn3/Tn3.1 panels and near-neighbour negatives.
+  - name: Tn21
+    architecture: tn21_subgroup_unit
+    status: validated_component_rule
+    canonical_accession: AF071413
+    required_components: [terminal_IR x2, tnpA, tnpR, res, tnpM]
+    optional_components: [class_1_integron, tni, mer]
+    remaining_work: Add natural rearranged Tn21 accessions and explicit hybrid tests.
+  - name: Tn1721
+    architecture: tn3_family_unit_with_duplication
+    status: validated_component_rule
+    canonical_accession: AB366441
+    required_components: [terminal_IR x3, mcp, tnpR, tnpA, tetR, tetA, pecM, tet_to_tnp_junction]
+    remaining_work: Add natural variant and partial-duplication accessions.
+  - name: Tn1722
+    architecture: tn3_family_unit
+    status: validated_component_rule
+    canonical_accession: AB366441
+    required_components: [terminal_IR x2, mcp, tnpR, tnpA]
+    remaining_work: Add natural Tn1722 accessions outside the supplied parent sequence.
+  - name: Tn402
+    architecture: tn402_tn5053_unit
+    status: implemented_needs_validation
+    canonical_accession: U67194
+    required_components: [IRi, tniA, tniB, tniQ, res, tniR, IRt]
+    optional_components: [class_1_integron]
+    remaining_work: Split the current tni-region profile into genes/sites and test broader Tn5053-family negatives.
+  - name: Tn4401
+    architecture: tn3_family_unit_with_internal_IS
+    status: implemented_needs_validation
+    canonical_accession: GU595196
+    required_components: [terminal_IR x2, tnp_region, ISKpn7, blaKPC_region, ISKpn6, right_end]
+    remaining_work: Replace the cargo-flanking shortcut with a complete ordered grammar and validate variants a-h.
+  - name: Tn5393
+    architecture: tn3_family_unit
+    status: reference_supported
+    canonical_accession: AF262622
+    required_components: [terminal_IR x2, tnpA, tnpR, strA, strB]
+    remaining_work: Extract independent component profiles and validate complete, fragmented and interrupted forms.
+  - name: Tn5403
+    architecture: tn3_family_unit
+    status: reference_supported
+    canonical_accession: X75779
+    required_components: [terminal_IR x2, diagnostic_backbone, tnpA, tnpR, res]
+    remaining_work: Review the precise component grammar, extract profiles and construct near-neighbour controls.
+  - name: Tn7
+    architecture: tn7_unit
+    status: reference_supported
+    canonical_accession: AP002527
+    required_components: [terminal_ends, tnsA, tnsB, tnsC, tnsD, tnsE]
+    optional_components: [class_2_integron, glmS_attTn7_context]
+    remaining_work: Add protein/profile detection for tns genes, terminal ends and target-site context.
+  - name: Tn10
+    architecture: composite_transposon
+    status: implemented_needs_validation
+    canonical_accession: null
+    required_components: [IS10L, tetR, tetA_or_tetB_region, IS10R]
+    remaining_work: Require exact IS10 identities and canonical orientation instead of broad IS4-family calls.
+  - name: Tn1696
+    architecture: tn21_subgroup_unit
+    status: reference_supported
+    canonical_accession: U12338
+    required_components: [terminal_IR x2, Tn21_subgroup_tnp_region, res, class_1_integron, mer_region]
+    remaining_work: Define distinguishing Tn21-versus-Tn1696 component states and hybrid handling.
+  - name: Tn1331
+    architecture: tn3_family_unit_with_integron_derivatives
+    status: implemented_needs_validation
+    canonical_accession: AF479774
+    required_components: [terminal_IR x2, tnpA, tnpR, res, aac6Ib, blaOXA9, aadA1]
+    remaining_work: Add backbone/boundary requirements; the current three-gene signature is insufficient alone.
+  - name: Tn1999
+    architecture: composite_or_tn3_derived_unit
+    status: implemented_needs_validation
+    canonical_accession: null
+    required_components: [exact_IS1999_pair, blaOXA48_region, supported_outer_boundaries]
+    remaining_work: Add subtype definitions and variation/near-neighbour panels beyond the pOXA-48a acceptance sequence.
+  - name: Tn6029
+    architecture: is26_associated_compound_unit
+    status: definition_required
+    canonical_accession: null
+    required_components: [expert_review_required]
+    remaining_work: Reconstruct the reviewed component order and boundaries before implementing a rule; do not infer it from IS26 proximity alone.
+  - name: Tn2670
+    architecture: nested_hybrid_validation_case
+    status: definition_required
+    canonical_accession: null
+    required_components: [outer_IS1_composite, Tn21_segments, class_1_integron, Tn402_segment, resistance_cassettes]
+    remaining_work: Encode the complete nested worked structure and use it to test overlapping parents, repeats and independent locus-map/table rendering.

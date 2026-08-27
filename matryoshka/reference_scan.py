@@ -30,6 +30,8 @@ from Bio import SeqIO
 from .detect import TSD_LENGTHS, MGEFeature
 from .element_definitions import tn123_definition, tn123_rules
 from .tn123 import REFERENCE_METADATA, Tn123ComponentReference, component_references
+from .unit_components import UnitComponentReference, unit_component_references
+from .unit_definitions import unit_rules
 
 REFERENCES_DIR = Path(__file__).parent / "references"
 
@@ -974,7 +976,7 @@ def _scan_collinear_unit_hits(
             best,
             meta.get(best.sseqid, {"_id": best.sseqid}),
         ))
-    # Sally's annotation order gives an exact complete unit priority over a
+    # expert review annotation order gives an exact complete unit priority over a
     # competing terminal fragment from a related reference. This matters for
     # Tn1721, whose partial duplication can otherwise produce an extra Tn1722
     # fragment at the end of the same complete locus.
@@ -1110,6 +1112,48 @@ def _component_feature(
     )
 
 
+def _reviewed_unit_component_feature(
+    assembly: Tn123Assembly,
+    reference: UnitComponentReference,
+) -> MGEFeature:
+    """Convert an independently aligned reviewed-unit component into evidence."""
+    complete = assembly.left_end_covered and assembly.right_end_covered
+    attributes: dict[str, object] = {
+        "seqid": assembly.qseqid,
+        "source": "reviewed_unit_component_scan",
+        "evidence_class": "sequence_detected",
+        "component_role": reference.role,
+        "component_reference": reference.reference_id,
+        "reference_parent": reference.parent_reference,
+        "reference_family": reference.parent_family,
+        "component_alignment_strand": assembly.strand,
+        "blast_identity": round(assembly.identity, 2),
+        "blast_coverage": round(assembly.reference_coverage, 2),
+        "reference_length": assembly.slen,
+        "reference_segments": _reference_segments(assembly),
+        "component_status": "complete" if complete else "partial",
+        "structural_status": assembly.structural_status,
+    }
+    if assembly.inserted_bases:
+        attributes.update(interrupted=True, inserted_bases=assembly.inserted_bases)
+    if assembly.deleted_bases:
+        attributes["deleted_bases"] = assembly.deleted_bases
+    if assembly.mismatch_bases:
+        attributes["mismatch_bases"] = assembly.mismatch_bases
+    if not complete:
+        attributes["fragment"] = True
+    return MGEFeature(
+        element_type=reference.element_type,
+        family=reference.parent_family,
+        name=reference.name,
+        start=assembly.qstart,
+        end=assembly.qend,
+        strand=_component_strand(reference.strand, assembly.strand),
+        score=assembly.identity,
+        attributes=attributes,
+    )
+
+
 def _same_component_locus(left: MGEFeature, right: MGEFeature) -> bool:
     if left.attributes.get("seqid") != right.attributes.get("seqid"):
         return False
@@ -1167,6 +1211,57 @@ def _dedupe_component_features(features: list[MGEFeature]) -> list[MGEFeature]:
         best.attributes["component_profile_matches"] = [
             matches_by_type[type_name]
             for type_name in sorted(matches_by_type)
+        ]
+        selected.append(best)
+    return selected
+
+
+def _dedupe_reviewed_unit_components(features: list[MGEFeature]) -> list[MGEFeature]:
+    """Collapse homologous component hits while retaining every family profile."""
+    groups: list[list[MGEFeature]] = []
+    for feature in sorted(features, key=lambda item: (item.start, item.end, item.name)):
+        for group in groups:
+            if _same_component_locus(feature, group[0]):
+                group.append(feature)
+                break
+        else:
+            groups.append([feature])
+
+    def rank(feature: MGEFeature) -> tuple[float, float, int]:
+        return (
+            float(feature.attributes.get("blast_identity", 0)),
+            float(feature.attributes.get("blast_coverage", 0)),
+            feature.end - feature.start,
+        )
+
+    selected: list[MGEFeature] = []
+    allowed = set(unit_rules()["units"])
+    for group in groups:
+        best = max(group, key=rank)
+        matches: dict[str, dict[str, object]] = {}
+        for alternative in group:
+            family = str(alternative.attributes.get("reference_family", ""))
+            if family not in allowed:
+                continue
+            identity = float(alternative.attributes.get("blast_identity", 0))
+            coverage = float(alternative.attributes.get("blast_coverage", 0))
+            profile_score = identity * coverage / 100.0
+            previous = matches.get(family)
+            previous_score = previous.get("profile_score") if previous else None
+            if (
+                isinstance(previous_score, (int, float))
+                and previous_score >= profile_score
+            ):
+                continue
+            matches[family] = {
+                "family": family,
+                "component_reference": alternative.attributes.get("component_reference", ""),
+                "identity": round(identity, 3),
+                "coverage": round(coverage, 3),
+                "profile_score": round(profile_score, 3),
+            }
+        best.attributes["component_profile_matches"] = [
+            matches[family] for family in sorted(matches)
         ]
         selected.append(best)
     return selected
@@ -1272,6 +1367,78 @@ def scan_tn123_components(
     return _dedupe_component_features(features)
 
 
+def scan_reviewed_unit_components(
+    query_fasta: Path | str,
+    *,
+    blast_threads: int = 1,
+) -> list[MGEFeature]:
+    """Detect Tn21/Tn1721/Tn1722 components without whole-locus lookup."""
+    references = unit_component_references()
+    by_id = {reference.reference_id: reference for reference in references}
+    rules = unit_rules()["component_detection"]
+    categories = {
+        category: [reference for reference in references if reference.category == category]
+        for category in {reference.category for reference in references}
+    }
+    parameters = {
+        "long": (rules["long"], 0.0, 1e-10),
+        "short": (
+            rules["short"],
+            rules["short"]["minimum_subject_coverage_percent"],
+            1e-10,
+        ),
+        "terminal_ir": (
+            rules["terminal_ir"],
+            rules["terminal_ir"]["minimum_subject_coverage_percent"],
+            rules["terminal_ir"]["evalue"],
+        ),
+        "junction": (rules["junction"], 0.0, 1e-10),
+    }
+    hits: list[BlastHit] = []
+    with tempfile.TemporaryDirectory() as tmp:
+        for category, category_references in categories.items():
+            reference_path = Path(tmp) / f"reviewed_units_{category}.fasta"
+            reference_path.write_text("".join(
+                f">{reference.reference_id}\n{reference.sequence}\n"
+                for reference in category_references
+            ))
+            category_rules, minimum_coverage, evalue = parameters[category]
+            hits.extend(blastn_hits(
+                query_fasta,
+                reference_path,
+                min_identity=float(category_rules["minimum_identity_percent"]),
+                min_length=int(category_rules["minimum_hsp_length"]),
+                min_subject_coverage=float(minimum_coverage),
+                evalue=float(evalue),
+                num_threads=blast_threads,
+            ))
+
+    direct = [
+        hit for hit in hits
+        if by_id[hit.sseqid].category in {"short", "terminal_ir"}
+    ]
+    chained = [
+        hit for hit in hits
+        if by_id[hit.sseqid].category not in {"short", "terminal_ir"}
+    ]
+    chains = [[hit] for hit in direct]
+    chains.extend(_chain_tn123_subject_hits(
+        chained,
+        max_reference_gap=int(rules["long"]["maximum_reference_gap_bp"]),
+    ))
+
+    features: list[MGEFeature] = []
+    for chain in chains:
+        assembly = _assemble_tn123_chain(chain)
+        reference = by_id[assembly.sseqid]
+        minimum_coverage = float(
+            rules[reference.category]["minimum_assembled_coverage_percent"]
+        )
+        if assembly.reference_coverage >= minimum_coverage:
+            features.append(_reviewed_unit_component_feature(assembly, reference))
+    return _dedupe_reviewed_unit_components(features)
+
+
 # Per-reference-file search parameters. Short motifs (res site) need low
 # min_length; whole-plasmid exemplars use moderate length thresholds.
 REFERENCE_PARAMS: dict[str, dict] = {
@@ -1287,24 +1454,24 @@ REFERENCE_PARAMS: dict[str, dict] = {
     "integron_archetypes.fasta":{"min_identity": 90.0, "min_length": 2_000},
     "gi_sul2.fasta":            {"min_identity": 95.0, "min_length": 5_000},
     "isecp1.fasta":             {"min_identity": 90.0, "min_length": 1_000},
-    "mara_isecp1_tpu.fasta":   {"min_identity": 98.0, "min_length": 1_000,
+    "locus_isecp1_tpu.fasta":   {"min_identity": 98.0, "min_length": 1_000,
                                  "min_subject_coverage": 70.0,
                                  "pick_best_variant": True,
                                  "prefer_identity": True},
-    "mara_exact_is.fasta":      {"min_identity": 98.0, "min_length": 500},
-    "mara_integron_segments.fasta": {"min_identity": 98.0, "min_length": 200},
-    "mara_integron_ends.fasta": {"min_identity": 100.0, "min_length": 25,
+    "locus_exact_is.fasta":      {"min_identity": 98.0, "min_length": 500},
+    "locus_integron_segments.fasta": {"min_identity": 98.0, "min_length": 200},
+    "locus_integron_ends.fasta": {"min_identity": 100.0, "min_length": 25,
                                   "evalue": 10.0},
-    "mara_integron_tni.fasta": {"min_identity": 98.0, "min_length": 500,
+    "locus_integron_tni.fasta": {"min_identity": 98.0, "min_length": 500,
                                  "assemble_collinear": True},
-    "mara_partridge_units.fasta": {
+    "reviewed_units.fasta": {
         "min_identity": 95.0,
         "min_length": 500,
         "assemble_collinear": True,
     },
     "tn7.fasta":                {"min_identity": 90.0, "min_length": 3_000},
     "tn552.fasta":              {"min_identity": 95.0, "min_length": 2_000},
-    # Canonical references selected by Sally Partridge. A lower length
+    # Canonical references selected during expert review. A lower length
     # threshold permits fragment reporting, but only near-complete hits are
     # assigned an exact Tn name.
     "tn1_tn2_tn3.fasta": {
@@ -1351,18 +1518,18 @@ REFERENCE_PARAMS: dict[str, dict] = {
 }
 
 
-# The public alpha defaults to references validated against Sally Partridge's
-# supplied examples. Broader historical/experimental references remain
+# The public alpha defaults to references validated against expert-reviewed
+# examples. Broader historical/experimental references remain
 # available only through the explicit ``all`` profile.
 VALIDATED_REFERENCE_FILES = frozenset({
     "integron_archetypes.fasta",
     "isecp1.fasta",
-    "mara_exact_is.fasta",
-    "mara_integron_ends.fasta",
-    "mara_integron_segments.fasta",
-    "mara_integron_tni.fasta",
-    "mara_isecp1_tpu.fasta",
-    "mara_partridge_units.fasta",
+    "locus_exact_is.fasta",
+    "locus_integron_ends.fasta",
+    "locus_integron_segments.fasta",
+    "locus_integron_tni.fasta",
+    "locus_isecp1_tpu.fasta",
+    "reviewed_units.fasta",
     "tn21.fasta",
     "tn1_tn2_tn3.fasta",
 })
@@ -1372,6 +1539,8 @@ REFERENCE_PROFILES = {
     # Expert-rule discovery without complete Tn1/Tn2/Tn3 reference lookup.
     # The component models still come from reviewed canonical examples.
     "tn123-components": (),
+    # Every current component grammar, with no complete-element lookup.
+    "component-rules": (),
     "all": None,
 }
 
@@ -1479,11 +1648,18 @@ def scan_all(
     for ref in refs:
         out.extend(by_name[ref.name])
     if (
-        profile == "tn123-components"
+        profile in {"tn123-components", "component-rules"}
         or selected is None
         or "tn1_tn2_tn3.fasta" in selected
     ):
         out.extend(scan_tn123_components(query_fasta, blast_threads=1))
+    if (
+        profile == "component-rules"
+        or selected is None
+        or "reviewed_units.fasta" in selected
+        or "tn21.fasta" in selected
+    ):
+        out.extend(scan_reviewed_unit_components(query_fasta, blast_threads=1))
     # Compound-island detection (runs only over the hit set we just made)
     out.extend(_infer_acinetobacter_islands(out))
     return out

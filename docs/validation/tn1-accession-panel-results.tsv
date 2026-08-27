@@ -1,0 +1,17 @@
+accession	component_rule_call	coordinates	detected_roles	interpretation
+PP591960.1	Tn1-like	5492..10440	terminal_IR x2; blaTEM; tnpR; res; tnpA	complete grammar
+PP591959.1	Tn1-like	5492..10440	terminal_IR x2; blaTEM; tnpR; res; tnpA	complete grammar
+AM261760.1	Tn1-like	5492..10440	terminal_IR x2; blaTEM; tnpR; res; tnpA	complete grammar
+NZ_LK391770.1	no complete call	-	terminal_IR; blaTEM; tnpR; res	incomplete grammar; tnpA/end absent
+AP018939.2	no complete call	-	terminal_IR; blaTEM; tnpA	incomplete or dispersed components
+MN148427.1	no complete call	-	terminal_IR; blaTEM; tnpR; res	incomplete grammar; tnpA/end absent
+MG764534.2	no complete call	-	terminal_IR; blaTEM; tnpR; res	incomplete grammar; tnpA/end absent
+KX156773.1	Tn1-like	126538..131486	terminal_IR x2; blaTEM; tnpR; res; tnpA	complete grammar; tighter IR pair selected
+KX156772.1	no complete call	-	terminal_IR; blaTEM	fragment evidence only
+HQ451074.1	no complete call	-	terminal_IR; blaTEM	fragment evidence only
+AF550679.1	no complete call	-	terminal_IR; tnpA	fragment evidence only
+AY150843.2	no complete call	-	none	no supported Tn1/Tn2/Tn3 component profile
+GQ160960.2	Tn1-like	28..10518	terminal_IR x2; blaTEM; tnpR; res; tnpA	complete grammar with large internal mer insertion
+HM804085.1	Tn1-like	22867..27815	terminal_IR x2; blaTEM; tnpR; res; tnpA	complete grammar
+AY925200.1	no complete call	-	terminal_IR	partial sequence; no forced family call
+GQ293500.1	no complete call	-	terminal_IR; blaTEM; tnpR; res	incomplete/mosaic structure; no forced family call

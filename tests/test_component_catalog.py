@@ -1,4 +1,4 @@
-"""Contract tests for the source-backed MARA component ontology."""
+"""Contract tests for the source-backed locus component ontology."""
 
 import json
 
@@ -6,7 +6,7 @@ from click.testing import CliRunner
 
 from matryoshka.__main__ import cli
 from matryoshka.component_catalog import REQUIRED_COMPONENT_FIELDS, load_component_catalog
-from matryoshka.mara_viz import SUPPORTED_RENDER_SYMBOLS
+from matryoshka.locus_map import SUPPORTED_RENDER_SYMBOLS
 
 
 def test_catalog_has_complete_component_and_assembly_contracts():
@@ -23,7 +23,7 @@ def test_catalog_has_complete_component_and_assembly_contracts():
         }
 
 
-def test_catalog_preserves_sallys_exact_names_and_corrections():
+def test_catalog_preserves_reviewed_exact_names_and_corrections():
     catalog = load_component_catalog()
     examples = catalog["named_examples"]
     assert {"ISKpn6", "ISKpn7", "ISKpn31", "IS1999", "IS26", "ISEcp1"} <= set(

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="304" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1280" height="304" fill="#ffffff"/>
+<rect x="537.7" y="44" width="301.1" height="40" fill="#8fc7b5" stroke="#343a40" stroke-width="2"/>
+<text x="688.2" y="20.0" text-anchor="middle" font-size="12" font-weight="bold" font-style="normal" fill="#343a40">ISEcp1 TPU</text>
+<rect x="83.2" y="52" width="1102.0" height="24" fill="none" stroke="#8c9299" stroke-width="2" stroke-dasharray="6,3"/>
+<rect x="123.0" y="45" width="392.0" height="38" fill="none" stroke="#f2be7e" stroke-width="3"/>
+<rect x="213.9" y="49" width="181.8" height="30" fill="none" stroke="#a9d4e5" stroke-width="2"/>
+<rect x="128.7" y="48" width="79.5" height="32" fill="#f2be7e" stroke="#343a40" stroke-width="1.2"/>
+<rect x="395.8" y="48" width="96.5" height="32" fill="#f2be7e" stroke="#343a40" stroke-width="1.2"/>
+<rect x="215.0" y="48" width="72.7" height="32" fill="#a9d4e5" stroke="#343a40" stroke-width="1.2"/>
+<rect x="293.4" y="48" width="85.2" height="32" fill="#a9d4e5" stroke="#343a40" stroke-width="1.2"/>
+<line x1="284.9" y1="46" x2="284.9" y2="82" stroke="#5f666d" stroke-width="2"/>
+<line x1="376.4" y1="46" x2="376.4" y2="82" stroke="#5f666d" stroke-width="2"/>
+<line x1="196.3" y1="45" x2="196.3" y2="83" stroke="#f2be7e" stroke-width="2.5"/><polygon points="196.3,42 201.3,49 191.3,49" fill="#f2be7e" stroke="#343a40" stroke-width="0.7"/>
+<line x1="203.1" y1="82" x2="203.1" y2="46" stroke="#f2be7e" stroke-width="2"/><line x1="203.1" y1="46" x2="214.1" y2="46" stroke="#f2be7e" stroke-width="2"/>
+<polygon points="543.4,48.0 635.3,48.0 651.3,64.0 635.3,80.0 543.4,80.0" fill="#ffffff" stroke="#343a40" stroke-width="1.5"/>
+<polygon points="867.2,48.0 930.7,48.0 946.7,64.0 930.7,80.0 867.2,80.0" fill="#f3e4a6" stroke="#343a40" stroke-width="1.5"/>
+<rect x="651.4" y="48" width="176.0" height="32" fill="#dde2d2" stroke="#343a40" stroke-width="1.2"/>
+<polygon points="1134.2,44.0 1156.9,44.0 1162.6,51.0 1156.9,58.0 1162.6,65.0 1156.9,84.0 1134.2,84.0 1128.5,77.0 1134.2,70.0 1128.5,63.0 1134.2,54.0" fill="#c9b8e8" stroke="#343a40" stroke-width="1.5"/>
+<polygon points="969.4,48.0 1015.9,48.0 1031.9,64.0 1015.9,80.0 969.4,80.0" fill="#9bcbc8" stroke="#343a40" stroke-width="1.5"/>
+<rect x="1054.6" y="48" width="34.1" height="32" fill="#afc2e3" stroke="#343a40" stroke-width="1.2"/>
+<line x1="869.4" y1="45" x2="869.4" y2="83" stroke="#f3e4a6" stroke-width="2.5"/><polygon points="869.4,42 874.4,49 864.4,49" fill="#f3e4a6" stroke="#343a40" stroke-width="0.7"/>
+<line x1="945.6" y1="45" x2="945.6" y2="83" stroke="#f3e4a6" stroke-width="2.5"/><polygon points="945.6,42 950.6,49 940.6,49" fill="#f3e4a6" stroke="#343a40" stroke-width="0.7"/>
+<line x1="1039.3" y1="45" x2="1039.3" y2="83" stroke="#9bcbc8" stroke-width="2.5"/><polygon points="1039.3,42 1044.3,49 1034.3,49" fill="#9bcbc8" stroke="#343a40" stroke-width="0.7"/>
+<polygon points="135.5,66 150.5,58 183.2,58 183.2,74 150.5,74" fill="#717b85" stroke="#343a40" stroke-width="1"/>
+<polygon points="685.4,58 772.6,58 787.6,66 772.6,74 685.4,74" fill="#717b85" stroke="#343a40" stroke-width="1"/>
+<line x1="124.1" y1="44" x2="124.1" y2="21" stroke="#343a40" stroke-width="1.5"/><polygon points="124.1,23 134.1,29 124.1,35" fill="#ffffff" stroke="#343a40" stroke-width="1.2"/>
+<line x1="501.8" y1="44" x2="501.8" y2="21" stroke="#343a40" stroke-width="1.5"/><polygon points="501.8,23 491.8,29 501.8,35" fill="#ffffff" stroke="#343a40" stroke-width="1.2"/>
+<line x1="827.4" y1="44" x2="827.4" y2="21" stroke="#343a40" stroke-width="1.5"/><polygon points="827.4,23 817.4,29 827.4,35" fill="#ffffff" stroke="#343a40" stroke-width="1.2"/>
+<g><title>boundary-adjacent sequence-matched TSD: AATGC</title><line x1="1106.0" y1="44" x2="1106.0" y2="18" stroke="#343a40" stroke-width="1.4"/><circle cx="1106.0" cy="13" r="5" fill="#9ca3aa" stroke="#343a40" stroke-width="1.2"/><text x="1106.0" y="9.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="normal" fill="#343a40">AATGC</text></g>
+<line x1="183.3" y1="66" x2="194.5" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="188.9" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">99</text>
+<line x1="204.9" y1="66" x2="282.0" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="243.4" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">679</text>
+<line x1="287.9" y1="66" x2="374.0" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="330.9" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">759</text>
+<line x1="378.8" y1="66" x2="395.7" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="387.2" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">150</text>
+<line x1="492.4" y1="66" x2="543.3" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="517.8" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">449</text>
+<line x1="787.8" y1="66" x2="868.2" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="828.0" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">709</text>
+<line x1="870.7" y1="66" x2="944.3" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="907.5" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">649</text>
+<line x1="946.8" y1="66" x2="969.3" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="958.1" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">199</text>
+<line x1="1041.1" y1="66" x2="1054.5" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="1047.8" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">119</text>
+<line x1="1088.8" y1="66" x2="1105.6" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="1097.2" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">149</text>
+<line x1="1106.3" y1="66" x2="1128.4" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="1117.3" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">195</text>
+<line x1="72.0" y1="66" x2="83.1" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="77.6" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">99</text>
+<line x1="1185.4" y1="66" x2="1208.0" y2="66" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="1196.7" y="91.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#c96f73">200</text>
+<g><title>boundary-adjacent sequence-matched TSD: TATGA</title><line x1="537.7" y1="44" x2="537.7" y2="18" stroke="#343a40" stroke-width="1.4"/><circle cx="537.7" cy="13" r="5" fill="#9ca3aa" stroke="#343a40" stroke-width="1.2"/><text x="537.7" y="9.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="normal" fill="#343a40">TATGA</text></g>
+<g><title>boundary-adjacent sequence-matched TSD: TATGA</title><line x1="838.8" y1="44" x2="838.8" y2="18" stroke="#343a40" stroke-width="1.4"/><circle cx="838.8" cy="13" r="5" fill="#9ca3aa" stroke="#343a40" stroke-width="1.2"/><text x="838.8" y="9.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="normal" fill="#343a40">TATGA</text></g>
+<text x="159.4" y="102.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#343a40">intI1</text>
+<text x="168.5" y="114.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#343a40">5&#x27;-CS</text>
+<text x="196.3" y="102.0" text-anchor="middle" font-size="7" font-weight="bold" font-style="normal" fill="#343a40">attI1</text>
+<text x="203.1" y="114.0" text-anchor="middle" font-size="7" font-weight="bold" font-style="normal" fill="#343a40">Pc</text>
+<text x="251.4" y="114.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#343a40">aadA1a</text>
+<text x="336.0" y="114.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#343a40">dfrA17#</text>
+<text x="444.0" y="102.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#343a40">3&#x27;-CS</text>
+<text x="597.3" y="102.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#343a40">ISEcp1</text>
+<text x="634.3" y="138.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="normal" fill="#8c9299">multiresistance region</text>
+<text x="736.5" y="102.0" text-anchor="middle" font-size="9" font-weight="bold" font-style="italic" fill="#343a40">blaCTX-M-15</text>
+<text x="739.4" y="114.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="normal" fill="#343a40">captured region</text>
+<text x="869.4" y="102.0" text-anchor="middle" font-size="7" font-weight="bold" font-style="normal" fill="#343a40">oriIS</text>
+<text x="906.9" y="102.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#343a40">ISCR27#</text>
+<text x="945.6" y="102.0" text-anchor="middle" font-size="7" font-weight="bold" font-style="normal" fill="#343a40">terIS</text>
+<text x="1000.7" y="102.0" text-anchor="middle" font-size="8" font-weight="bold" font-style="normal" fill="#343a40">IncFII</text>
+<text x="1039.3" y="102.0" text-anchor="middle" font-size="7" font-weight="bold" font-style="normal" fill="#343a40">oriV</text>
+<text x="1071.7" y="114.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="italic" fill="#343a40">RNAI</text>
+<text x="1145.5" y="114.0" text-anchor="middle" font-size="8" font-weight="normal" font-style="normal" fill="#343a40">unresolved#</text>
+<text x="1208.0" y="151.0" text-anchor="end" font-size="9" font-weight="normal" font-style="normal" fill="#555">locus component vocabulary</text>
+<line x1="72" y1="164" x2="1208" y2="164" stroke="#d4d4d4" stroke-width="1"/><text x="72.0" y="182.0" text-anchor="start" font-size="10" font-weight="bold" font-style="normal" fill="#343a40">Key</text><line x1="115" y1="194" x2="145" y2="194" stroke="#717b85" stroke-width="6"/><polygon points="145,194 137,189 137,199" fill="#717b85"/><text x="154.0" y="197.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">gene (arrow shows strand)</text><line x1="350" y1="201" x2="350" y2="185" stroke="#111" stroke-width="1.3"/><polygon points="350,187 360,193 350,199" fill="#fff" stroke="#111"/><text x="370.0" y="197.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">terminal inverted repeat (IR)</text><line x1="590" y1="201" x2="590" y2="187" stroke="#111"/><circle cx="590" cy="186" r="5" fill="#9ca3aa" stroke="#111"/><text x="603.0" y="197.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">sequence-matched DR/TSD</text><line x1="744" y1="201" x2="744" y2="187" stroke="#737b83"/><circle cx="744" cy="186" r="5" fill="#fff" stroke="#737b83"/><text x="757.0" y="197.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">expected, unconfirmed DR/TSD</text><polygon points="996,185 1022,185 1032,194 1022,203 996,203" fill="#fff" stroke="#111"/><text x="1040.0" y="197.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">insertion sequence (IS)</text><rect x="94" y="213" width="42" height="18" fill="#8fc7b5" stroke="#111"/><text x="145.0" y="225.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">mobile element / transposon</text><rect x="350" y="213" width="42" height="18" fill="#a9d4e5" stroke="#111"/><text x="401.0" y="225.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">gene cassette</text><rect x="520" y="213" width="42" height="18" fill="#f2be7e" stroke="#111"/><text x="571.0" y="225.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">integron conserved segment</text><polygon points="770,213 800,213 806,219 800,225 806,231 770,231 764,225 770,219 764,213" fill="#f3c6a8" stroke="#343a40"/><text x="815.0" y="225.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">inserted sequence</text><rect x="930" y="213" width="28" height="18" fill="#c9b8e8" stroke="#343a40"/><text x="967.0" y="225.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">unresolved</text><line x1="1080" y1="222" x2="1120" y2="222" stroke="#c96f73" stroke-width="2" stroke-dasharray="6,4"/><text x="1129.0" y="225.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">unannotated flank</text><line x1="115" y1="250" x2="145" y2="250" stroke="#717b85" stroke-width="6"/><polygon points="145,250 137,245 137,255" fill="#717b85"/><text x="154.0" y="253.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">independently sequence-detected component</text><polygon points="350,243 380,243 390,250 380,257 350,257" fill="#e1e5e8" stroke="#343a40" stroke-dasharray="4,2"/><text x="400.0" y="253.0" text-anchor="start" font-size="9" font-weight="normal" font-style="normal" fill="#343a40">reference-projected component</text><text x="640.0" y="282.0" text-anchor="middle" font-size="9" font-weight="normal" font-style="normal" fill="#555555">Symbols are annotation calls; see the matching table Notes for sequence-detected versus reference-projected evidence.</text>
+</svg>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the exact ISEcp1 reference from Sally Partridge's supplied sequence."""
+"""Build the exact ISEcp1 reference from non-Tn1/Tn2/Tn3 expert-reviewed sequence."""
 
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ def main() -> None:
         description=(
             "element_type=IS family=IS1380 name=ISEcp1 "
             "source_accession=FJ621588 reference_position=1..1656 tsd_length=5 "
-            "provenance=Sally_Partridge_worked_example"
+            "provenance=expert_reviewed_worked_example"
         ),
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)

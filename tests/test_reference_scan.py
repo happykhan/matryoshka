@@ -61,7 +61,7 @@ class TestScanAll:
         assert acineto == []
 
     def test_validated_profile_is_deterministic_with_concurrent_workers(self):
-        query = Path(__file__).parent / "test-data" / "partridge-examples" / "Tn1-Tn2-Tn3.fasta"
+        query = Path(__file__).parent / "test-data" / "reviewed-examples" / "Tn1-Tn2-Tn3.fasta"
         serial = scan_all(query, profile="validated", threads=1)
         concurrent = scan_all(query, profile="validated", threads=4)
 
@@ -88,4 +88,4 @@ class TestScanAll:
         ]
         assert len(parents) == 1
         assert (parents[0].start, parents[0].end) == (1, 19_672)
-        assert parents[0].attributes["provenance"] == "Sally_Partridge"
+        assert parents[0].attributes["provenance"] == "expert_reviewed"

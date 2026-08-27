@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="242" style="background:#fff;font-family:monospace;">
+<rect x="0" y="0" width="1400" height="242" fill="#ffffff"/>
+<text x="700.00" y="28.00" font-size="15" font-family="monospace" text-anchor="middle" fill="#222" font-weight="bold">Tn1721_AB366441</text>
+<line x1="60" y1="40" x2="1360" y2="40" stroke="#bbb" stroke-width="1.5"/>
+<line x1="60.00" y1="36" x2="60.00" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="60.00" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">0</text>
+<line x1="319.93" y1="36" x2="319.93" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="319.93" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">2k</text>
+<line x1="579.98" y1="36" x2="579.98" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="579.98" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">4k</text>
+<line x1="839.91" y1="36" x2="839.91" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="839.91" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">6k</text>
+<line x1="1099.95" y1="36" x2="1099.95" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="1099.95" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">8k</text>
+<line x1="1360.00" y1="36" x2="1360.00" y2="44" stroke="#bbb" stroke-width="1.5"/>
+<text x="1360.00" y="54.00" font-size="9" font-family="monospace" text-anchor="middle" fill="#888">11k</text>
+<line x1="60" y1="70" x2="1360" y2="70" stroke="#ccc" stroke-width="3"/>
+<line x1="60.12" y1="70" x2="60.12" y2="80.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<line x1="1360.00" y1="70" x2="1360.00" y2="80.00" stroke="#27ae60" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+<g><title>transposon: Tn1721-like (1–11128)</title>
+<rect x="60.12" y="80.00" width="1299.88" height="62.00" fill="#27ae60" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="0.1"/>
+<rect x="60.12" y="80.00" width="1299.88" height="62.00" fill="none" stroke="#27ae60" stroke-width="2.5" rx="4" opacity="1.0"/>
+<text x="64.12" y="93.00" font-size="11" font-family="monospace" text-anchor="start" fill="#27ae60" font-weight="bold">Tn1721-like  (11.1 kb)</text>
+<g><title>IR: IRL (1–38)</title>
+<rect x="60.12" y="100.00" width="4.32" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<g><title>gene: mcp (190–1767)</title>
+<rect x="82.20" y="100.00" width="184.23" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="174.31" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">mcp</text>
+</g>
+<g><title>transposition_gene: tnpR (2077–2637)</title>
+<rect x="302.64" y="100.00" width="65.42" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="335.35" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">tnpR</text>
+</g>
+<g><title>transposition_gene: tnpA (2641–5607)</title>
+<rect x="368.53" y="100.00" width="346.50" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="541.78" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">tnpA</text>
+</g>
+<g><title>IR: IRR (5603–5640)</title>
+<rect x="714.56" y="100.00" width="4.32" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+<g><title>gene: tetR (5939–6589)</title>
+<rect x="753.81" y="100.00" width="75.93" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="791.78" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">tetR</text>
+</g>
+<g><title>AMR: tet(A) (6695–7894)</title>
+<rect x="842.13" y="100.00" width="140.07" height="34.00" fill="#e74c3c" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="912.16" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white" font-weight="bold">tet(A)</text>
+</g>
+<g><title>gene: pecM (7926–8810)</title>
+<rect x="985.93" y="100.00" width="103.27" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="1037.57" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">pecM</text>
+</g>
+<g><title>transposon_component: tet-to-tnp duplication junction (9140–9540)</title>
+<rect x="1127.76" y="100.00" width="46.73" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+<text x="1151.12" y="121.00" font-size="8" font-family="monospace" text-anchor="middle" fill="white">tet-t…</text>
+</g>
+<g><title>IR: IRR (11091–11128)</title>
+<rect x="1355.68" y="100.00" width="4.32" height="34.00" fill="#95a5a6" stroke="white" stroke-width="1.0" rx="3" opacity="1.0"/>
+</g>
+</g>
+<rect x="60.00" y="212.00" width="14.00" height="14.00" fill="#4a90d9" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="78.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">IS element</text>
+<rect x="180.00" y="212.00" width="14.00" height="14.00" fill="#e74c3c" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="198.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">AMR gene</text>
+<rect x="300.00" y="212.00" width="14.00" height="14.00" fill="#27ae60" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="318.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Transposon</text>
+<rect x="420.00" y="212.00" width="14.00" height="14.00" fill="#8e44ad" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="438.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Integron</text>
+<rect x="540.00" y="212.00" width="14.00" height="14.00" fill="#f39c12" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="558.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">Cassette</text>
+<rect x="660.00" y="212.00" width="14.00" height="14.00" fill="#7f8c8d" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="678.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">attC site</text>
+<rect x="780.00" y="212.00" width="14.00" height="14.00" fill="#f1c40f" stroke="none" stroke-width="1.5" rx="2" opacity="1.0"/>
+<text x="798.00" y="223.00" font-size="10" font-family="monospace" text-anchor="start" fill="#444">TSD</text>
+</svg>

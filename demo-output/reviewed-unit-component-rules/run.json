@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "profile": "component-rules",
+  "records": 5,
+  "features": 17,
+  "locus_views": 2,
+  "locus_outputs": [
+    {
+      "record": "Tn1721_AB366441",
+      "call": "Tn1721-like",
+      "family": "Tn1721",
+      "element_type": "transposon",
+      "start": 1,
+      "end": 11128,
+      "view_start": 1,
+      "view_end": 11128,
+      "locus_map": "locus-map/Tn1721_AB366441__Tn1721-like__1-11128.svg",
+      "locus_table": "locus-table/Tn1721_AB366441__Tn1721-like__1-11128.svg",
+      "hierarchy": "hierarchy/Tn1721_AB366441.svg"
+    },
+    {
+      "record": "Tn1722_AB366441",
+      "call": "Tn1722-like",
+      "family": "Tn1722",
+      "element_type": "transposon",
+      "start": 1,
+      "end": 5640,
+      "view_start": 1,
+      "view_end": 5640,
+      "locus_map": "locus-map/Tn1722_AB366441__Tn1722-like__1-5640.svg",
+      "locus_table": "locus-table/Tn1722_AB366441__Tn1722-like__1-5640.svg",
+      "hierarchy": "hierarchy/Tn1722_AB366441.svg"
+    }
+  ],
+  "proof_status": "NO_TN123_LOCI",
+  "detectors": [
+    {
+      "name": "amrfinder",
+      "label": "AMRFinderPlus",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "isescan",
+      "label": "ISEScan",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "integron",
+      "label": "IntegronFinder",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    }
+  ],
+  "outputs": {
+    "annotation_json": "annotation.json",
+    "annotation_gff3": "annotation.gff3",
+    "annotation_genbank": "annotation.gbk",
+    "annotation_cell": "annotation.cell",
+    "hierarchy_directory": "hierarchy",
+    "locus_map_directory": "locus-map",
+    "locus_table_directory": "locus-table",
+    "proof_json": "proof/proof.json",
+    "proof_report": "proof/report.html",
+    "component_ledger": "proof/components.tsv",
+    "match_ledger": "proof/matches.tsv",
+    "expert_rules_markdown": "expert-rules.md",
+    "expert_rules_html": "expert-rules.html"
+  }
+}

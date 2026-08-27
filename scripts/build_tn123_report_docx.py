@@ -315,7 +315,7 @@ def add_cover(doc: Document) -> None:
     p = doc.add_paragraph(style="Title")
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.add_run("Automated detection and visualisation\nof Tn1, Tn2 and Tn3")
-    add_para(doc, "Expert rules, real-accession validation, MARA-style locus maps,\nMARA tables and hierarchical outputs",
+    add_para(doc, "Expert rules, real-accession validation, locus maps,\nlocus tables and hierarchical outputs",
              size=13, color=MUTED, after=28, align=WD_ALIGN_PARAGRAPH.CENTER)
     add_table(
         doc,
@@ -327,7 +327,7 @@ def add_cover(doc: Document) -> None:
     add_para(doc, "Purpose", size=12, bold=True, color=NAVY, before=16, after=5)
     add_para(doc, "This document is the reviewable evidence package: it explains what is run, how the biological rules are specified, and what the program produced from the reviewed accession sequences. The actual figures and tables are embedded in the report.", size=11, after=10)
     add_para(doc, "Scope statement", size=12, bold=True, color=NAVY, before=10, after=5)
-    add_para(doc, "The validated scope is Tn1, Tn2, Tn3 and the reviewed close definitions listed here. It is not yet an exhaustive replacement for expert MARA annotation across every mobile-element family.", size=11)
+    add_para(doc, "The validated scope is Tn1, Tn2, Tn3 and the reviewed close definitions listed here. It is not yet an exhaustive replacement for expert mobile-element annotation across every family.", size=11)
 
 
 def add_contents(doc: Document) -> None:
@@ -339,7 +339,7 @@ def add_contents(doc: Document) -> None:
         ["3", "Expert-rule architecture", "Human-readable YAML, schema validation and extension workflow"],
         ["4", "Worked Tn1 definition", "Grammar, thresholds, exact naming and variants"],
         ["5", "Validation design", "Real positive controls, natural fragments, variants and negative controls"],
-        ["6", "Real-accession evidence", "MARA map, MARA table, hierarchy and component ledger for every reviewed definition"],
+        ["6", "Real-accession evidence", "locus map, locus table, hierarchy and component ledger for every reviewed definition"],
         ["7", "Arbitrary-sequence demonstration", "Three distinct loci recovered from one 44.6 kb contig"],
         ["8", "Limitations and next work", "What is proven, what remains expert review, and what is not claimed"],
     ]
@@ -349,8 +349,8 @@ def add_contents(doc: Document) -> None:
     for text in (
         "An arbitrary multi-FASTA input can be scanned without pre-existing annotations.",
         "Tn1/Tn2/Tn3 components are detected independently and assembled using an explicit component grammar.",
-        "A complete locus is classified from its component grammar and weighted local component profiles; a whole-element comparison is secondary confirmation.",
-        "Every result can be inspected as a MARA-style map, a MARA table, the original hierarchy view, JSON, GFF3 and CellGen format.",
+        "A complete locus is classified from its component grammar and categorical tnpR/tnpA backbone haplotype; a whole-element comparison is secondary confirmation.",
+        "Every result can be inspected as a locus map, a locus table, the original hierarchy view, JSON, GFF3 and CellGen format.",
         "The seven reviewed accession definitions produce complete component grammars and exact declared calls; pEK499 produces two retained partial Tn2-like fragments rather than an invented complete Tn2.",
     ):
         add_bullet(doc, text)
@@ -367,18 +367,19 @@ def add_tool_explanation(doc: Document) -> None:
         ["1", "Read FASTA", "One or many contigs or complete sequences; no feature annotation is required."],
         ["2", "Detect components", "Scan independently for 38 bp terminal inverted repeats, blaTEM, tnpR, res and tnpA."],
         ["3", "Assemble loci", "Group nearby features and test the required order and orientation on either strand."],
-        ["4", "Classify by expert rules", "Score the detected component profiles and assign a type only when the declared threshold and margin are met."],
+        ["4", "Classify by expert rules", "Assign tnpR and tnpA to declared profile groups, then match their categorical backbone haplotype."],
         ["5", "Compare references", "Optionally confirm an exact reviewed definition and record secondary closest-reference context."],
-        ["6", "Write outputs", "JSON, GFF3, CellGen, hierarchy SVG, MARA map, MARA table and proof ledger."],
+        ["6", "Write outputs", "JSON, GFF3, CellGen, hierarchy SVG, locus map, locus table and proof ledger."],
     ]
     add_table(doc, ["Stage", "Operation", "Why it matters"], steps,
               [700, 2100, 5660], font_size=9.2)
     add_heading(doc, "Call classes", 2)
     add_table(doc, ["Visible result", "Meaning"], [
         ["Tn1 / Tn2 / Tn3 or named subtype", "Complete component grammar and exact match to a reviewed declared definition."],
-        ["Tn1-like / Tn2-like / Tn3-like", "Complete grammar and a clear best weighted component profile, without requiring a complete-element match."],
+        ["Tn1-like / Tn2-like / Tn3-like", "Complete grammar and a declared tnpR/tnpA backbone haplotype, without requiring a complete-element match."],
         ["Tn1/2/3 fragment", "At least 400 aligned reference bases, but an end or required component is missing or the grammar is incomplete."],
-        ["Unresolved Tn1/Tn2/Tn3-group unit", "The group grammar is supported but the component-profile score or type margin is insufficient."],
+        ["Tn1/Tn2/Tn3-group mosaic", "Complete grammar and confident backbone groups, but their combination is not a declared Tn1, Tn2 or Tn3 haplotype."],
+        ["Unresolved Tn1/Tn2/Tn3-group unit", "The group grammar is supported but a required backbone profile group is missing or ambiguous."],
         ["No Tn1/Tn2/Tn3 call", "Some shared components may still be annotated and drawn, but the element-level rule is not satisfied."],
     ], [2800, 5660], font_size=9.2)
 
@@ -393,7 +394,7 @@ def add_run_details(doc: Document) -> None:
     add_table(doc, ["Analysis", "Role", "Used for this report"], [
         ["BLAST component scan", "Detect IRL/IRR, blaTEM, tnpR, res and tnpA independently", "Yes; primary"],
         ["Component assembler", "Test count, order, orientation and ends", "Yes"],
-        ["Expert-rule classifier", "Assign family/type-like, fragment or unresolved result from weighted component profiles", "Yes; primary"],
+        ["Expert-rule classifier", "Assign family/type-like, mosaic, fragment or unresolved result from the categorical backbone haplotype", "Yes; primary"],
         ["BLAST whole-locus comparison", "Optionally confirm an exact reviewed definition or add closest-reference context", "Yes; secondary"],
         ["Boundary/direct-repeat check", "Record evidence immediately outside inferred ends when flanks exist", "Yes"],
         ["ISEScan / AMRFinderPlus / IntegronFinder", "Broader optional component discovery", "Not launched"],
@@ -401,7 +402,7 @@ def add_run_details(doc: Document) -> None:
     add_heading(doc, "Reproducible commands", 2)
     add_code(doc, "# Prove discovery without complete-element lookup\nmatryoshka run arbitrary-demo.fasta --out results/component-only \\\n  --profile tn123-components --detectors none\n\n# Seven reviewed definitions with secondary exact confirmation\nmatryoshka run matryoshka/references/tn1_tn2_tn3.fasta \\\n  --out results/tn123-reviewed --detectors none\n\n# Export the rules for expert review\nmatryoshka definitions --format markdown --out tn123-definitions-review.md")
     add_para(doc, "Reproducibility metadata", size=11.5, bold=True, color=NAVY, before=8, after=4)
-    add_para(doc, "Each result directory includes run.json, the software and definition versions, reference profile, detector selection, input checksum, runtime parameters and a direct index of every MARA map/table pair.")
+    add_para(doc, "Each result directory includes run.json, the software and definition versions, reference profile, detector selection, input checksum, runtime parameters and a direct index of every locus map/table pair.")
 
 
 def add_rules(doc: Document) -> None:
@@ -413,7 +414,7 @@ def add_rules(doc: Document) -> None:
         ["family", "Shared biological description, expected terminal-IR length and target-site duplication length."],
         ["grammar", "Required component counts and forward/reverse order."],
         ["component_detection", "Identity, coverage, length and chaining thresholds for each component class."],
-        ["classification", "Weighted component-profile type rules, exact-reference confirmation and fragment rules."],
+        ["classification", "Categorical backbone-haplotype rules, exact-reference confirmation and fragment rules."],
         ["types", "Canonical Tn1, Tn2 and Tn3 sequences and their annotated component layouts."],
         ["definitions", "Reviewable named sequences/subtypes, accession provenance, expert description and differences from parent."],
         ["related_element_policy", "Explicit negative-control policy to prevent shared components being over-named."],
@@ -423,21 +424,22 @@ def add_rules(doc: Document) -> None:
     add_para(doc, "The reverse-complement copy must contain the corresponding reversed order. This establishes group membership, but it does not distinguish Tn1, Tn2 and Tn3 because their structures and much of their sequence are shared.")
     add_heading(doc, "Current thresholds", 2)
     add_table(doc, ["Decision", "Rule"], [
-        ["Exact declared definition", "100% identity, 100% reference coverage, both ends, zero mismatches/insertions/deletions and complete component grammar."],
-        ["Rule-based type", "Complete grammar; weighted local component score at least 90%; best type exceeds the next by at least 0.5 points."],
-        ["Component weights", "blaTEM 1; tnpR 2; res 3; tnpA 3. The combined profile, rather than a single gene, assigns the type-like call."],
-        ["Secondary reference", "At least 95% identity and 80% coverage; used for context or exact confirmation, never to create the family/type."],
+        ["Exact declared definition", "100% identity and coverage; both ends; zero mismatches or indels; complete grammar."],
+        ["Individual gene profile", "tnpR and tnpA are each placed in a group at >=90%, with a >=0.5-point group margin."],
+        ["Rule-based type", "Complete grammar plus a declared categorical pair: R13+A12 = Tn1; R2+A12 = Tn2; R13+A3 = Tn3."],
+        ["Mosaic or unresolved", "Another confident pair is mosaic; a missing or ambiguous group is unresolved. Scores are never averaged."],
+        ["Secondary reference", ">=95% identity and >=80% coverage; context or exact confirmation only."],
         ["Fragment", "At least 400 aligned reference bases; retained without a complete name."],
-    ], [2600, 5860], font_size=9.2)
+    ], [2600, 5860], font_size=8.5)
 
 
 def add_tn1_example(doc: Document) -> None:
     new_section(doc)
     add_heading(doc, "4. Worked expert definition: Tn1", 1)
     add_para(doc, "Human-readable rule", size=11.5, bold=True, color=NAVY, after=4)
-    add_para(doc, "Call a Tn1-like candidate when the six required components are independently detected in the correct order and their weighted local profiles best support Tn1 above the declared score and margin. Upgrade that call to exact reviewed Tn1 only when an optional secondary comparison is a complete, gap-free and mismatch-free match to NC_008357. The canonical sequence carries blaTEM-2.", size=11)
+    add_para(doc, "Call a Tn1-like candidate when the six required components are independently detected in the correct order, tnpR belongs to the shared Tn1/Tn3 profile group and tnpA belongs to the shared Tn1/Tn2 profile group. Upgrade that call to exact reviewed Tn1 only when an optional secondary comparison is a complete, gap-free and mismatch-free match to NC_008357. The canonical sequence carries blaTEM-2 as reported cargo; its allele does not determine the type.", size=11)
     add_heading(doc, "YAML representation used by the program", 2)
-    add_code(doc, "classification:\n  type_assignment:\n    method: weighted component profiles\n    discriminator_role_weights:\n      blaTEM: 1\n      tnpR: 2\n      res: 3\n      tnpA: 3\n    minimum_component_profile_score_percent: 90\n    minimum_type_margin_percent: 0.5\n  reference_comparison:\n    role: secondary context after rule-based classification\n\ntypes:\n  Tn1:\n    canonical_reference: Tn1_NC_008357\n    source_accession: NC_008357\n    components:\n      - {role: terminal_IR, name: IRL, start: 1, end: 38}\n      - {role: blaTEM, name: blaTEM-2, start: 148, end: 1008, strand: '-'}\n      - {role: tnpR, name: tnpR, start: 1191, end: 1748, strand: '-'}\n      - {role: res, name: res, start: 1754, end: 1867}\n      - {role: tnpA, name: tnpA, start: 1911, end: -34, strand: '+'}\n      - {role: terminal_IR, name: IRR, start: -38, end: -1}", size=7.3)
+    add_code(doc, "classification:\n  type_assignment:\n    method: categorical backbone haplotype\n    required_discriminator_roles: [tnpR, tnpA]\n    role_profile_groups:\n      tnpR:\n        tnpR_Tn1_Tn3: [Tn1, Tn3]\n        tnpR_Tn2: [Tn2]\n      tnpA:\n        tnpA_Tn1_Tn2: [Tn1, Tn2]\n        tnpA_Tn3: [Tn3]\n    type_haplotypes:\n      Tn1: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn1_Tn2}\n      Tn2: {tnpR: tnpR_Tn2, tnpA: tnpA_Tn1_Tn2}\n      Tn3: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn3}\n    non_discriminator_roles: [blaTEM]\n  reference_comparison:\n    role: secondary context after rule-based classification\n\ntypes:\n  Tn1:\n    canonical_reference: Tn1_NC_008357\n    source_accession: NC_008357\n    components:\n      - {role: terminal_IR, name: IRL, start: 1, end: 38}\n      - {role: blaTEM, name: blaTEM-2, start: 148, end: 1008, strand: '-'}\n      - {role: tnpR, name: tnpR, start: 1191, end: 1748, strand: '-'}\n      - {role: res, name: res, start: 1754, end: 1867}\n      - {role: tnpA, name: tnpA, start: 1911, end: -34, strand: '+'}\n      - {role: terminal_IR, name: IRR, start: -38, end: -1}", size=7.3)
     add_para(doc, "Negative coordinates count from the right-hand end of the reference. This keeps the component layout readable and reusable for definitions of different lengths.", size=9.5, color=MUTED)
     add_heading(doc, "How to add or revise a subtype", 2)
     for text in (
@@ -511,17 +513,17 @@ def add_accession_results(doc: Document, temp_dir: Path) -> None:
             locus["verdict"],
         ]], [2300, 1500, 2100, 3000, 2600, 800], font_size=8.4, green_last=True)
         add_para(doc, match["expert_rule"], size=9.0, color=MUTED, after=4)
-        figure_label(doc, f"MARA-style locus map generated from the detected and assembled features for {record_id}.")
-        add_svg(doc, REVIEWED / locus["outputs"]["mara"], temp_dir, width=9.25,
-                title=f"{locus['call']} MARA locus map",
-                description=f"MARA-style locus map for accession {match['source_accession']} with detected components and legend.")
+        figure_label(doc, f"locus map generated from the detected and assembled features for {record_id}.")
+        add_svg(doc, REVIEWED / locus["outputs"]["locus_map"], temp_dir, width=9.25,
+                title=f"{locus['call']} locus maps",
+                description=f"locus map for accession {match['source_accession']} with detected components and legend.")
         if record_id == "Tn2_1_CP028717":
             new_section(doc, landscape=True)
-            add_heading(doc, "6.5 Continued — Tn2.1 MARA feature table", 1)
-        figure_label(doc, "MARA table generated from the same call and evidence ledger.")
-        add_svg(doc, REVIEWED / locus["outputs"]["mara_table"], temp_dir, width=9.25,
-                title=f"{locus['call']} MARA table",
-                description=f"MARA-style feature table for accession {match['source_accession']}.")
+            add_heading(doc, "6.5 Continued — Tn2.1 locus table", 1)
+        figure_label(doc, "locus table generated from the same call and evidence ledger.")
+        add_svg(doc, REVIEWED / locus["outputs"]["locus_table"], temp_dir, width=9.25,
+                title=f"{locus['call']} locus table",
+                description=f"locus feature table for accession {match['source_accession']}.")
 
         new_section(doc, landscape=True)
         add_heading(doc, f"6.{number} Evidence detail — {locus['call']} ({match['source_accession']})", 1)
@@ -541,12 +543,12 @@ def add_accession_results(doc: Document, temp_dir: Path) -> None:
             new_section(doc, landscape=True)
             add_heading(doc, "6.5 Nested locus — ISEcp1-associated insertion", 1)
             add_para(doc, "The interrupted Tn2.1 definition contains a separately indexed ISEcp1-associated locus. It is drawn independently as well as inside the whole Tn2.1 view.")
-            add_svg(doc, REVIEWED / "mara" / nested_stem, temp_dir, width=9.25,
+            add_svg(doc, REVIEWED / "locus-map" / nested_stem, temp_dir, width=9.25,
                     title="Tn2.1 nested ISEcp1-associated insertion",
-                    description="MARA-style map of the separately indexed ISEcp1-associated insertion within Tn2.1.")
-            add_svg(doc, REVIEWED / "mara-table" / nested_stem, temp_dir, width=9.25,
+                    description="locus map of the separately indexed ISEcp1-associated insertion within Tn2.1.")
+            add_svg(doc, REVIEWED / "locus-table" / nested_stem, temp_dir, width=9.25,
                     title="Tn2.1 nested ISEcp1-associated insertion table",
-                    description="MARA-style feature table for the separately indexed ISEcp1-associated insertion within Tn2.1.")
+                    description="locus feature table for the separately indexed ISEcp1-associated insertion within Tn2.1.")
 
 
 def add_partial_results(doc: Document, temp_dir: Path) -> None:
@@ -574,14 +576,14 @@ def add_partial_results(doc: Document, temp_dir: Path) -> None:
         new_section(doc, landscape=True)
         add_heading(doc, f"7.{index} pEK499 fragment {locus['start']:,}–{locus['end']:,}", 1)
         add_para(doc, f"Observed call: {locus['call']}; closest reviewed type: {match['best_match']}; identity {match['whole_locus_identity']:.1f}%; reference coverage {match['whole_locus_coverage']:.2f}%; proof verdict {locus['verdict']}.", size=10.0)
-        figure_label(doc, "MARA-style locus map. Missing element ends/components remain visibly absent.")
-        add_svg(doc, PEK499 / locus["outputs"]["mara"], temp_dir, width=9.25,
+        figure_label(doc, "locus map. Missing element ends/components remain visibly absent.")
+        add_svg(doc, PEK499 / locus["outputs"]["locus_map"], temp_dir, width=9.25,
                 title="pEK499 partial Tn1/Tn2/Tn3 locus map",
-                description=f"MARA-style partial-fragment map at pEK499 coordinates {locus['start']} to {locus['end']}.")
-        figure_label(doc, "MARA table for the partial call. The partial status and incomplete grammar are explicit.")
-        add_svg(doc, PEK499 / locus["outputs"]["mara_table"], temp_dir, width=9.25,
+                description=f"locus partial-fragment map at pEK499 coordinates {locus['start']} to {locus['end']}.")
+        figure_label(doc, "locus table for the partial call. The partial status and incomplete grammar are explicit.")
+        add_svg(doc, PEK499 / locus["outputs"]["locus_table"], temp_dir, width=9.25,
                 title="pEK499 partial Tn1/Tn2/Tn3 table",
-                description=f"MARA table for the pEK499 fragment at {locus['start']} to {locus['end']}.")
+                description=f"locus table for the pEK499 fragment at {locus['start']} to {locus['end']}.")
 
 
 def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
@@ -593,16 +595,16 @@ def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
     rows = []
     for locus in record["loci"]:
         match = locus["known_element_match"]
-        scores = locus.get("classification", {}).get("component_type_scores", {})
-        if not scores:
-            scores = locus.get("rule_evidence", {}).get("component_type_scores", {})
+        haplotype = locus.get("classification", {}).get("backbone_haplotype", {})
+        if not haplotype:
+            haplotype = locus.get("rule_evidence", {}).get("backbone_haplotype", {})
         type_call = match.get("rule_based_type_call") or locus.get("family")
         rows.append([
             f"{locus['start']:,}–{locus['end']:,}", locus["call"], locus["strand"],
-            str(type_call), str(scores.get(str(type_call), "see JSON")),
+            str(type_call), f"{haplotype.get('tnpR', '?')} + {haplotype.get('tnpA', '?')}",
             "none", locus["verdict"],
         ])
-    add_table(doc, ["Coordinates", "Call", "Strand", "Rule type", "Component score", "Whole-element lookup", "Proof"],
+    add_table(doc, ["Coordinates", "Call", "Strand", "Rule type", "Backbone haplotype", "Whole-element lookup", "Proof"],
               rows, [2100, 1900, 800, 1200, 1300, 1300, 900], font_size=8.5, green_last=True)
     figure_label(doc, "Original hierarchy view: all three loci are retained on their shared contig and nested features remain visible.")
     add_svg(doc, ARBITRARY / record["loci"][0]["outputs"]["hierarchy"], temp_dir, width=9.25,
@@ -612,14 +614,14 @@ def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
         new_section(doc, landscape=True)
         add_heading(doc, f"8.{index} Arbitrary contig locus — {locus['call']}", 1)
         match = locus["known_element_match"]
-        add_para(doc, f"The component grammar is complete and the expert component-profile rules assign {match.get('rule_based_type_call')}. No complete Tn1/Tn2/Tn3 reference comparison was run; the visible call is {locus['call']}. Insertions and other structural differences are retained from split component alignments and shown in the map/table.")
+        add_para(doc, f"The component grammar is complete and the expert backbone-haplotype rule assigns {match.get('rule_based_type_call')}. No complete Tn1/Tn2/Tn3 reference comparison was run; the visible call is {locus['call']}. Insertions and other structural differences are retained from split component alignments and shown in the map/table.")
         figure_width = 8.65 if locus["call"] == "Tn2-like" else 9.25
-        add_svg(doc, ARBITRARY / locus["outputs"]["mara"], temp_dir, width=figure_width,
-                title=f"Arbitrary contig {locus['call']} MARA map",
-                description=f"MARA-style map of the detected {locus['call']} locus on the arbitrary contig.")
-        add_svg(doc, ARBITRARY / locus["outputs"]["mara_table"], temp_dir, width=figure_width,
-                title=f"Arbitrary contig {locus['call']} MARA table",
-                description=f"MARA-style evidence table for the detected {locus['call']} locus.")
+        add_svg(doc, ARBITRARY / locus["outputs"]["locus_map"], temp_dir, width=figure_width,
+                title=f"Arbitrary contig {locus['call']} locus map",
+                description=f"locus map of the detected {locus['call']} locus on the arbitrary contig.")
+        add_svg(doc, ARBITRARY / locus["outputs"]["locus_table"], temp_dir, width=figure_width,
+                title=f"Arbitrary contig {locus['call']} locus table",
+                description=f"locus evidence table for the detected {locus['call']} locus.")
 
 
 def add_outputs_and_limits(doc: Document) -> None:
@@ -630,8 +632,8 @@ def add_outputs_and_limits(doc: Document) -> None:
         ["annotation.gff3", "Interoperable genomic feature annotation."],
         ["annotation.cell", "Original nested CellGen/Wolvercote representation."],
         ["hierarchy/*.svg", "Original scale-accurate parent-child view of the record."],
-        ["mara/*.svg", "Readable locus-centred MARA-style map with its own legend/key."],
-        ["mara-table/*.svg", "MARA-style feature/evidence table for the same locus."],
+        ["locus-map/*.svg", "Readable locus-centred locus map with its own legend/key."],
+        ["locus-table/*.svg", "locus feature/evidence table for the same locus."],
         ["proof/report.html", "Linked human-readable evidence report."],
         ["proof/proof.json; components.tsv; matches.tsv", "Machine-checkable component-to-call ledger."],
         ["run.json", "Run metadata plus direct paths to every generated locus map and table."],
@@ -641,11 +643,11 @@ def add_outputs_and_limits(doc: Document) -> None:
     add_para(doc, "The CellGen line carries the same nesting as the hierarchy graphic: the six components are children of Tn1, which belongs to the input record.")
     add_heading(doc, "How to read the figures", 2)
     for text in (
-        "The MARA locus map prioritises biological readability around one locus.",
-        "The MARA table is the feature-by-feature description, including evidence and call qualification.",
+        "The locus maps prioritises biological readability around one locus.",
+        "The locus table is the feature-by-feature description, including evidence and call qualification.",
         "The hierarchy view preserves scale and parent-child nesting across the whole record.",
         "The proof ledger separates sequence-detected required components from context added from a reviewed subtype definition.",
-        "The legend/key is embedded in every MARA map and table so the symbols are interpretable without prior MARA experience.",
+        "The legend/key is embedded in every locus map and table so the symbols are interpretable without prior experience of the notation.",
     ):
         add_bullet(doc, text)
 
@@ -655,14 +657,14 @@ def add_outputs_and_limits(doc: Document) -> None:
     add_para(doc, "What is not yet proven", size=11.5, bold=True, color=NAVY, before=8, after=4)
     for text in (
         "Population-level sensitivity and specificity across a large independent accession panel.",
-        "Exhaustive subtype coverage or complete parity with every component and compound element described across all MARA papers.",
+        "Exhaustive subtype coverage or complete parity with every component and compound element described across the source literature.",
         "Assigning a new formal element name to a previously undescribed structure without expert review; novel candidates within the defined family are deliberately reported as type-like.",
         "Target-site duplication evidence when the input sequence ends exactly at the element boundary or lacks sufficient flank.",
         "Consistent optional-detector availability on every installation; the built-in validated scan is the portable core.",
     ):
         add_bullet(doc, text)
     add_para(doc, "Recommended next validation", size=11.5, bold=True, color=NAVY, before=8, after=4)
-    add_para(doc, "Have Sally review the human-readable definitions and the embedded figures; freeze accepted naming decisions; then evaluate a blinded accession set containing true Tn1/Tn2/Tn3 examples, close variants, fragmented assemblies and related Tn3-family elements. Report locus-level precision/recall, boundary error and exact-versus-qualified naming accuracy.")
+    add_para(doc, "Have a domain expert review the human-readable definitions and embedded figures; freeze accepted naming decisions; then evaluate a blinded accession set containing true Tn1/Tn2/Tn3 examples, close variants, fragmented assemblies and related Tn3-family elements. Report locus-level precision/recall, boundary error and exact-versus-qualified naming accuracy.")
     add_heading(doc, "Expert decisions still requested", 2)
     for text in (
         "Confirm whether HM749967 should be displayed as Tn2c.",
@@ -697,7 +699,7 @@ def build() -> None:
     doc.core_properties.title = "Automated detection and visualisation of Tn1, Tn2 and Tn3"
     doc.core_properties.subject = "Expert-rule architecture and accession-level evidence report"
     doc.core_properties.author = "Matryoshka project"
-    doc.core_properties.keywords = "Tn1, Tn2, Tn3, MARA, mobile genetic elements, validation"
+    doc.core_properties.keywords = "Tn1, Tn2, Tn3, locus maps, mobile genetic elements, validation"
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     doc.save(OUTPUT)
     print(OUTPUT)

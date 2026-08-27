@@ -1,4 +1,4 @@
-"""Load and export the source-backed MARA component catalogue."""
+"""Load and export the source-backed locus component catalogue."""
 
 from __future__ import annotations
 
@@ -23,13 +23,13 @@ REQUIRED_COMPONENT_FIELDS = frozenset({
 
 def load_component_catalog() -> dict[str, Any]:
     """Return the bundled catalogue after validating its public contract."""
-    resource = files("matryoshka").joinpath("mara_component_catalog.yaml")
+    resource = files("matryoshka").joinpath("locus_component_catalog.yaml")
     catalog = yaml.safe_load(resource.read_text(encoding="utf-8"))
     if not isinstance(catalog, dict):
-        raise ValueError("MARA component catalogue must be a mapping")
+        raise ValueError("locus component catalogue must be a mapping")
     for top_level in ("schema_version", "component_types", "assembly_grammars"):
         if top_level not in catalog:
-            raise ValueError(f"MARA component catalogue is missing {top_level}")
+            raise ValueError(f"locus component catalogue is missing {top_level}")
     for name, component in catalog["component_types"].items():
         missing = REQUIRED_COMPONENT_FIELDS - set(component)
         if missing:

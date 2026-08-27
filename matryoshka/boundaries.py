@@ -147,6 +147,92 @@ def find_ir(
     return None
 
 
+def _apply_ml_refinement(seq: str, features: list[MGEFeature]) -> None:
+    try:
+        from .boundary_refine import refine_boundaries
+
+        for feature in features:
+            if (
+                feature.start > 0
+                and feature.end > 0
+                and feature.attributes.get("source") == "reference_scan"
+                and feature.end - feature.start > 100
+            ):
+                feature.start, feature.end = refine_boundaries(
+                    seq, feature.start, feature.end, search_window=80, step=3
+                )
+    except Exception:
+        # The experimental model is optional and disabled by default. A missing
+        # or incompatible model must not disable deterministic IR/TSD checks.
+        return
+
+
+def _annotate_ir(seq: str, feature: MGEFeature) -> None:
+    ir_length = int(feature.attributes.get("ir_length", 20) or 20)
+    ir_mismatch = max(2, round(ir_length * 0.05))
+    ir = find_ir(seq, feature, ir_len=ir_length, mismatch=ir_mismatch)
+    if ir:
+        feature.ir_left, feature.ir_right = ir
+        feature.attributes["ir_evidence"] = "sequence_matched"
+
+
+def _offset_window(feature: MGEFeature) -> int:
+    if feature.attributes.get("source") == "reference_scan":
+        return 0
+    if not (feature.ir_left and feature.ir_right):
+        return 0
+    return int(
+        feature.attributes.get("boundary_offset_window", OFFSET_WINDOW)
+        or OFFSET_WINDOW
+    )
+
+
+def _record_tsd_match(
+    feature: MGEFeature,
+    match: TSDMatch,
+    expected_tsd: int,
+    offset_window: int,
+) -> None:
+    predicted_start, predicted_end = feature.start, feature.end
+    feature.attributes.update({
+        "tsd_candidate_seq": match.sequence,
+        "tsd_left_start": match.left_start,
+        "tsd_left_end": match.left_end,
+        "tsd_right_start": match.right_start,
+        "tsd_right_end": match.right_end,
+        "tsd_start_offset": match.start_offset,
+        "tsd_end_offset": match.end_offset,
+    })
+    if expected_tsd < 4:
+        feature.attributes["tsd_evidence"] = "short_repeat_candidate"
+        feature.attributes["tsd_evidence_strength"] = "weak"
+        return
+
+    feature.tsd_seq = match.sequence
+    feature.attributes["tsd_evidence"] = "sequence_matched"
+    feature.attributes["tsd_evidence_strength"] = (
+        "strong" if expected_tsd >= 8 else "supporting"
+    )
+    if offset_window and (match.start_offset or match.end_offset):
+        feature.attributes.update({
+            "predicted_start": predicted_start,
+            "predicted_end": predicted_end,
+            "boundary_refinement": "sequence_matched_TSD",
+        })
+        feature.start = predicted_start + match.start_offset
+        feature.end = predicted_end + match.end_offset
+
+
+def _record_missing_tsd(seq: str, feature: MGEFeature, expected_tsd: int) -> None:
+    has_flanks = (
+        feature.start - 1 >= expected_tsd
+        and feature.end + expected_tsd <= len(seq)
+    )
+    feature.attributes["tsd_evidence"] = (
+        "searched_not_found" if has_flanks else "untestable_missing_flank"
+    )
+
+
 def confirm_boundaries(
     seq: str,
     features: list[MGEFeature],
@@ -154,99 +240,23 @@ def confirm_boundaries(
 ) -> list[MGEFeature]:
     """Annotate TSD and IR evidence on each feature in-place.
 
-    ml_refine is disabled by default: evaluation on TnCentral showed the
-    model degraded boundary accuracy (MAE 24.6→39.4bp, 7/9 features worse).
-    Enable only if retraining on a larger, more diverse dataset.
+    ML refinement is disabled by default because its evaluation worsened
+    boundary accuracy. Deterministic sequence evidence remains authoritative.
     """
     if ml_refine:
-        try:
-            from .boundary_refine import refine_boundaries
-            for f in features:
-                if (
-                    f.start > 0 and f.end > 0
-                    and f.attributes.get("source") == "reference_scan"
-                    and f.end - f.start > 100
-                ):
-                    new_start, new_end = refine_boundaries(
-                        seq, f.start, f.end, search_window=80, step=3
-                    )
-                    if new_start != f.start or new_end != f.end:
-                        f.start = new_start
-                        f.end = new_end
-        except Exception:
-            pass  # model absent or error — continue without refinement
+        _apply_ml_refinement(seq, features)
 
-    for f in features:
-        if f.start <= 0 or f.end <= 0:
+    for feature in features:
+        if feature.start <= 0 or feature.end <= 0:
             continue
-        expected_tsd = f.tsd_length or TSD_LENGTHS.get(f.family)
+        expected_tsd = feature.tsd_length or TSD_LENGTHS.get(feature.family)
         if expected_tsd:
-            f.tsd_length = expected_tsd
-        ir_length = int(f.attributes.get("ir_length", 20) or 20)
-        ir_mismatch = max(2, round(ir_length * 0.05))
-        ir = find_ir(seq, f, ir_len=ir_length, mismatch=ir_mismatch)
-        if ir:
-            f.ir_left, f.ir_right = ir
-            f.attributes["ir_evidence"] = "sequence_matched"
-
-        # Reference alignments already provide precise ends. Coordinate drift
-        # is considered only when terminal-repeat evidence independently
-        # supports an upstream caller's boundaries.
-        has_independent_ends = bool(f.ir_left and f.ir_right)
-        offset_window = 0
-        if (
-            f.attributes.get("source") != "reference_scan"
-            and has_independent_ends
-        ):
-            offset_window = int(
-                f.attributes.get("boundary_offset_window", OFFSET_WINDOW)
-                or OFFSET_WINDOW
-            )
-        match = find_tsd_match(seq, f, offset_window=offset_window)
+            feature.tsd_length = expected_tsd
+        _annotate_ir(seq, feature)
+        offset_window = _offset_window(feature)
+        match = find_tsd_match(seq, feature, offset_window=offset_window)
         if match and expected_tsd is not None:
-            predicted_start = f.start
-            predicted_end = f.end
-            f.attributes.update({
-                "tsd_candidate_seq": match.sequence,
-                "tsd_left_start": match.left_start,
-                "tsd_left_end": match.left_end,
-                "tsd_right_start": match.right_start,
-                "tsd_right_end": match.right_end,
-                "tsd_start_offset": match.start_offset,
-                "tsd_end_offset": match.end_offset,
-            })
-            if expected_tsd >= 4:
-                f.tsd_seq = match.sequence
-                f.attributes["tsd_evidence"] = "sequence_matched"
-                f.attributes["tsd_evidence_strength"] = (
-                    "strong" if expected_tsd >= 8 else "supporting"
-                )
-                # Only evidence-gated searches may alter coordinates.  The
-                # exact repeat remains immediately outside the corrected
-                # element, so downstream hierarchy and drawing use the
-                # resolved biological boundary rather than the raw caller end.
-                if offset_window and (
-                    match.start_offset != 0 or match.end_offset != 0
-                ):
-                    f.attributes.update({
-                        "predicted_start": predicted_start,
-                        "predicted_end": predicted_end,
-                        "boundary_refinement": "sequence_matched_TSD",
-                    })
-                    f.start = predicted_start + match.start_offset
-                    f.end = predicted_end + match.end_offset
-            else:
-                # Equality of a 2-3 bp word is too common to confirm a
-                # transposition boundary without additional event evidence.
-                f.attributes["tsd_evidence"] = "short_repeat_candidate"
-                f.attributes["tsd_evidence_strength"] = "weak"
+            _record_tsd_match(feature, match, expected_tsd, offset_window)
         elif expected_tsd:
-            start0 = f.start - 1
-            has_flanks = (
-                start0 >= expected_tsd
-                and f.end + expected_tsd <= len(seq)
-            )
-            f.attributes["tsd_evidence"] = (
-                "searched_not_found" if has_flanks else "untestable_missing_flank"
-            )
+            _record_missing_tsd(seq, feature, expected_tsd)
     return features
