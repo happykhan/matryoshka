@@ -1009,6 +1009,7 @@ VALIDATED_REFERENCE_FILES = frozenset({
     "mara_integron_tni.fasta",
     "mara_isecp1_tpu.fasta",
     "mara_partridge_units.fasta",
+    "tn21.fasta",
     "tn1_tn2_tn3.fasta",
 })
 

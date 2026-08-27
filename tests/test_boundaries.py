@@ -44,6 +44,14 @@ class TestFindTSD:
         f = make_feature("unknown_family", 9, 828)
         assert find_tsd(seq, f) is None
 
+    def test_feature_specific_tsd_length_is_used_for_named_family(self):
+        tsd = "AACGT"
+        element = "N" * 200
+        seq = "X" * 20 + tsd + element + tsd + "X" * 20
+        f = make_feature("Tn1", 26, 225)
+        f.tsd_length = 5
+        assert find_tsd(seq, f) == tsd
+
 
 class TestFindIR:
     def test_perfect_ir_found(self):
@@ -93,6 +101,19 @@ class TestConfirmBoundaries:
         f = make_feature("IS6", start, end)
         result = confirm_boundaries(seq, [f])
         assert result[0].tsd_seq == tsd
+        assert result[0].attributes["tsd_evidence"] == "sequence_confirmed"
+
+    def test_records_when_expected_tsd_was_searched_but_not_found(self):
+        seq = "A" * 30 + "N" * 820 + "T" * 30
+        f = make_feature("IS6", 31, 850)
+        confirm_boundaries(seq, [f])
+        assert f.tsd_seq is None
+        assert f.attributes["tsd_evidence"] == "searched_not_found"
+
+    def test_records_when_flanks_are_unavailable(self):
+        f = make_feature("IS6", 1, 820)
+        confirm_boundaries("N" * 820, [f])
+        assert f.attributes["tsd_evidence"] == "untestable_missing_flank"
 
     def test_ir_annotated(self):
         from Bio.Seq import Seq

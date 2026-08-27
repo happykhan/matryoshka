@@ -78,3 +78,14 @@ class TestScanAll:
             ]
 
         assert signature(concurrent) == signature(serial)
+
+    def test_validated_profile_detects_complete_tn21_parent(self):
+        hits = scan_all(REFERENCES_DIR / "tn21.fasta", profile="validated")
+        parents = [
+            feature
+            for feature in hits
+            if feature.element_type == "transposon" and feature.name == "Tn21"
+        ]
+        assert len(parents) == 1
+        assert (parents[0].start, parents[0].end) == (1, 19_672)
+        assert parents[0].attributes["provenance"] == "Sally_Partridge"

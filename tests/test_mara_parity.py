@@ -62,6 +62,11 @@ def test_renderer_uses_mara_symbols_for_core_feature_vocabulary():
     assert "aadA1a" in svg
     assert "Kl.pn.I2" in svg
     assert "confirmed TSD: AATGC" in svg
+    assert "gene (arrow shows strand)" in svg
+    assert "terminal inverted repeat (IR)" in svg
+    assert "confirmed DR/TSD" in svg
+    assert "expected, unconfirmed DR/TSD" in svg
+    assert "sequence-detected versus reference-projected evidence" in svg
 
 
 def test_renderer_draws_the_extended_component_ontology():
@@ -121,6 +126,8 @@ def test_table_preserves_mara_feature_types():
     assert ">CS<" in table
     assert ">cassette<" in table
     assert ">intron<" in table
+    assert "terminal inverted repeat (IR)" in table
+    assert "Notes distinguish sequence detection from reference-projected components" in table
 
 
 def test_partial_exact_is_is_marked_but_not_renamed_to_family():

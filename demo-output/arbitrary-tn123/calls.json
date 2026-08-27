@@ -7,7 +7,7 @@
     "end": 12949,
     "strand": "+",
     "tsd_length": 5,
-    "tsd_seq": null,
+    "tsd_seq": "GAGCC",
     "ir_left": "GGGGTCTGACGCTCAGTGGA",
     "ir_right": "TCCACTGAGCGTCAGACCCC",
     "score": 99.495,
@@ -43,6 +43,7 @@
       "note": "closest reference is Tn1; reported as a variant",
       "curated_internal_features": true,
       "ir_length": 38,
+      "tsd_evidence": "sequence_confirmed",
       "confidence": 1.0,
       "confidence_label": "high"
     },
@@ -232,6 +233,7 @@
       "note": "closest reference is Tn2; reported as a variant",
       "curated_internal_features": true,
       "ir_length": 38,
+      "tsd_evidence": "searched_not_found",
       "confidence": 1.0,
       "confidence_label": "high"
     },
@@ -429,7 +431,7 @@
           "identity": 100.0
         }
       ],
-      "variant_margin": 1.84,
+      "variant_margin": 1.86,
       "variant_status": "exact_reference",
       "structural_status": "intact",
       "query_span": 4948,
@@ -439,6 +441,7 @@
       "right_end_covered": true,
       "curated_internal_features": true,
       "ir_length": 38,
+      "tsd_evidence": "searched_not_found",
       "confidence": 1.0,
       "confidence_label": "high"
     },

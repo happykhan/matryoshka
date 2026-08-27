@@ -135,8 +135,8 @@ The lower-level `annotate --format` choices are:
 | `genbank` | Biopython GenBank feature annotations |
 | `wolvercote` | Compact nested cell-format text |
 | `linear` | Scale-accurate whole-record SVG |
-| `mara` | One feature-specific locus SVG per validated target |
-| `mara-table` | One MARA-style annotation-table SVG per locus |
+| `mara` | One feature-specific locus SVG per validated target, with an on-figure symbol key |
+| `mara-table` | One MARA-style annotation-table SVG per locus, with evidence notes and a compact key |
 
 Legacy circular CellGen SVG/PNG rendering is not distributed in this alpha because it
 required an unpublished sibling package. Use the bundled linear and MARA SVG outputs.

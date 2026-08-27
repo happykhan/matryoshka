@@ -46,7 +46,7 @@ def find_tsd(
     biases toward the true flanking TSD rather than a spurious match flush
     against the predicted end.
     """
-    expected_len = TSD_LENGTHS.get(feature.family)
+    expected_len = feature.tsd_length or TSD_LENGTHS.get(feature.family)
     if expected_len is None or expected_len < 3:
         return None
 
@@ -137,9 +137,22 @@ def confirm_boundaries(
     for f in features:
         if f.start <= 0 or f.end <= 0:
             continue
+        expected_tsd = f.tsd_length or TSD_LENGTHS.get(f.family)
+        if expected_tsd:
+            f.tsd_length = expected_tsd
         tsd = find_tsd(seq, f)
         if tsd:
             f.tsd_seq = tsd
+            f.attributes["tsd_evidence"] = "sequence_confirmed"
+        elif expected_tsd:
+            start0 = f.start - 1
+            has_flanks = (
+                start0 >= expected_tsd
+                and f.end + expected_tsd + OFFSET_WINDOW <= len(seq)
+            )
+            f.attributes["tsd_evidence"] = (
+                "searched_not_found" if has_flanks else "untestable_missing_flank"
+            )
         ir = find_ir(seq, f)
         if ir:
             f.ir_left, f.ir_right = ir

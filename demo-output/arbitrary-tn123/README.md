@@ -10,4 +10,6 @@ by `scripts/make_tn123_demo.py`. It contains:
 
 `calls.json` is the machine-readable hierarchy. `mara/` contains one readable
 diagram per detected locus and `mara-table/` contains the corresponding
-annotation tables using absolute positions on the original contig.
+annotation tables using absolute positions on the original contig. Every SVG has
+an on-figure key; the table Notes distinguish detected parent evidence from
+curated reference-projected internal components.

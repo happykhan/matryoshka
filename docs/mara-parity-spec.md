@@ -117,8 +117,13 @@ The table below remains the concise parity checklist.
 - Draw each confirmed DR pair as same-colour lollipops and print its sequence in
   the table.
 - Preserve overlapping and nested features rather than flattening them.
+- Include a self-contained key on every map so readers do not need prior MARA
+  familiarity to interpret genes, IR, DR/TSD, IS, cassettes, conserved segments,
+  insertions and unannotated flanks.
 - The companion table must include Position, directional Name, FID, Type and
-  Notes, including truncation, identity, IR/DR and evidence limitations.
+  Notes, including truncation, identity, IR/DR and evidence limitations. Its key
+  must distinguish filled sequence-confirmed DR/TSD from hollow expected but
+  unconfirmed DR/TSD.
 
 ## Expert corrections that are regression requirements
 

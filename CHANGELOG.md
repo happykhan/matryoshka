@@ -40,9 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cross-platform Pixi environment and a core Docker image.
 - MARA-style single-line SVG output with directional genes, IR flags, exact
   `res` sites, long-gap notation, hollow expected/filled confirmed TSD lollipops
-  and fragment edges.
+  and fragment edges. Every map now includes a self-contained symbol key.
 - MARA-style tabular SVG output with position, hierarchical feature name and
-  strand glyph, accession/FID, type and evidence notes.
+  strand glyph, accession/FID, type, evidence notes and a compact symbol key.
 - Canonical Tn1 (NC_008357), Tn2 (AY123253) and Tn3 (HM749966) detection with
   curated internal maps and conservative `Tn1/2/3` fragment reporting.
 - Locus-based Tn1/Tn2/Tn3 detection in arbitrary-length sequences, including
@@ -66,10 +66,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Component-based class-1-integron and complete Tn402 inference using exact
   5'-CS, 3'-CS, IRi, IRt and tni references.
 - TSD detection with ±3bp boundary offset tolerance.
+- Feature-specific TSD lengths and explicit boundary evidence states for
+  sequence-confirmed, searched-but-not-found and unavailable flanking sequence.
 - Hierarchy enforces biologically-sensible parent/child pairings.
 - CHANGELOG, LICENSE, CITATION.cff, CONTRIBUTING.md, references manifest.
 
 ### Fixed
+- The default validated profile now detects the complete Sally-supplied Tn21
+  parent, rather than reporting only its internal In2 integron.
 - Fresh installations no longer depend on a missing sibling `cell-format`
   checkout. Unsupported legacy circular SVG/PNG choices are no longer
   advertised; the supported linear and MARA SVG renderers remain bundled.

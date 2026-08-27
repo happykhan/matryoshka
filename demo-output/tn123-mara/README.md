@@ -18,6 +18,10 @@ unannotated sequence and paired boundary lollipops. Hollow lollipops indicate th
 expected 5-bp TSD for these elements when flanking sequence is unavailable; filled,
 labelled pairs are reserved for sequence-confirmed TSDs.
 
+Every map includes a self-contained key. The companion table makes the evidence
+split explicit: the parent is a measured sequence match, while internal features
+labelled as curated are projected from the recognised reference structure.
+
 Short homologous segments below 98% reference coverage are reported as
 `Tn1/2/3` fragments, with a jagged outline, rather than being forced into an exact
 Tn1, Tn2 or Tn3 call.

@@ -26,6 +26,7 @@
       "provenance": "Sally_Partridge",
       "feature_db_version": "2026-08-26",
       "curated_internal_features": true,
+      "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
     },
@@ -351,6 +352,7 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
     },
@@ -521,6 +523,7 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
     },
@@ -619,6 +622,7 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
     },
@@ -837,6 +841,7 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
     },
@@ -935,6 +940,7 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
     },
