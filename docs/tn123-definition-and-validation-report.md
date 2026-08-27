@@ -8,7 +8,7 @@
 
 Matryoshka now separates biological definitions from the software that applies them. The Tn1/Tn2/Tn3 rules are maintained in a human-readable YAML file, checked by the definition loader, documented by a JSON Schema, and available as YAML, JSON or a formatted review document from the command line. Adding or revising a type no longer requires adding a new set of conditions to the Python source.
 
-For an arbitrary FASTA record, the program detects component sequences, assembles them into a candidate unit and classifies the candidate from explicit component grammar plus weighted local component profiles. This can produce `Tn1-like`, `Tn2-like` or `Tn3-like` without any complete-element lookup. A separate whole-locus comparison may then confirm an exact reviewed definition or provide closest-reference context, but cannot create the family/type call. A partial match is retained as `Tn1/2/3 fragment` and is not promoted to a complete type.
+For an arbitrary FASTA record, the program detects component sequences, assembles them into a candidate unit and classifies the candidate from explicit component grammar plus a categorical `tnpR`/`tnpA` backbone haplotype. This can produce `Tn1-like`, `Tn2-like` or `Tn3-like` without any complete-element lookup. A separate whole-locus comparison may then confirm an exact reviewed definition or provide closest-reference context, but cannot create the family/type call. A partial match is retained as `Tn1/2/3 fragment` and is not promoted to a complete type.
 
 The current validation ledger contains 14 checks and all pass. It covers seven reviewed real-accession definitions, expert-reviewed two reviewed Tn2 fragments in pEK499, three related Tn3-family elements that must not be misnamed, one complete sequence containing substitutions, and one truncated sequence. A complete result-bundle run on the seven reviewed definitions gives seven independently assembled loci and seven `PASS` proof verdicts.
 
@@ -27,7 +27,7 @@ arbitrary FASTA
     |
     +-- check the required component order and both element ends
     |
-    +-- score local tnpR and tnpA backbone profiles equally
+    +-- assign local tnpR and tnpA to categorical profile groups
     |
     +-- assign a qualified type-like call, unresolved unit or fragment
     |
@@ -78,7 +78,7 @@ This is deliberately strict. One substitution makes the sequence a variant unles
 
 ### Rule-based Tn1, Tn2 or Tn3 type
 
-A complete candidate is scored against the local transposition-backbone profiles defined by the canonical Tn1, Tn2 and Tn3 examples. The only weighted roles are `tnpR` 5 and `tnpA` 5. The short `res` site remains required structural context and `blaTEM` remains required cargo, but neither has weight in the Tn1/Tn2/Tn3 type score. The best weighted backbone score must reach 90% and exceed the next type by at least 0.5 percentage points. In the declared canonical sequences, `tnpR` primarily separates Tn2 from Tn1/Tn3, while `tnpA` primarily separates Tn3 from Tn1/Tn2. This is not a cargo-gene or whole-element lookup.
+A complete candidate is evaluated against local transposition-backbone profiles defined by the canonical Tn1, Tn2 and Tn3 examples. There is no cross-gene weighting. `tnpR` is called as either the Tn1/Tn3 group or the Tn2 group; `tnpA` is called as either the Tn1/Tn2 group or the Tn3 group. The pair is then matched categorically: Tn1/Tn3 `tnpR` plus Tn1/Tn2 `tnpA` gives Tn1-like; Tn2 `tnpR` plus Tn1/Tn2 `tnpA` gives Tn2-like; and Tn1/Tn3 `tnpR` plus Tn3 `tnpA` gives Tn3-like. A different confident combination is retained as a mosaic. The short `res` site remains required structural context and `blaTEM` remains required cargo, but neither determines the type. This is not a cargo-gene or whole-element lookup.
 
 When those expert rules support a type, the visible name is `Tn1-like`, `Tn2-like` or `Tn3-like`. Split component matches retain insertions and deletions. If the optional secondary comparison is 100% identical across a reviewed complete definition, the call can be confirmed as exact.
 
@@ -107,21 +107,28 @@ A different transposon may contain one or more shared genes, IRs or sequence blo
 
 Expert review selected the Tn1 sequence from accession NC_008357. The human rule is:
 
-> Call Tn1-like when the complete six-part grammar is independently supported and the equally weighted local `tnpR`/`tnpA` backbone profiles meet the Tn1 score and margin rules. Confirm exact Tn1 only when the optional whole-locus comparison is a complete, gap-free, mismatch-free match to NC_008357. The element carries `blaTEM-2`, but that allele does not determine its type.
+> Call Tn1-like when the complete six-part grammar is independently supported, `tnpR` belongs to the shared Tn1/Tn3 profile group and `tnpA` belongs to the shared Tn1/Tn2 profile group. Confirm exact Tn1 only when the optional whole-locus comparison is a complete, gap-free, mismatch-free match to NC_008357. The element carries `blaTEM-2`, but that allele does not determine its type.
 
 The corresponding reviewable definition is:
 
 ```yaml
 classification:
   type_assignment:
-    method: weighted transposition-backbone profiles
-    primary_discriminator_roles: [tnpR, tnpA]
-    supporting_discriminator_roles: []
+    method: categorical transposition-backbone haplotype
+    required_discriminator_roles: [tnpR, tnpA]
     unweighted_context_roles: [res]
     non_discriminator_roles: [blaTEM]
-    discriminator_role_weights: {tnpR: 5, tnpA: 5}
-    minimum_component_profile_score_percent: 90
-    minimum_type_margin_percent: 0.5
+    role_profile_groups:
+      tnpR:
+        tnpR_Tn1_Tn3: [Tn1, Tn3]
+        tnpR_Tn2: [Tn2]
+      tnpA:
+        tnpA_Tn1_Tn2: [Tn1, Tn2]
+        tnpA_Tn3: [Tn3]
+    type_haplotypes:
+      Tn1: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn1_Tn2}
+      Tn2: {tnpR: tnpR_Tn2, tnpA: tnpA_Tn1_Tn2}
+      Tn3: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn3}
   reference_comparison:
     role: secondary context after rule-based classification
 

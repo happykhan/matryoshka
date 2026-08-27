@@ -44,7 +44,7 @@
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -67,29 +67,27 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "unresolved",
-            "component_type_scores": {
-              "Tn1": 31.336,
-              "Tn2": 65.982,
-              "Tn3": 31.415
-            },
-            "component_role_scores": {
-              "res": {
-                "Tn1": 0.0,
-                "Tn2": 100.0,
-                "Tn3": 0.0
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 94.44,
-                "Tn2": 100.0,
-                "Tn3": 94.62
+                "call": "tnpR_Tn2",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 94.62,
+                  "tnpR_Tn2": 100.0
+                },
+                "margin": 5.38,
+                "best_score": 100.0
               },
-              "blaTEM": {
-                "Tn1": 93.146,
-                "Tn2": 93.84,
-                "Tn3": 93.493
+              "tnpA": {
+                "call": "missing",
+                "group_scores": {},
+                "margin": 0.0
               }
             },
-            "component_type_margin": 34.567
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn2",
+              "tnpA": "missing"
+            },
+            "backbone_haplotype_match": "unresolved"
           },
           "checks": {
             "components_detected_from_sequence": false,
@@ -183,7 +181,8 @@
             "hierarchy": "hierarchy/EU935739.1.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         },
         {
@@ -217,7 +216,7 @@
             "known_differences_from_parent": [],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ]
           },
           "assembly": {
@@ -240,19 +239,27 @@
             "basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "unresolved",
-            "component_type_scores": {
-              "Tn1": 24.707,
-              "Tn2": 24.897,
-              "Tn3": 24.702
-            },
-            "component_role_scores": {
+            "backbone_role_group_calls": {
+              "tnpR": {
+                "call": "missing",
+                "group_scores": {},
+                "margin": 0.0
+              },
               "tnpA": {
-                "Tn1": 74.122,
-                "Tn2": 74.69,
-                "Tn3": 74.105
+                "call": "ambiguous",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 74.69,
+                  "tnpA_Tn3": 74.105
+                },
+                "margin": 0.585,
+                "best_score": 74.69
               }
             },
-            "component_type_margin": 0.19
+            "backbone_haplotype": {
+              "tnpR": "missing",
+              "tnpA": "ambiguous"
+            },
+            "backbone_haplotype_match": "unresolved"
           },
           "checks": {
             "components_detected_from_sequence": false,
@@ -296,7 +303,8 @@
             "hierarchy": "hierarchy/EU935739.1.svg",
             "cell_format": "annotation.cell",
             "annotation_json": "annotation.json",
-            "annotation_gff3": "annotation.gff3"
+            "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk"
           }
         }
       ]

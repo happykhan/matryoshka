@@ -420,22 +420,19 @@ def _select_component_path(
     return selected, requirements, order_valid
 
 
-def _component_type_scores(
+def _backbone_role_group_calls(
     selected: list[MGEFeature],
-) -> tuple[dict[str, float], dict[str, dict[str, float]]]:
-    """Score declared Tn types from local component-profile matches only."""
+) -> dict[str, dict[str, object]]:
+    """Assign each discriminator gene to an expert-declared profile group."""
     type_rule = tn123_rules()["classification"]["type_assignment"]
-    weights = {
-        str(role): float(weight)
-        for role, weight in type_rule["discriminator_role_weights"].items()
-    }
-    total_weight = sum(weights.values())
-    scores = {type_name: 0.0 for type_name in type_rule["compare_types"]}
-    role_scores: dict[str, dict[str, float]] = {}
-    for component in selected:
-        role = _component_role(component)
-        weight = weights.get(role)
-        if weight is None:
+    components = {_component_role(component): component for component in selected}
+    minimum_score = float(type_rule["minimum_role_profile_score_percent"])
+    minimum_margin = float(type_rule["minimum_role_group_margin_percent"])
+    calls: dict[str, dict[str, object]] = {}
+    for role in type_rule["required_discriminator_roles"]:
+        component = components.get(str(role))
+        if component is None:
+            calls[str(role)] = {"call": "missing", "group_scores": {}, "margin": 0.0}
             continue
         matches = component.attributes.get("component_profile_matches", [])
         by_type = {
@@ -443,18 +440,26 @@ def _component_type_scores(
             for match in matches
             if isinstance(match, dict)
         }
-        role_scores[role] = {
-            type_name: round(by_type.get(type_name, 0.0), 3)
-            for type_name in scores
+        group_scores = {
+            str(group): round(max(by_type.get(str(member), 0.0) for member in members), 3)
+            for group, members in type_rule["role_profile_groups"][role].items()
         }
-        for type_name in scores:
-            scores[type_name] += weight * by_type.get(type_name, 0.0)
-    if total_weight:
-        scores = {
-            type_name: round(score / total_weight, 3)
-            for type_name, score in scores.items()
+        ranked = sorted(group_scores.items(), key=lambda item: item[1], reverse=True)
+        best_group, best_score = ranked[0]
+        runner_up = ranked[1][1] if len(ranked) > 1 else 0.0
+        margin = round(best_score - runner_up, 3)
+        call = (
+            best_group
+            if best_score >= minimum_score and margin >= minimum_margin
+            else "ambiguous"
+        )
+        calls[str(role)] = {
+            "call": call,
+            "group_scores": group_scores,
+            "margin": margin,
+            "best_score": best_score,
         }
-    return scores, role_scores
+    return calls
 
 
 def _apply_component_rule_classification(
@@ -465,29 +470,32 @@ def _apply_component_rule_classification(
     """Make the biological call from component rules, then attach ref context."""
     rules = tn123_rules()["classification"]
     type_rule = rules["type_assignment"]
-    scores, role_scores = _component_type_scores(selected)
-    ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)
-    best_type, best_score = ranked[0] if ranked else ("unresolved", 0.0)
-    runner_up_score = ranked[1][1] if len(ranked) > 1 else 0.0
-    margin = round(best_score - runner_up_score, 3)
-    qualified = (
-        component_complete
-        and best_score >= float(
-            type_rule["minimum_component_profile_score_percent"]
-        )
-        and margin >= float(type_rule["minimum_type_margin_percent"])
+    role_calls = _backbone_role_group_calls(selected)
+    haplotype = {
+        role: str(role_calls.get(role, {}).get("call", "missing"))
+        for role in type_rule["required_discriminator_roles"]
+    }
+    best_type = next((
+        str(type_name)
+        for type_name, declared in type_rule["type_haplotypes"].items()
+        if haplotype == {str(role): str(group) for role, group in declared.items()}
+    ), "unresolved")
+    all_roles_called = all(
+        call not in {"missing", "ambiguous"} for call in haplotype.values()
     )
+    qualified = component_complete and best_type != "unresolved"
+    mosaic = component_complete and all_roles_called and not qualified
 
     parent.attributes.update({
         "classification_basis": "expert_component_rules",
         "rule_based_family_call": "Tn1/Tn2/Tn3 group",
         "rule_based_type_call": best_type if qualified else "unresolved",
-        "component_type_scores": scores,
-        "component_role_scores": role_scores,
-        "component_type_margin": margin,
+        "backbone_role_group_calls": role_calls,
+        "backbone_haplotype": haplotype,
+        "backbone_haplotype_match": best_type,
         "naming_evidence": [
             "component_grammar",
-            "component_type_profiles",
+            "backbone_haplotype",
         ],
     })
 
@@ -496,10 +504,14 @@ def _apply_component_rule_classification(
         parent.name = (
             str(rules["fragment"]["visible_label"])
             if parent.attributes.get("fragment")
-            else "Tn1/Tn2/Tn3-group element"
+            else str(type_rule[
+                "mosaic_haplotype_label" if mosaic else "unresolved_haplotype_label"
+            ])
         )
         parent.attributes["variant_status"] = (
-            "rule_incomplete" if not component_complete else "rule_type_unresolved"
+            "rule_incomplete" if not component_complete
+            else "rule_haplotype_mosaic" if mosaic
+            else "rule_type_unresolved"
         )
         return
 

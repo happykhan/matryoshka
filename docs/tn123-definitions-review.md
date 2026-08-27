@@ -16,7 +16,7 @@ A complete group-level call requires all six component occurrences in the stated
 
 ## Classification rules
 
-Type assignment: First establish a complete Tn1/Tn2/Tn3-group locus from independently detected components. Score Tn1, Tn2 and Tn3 from the locally detected tnpR and tnpA backbone sequences. res is retained as shorter structural context but is not scored. blaTEM is required cargo for this group and its allele is reported, but it contributes no weight to the Tn1/Tn2/Tn3 type call. Assign a rule-based type only when the best backbone profile clears the score and margin thresholds. The score threshold permits a locally interrupted or deleted component while the required-component and order rules remain satisfied. Otherwise retain a complete but unresolved Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required to discover or type a candidate.
+Type assignment: First establish a complete Tn1/Tn2/Tn3-group locus from independently detected components. Assign the detected tnpR and tnpA independently to their declared sequence-profile groups. The pair of group calls is a categorical backbone haplotype: the Tn1/Tn3 tnpR group plus the Tn1/Tn2 tnpA group is Tn1-like; Tn2 tnpR plus Tn1/Tn2 tnpA is Tn2-like; and Tn1/Tn3 tnpR plus Tn3 tnpA is Tn3-like. No percentage weight is assigned to either gene and their scores are not averaged. A different confident combination is reported as a mosaic; a missing or ambiguous group call remains unresolved. res is structural context and blaTEM is required cargo, but neither determines the type. A whole-locus reference match is not required to discover or type a candidate.
 
 Secondary reference comparison: Compare an assembled candidate with reviewed whole-element references only after component-rule classification. Record the closest reference, identity, coverage and differences. An exact match may confirm a known definition, but a closest match must not create the family or type call.
 
@@ -41,7 +41,7 @@ Canonical Tn1 uses the expert-reviewed NC_008357 sequence. It has the complete T
 
 ## Type: Tn2
 
-Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the complete group grammar and carries blaTEM-1b. Its divergent tnpR backbone profile, together with tnpA, distinguishes a Tn2-like candidate from Tn1 and Tn3. The diagnostic sequence around res is retained as unweighted context. Classification does not use the blaTEM allele or require a whole-element match.
+Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the complete group grammar and carries blaTEM-1b. Its divergent tnpR profile places it in the Tn2-specific tnpR group; its tnpA belongs to the shared Tn1/Tn2 group. That categorical combination defines a Tn2-like candidate. The diagnostic sequence around res is retained as structural context. Classification does not use the blaTEM allele or require a whole-element match.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |
@@ -54,7 +54,7 @@ Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as Tn2* in t
 
 ## Type: Tn3
 
-Canonical Tn3 uses HM749966, selected during expert review in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. Its divergent tnpA backbone profile, together with tnpR, distinguishes a Tn3-like candidate from Tn1 and Tn2. The res site is retained as unweighted context. The blaTEM allele is reported but does not contribute to the type score.
+Canonical Tn3 uses HM749966, selected during expert review in preference to the older V00613 record. It has the complete group grammar and carries blaTEM-1a. Its tnpR belongs to the shared Tn1/Tn3 group and its divergent tnpA belongs to the Tn3-specific group. That categorical combination defines a Tn3-like candidate. The res site is retained as structural context. The blaTEM allele is reported cargo and does not determine the type.
 
 | Order | Role | Name | Coordinates | Strand |
 | ---: | --- | --- | --- | :---: |

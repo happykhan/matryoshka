@@ -78,8 +78,8 @@ That checked-in input produces three independently assembled loci:
 | `Tn3-like` | Six required components in reverse orientation | Not run | `PASS` |
 
 The generated proof page reports the component coordinates, identities, coverage,
-grammar result, component-profile scores, structural differences and links to every
-corresponding output. The committed example is
+grammar result, categorical backbone haplotype, structural differences and links to
+every corresponding output. The committed example is
 [`demo-output/arbitrary-tn123/proof-bundle/proof/report.html`](demo-output/arbitrary-tn123/proof-bundle/proof/report.html).
 
 The result directory contains:
@@ -230,13 +230,16 @@ matryoshka run assembly.fasta --out results --profile component-rules \
 
 In that mode, a compatible candidate can still receive a `Tn1-like`, `Tn2-like`,
 `Tn3-like`, `Tn21-like`, `Tn1721-like` or `Tn1722-like` call from its detected
-component composition, order, orientation, spacing and component-profile scores.
+component composition, order, orientation, spacing and component-profile groups.
 Exact reviewed subtype names require the optional secondary whole-locus confirmation
 available in the `validated` profile.
 
-For Tn1/Tn2/Tn3, the type score is derived equally from `tnpR` and `tnpA`.
-The required `res` site is retained as structural context, and `blaTEM` and its allele
-are reported as cargo, but neither contributes to the Tn1/Tn2/Tn3 type score.
+For Tn1/Tn2/Tn3, there is no weighted or averaged type score. The detected `tnpR`
+and `tnpA` sequences are independently assigned to expert-defined profile groups,
+then their categorical combination is matched to the declared Tn1, Tn2 or Tn3
+backbone haplotype. A different confident combination is retained as a mosaic rather
+than forced into the closest type. The required `res` site is structural context, and
+`blaTEM` and its allele are reported as cargo; neither determines the type.
 
 BLAST-based detection is always run. Extra detector evidence can be supplied without
 rerunning tools:

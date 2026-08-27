@@ -18,8 +18,8 @@
 <text x="768.0" y="110.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-detected components; expected DR=5 bp; searched but not found</text>
 <rect x="18" y="118" width="1244" height="40" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
 <text x="26.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">19950..19987</text>
-<text x="198.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRL</text>
-<polygon points="228.0,127.0 238.0,133.0 228.0,139.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="198.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRR</text>
+<polygon points="228.0,127.0 218.0,133.0 228.0,139.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
 <text x="528.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
 <text x="658.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
 <text x="768.0" y="136.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected terminal_IR; identity=100.0%;</text>

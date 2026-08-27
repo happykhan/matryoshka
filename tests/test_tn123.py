@@ -232,7 +232,40 @@ def test_component_grammar_can_emit_parent_without_whole_locus_call():
     assert parents[0].attributes["component_assembly_status"] == "complete"
     assert parents[0].attributes["component_order_valid"] is True
     assert parents[0].attributes["detected_component_count"] == 6
-    assert set(parents[0].attributes["component_role_scores"]) == {"tnpR", "tnpA"}
+    assert parents[0].attributes["backbone_haplotype"] == {
+        "tnpR": "tnpR_Tn1_Tn3",
+        "tnpA": "tnpA_Tn1_Tn2",
+    }
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_canonical_types_are_called_from_component_haplotypes_without_locus_lookup():
+    hits, _ = _component_first_annotation(
+        REVIEWED_FASTA,
+        include_reference_comparison=False,
+    )
+    observed = {
+        str(hit.attributes["seqid"]): (
+            hit.name,
+            hit.attributes["backbone_haplotype"],
+        )
+        for hit in hits
+    }
+    assert observed == {
+        "Tn1_NC_008357": (
+            "Tn1-like",
+            {"tnpR": "tnpR_Tn1_Tn3", "tnpA": "tnpA_Tn1_Tn2"},
+        ),
+        "Tn2_AY123253": (
+            "Tn2-like",
+            {"tnpR": "tnpR_Tn2", "tnpA": "tnpA_Tn1_Tn2"},
+        ),
+        "Tn3_HM749966": (
+            "Tn3-like",
+            {"tnpR": "tnpR_Tn1_Tn3", "tnpA": "tnpA_Tn3"},
+        ),
+    }
+    assert all(hit.attributes.get("closest_reference") is None for hit in hits)
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
@@ -288,7 +321,35 @@ def test_minor_sequence_variation_is_named_as_nearest_variant(tmp_path: Path):
     assert hit.attributes.get("reference_comparison_type") is None
     assert hit.attributes.get("closest_reference") is None
     assert hit.attributes["variant_status"] == "rule_based_type_candidate"
-    assert 99.0 < float(hit.attributes["component_type_scores"]["Tn1"]) < 100.0
+    assert hit.attributes["backbone_haplotype"] == {
+        "tnpR": "tnpR_Tn1_Tn3",
+        "tnpA": "tnpA_Tn1_Tn2",
+    }
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_novel_backbone_combination_is_retained_as_mosaic(tmp_path: Path):
+    """Tn2 tnpR plus Tn3 tnpA must not be averaged into a known type."""
+    tn2 = REFERENCE_SEQUENCES["Tn2_AY123253"]
+    tn3 = REFERENCE_SEQUENCES["Tn3_HM749966"]
+    mosaic = tn2[:1910] + tn3[1910:-33] + tn2[-33:]
+    query = _write_fasta(tmp_path / "mosaic.fasta", "novel_mosaic", mosaic)
+
+    hits, _ = _component_first_annotation(
+        query,
+        include_reference_comparison=False,
+    )
+
+    assert len(hits) == 1
+    hit = hits[0]
+    assert hit.name == "Tn1/Tn2/Tn3-group mosaic"
+    assert hit.family == "Tn3_family"
+    assert hit.attributes["rule_based_type_call"] == "unresolved"
+    assert hit.attributes["variant_status"] == "rule_haplotype_mosaic"
+    assert hit.attributes["backbone_haplotype"] == {
+        "tnpR": "tnpR_Tn2",
+        "tnpA": "tnpA_Tn3",
+    }
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")

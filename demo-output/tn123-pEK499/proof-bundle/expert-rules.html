@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expert rule review</title>
+<style>
+:root { --ink:#24313a; --muted:#65727b; --accent:#3b7b82; --paper:#fffdf8;
+  --line:#dce3df; --soft:#edf5f2; }
+* { box-sizing:border-box; }
+body { margin:0; background:#eef1ee; color:var(--ink); font:17px/1.58 system-ui,sans-serif; }
+main { max-width:1080px; margin:32px auto; padding:48px 60px; background:var(--paper);
+  box-shadow:0 8px 30px #26352f18; }
+h1 { margin-top:0; color:var(--accent); font-size:2.25rem; }
+h2 { margin-top:2.4rem; padding-top:1rem; border-top:2px solid var(--line); color:#315f65; }
+h3 { color:#446a6e; }
+table { width:100%; border-collapse:collapse; margin:1rem 0 1.5rem; font-size:.94rem; }
+th,td { padding:.65rem .75rem; border:1px solid var(--line); vertical-align:top; text-align:left; }
+th { background:var(--soft); }
+code { background:#edf0ed; padding:.12rem .3rem; border-radius:3px; }
+li { margin:.35rem 0; }
+@media (max-width:700px) { main { margin:0; padding:24px; } table { font-size:.82rem; } }
+@media print { body { background:white; } main { margin:0; box-shadow:none; max-width:none; } }
+</style>
+</head>
+<body><main><h1>Expert rule review</h1>
+<p>Rule versions: Tn1/Tn2/Tn3 <code>2026-08-27</code>; reviewed units <code>2026-08-27</code>.</p>
+<p>This report is generated directly from the same YAML definitions used by the program. It translates those executable rules into review language; it does not maintain a separate manual description.</p>
+<h2>Scope of this review</h2>
+<p>This edition covers the six families with executable component-driven rules: Tn1, Tn2, Tn3, Tn21, Tn1721 and Tn1722. Other roadmap targets are not included here until their component grammars are implemented; reference-supported names must not be mistaken for reviewed expert rules.</p>
+<h2>How a sequence becomes a call</h2>
+<ol>
+<li><strong>Detect parts independently.</strong> Search for terminal repeats, genes, resolution sites, resistance genes and diagnostic junctions.</li>
+<li><strong>Assemble a candidate.</strong> Check copy number, order, orientation and maximum span.</li>
+<li><strong>Apply the family rule.</strong> A complete component grammar can create a family or family-like call without a whole-element match.</li>
+<li><strong>Assign a type where rules permit it.</strong> Compare the locally detected components with the profiles declared for each type.</li>
+<li><strong>Compare with canonical sequences second.</strong> This confirms an exact known definition and records differences; it does not drive discovery.</li>
+<li><strong>Keep incomplete evidence.</strong> Components and fragments are drawn even when there is not enough evidence to name a complete element.</li>
+</ol>
+<h2>Meaning of result labels</h2>
+<table>
+<thead>
+<tr>
+<th>Label</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact name, for example <strong>Tn1</strong></td>
+<td>Complete rule plus a 100% complete, mismatch-free match to a declared exact definition</td>
+</tr>
+<tr>
+<td><strong>-like</strong></td>
+<td>Complete component rule, but not identical to a declared exact definition</td>
+</tr>
+<tr>
+<td>Unresolved group member</td>
+<td>Complete family structure but insufficient evidence to choose a type</td>
+</tr>
+<tr>
+<td>Fragment</td>
+<td>Some supported parts are present, but required grammar is incomplete</td>
+</tr>
+</tbody>
+</table>
+<h2>Tn1/Tn2/Tn3 group</h2>
+<h3>Plain-language decision</h3>
+<p>The software first looks for the parts of the transposon independently. It calls a complete Tn1/Tn2/Tn3-group locus only when all required parts occur in the correct order between two ends. It then compares the local versions of the genes and resolution site to decide whether the locus is most consistent with Tn1, Tn2 or Tn3. A whole-element match is checked afterwards and is not allowed to create the initial family call.</p>
+<p>Expected element boundaries: two 38 bp terminal inverted repeats. A 5 bp target-site duplication is supporting boundary evidence, not a substitute for the required internal parts.</p>
+<h3>Evidence that must be found</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align:right">Minimum number</th>
+<th>What it represents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>terminal_IR</code></td>
+<td style="text-align:right">2</td>
+<td>Short terminal inverted repeat marking an element end</td>
+</tr>
+<tr>
+<td><code>blaTEM</code></td>
+<td style="text-align:right">1</td>
+<td>Beta-lactam resistance gene</td>
+</tr>
+<tr>
+<td><code>tnpR</code></td>
+<td style="text-align:right">1</td>
+<td>Resolvase gene used during transposition</td>
+</tr>
+<tr>
+<td><code>res</code></td>
+<td style="text-align:right">1</td>
+<td>Resolution site acted on by the resolvase</td>
+</tr>
+<tr>
+<td><code>tnpA</code></td>
+<td style="text-align:right">1</td>
+<td>Transposase gene used to move the element</td>
+</tr>
+</tbody>
+</table>
+<p>Required order on the forward strand:</p>
+<p><code>terminal_IR → blaTEM → tnpR → res → tnpA → terminal_IR</code></p>
+<p>The reverse-complement order is also accepted.</p>
+<h3>How Tn1, Tn2 and Tn3 are separated</h3>
+<p>The resistance gene is required cargo for this group, but its allele does <strong>not</strong> determine the transposon type. Classification uses the transposition backbone sequences.</p>
+<table>
+<thead>
+<tr>
+<th>Reported type</th>
+<th>Canonical example</th>
+<th>Primary backbone evidence</th>
+<th>Cargo reported separately</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tn1</td>
+<td><code>NC_008357</code></td>
+<td>tnpR and tnpA; res shown as context</td>
+<td>blaTEM-2</td>
+</tr>
+<tr>
+<td>Tn2</td>
+<td><code>AY123253</code></td>
+<td>tnpR and tnpA; res shown as context</td>
+<td>blaTEM-1b</td>
+</tr>
+<tr>
+<td>Tn3</td>
+<td><code>HM749966</code></td>
+<td>tnpR and tnpA; res shown as context</td>
+<td>blaTEM-1a</td>
+</tr>
+</tbody>
+</table>
+<p>There is no cross-gene weighting and no averaged type score. Each detected backbone gene is first assigned independently to a declared sequence-profile group. The resulting pair is then looked up in the expert haplotype rule:</p>
+<table>
+<thead>
+<tr>
+<th>tnpR profile group</th>
+<th>tnpA profile group</th>
+<th>Rule-based result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tn1/Tn3-like tnpR</td>
+<td>Tn1/Tn2-like tnpA</td>
+<td>Tn1-like</td>
+</tr>
+<tr>
+<td>Tn2-like tnpR</td>
+<td>Tn1/Tn2-like tnpA</td>
+<td>Tn2-like</td>
+</tr>
+<tr>
+<td>Tn1/Tn3-like tnpR</td>
+<td>Tn3-like tnpA</td>
+<td>Tn3-like</td>
+</tr>
+<tr>
+<td>Any other confident combination</td>
+<td>Any other confident combination</td>
+<td>Tn1/Tn2/Tn3-group mosaic</td>
+</tr>
+<tr>
+<td>Missing or ambiguous</td>
+<td>Missing or ambiguous</td>
+<td>Unresolved group element</td>
+</tr>
+</tbody>
+</table>
+<p>A gene profile group is called only when its best local match reaches 90% and exceeds the other declared group by at least 0.5 percentage points. These thresholds decide whether an individual gene can be placed in a group; they do not determine the type by averaging genes. res is structural context and blaTEM is reported cargo.</p>
+<p>The canonical component sequences support that choice:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align:right">Tn1 vs Tn2</th>
+<th style="text-align:right">Tn1 vs Tn3</th>
+<th style="text-align:right">Tn2 vs Tn3</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tnpR</td>
+<td style="text-align:right">94.444%</td>
+<td style="text-align:right">99.642%</td>
+<td style="text-align:right">94.624%</td>
+<td>Primarily separates Tn2</td>
+</tr>
+<tr>
+<td>tnpA</td>
+<td style="text-align:right">99.102%</td>
+<td style="text-align:right">97.572%</td>
+<td style="text-align:right">97.772%</td>
+<td>Primarily separates Tn3</td>
+</tr>
+<tr>
+<td>res</td>
+<td style="text-align:right">79.130%</td>
+<td style="text-align:right">96.522%</td>
+<td style="text-align:right">79.825%</td>
+<td>Context hotspot; not scored</td>
+</tr>
+<tr>
+<td>blaTEM</td>
+<td style="text-align:right">99.303%</td>
+<td style="text-align:right">99.419%</td>
+<td style="text-align:right">99.652%</td>
+<td>Cargo only; not scored</td>
+</tr>
+</tbody>
+</table>
+<h3>Reviewed exact names and subtypes</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Parent type</th>
+<th>Accession</th>
+<th>What makes this exact definition distinct</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tn1</td>
+<td>Tn1</td>
+<td><code>NC_008357</code></td>
+<td>Exact, complete, gap-free match to NC_008357 plus complete component grammar.</td>
+</tr>
+<tr>
+<td>Tn2</td>
+<td>Tn2</td>
+<td><code>AY123253</code></td>
+<td>Exact, complete, gap-free match to AY123253 plus complete component grammar.</td>
+</tr>
+<tr>
+<td>Tn3</td>
+<td>Tn3</td>
+<td><code>HM749966</code></td>
+<td>Exact, complete, gap-free match to HM749966 plus complete component grammar.</td>
+</tr>
+<tr>
+<td>Tn2c</td>
+<td>Tn2</td>
+<td><code>HM749967</code></td>
+<td>9 nucleotide substitutions relative to canonical Tn2 AY123253; blaTEM-1c allele</td>
+</tr>
+<tr>
+<td>Tn2.1</td>
+<td>Tn2</td>
+<td><code>CP028717</code></td>
+<td>4024 bp ISEcp1-associated insertion near the blaTEM end; 5 bp duplicated Tn2 sequence flanks the insertion junction</td>
+</tr>
+<tr>
+<td>Tn1Mer</td>
+<td>Tn1</td>
+<td><code>GQ160960</code></td>
+<td>defective Tn5036-like transposon inserted into the Tn1 backbone; blaTEM-1 rather than canonical Tn1 blaTEM-2</td>
+</tr>
+<tr>
+<td>Tn3</td>
+<td>Tn3</td>
+<td><code>V00613</code></td>
+<td>9 bp duplication relative to canonical Tn3 HM749966</td>
+</tr>
+</tbody>
+</table>
+<h3>What the program will not do</h3>
+<p>Shared components may be detected in another Tn3-family transposon. If the complete Tn1/Tn2/Tn3 grammar is absent and no declared whole-element definition matches, draw the supported components and report an unresolved Tn3-family unit or fragment. Do not force a Tn1, Tn2 or Tn3 name.</p>
+<p>Examples deliberately not forced into a Tn1/Tn2/Tn3 name: Tn1696, Tn1721, Tn5403.</p>
+<h2>Tn21</h2>
+<h3>Plain-language decision</h3>
+<p>Call a complete Tn21-like unit when two Tn21 terminal IRs delimit a Tn21-specific tnpA-tnpR-res-tnpM transposition region in the declared order. The class 1 integron, partial or complete tni region, internal insertion sequences and mer module are described when present but are not required to discover the Tn21-subgroup backbone. Exact Tn21 requires secondary confirmation against AF071413.</p>
+<p>The candidate must span approximately 15,000–35,000 bp and contain 38 bp terminal inverted repeats. A 5 bp target-site duplication may support the inferred boundaries.</p>
+<h3>Evidence that must be found</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align:right">Minimum number</th>
+<th>What it represents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>terminal_IR</code></td>
+<td style="text-align:right">2</td>
+<td>Short terminal inverted repeat marking an element end</td>
+</tr>
+<tr>
+<td><code>tnpA</code></td>
+<td style="text-align:right">1</td>
+<td>Transposase gene used to move the element</td>
+</tr>
+<tr>
+<td><code>tnpR</code></td>
+<td style="text-align:right">1</td>
+<td>Resolvase gene used during transposition</td>
+</tr>
+<tr>
+<td><code>res</code></td>
+<td style="text-align:right">1</td>
+<td>Resolution site acted on by the resolvase</td>
+</tr>
+<tr>
+<td><code>tnpM</code></td>
+<td style="text-align:right">1</td>
+<td>Tn21-family transposition-region gene</td>
+</tr>
+</tbody>
+</table>
+<p>Required order on the forward strand:</p>
+<p><code>terminal_IR → tnpA → tnpR → res → tnpM → terminal_IR</code></p>
+<p>Optional features are drawn when detected but do not create the family call: <code>integron_5cs</code>, <code>cassette_region</code>, <code>integron_3cs</code>, <code>tni</code>, <code>mer_region</code>.</p>
+<h3>Naming decision</h3>
+<p>Complete component grammar produces <strong>Tn21-like</strong>. The unqualified name <strong>Tn21</strong> requires an exact, complete secondary match to the reviewed example <code>AF071413</code>. Missing required components remain visible but are not promoted to a complete family call.</p>
+<h2>Tn1722</h2>
+<h3>Plain-language decision</h3>
+<p>Call a complete Tn1722-like unit when two Tn1721-family terminal IRs delimit the mcp-tnpR-tnpA backbone in the declared order. Exact Tn1722 requires secondary whole-element confirmation against the 5640 bp reviewed interval from AB366441.</p>
+<p>The candidate must span approximately 5,000–8,500 bp and contain 38 bp terminal inverted repeats. A 5 bp target-site duplication may support the inferred boundaries.</p>
+<h3>Evidence that must be found</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align:right">Minimum number</th>
+<th>What it represents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>terminal_IR</code></td>
+<td style="text-align:right">2</td>
+<td>Short terminal inverted repeat marking an element end</td>
+</tr>
+<tr>
+<td><code>mcp</code></td>
+<td style="text-align:right">1</td>
+<td>Methyl-accepting chemotaxis-like protein gene</td>
+</tr>
+<tr>
+<td><code>tnpR</code></td>
+<td style="text-align:right">1</td>
+<td>Resolvase gene used during transposition</td>
+</tr>
+<tr>
+<td><code>tnpA</code></td>
+<td style="text-align:right">1</td>
+<td>Transposase gene used to move the element</td>
+</tr>
+</tbody>
+</table>
+<p>Required order on the forward strand:</p>
+<p><code>terminal_IR → mcp → tnpR → tnpA → terminal_IR</code></p>
+<p>No optional components are declared for this rule.</p>
+<h3>Naming decision</h3>
+<p>Complete component grammar produces <strong>Tn1722-like</strong>. The unqualified name <strong>Tn1722</strong> requires an exact, complete secondary match to the reviewed example <code>AB366441</code>. Missing required components remain visible but are not promoted to a complete family call.</p>
+<h2>Tn1721</h2>
+<h3>Plain-language decision</h3>
+<p>Tn1721 consists of the complete Tn1722-like backbone followed by an internal copy of IRR, the tetR-tetA-pecM region and a partial duplication of the tnp region ending at the terminal IRR. Require all three IR occurrences and the unique tet-to-duplicated-tnp junction; tet genes or a Tn1722-like backbone alone are insufficient. Exact Tn1721 requires secondary whole-element confirmation against the 11128 bp reviewed interval from AB366441.</p>
+<p>The candidate must span approximately 10,000–16,000 bp and contain 38 bp terminal inverted repeats. A 5 bp target-site duplication may support the inferred boundaries.</p>
+<h3>Evidence that must be found</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align:right">Minimum number</th>
+<th>What it represents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>terminal_IR</code></td>
+<td style="text-align:right">3</td>
+<td>Short terminal inverted repeat marking an element end</td>
+</tr>
+<tr>
+<td><code>mcp</code></td>
+<td style="text-align:right">1</td>
+<td>Methyl-accepting chemotaxis-like protein gene</td>
+</tr>
+<tr>
+<td><code>tnpR</code></td>
+<td style="text-align:right">1</td>
+<td>Resolvase gene used during transposition</td>
+</tr>
+<tr>
+<td><code>tnpA</code></td>
+<td style="text-align:right">1</td>
+<td>Transposase gene used to move the element</td>
+</tr>
+<tr>
+<td><code>tetR</code></td>
+<td style="text-align:right">1</td>
+<td>Regulator of tetracycline resistance</td>
+</tr>
+<tr>
+<td><code>tetA</code></td>
+<td style="text-align:right">1</td>
+<td>Tetracycline resistance gene</td>
+</tr>
+<tr>
+<td><code>pecM</code></td>
+<td style="text-align:right">1</td>
+<td>Membrane-protein gene in the Tn1721 variable region</td>
+</tr>
+<tr>
+<td><code>tet_tnp_junction</code></td>
+<td style="text-align:right">1</td>
+<td>Sequence junction linking the tet region to duplicated transposition DNA</td>
+</tr>
+</tbody>
+</table>
+<p>Required order on the forward strand:</p>
+<p><code>terminal_IR → mcp → tnpR → tnpA → terminal_IR → tetR → tetA → pecM → tet_tnp_junction → terminal_IR</code></p>
+<p>No optional components are declared for this rule.</p>
+<h3>Naming decision</h3>
+<p>Complete component grammar produces <strong>Tn1721-like</strong>. The unqualified name <strong>Tn1721</strong> requires an exact, complete secondary match to the reviewed example <code>AB366441</code>. Missing required components remain visible but are not promoted to a complete family call.</p>
+<h2>Questions for expert review</h2>
+<p>For each family, please check:</p>
+<ul>
+<li>Are the required components and their minimum copy numbers correct?</li>
+<li>Is the required order correct on the element-relative forward strand?</li>
+<li>Should any currently optional component be required, or vice versa?</li>
+<li>Are the acceptable candidate-size limits biologically reasonable?</li>
+<li>Is the canonical accession appropriate only for exact naming?</li>
+<li>Which known variants need their own exact subtype definition?</li>
+<li>Which related elements should be explicit negative controls?</li>
+</ul>
+<h2>Source YAML</h2>
+<p>The executable sources are <code>matryoshka/tn123_definitions.yaml</code> and <code>matryoshka/unit_definitions.yaml</code>. Edit and validate those files rather than editing this generated report.</p>
+</main></body>
+</html>

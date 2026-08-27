@@ -39,13 +39,13 @@ def test_tn123_definitions_cover_types_subtypes_and_review_rules():
         "terminal_IR", "blaTEM", "tnpR", "res", "tnpA", "terminal_IR",
     ]
     assignment = document["classification"]["type_assignment"]
-    assert assignment["primary_discriminator_roles"] == ["tnpR", "tnpA"]
-    assert assignment["supporting_discriminator_roles"] == []
+    assert assignment["required_discriminator_roles"] == ["tnpR", "tnpA"]
     assert assignment["unweighted_context_roles"] == ["res"]
     assert assignment["non_discriminator_roles"] == ["blaTEM"]
-    assert assignment["discriminator_role_weights"] == {
-        "tnpR": 5.0,
-        "tnpA": 5.0,
+    assert assignment["type_haplotypes"] == {
+        "Tn1": {"tnpR": "tnpR_Tn1_Tn3", "tnpA": "tnpA_Tn1_Tn2"},
+        "Tn2": {"tnpR": "tnpR_Tn2", "tnpA": "tnpA_Tn1_Tn2"},
+        "Tn3": {"tnpR": "tnpR_Tn1_Tn3", "tnpA": "tnpA_Tn3"},
     }
 
 
@@ -103,7 +103,7 @@ def test_markdown_export_contains_worked_expert_logic():
     assert "9 bp duplication" in report
     assert "Related but different elements" in report
     assert "blaTEM is required cargo" in report
-    assert "it contributes no weight" in report
+    assert "No percentage weight is assigned" in report
 
 
 def test_definitions_cli_exports_reviewable_yaml_json_and_markdown(tmp_path: Path):

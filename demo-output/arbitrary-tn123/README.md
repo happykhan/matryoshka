@@ -22,8 +22,8 @@ same directory contains the raw component ledger, known-element match ledger,
 machine-checkable PASS/PARTIAL/FAIL proof, original hierarchical SVG, locus map and table,
 and `annotation.cell` CellGen/Wolvercote nested cell-format output.
 
-The proof ledger records the expert-rule type, weighted component scores, component
-structure and optional reference context. This bundle deliberately uses the
+The proof ledger records the expert-rule type, categorical `tnpR`/`tnpA` backbone
+haplotype, component structure and optional reference context. This bundle deliberately uses the
 `tn123-components` profile, so it contains no complete Tn1/Tn2/Tn3 lookup. All three
 loci nevertheless receive `PASS`; the interrupted Tn2-like locus retains and draws
 its approximately 799 bp insertion from split `tnpA` component evidence.

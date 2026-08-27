@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "profile": "validated",
   "records": 7,
-  "features": 52,
+  "features": 54,
   "locus_views": 8,
   "locus_outputs": [
     {
@@ -111,9 +111,45 @@
     }
   ],
   "proof_status": "PASS",
+  "detectors": [
+    {
+      "name": "amrfinder",
+      "label": "AMRFinderPlus",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "isescan",
+      "label": "ISEScan",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "integron",
+      "label": "IntegronFinder",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    }
+  ],
   "outputs": {
     "annotation_json": "annotation.json",
     "annotation_gff3": "annotation.gff3",
+    "annotation_genbank": "annotation.gbk",
     "annotation_cell": "annotation.cell",
     "hierarchy_directory": "hierarchy",
     "locus_map_directory": "locus-map",
@@ -121,6 +157,8 @@
     "proof_json": "proof/proof.json",
     "proof_report": "proof/report.html",
     "component_ledger": "proof/components.tsv",
-    "match_ledger": "proof/matches.tsv"
+    "match_ledger": "proof/matches.tsv",
+    "expert_rules_markdown": "expert-rules.md",
+    "expert_rules_html": "expert-rules.html"
   }
 }

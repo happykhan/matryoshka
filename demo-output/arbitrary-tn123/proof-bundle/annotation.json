@@ -11,10 +11,45 @@
   "run": {
     "input": "demo-output/arbitrary-tn123/arbitrary-demo.fasta",
     "input_sha256": "4aba0208d1c4b746e62e9fd6c997238518ca406607c54f1e5b8afdb7edf61e9f",
-    "command": "matryoshka run demo-output/arbitrary-tn123/arbitrary-demo.fasta --profile tn123-components --threads 4 --out demo-output/arbitrary-tn123/proof-bundle",
+    "command": "matryoshka run demo-output/arbitrary-tn123/arbitrary-demo.fasta --profile tn123-components --threads 4 --detectors none --out demo-output/arbitrary-tn123/proof-bundle",
     "python": "3.13.15",
     "platform": "macOS-14.6.1-arm64-arm-64bit-Mach-O",
-    "detector_outputs": {}
+    "detector_outputs": {},
+    "detectors": [
+      {
+        "name": "amrfinder",
+        "label": "AMRFinderPlus",
+        "status": "disabled",
+        "source": "none",
+        "runtime": "not requested",
+        "output": null,
+        "message": null,
+        "tool_version": null,
+        "database_version": null
+      },
+      {
+        "name": "isescan",
+        "label": "ISEScan",
+        "status": "disabled",
+        "source": "none",
+        "runtime": "not requested",
+        "output": null,
+        "message": null,
+        "tool_version": null,
+        "database_version": null
+      },
+      {
+        "name": "integron",
+        "label": "IntegronFinder",
+        "status": "disabled",
+        "source": "none",
+        "runtime": "not requested",
+        "output": null,
+        "message": null,
+        "tool_version": null,
+        "database_version": null
+      }
+    ]
   },
   "records": [
     {
@@ -219,40 +254,37 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ],
             "evidence_class": "sequence_detected_and_assembled",
             "classification_basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn1",
-            "component_type_scores": {
-              "Tn1": 99.592,
-              "Tn2": 64.818,
-              "Tn3": 98.067
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.42,
-                "Tn2": 98.96,
-                "Tn3": 98.84
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 99.1,
-                "Tn2": 94.09,
-                "Tn3": 98.75
-              },
-              "res": {
-                "Tn1": 100.0,
-                "Tn2": 0.0,
-                "Tn3": 98.25
+                "call": "tnpR_Tn1_Tn3",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 99.1,
+                  "tnpR_Tn2": 94.09
+                },
+                "margin": 5.01,
+                "best_score": 99.1
               },
               "tnpA": {
-                "Tn1": 99.57,
-                "Tn2": 98.74,
-                "Tn3": 97.17
+                "call": "tnpA_Tn1_Tn2",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 99.57,
+                  "tnpA_Tn3": 97.17
+                },
+                "margin": 2.4,
+                "best_score": 99.57
               }
             },
-            "component_type_margin": 1.525,
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn1_Tn3",
+              "tnpA": "tnpA_Tn1_Tn2"
+            },
+            "backbone_haplotype_match": "Tn1",
             "curated_internal_features": false,
             "independently_detected_internal_features": true,
             "reference_projected_component_count": 0,
@@ -264,11 +296,11 @@
           },
           "children": [
             {
-              "id": "mge-arbitrary_demo_contig-IR-a6b95d42f3",
+              "id": "mge-arbitrary_demo_contig-IR-186b16fcee",
               "parent_id": "mge-arbitrary_demo_contig-transposon-999f2989b1",
               "element_type": "IR",
               "family": "Tn3_family",
-              "name": "IRL",
+              "name": "IRR",
               "start": 8001,
               "end": 8038,
               "strand": ".",
@@ -864,40 +896,37 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ],
             "evidence_class": "sequence_detected_and_assembled",
             "classification_basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn2",
-            "component_type_scores": {
-              "Tn1": 65.067,
-              "Tn2": 100.0,
-              "Tn3": 64.712
-            },
-            "component_role_scores": {
-              "blaTEM": {
-                "Tn1": 99.3,
-                "Tn2": 100.0,
-                "Tn3": 99.65
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 94.44,
-                "Tn2": 100.0,
-                "Tn3": 94.62
-              },
-              "res": {
-                "Tn1": 0.0,
-                "Tn2": 100.0,
-                "Tn3": 0.0
+                "call": "tnpR_Tn2",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 94.62,
+                  "tnpR_Tn2": 100.0
+                },
+                "margin": 5.38,
+                "best_score": 100.0
               },
               "tnpA": {
-                "Tn1": 99.14,
-                "Tn2": 100.0,
-                "Tn3": 97.84
+                "call": "tnpA_Tn1_Tn2",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 100.0,
+                  "tnpA_Tn3": 97.84
+                },
+                "margin": 2.16,
+                "best_score": 100.0
               }
             },
-            "component_type_margin": 34.933,
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn2",
+              "tnpA": "tnpA_Tn1_Tn2"
+            },
+            "backbone_haplotype_match": "Tn2",
             "curated_internal_features": false,
             "independently_detected_internal_features": true,
             "reference_projected_component_count": 0,
@@ -909,11 +938,11 @@
           },
           "children": [
             {
-              "id": "mge-arbitrary_demo_contig-IR-04a9643bd2",
+              "id": "mge-arbitrary_demo_contig-IR-24ff042da8",
               "parent_id": "mge-arbitrary_demo_contig-transposon-1bc7e07bf9",
               "element_type": "IR",
               "family": "Tn3_family",
-              "name": "IRL",
+              "name": "IRR",
               "start": 19950,
               "end": 19987,
               "strand": ".",
@@ -1527,40 +1556,37 @@
             ],
             "naming_evidence": [
               "component_grammar",
-              "component_type_profiles"
+              "backbone_haplotype"
             ],
             "evidence_class": "sequence_detected_and_assembled",
             "classification_basis": "expert_component_rules",
             "rule_based_family_call": "Tn1/Tn2/Tn3 group",
             "rule_based_type_call": "Tn3",
-            "component_type_scores": {
-              "Tn1": 98.476,
-              "Tn2": 64.828,
-              "Tn3": 100.0
-            },
-            "component_role_scores": {
-              "tnpA": {
-                "Tn1": 97.61,
-                "Tn2": 97.87,
-                "Tn3": 100.0
-              },
-              "res": {
-                "Tn1": 98.25,
-                "Tn2": 0.0,
-                "Tn3": 100.0
-              },
+            "backbone_role_group_calls": {
               "tnpR": {
-                "Tn1": 99.64,
-                "Tn2": 94.98,
-                "Tn3": 100.0
+                "call": "tnpR_Tn1_Tn3",
+                "group_scores": {
+                  "tnpR_Tn1_Tn3": 100.0,
+                  "tnpR_Tn2": 94.98
+                },
+                "margin": 5.02,
+                "best_score": 100.0
               },
-              "blaTEM": {
-                "Tn1": 99.42,
-                "Tn2": 99.88,
-                "Tn3": 100.0
+              "tnpA": {
+                "call": "tnpA_Tn3",
+                "group_scores": {
+                  "tnpA_Tn1_Tn2": 97.87,
+                  "tnpA_Tn3": 100.0
+                },
+                "margin": 2.13,
+                "best_score": 100.0
               }
             },
-            "component_type_margin": 1.524,
+            "backbone_haplotype": {
+              "tnpR": "tnpR_Tn1_Tn3",
+              "tnpA": "tnpA_Tn3"
+            },
+            "backbone_haplotype_match": "Tn3",
             "curated_internal_features": false,
             "independently_detected_internal_features": true,
             "reference_projected_component_count": 0,

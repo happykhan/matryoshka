@@ -53,17 +53,26 @@ grammar:
 
 classification:
   type_assignment:
-    method: weighted transposition-backbone profiles after component grammar validation
+    method: categorical transposition-backbone haplotype after component grammar validation
     compare_types: [Tn1, Tn2, Tn3]
-    primary_discriminator_roles: [tnpR, tnpA]
-    supporting_discriminator_roles: []
+    required_discriminator_roles: [tnpR, tnpA]
     unweighted_context_roles: [res]
     non_discriminator_roles: [blaTEM]
-    discriminator_role_weights:
-      tnpR: 5.0
-      tnpA: 5.0
-    minimum_component_profile_score_percent: 90.0
-    minimum_type_margin_percent: 0.5
+    role_profile_groups:
+      tnpR:
+        tnpR_Tn1_Tn3: [Tn1, Tn3]
+        tnpR_Tn2: [Tn2]
+      tnpA:
+        tnpA_Tn1_Tn2: [Tn1, Tn2]
+        tnpA_Tn3: [Tn3]
+    type_haplotypes:
+      Tn1: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn1_Tn2}
+      Tn2: {tnpR: tnpR_Tn2, tnpA: tnpA_Tn1_Tn2}
+      Tn3: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn3}
+    minimum_role_profile_score_percent: 90.0
+    minimum_role_group_margin_percent: 0.5
+    unresolved_haplotype_label: Tn1/Tn2/Tn3-group element
+    mosaic_haplotype_label: Tn1/Tn2/Tn3-group mosaic
     discriminator_evidence:
       method: global nucleotide alignment of the declared canonical component sequences
       source_definition_version: "2026-08-27"
@@ -75,22 +84,22 @@ classification:
       interpretation: >-
         tnpR separates Tn2 from Tn1/Tn3, while tnpA separates Tn3 from
         Tn1/Tn2. The short res site is retained as context around the documented
-        recombination hotspot but is not included in the numeric type score. The
+        recombination hotspot but is not used to assign the categorical
+        haplotype. The
         blaTEM alleles differ by only three to six nucleotides and are recorded
         as cargo, not used to assign the transposon type.
     expert_rule: >-
       First establish a complete Tn1/Tn2/Tn3-group locus from independently
-      detected components. Score Tn1, Tn2 and Tn3 primarily from the locally
-      detected tnpR and tnpA backbone sequences. res is retained as shorter
-      structural context but is not scored. blaTEM is required cargo for this
-      group and its allele is reported, but it contributes no weight to the
-      Tn1/Tn2/Tn3 type call.
-      Assign a rule-based type only when the best backbone profile clears the
-      score and margin thresholds. The score threshold permits a locally
-      interrupted or deleted component while the required-component and order
-      rules remain satisfied. Otherwise retain a complete but unresolved
-      Tn1/Tn2/Tn3-group element. A whole-locus reference match is not required
-      to discover or type a candidate.
+      detected components. Assign the detected tnpR and tnpA independently to
+      their declared sequence-profile groups. The pair of group calls is a
+      categorical backbone haplotype: the Tn1/Tn3 tnpR group plus the Tn1/Tn2
+      tnpA group is Tn1-like; Tn2 tnpR plus Tn1/Tn2 tnpA is Tn2-like; and
+      Tn1/Tn3 tnpR plus Tn3 tnpA is Tn3-like. No percentage weight is assigned
+      to either gene and their scores are not averaged. A different confident
+      combination is reported as a mosaic; a missing or ambiguous group call
+      remains unresolved. res is structural context and blaTEM is required
+      cargo, but neither determines the type. A whole-locus reference match is
+      not required to discover or type a candidate.
   reference_comparison:
     role: secondary context after rule-based classification
     minimum_identity_percent: 95.0
@@ -180,10 +189,11 @@ types:
       Canonical Tn2 uses the expert-reviewed AY123253 sequence, described as
       Tn2* in the 2005 paper and selected as Tn2 in the working document. It has the
       complete group grammar and carries blaTEM-1b. Its divergent tnpR
-      backbone profile, together with tnpA, distinguishes a Tn2-like candidate
-      from Tn1 and Tn3. The diagnostic sequence around res is retained as
-      unweighted context. Classification does not use the blaTEM allele or
-      require a whole-element match.
+      profile places it in the Tn2-specific tnpR group; its tnpA belongs to the
+      shared Tn1/Tn2 group. That categorical combination defines a Tn2-like
+      candidate. The diagnostic sequence around res is retained as structural
+      context. Classification does not use the blaTEM allele or require a
+      whole-element match.
     canonical_reference: Tn2_AY123253
     source_accession: AY123253
     bla_allele: blaTEM-1b
@@ -200,10 +210,11 @@ types:
     expert_description: >-
       Canonical Tn3 uses HM749966, selected during expert review in preference
       to the older V00613 record. It has the complete group grammar and
-      carries blaTEM-1a. Its divergent tnpA backbone profile, together with
-      tnpR, distinguishes a Tn3-like candidate from Tn1 and Tn2. The res site
-      is retained as unweighted context. The blaTEM allele is reported but
-      does not contribute to the type score.
+      carries blaTEM-1a. Its tnpR belongs to the shared Tn1/Tn3 group and its
+      divergent tnpA belongs to the Tn3-specific group. That categorical
+      combination defines a Tn3-like candidate. The res site is retained as
+      structural context. The blaTEM allele is reported cargo and does not
+      determine the type.
     canonical_reference: Tn3_HM749966
     source_accession: HM749966
     bla_allele: blaTEM-1a

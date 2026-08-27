@@ -20,6 +20,41 @@
     }
   ],
   "proof_status": "NO_TN123_LOCI",
+  "detectors": [
+    {
+      "name": "amrfinder",
+      "label": "AMRFinderPlus",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "isescan",
+      "label": "ISEScan",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    },
+    {
+      "name": "integron",
+      "label": "IntegronFinder",
+      "status": "disabled",
+      "source": "none",
+      "runtime": "not requested",
+      "output": null,
+      "message": null,
+      "tool_version": null,
+      "database_version": null
+    }
+  ],
   "outputs": {
     "annotation_json": "annotation.json",
     "annotation_gff3": "annotation.gff3",
@@ -31,6 +66,8 @@
     "proof_json": "proof/proof.json",
     "proof_report": "proof/report.html",
     "component_ledger": "proof/components.tsv",
-    "match_ledger": "proof/matches.tsv"
+    "match_ledger": "proof/matches.tsv",
+    "expert_rules_markdown": "expert-rules.md",
+    "expert_rules_html": "expert-rules.html"
   }
 }

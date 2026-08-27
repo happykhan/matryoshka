@@ -42,7 +42,7 @@
       "properties": {
         "type_assignment": {
           "type": "object",
-          "required": ["method", "compare_types", "primary_discriminator_roles", "supporting_discriminator_roles", "unweighted_context_roles", "non_discriminator_roles", "discriminator_role_weights", "discriminator_evidence", "minimum_component_profile_score_percent", "minimum_type_margin_percent", "expert_rule"]
+          "required": ["method", "compare_types", "required_discriminator_roles", "unweighted_context_roles", "non_discriminator_roles", "role_profile_groups", "type_haplotypes", "discriminator_evidence", "minimum_role_profile_score_percent", "minimum_role_group_margin_percent", "expert_rule"]
         }
       }
     },

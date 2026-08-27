@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="368" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
-<rect x="0" y="0" width="1280" height="368" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="508" style="background:#fff;font-family:Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1280" height="508" fill="#fff"/>
 <text x="18.0" y="23.0" font-size="14" font-weight="bold" text-anchor="start" fill="#171717">EU935739.1 • class 1 integron candidate 65365..69821 • view 60365..74821</text>
 <rect x="18" y="34" width="1244" height="30" fill="#eeeeec" stroke="#c9c9c6"/>
 <text x="26.0" y="54.0" font-size="11" font-weight="bold" text-anchor="start" fill="#171717">Position</text>
@@ -26,54 +26,89 @@
 <text x="768.0" y="150.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">independently sequence-detected tnpA; identity=100.0%; coverage=74.69%;</text>
 <text x="768.0" y="164.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">internal fragment</text>
 <rect x="18" y="172" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
-<text x="26.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..69821</text>
-<text x="178.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">class 1 integron candidate</text>
-<line x1="346.0" y1="187.0" x2="380.0" y2="187.0" stroke="#343a40" stroke-width="6"/><polygon points="380.0,187.0 372.0,182.0 372.0,192.0" fill="#717b85" stroke="#343a40"/>
+<text x="26.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">64901..65029</text>
+<text x="178.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">res</text>
+
 <text x="528.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
-<text x="658.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">region</text>
-<text x="768.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">assembled from exact locus component references</text>
+<text x="658.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">res</text>
+<text x="768.0" y="190.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">curated Tn21 resolution site</text>
 <rect x="18" y="200" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
-<text x="26.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..66716</text>
-<text x="198.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">5&#x27;-CS</text>
-<line x1="240.0" y1="215.0" x2="274.0" y2="215.0" stroke="#343a40" stroke-width="6"/><polygon points="274.0,215.0 266.0,210.0 266.0,220.0" fill="#717b85" stroke="#343a40"/>
-<text x="528.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-5CS-standard</text>
-<text x="658.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">CS</text>
+<text x="26.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65014..65364</text>
+<text x="178.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">tnpM</text>
+<line x1="248.0" y1="215.0" x2="214.0" y2="215.0" stroke="#343a40" stroke-width="6"/><polygon points="214.0,215.0 222.0,210.0 222.0,220.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">gene</text>
 <text x="768.0" y="218.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
 <rect x="18" y="228" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
-<text x="26.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..65389</text>
-<text x="218.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRi</text>
-<polygon points="248.0,237.0 238.0,243.0 248.0,249.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
-<text x="528.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-IRi</text>
-<text x="658.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
-<text x="768.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=25 bp</text>
+<text x="26.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..69821</text>
+<text x="178.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">class 1 integron candidate</text>
+<line x1="346.0" y1="243.0" x2="380.0" y2="243.0" stroke="#343a40" stroke-width="6"/><polygon points="380.0,243.0 372.0,238.0 372.0,248.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">region</text>
+<text x="768.0" y="246.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">assembled from exact locus component references</text>
 <rect x="18" y="256" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
-<text x="26.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">68228..69821</text>
-<text x="198.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">3&#x27;-CS</text>
+<text x="26.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..66716</text>
+<text x="198.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">5&#x27;-CS</text>
 <line x1="240.0" y1="271.0" x2="274.0" y2="271.0" stroke="#343a40" stroke-width="6"/><polygon points="274.0,271.0 266.0,266.0 266.0,276.0" fill="#717b85" stroke="#343a40"/>
-<text x="528.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-3CS</text>
+<text x="528.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-5CS-standard</text>
 <text x="658.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">CS</text>
 <text x="768.0" y="274.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
 <rect x="18" y="284" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
-<text x="26.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">71567..71591</text>
-<text x="178.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRt</text>
-<polygon points="208.0,293.0 198.0,299.0 208.0,305.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
-<text x="528.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-IRt</text>
+<text x="26.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..65389</text>
+<text x="218.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRi</text>
+<polygon points="248.0,293.0 238.0,299.0 248.0,305.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-IRi</text>
 <text x="658.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
 <text x="768.0" y="302.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=25 bp</text>
-<line x1="18" y1="34" x2="18" y2="312" stroke="#d2d2cf" stroke-width="0.8"/>
-<line x1="170" y1="34" x2="170" y2="312" stroke="#d2d2cf" stroke-width="0.8"/>
-<line x1="520" y1="34" x2="520" y2="312" stroke="#d2d2cf" stroke-width="0.8"/>
-<line x1="650" y1="34" x2="650" y2="312" stroke="#d2d2cf" stroke-width="0.8"/>
-<line x1="760" y1="34" x2="760" y2="312" stroke="#d2d2cf" stroke-width="0.8"/>
-<line x1="1262" y1="34" x2="1262" y2="312" stroke="#d2d2cf" stroke-width="0.8"/>
-<text x="18.0" y="335.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Key:</text>
-<line x1="62.0" y1="332.0" x2="96.0" y2="332.0" stroke="#343a40" stroke-width="6"/><polygon points="96.0,332.0 88.0,327.0 88.0,337.0" fill="#717b85" stroke="#343a40"/>
-<text x="105.0" y="335.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">strand</text>
-<polygon points="180.0,326.0 190.0,332.0 180.0,338.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
-<text x="198.0" y="335.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat (IR)</text>
-<circle cx="430" cy="330" r="5" fill="#9ca3aa" stroke="#111"/>
-<text x="443.0" y="335.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-matched DR/TSD</text>
-<circle cx="590" cy="330" r="5" fill="#fff" stroke="#737b83"/>
-<text x="603.0" y="335.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">expected, unconfirmed DR/TSD</text>
-<text x="850.0" y="335.0" font-size="10" font-weight="normal" text-anchor="start" fill="#555555">Solid components are sequence-detected; dashed/outlined components are reference-projected.</text>
+<rect x="18" y="312" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="330.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..66716</text>
+<text x="198.0" y="330.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">5&#x27;-CS</text>
+<line x1="240.0" y1="327.0" x2="274.0" y2="327.0" stroke="#343a40" stroke-width="6"/><polygon points="274.0,327.0 266.0,322.0 266.0,332.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="330.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="330.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">CS</text>
+<text x="768.0" y="330.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="340" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="358.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">68228..69821</text>
+<text x="198.0" y="358.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">3&#x27;-CS</text>
+<line x1="240.0" y1="355.0" x2="274.0" y2="355.0" stroke="#343a40" stroke-width="6"/><polygon points="274.0,355.0 266.0,350.0 266.0,360.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="358.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-3CS</text>
+<text x="658.0" y="358.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">CS</text>
+<text x="768.0" y="358.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="368" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="386.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">68228..69821</text>
+<text x="198.0" y="386.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">3&#x27;-CS</text>
+<line x1="240.0" y1="383.0" x2="274.0" y2="383.0" stroke="#343a40" stroke-width="6"/><polygon points="274.0,383.0 266.0,378.0 266.0,388.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="386.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="386.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">CS</text>
+<text x="768.0" y="386.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<rect x="18" y="396" width="1244" height="28" fill="#f2f1ef" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="414.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">65365..69821</text>
+<text x="178.0" y="414.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">class 1 integron candidate</text>
+<line x1="346.0" y1="411.0" x2="380.0" y2="411.0" stroke="#343a40" stroke-width="6"/><polygon points="380.0,411.0 372.0,406.0 372.0,416.0" fill="#717b85" stroke="#343a40"/>
+<text x="528.0" y="414.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717"></text>
+<text x="658.0" y="414.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">region</text>
+<text x="768.0" y="414.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">assembled from exact locus component references</text>
+<rect x="18" y="424" width="1244" height="28" fill="#ffffff" stroke="#ddddda" stroke-width="0.7"/>
+<text x="26.0" y="442.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">71567..71591</text>
+<text x="178.0" y="442.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IRt</text>
+<polygon points="208.0,433.0 198.0,439.0 208.0,445.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="528.0" y="442.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">LOCUS-REF-IRt</text>
+<text x="658.0" y="442.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">IR</text>
+<text x="768.0" y="442.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat; IR=25 bp</text>
+<line x1="18" y1="34" x2="18" y2="452" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="170" y1="34" x2="170" y2="452" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="520" y1="34" x2="520" y2="452" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="650" y1="34" x2="650" y2="452" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="760" y1="34" x2="760" y2="452" stroke="#d2d2cf" stroke-width="0.8"/>
+<line x1="1262" y1="34" x2="1262" y2="452" stroke="#d2d2cf" stroke-width="0.8"/>
+<text x="18.0" y="475.0" font-size="10" font-weight="bold" text-anchor="start" fill="#171717">Key:</text>
+<line x1="62.0" y1="472.0" x2="96.0" y2="472.0" stroke="#343a40" stroke-width="6"/><polygon points="96.0,472.0 88.0,467.0 88.0,477.0" fill="#717b85" stroke="#343a40"/>
+<text x="105.0" y="475.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">strand</text>
+<polygon points="180.0,466.0 190.0,472.0 180.0,478.0" fill="#fff" stroke="#111" stroke-width="1.2"/>
+<text x="198.0" y="475.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">terminal inverted repeat (IR)</text>
+<circle cx="430" cy="470" r="5" fill="#9ca3aa" stroke="#111"/>
+<text x="443.0" y="475.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">sequence-matched DR/TSD</text>
+<circle cx="590" cy="470" r="5" fill="#fff" stroke="#737b83"/>
+<text x="603.0" y="475.0" font-size="10" font-weight="normal" text-anchor="start" fill="#171717">expected, unconfirmed DR/TSD</text>
+<text x="850.0" y="475.0" font-size="10" font-weight="normal" text-anchor="start" fill="#555555">Solid components are sequence-detected; dashed/outlined components are reference-projected.</text>
 </svg>

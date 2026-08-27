@@ -100,22 +100,30 @@ def _tn123_section(document: dict[str, Any]) -> list[str]:
             f"tnpR and tnpA; res shown as context | {definition['bla_allele']} |"
         )
     assignment = classification["type_assignment"]
-    weights = assignment["discriminator_role_weights"]
-    total_weight = sum(float(weight) for weight in weights.values())
-    weight_summary = ", ".join(
-        f"{role} {100 * float(weight) / total_weight:g}%"
-        for role, weight in weights.items()
-    )
     evidence = assignment["discriminator_evidence"]
     identity = evidence["pairwise_identity_percent"]
     lines.extend([
         "",
-        f"The type score is weighted as {weight_summary}. res and blaTEM have zero type weight. "
-        f"The best local backbone profile must score at least "
-        f"{assignment['minimum_component_profile_score_percent']:g}% and beat the "
-        f"next-best type by at least {assignment['minimum_type_margin_percent']:g} percentage "
-        "points. If this is "
-        "ambiguous, the locus remains an unresolved member of the group.",
+        "There is no cross-gene weighting and no averaged type score. Each detected "
+        "backbone gene is first assigned independently to a declared sequence-profile "
+        "group. The resulting pair is then looked up in the expert haplotype rule:",
+        "",
+        "| tnpR profile group | tnpA profile group | Rule-based result |",
+        "| --- | --- | --- |",
+        "| Tn1/Tn3-like tnpR | Tn1/Tn2-like tnpA | Tn1-like |",
+        "| Tn2-like tnpR | Tn1/Tn2-like tnpA | Tn2-like |",
+        "| Tn1/Tn3-like tnpR | Tn3-like tnpA | Tn3-like |",
+        "| Any other confident combination | Any other confident combination | "
+        "Tn1/Tn2/Tn3-group mosaic |",
+        "| Missing or ambiguous | Missing or ambiguous | Unresolved group element |",
+        "",
+        f"A gene profile group is called only when its best local match reaches "
+        f"{assignment['minimum_role_profile_score_percent']:g}% and exceeds the other "
+        f"declared group by at least "
+        f"{assignment['minimum_role_group_margin_percent']:g} percentage points. "
+        "These thresholds decide whether an individual gene can be placed in a group; "
+        "they do not determine the type by averaging genes. res is structural context "
+        "and blaTEM is reported cargo.",
         "",
         "The canonical component sequences support that choice:",
         "",

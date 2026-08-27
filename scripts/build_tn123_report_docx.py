@@ -349,7 +349,7 @@ def add_contents(doc: Document) -> None:
     for text in (
         "An arbitrary multi-FASTA input can be scanned without pre-existing annotations.",
         "Tn1/Tn2/Tn3 components are detected independently and assembled using an explicit component grammar.",
-        "A complete locus is classified from its component grammar and weighted local component profiles; a whole-element comparison is secondary confirmation.",
+        "A complete locus is classified from its component grammar and categorical tnpR/tnpA backbone haplotype; a whole-element comparison is secondary confirmation.",
         "Every result can be inspected as a locus map, a locus table, the original hierarchy view, JSON, GFF3 and CellGen format.",
         "The seven reviewed accession definitions produce complete component grammars and exact declared calls; pEK499 produces two retained partial Tn2-like fragments rather than an invented complete Tn2.",
     ):
@@ -367,7 +367,7 @@ def add_tool_explanation(doc: Document) -> None:
         ["1", "Read FASTA", "One or many contigs or complete sequences; no feature annotation is required."],
         ["2", "Detect components", "Scan independently for 38 bp terminal inverted repeats, blaTEM, tnpR, res and tnpA."],
         ["3", "Assemble loci", "Group nearby features and test the required order and orientation on either strand."],
-        ["4", "Classify by expert rules", "Score the detected component profiles and assign a type only when the declared threshold and margin are met."],
+        ["4", "Classify by expert rules", "Assign tnpR and tnpA to declared profile groups, then match their categorical backbone haplotype."],
         ["5", "Compare references", "Optionally confirm an exact reviewed definition and record secondary closest-reference context."],
         ["6", "Write outputs", "JSON, GFF3, CellGen, hierarchy SVG, locus map, locus table and proof ledger."],
     ]
@@ -376,9 +376,10 @@ def add_tool_explanation(doc: Document) -> None:
     add_heading(doc, "Call classes", 2)
     add_table(doc, ["Visible result", "Meaning"], [
         ["Tn1 / Tn2 / Tn3 or named subtype", "Complete component grammar and exact match to a reviewed declared definition."],
-        ["Tn1-like / Tn2-like / Tn3-like", "Complete grammar and a clear best weighted component profile, without requiring a complete-element match."],
+        ["Tn1-like / Tn2-like / Tn3-like", "Complete grammar and a declared tnpR/tnpA backbone haplotype, without requiring a complete-element match."],
         ["Tn1/2/3 fragment", "At least 400 aligned reference bases, but an end or required component is missing or the grammar is incomplete."],
-        ["Unresolved Tn1/Tn2/Tn3-group unit", "The group grammar is supported but the component-profile score or type margin is insufficient."],
+        ["Tn1/Tn2/Tn3-group mosaic", "Complete grammar and confident backbone groups, but their combination is not a declared Tn1, Tn2 or Tn3 haplotype."],
+        ["Unresolved Tn1/Tn2/Tn3-group unit", "The group grammar is supported but a required backbone profile group is missing or ambiguous."],
         ["No Tn1/Tn2/Tn3 call", "Some shared components may still be annotated and drawn, but the element-level rule is not satisfied."],
     ], [2800, 5660], font_size=9.2)
 
@@ -393,7 +394,7 @@ def add_run_details(doc: Document) -> None:
     add_table(doc, ["Analysis", "Role", "Used for this report"], [
         ["BLAST component scan", "Detect IRL/IRR, blaTEM, tnpR, res and tnpA independently", "Yes; primary"],
         ["Component assembler", "Test count, order, orientation and ends", "Yes"],
-        ["Expert-rule classifier", "Assign family/type-like, fragment or unresolved result from weighted component profiles", "Yes; primary"],
+        ["Expert-rule classifier", "Assign family/type-like, mosaic, fragment or unresolved result from the categorical backbone haplotype", "Yes; primary"],
         ["BLAST whole-locus comparison", "Optionally confirm an exact reviewed definition or add closest-reference context", "Yes; secondary"],
         ["Boundary/direct-repeat check", "Record evidence immediately outside inferred ends when flanks exist", "Yes"],
         ["ISEScan / AMRFinderPlus / IntegronFinder", "Broader optional component discovery", "Not launched"],
@@ -413,7 +414,7 @@ def add_rules(doc: Document) -> None:
         ["family", "Shared biological description, expected terminal-IR length and target-site duplication length."],
         ["grammar", "Required component counts and forward/reverse order."],
         ["component_detection", "Identity, coverage, length and chaining thresholds for each component class."],
-        ["classification", "Weighted component-profile type rules, exact-reference confirmation and fragment rules."],
+        ["classification", "Categorical backbone-haplotype rules, exact-reference confirmation and fragment rules."],
         ["types", "Canonical Tn1, Tn2 and Tn3 sequences and their annotated component layouts."],
         ["definitions", "Reviewable named sequences/subtypes, accession provenance, expert description and differences from parent."],
         ["related_element_policy", "Explicit negative-control policy to prevent shared components being over-named."],
@@ -423,21 +424,22 @@ def add_rules(doc: Document) -> None:
     add_para(doc, "The reverse-complement copy must contain the corresponding reversed order. This establishes group membership, but it does not distinguish Tn1, Tn2 and Tn3 because their structures and much of their sequence are shared.")
     add_heading(doc, "Current thresholds", 2)
     add_table(doc, ["Decision", "Rule"], [
-        ["Exact declared definition", "100% identity, 100% reference coverage, both ends, zero mismatches/insertions/deletions and complete component grammar."],
-        ["Rule-based type", "Complete grammar; weighted local component score at least 90%; best type exceeds the next by at least 0.5 points."],
-        ["Component weights", "blaTEM 1; tnpR 2; res 3; tnpA 3. The combined profile, rather than a single gene, assigns the type-like call."],
-        ["Secondary reference", "At least 95% identity and 80% coverage; used for context or exact confirmation, never to create the family/type."],
+        ["Exact declared definition", "100% identity and coverage; both ends; zero mismatches or indels; complete grammar."],
+        ["Individual gene profile", "tnpR and tnpA are each placed in a group at >=90%, with a >=0.5-point group margin."],
+        ["Rule-based type", "Complete grammar plus a declared categorical pair: R13+A12 = Tn1; R2+A12 = Tn2; R13+A3 = Tn3."],
+        ["Mosaic or unresolved", "Another confident pair is mosaic; a missing or ambiguous group is unresolved. Scores are never averaged."],
+        ["Secondary reference", ">=95% identity and >=80% coverage; context or exact confirmation only."],
         ["Fragment", "At least 400 aligned reference bases; retained without a complete name."],
-    ], [2600, 5860], font_size=9.2)
+    ], [2600, 5860], font_size=8.5)
 
 
 def add_tn1_example(doc: Document) -> None:
     new_section(doc)
     add_heading(doc, "4. Worked expert definition: Tn1", 1)
     add_para(doc, "Human-readable rule", size=11.5, bold=True, color=NAVY, after=4)
-    add_para(doc, "Call a Tn1-like candidate when the six required components are independently detected in the correct order and their weighted local profiles best support Tn1 above the declared score and margin. Upgrade that call to exact reviewed Tn1 only when an optional secondary comparison is a complete, gap-free and mismatch-free match to NC_008357. The canonical sequence carries blaTEM-2.", size=11)
+    add_para(doc, "Call a Tn1-like candidate when the six required components are independently detected in the correct order, tnpR belongs to the shared Tn1/Tn3 profile group and tnpA belongs to the shared Tn1/Tn2 profile group. Upgrade that call to exact reviewed Tn1 only when an optional secondary comparison is a complete, gap-free and mismatch-free match to NC_008357. The canonical sequence carries blaTEM-2 as reported cargo; its allele does not determine the type.", size=11)
     add_heading(doc, "YAML representation used by the program", 2)
-    add_code(doc, "classification:\n  type_assignment:\n    method: weighted component profiles\n    discriminator_role_weights:\n      blaTEM: 1\n      tnpR: 2\n      res: 3\n      tnpA: 3\n    minimum_component_profile_score_percent: 90\n    minimum_type_margin_percent: 0.5\n  reference_comparison:\n    role: secondary context after rule-based classification\n\ntypes:\n  Tn1:\n    canonical_reference: Tn1_NC_008357\n    source_accession: NC_008357\n    components:\n      - {role: terminal_IR, name: IRL, start: 1, end: 38}\n      - {role: blaTEM, name: blaTEM-2, start: 148, end: 1008, strand: '-'}\n      - {role: tnpR, name: tnpR, start: 1191, end: 1748, strand: '-'}\n      - {role: res, name: res, start: 1754, end: 1867}\n      - {role: tnpA, name: tnpA, start: 1911, end: -34, strand: '+'}\n      - {role: terminal_IR, name: IRR, start: -38, end: -1}", size=7.3)
+    add_code(doc, "classification:\n  type_assignment:\n    method: categorical backbone haplotype\n    required_discriminator_roles: [tnpR, tnpA]\n    role_profile_groups:\n      tnpR:\n        tnpR_Tn1_Tn3: [Tn1, Tn3]\n        tnpR_Tn2: [Tn2]\n      tnpA:\n        tnpA_Tn1_Tn2: [Tn1, Tn2]\n        tnpA_Tn3: [Tn3]\n    type_haplotypes:\n      Tn1: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn1_Tn2}\n      Tn2: {tnpR: tnpR_Tn2, tnpA: tnpA_Tn1_Tn2}\n      Tn3: {tnpR: tnpR_Tn1_Tn3, tnpA: tnpA_Tn3}\n    non_discriminator_roles: [blaTEM]\n  reference_comparison:\n    role: secondary context after rule-based classification\n\ntypes:\n  Tn1:\n    canonical_reference: Tn1_NC_008357\n    source_accession: NC_008357\n    components:\n      - {role: terminal_IR, name: IRL, start: 1, end: 38}\n      - {role: blaTEM, name: blaTEM-2, start: 148, end: 1008, strand: '-'}\n      - {role: tnpR, name: tnpR, start: 1191, end: 1748, strand: '-'}\n      - {role: res, name: res, start: 1754, end: 1867}\n      - {role: tnpA, name: tnpA, start: 1911, end: -34, strand: '+'}\n      - {role: terminal_IR, name: IRR, start: -38, end: -1}", size=7.3)
     add_para(doc, "Negative coordinates count from the right-hand end of the reference. This keeps the component layout readable and reusable for definitions of different lengths.", size=9.5, color=MUTED)
     add_heading(doc, "How to add or revise a subtype", 2)
     for text in (
@@ -593,16 +595,16 @@ def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
     rows = []
     for locus in record["loci"]:
         match = locus["known_element_match"]
-        scores = locus.get("classification", {}).get("component_type_scores", {})
-        if not scores:
-            scores = locus.get("rule_evidence", {}).get("component_type_scores", {})
+        haplotype = locus.get("classification", {}).get("backbone_haplotype", {})
+        if not haplotype:
+            haplotype = locus.get("rule_evidence", {}).get("backbone_haplotype", {})
         type_call = match.get("rule_based_type_call") or locus.get("family")
         rows.append([
             f"{locus['start']:,}–{locus['end']:,}", locus["call"], locus["strand"],
-            str(type_call), str(scores.get(str(type_call), "see JSON")),
+            str(type_call), f"{haplotype.get('tnpR', '?')} + {haplotype.get('tnpA', '?')}",
             "none", locus["verdict"],
         ])
-    add_table(doc, ["Coordinates", "Call", "Strand", "Rule type", "Component score", "Whole-element lookup", "Proof"],
+    add_table(doc, ["Coordinates", "Call", "Strand", "Rule type", "Backbone haplotype", "Whole-element lookup", "Proof"],
               rows, [2100, 1900, 800, 1200, 1300, 1300, 900], font_size=8.5, green_last=True)
     figure_label(doc, "Original hierarchy view: all three loci are retained on their shared contig and nested features remain visible.")
     add_svg(doc, ARBITRARY / record["loci"][0]["outputs"]["hierarchy"], temp_dir, width=9.25,
@@ -612,7 +614,7 @@ def add_arbitrary_demo(doc: Document, temp_dir: Path) -> None:
         new_section(doc, landscape=True)
         add_heading(doc, f"8.{index} Arbitrary contig locus — {locus['call']}", 1)
         match = locus["known_element_match"]
-        add_para(doc, f"The component grammar is complete and the expert component-profile rules assign {match.get('rule_based_type_call')}. No complete Tn1/Tn2/Tn3 reference comparison was run; the visible call is {locus['call']}. Insertions and other structural differences are retained from split component alignments and shown in the map/table.")
+        add_para(doc, f"The component grammar is complete and the expert backbone-haplotype rule assigns {match.get('rule_based_type_call')}. No complete Tn1/Tn2/Tn3 reference comparison was run; the visible call is {locus['call']}. Insertions and other structural differences are retained from split component alignments and shown in the map/table.")
         figure_width = 8.65 if locus["call"] == "Tn2-like" else 9.25
         add_svg(doc, ARBITRARY / locus["outputs"]["locus_map"], temp_dir, width=figure_width,
                 title=f"Arbitrary contig {locus['call']} locus map",

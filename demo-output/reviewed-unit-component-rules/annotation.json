@@ -11,10 +11,45 @@
   "run": {
     "input": "matryoshka/references/reviewed_units.fasta",
     "input_sha256": "6f889e878b4fcd6e5c19711a5242a5a64f060589f86f8c3314475d5f029fa899",
-    "command": "matryoshka run matryoshka/references/reviewed_units.fasta --profile component-rules --threads 4 --out demo-output/reviewed-unit-component-rules",
+    "command": "matryoshka run matryoshka/references/reviewed_units.fasta --profile component-rules --threads 4 --detectors none --out demo-output/reviewed-unit-component-rules",
     "python": "3.13.15",
     "platform": "macOS-14.6.1-arm64-arm-64bit-Mach-O",
-    "detector_outputs": {}
+    "detector_outputs": {},
+    "detectors": [
+      {
+        "name": "amrfinder",
+        "label": "AMRFinderPlus",
+        "status": "disabled",
+        "source": "none",
+        "runtime": "not requested",
+        "output": null,
+        "message": null,
+        "tool_version": null,
+        "database_version": null
+      },
+      {
+        "name": "isescan",
+        "label": "ISEScan",
+        "status": "disabled",
+        "source": "none",
+        "runtime": "not requested",
+        "output": null,
+        "message": null,
+        "tool_version": null,
+        "database_version": null
+      },
+      {
+        "name": "integron",
+        "label": "IntegronFinder",
+        "status": "disabled",
+        "source": "none",
+        "runtime": "not requested",
+        "output": null,
+        "message": null,
+        "tool_version": null,
+        "database_version": null
+      }
+    ]
   },
   "records": [
     {

@@ -94,26 +94,46 @@ def _validate_type_assignment(classification: object) -> None:
     assignment = classification.get("type_assignment")
     if not isinstance(assignment, dict):
         raise ValueError("type assignment rules must be a mapping")
-    primary = {str(role) for role in assignment.get("primary_discriminator_roles", [])}
-    supporting = {
-        str(role) for role in assignment.get("supporting_discriminator_roles", [])
+    compare_types = {str(value) for value in assignment.get("compare_types", [])}
+    required = {
+        str(role) for role in assignment.get("required_discriminator_roles", [])
     }
     context = {str(role) for role in assignment.get("unweighted_context_roles", [])}
     non_discriminators = {
         str(role) for role in assignment.get("non_discriminator_roles", [])
     }
-    weights = assignment.get("discriminator_role_weights")
-    if not isinstance(weights, dict) or not weights:
-        raise ValueError("type assignment must declare discriminator weights")
-    weighted = {str(role) for role in weights}
-    if weighted != primary | supporting:
-        raise ValueError("weighted roles must equal primary plus supporting discriminators")
-    if weighted & non_discriminators:
+    if not compare_types or not required:
+        raise ValueError("type assignment must declare types and discriminator roles")
+    if required & non_discriminators:
         raise ValueError("non-discriminator roles cannot contribute to the type score")
-    if weighted & context:
-        raise ValueError("unweighted context roles cannot contribute to the type score")
-    if any(float(weight) <= 0 for weight in weights.values()):
-        raise ValueError("discriminator weights must be positive")
+    if required & context:
+        raise ValueError("context roles cannot be discriminator roles")
+
+    profile_groups = assignment.get("role_profile_groups")
+    if not isinstance(profile_groups, dict) or set(profile_groups) != required:
+        raise ValueError("every discriminator role must declare profile groups")
+    for role, groups in profile_groups.items():
+        if not isinstance(groups, dict) or not groups:
+            raise ValueError(f"discriminator role {role} must declare profile groups")
+        membership: list[str] = []
+        for members in groups.values():
+            if not isinstance(members, list) or not members:
+                raise ValueError(f"profile groups for {role} must contain types")
+            membership.extend(str(member) for member in members)
+        if set(membership) != compare_types or len(membership) != len(set(membership)):
+            raise ValueError(
+                f"profile groups for {role} must partition the compared types"
+            )
+
+    haplotypes = assignment.get("type_haplotypes")
+    if not isinstance(haplotypes, dict) or set(haplotypes) != compare_types:
+        raise ValueError("every compared type must declare a backbone haplotype")
+    for type_name, haplotype in haplotypes.items():
+        if not isinstance(haplotype, dict) or set(haplotype) != required:
+            raise ValueError(f"haplotype for {type_name} must cover every discriminator role")
+        for role, group in haplotype.items():
+            if group not in profile_groups[role]:
+                raise ValueError(f"haplotype for {type_name} uses unknown {role} group {group}")
 
 
 def load_tn123_definitions() -> dict[str, Any]:
