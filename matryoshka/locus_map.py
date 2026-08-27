@@ -7,6 +7,7 @@ existing nested linear visualisation remains available as ``--format linear``.
 from __future__ import annotations
 
 import html
+from dataclasses import dataclass
 
 from .detect import MGEFeature
 
@@ -65,6 +66,44 @@ TRANSPOSON_COLOURS = {
     "Tn5393": "#e7c77a",
     "Tn5403": "#d8d493",
 }
+
+
+@dataclass(frozen=True)
+class _MapLabel:
+    x: float
+    value: str
+    preferred_y: int
+    size: int = 8
+    weight: str = "normal"
+    style: str = "normal"
+    fill: str = OUTLINE
+
+
+def _render_feature_labels(labels: list[_MapLabel]) -> list[str]:
+    """Place below-track labels in lanes without allowing text collisions."""
+    lanes = (102, 114, 126, 138)
+    occupied: dict[int, list[tuple[float, float]]] = {lane: [] for lane in lanes}
+    rendered: list[str] = []
+    for label in sorted(labels, key=lambda item: (item.x, item.preferred_y, item.value)):
+        half_width = max(7.0, len(label.value) * label.size * 0.29)
+        interval = (label.x - half_width - 3, label.x + half_width + 3)
+        candidates = sorted(lanes, key=lambda lane: abs(lane - label.preferred_y))
+        chosen = candidates[-1]
+        for lane in candidates:
+            if all(interval[1] < left or right < interval[0] for left, right in occupied[lane]):
+                chosen = lane
+                break
+        occupied[chosen].append(interval)
+        rendered.append(_text(
+            label.x,
+            chosen,
+            label.value,
+            size=label.size,
+            weight=label.weight,
+            style=label.style,
+            fill=label.fill,
+        ))
+    return rendered
 
 
 def _walk(features: list[MGEFeature]) -> list[MGEFeature]:
@@ -561,6 +600,7 @@ def to_locus_map_svg(
         f'style="background:#fff;font-family:{FONT}">',
         f'<rect x="0" y="0" width="{WIDTH}" height="{HEIGHT}" fill="#ffffff"/>',
     ]
+    labels: list[_MapLabel] = []
 
     for feature in major_units:
         parts.append(
@@ -607,7 +647,7 @@ def to_locus_map_svg(
     for feature in context_regions:
         parts.append(_region_outline(feature, seq_len, REGION_COLOUR, y_offset=8, dashed=True))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 133, feature.name, size=8, fill=REGION_COLOUR))
+        labels.append(_MapLabel(mid, feature.name, 138, fill=REGION_COLOUR))
 
     # IntegronFinder's parent span is shown as a restrained orange outline;
     # explicit conserved segments and cassette units are then drawn on top.
@@ -626,19 +666,19 @@ def to_locus_map_svg(
         parts.append(_flat_feature_block(feature, seq_len, INTEGRON_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
         suffix = "#" if feature.attributes.get("fragment") else ""
-        parts.append(_text(mid, 103, f"{feature.name}{suffix}", size=8, weight="bold"))
+        labels.append(_MapLabel(mid, f"{feature.name}{suffix}", 102, weight="bold"))
 
     for feature in components:
         parts.append(_flat_feature_block(feature, seq_len, _transposon_colour(feature)))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
         suffix = "#" if feature.attributes.get("fragment") else ""
-        parts.append(_text(mid, 116, f"{feature.name}{suffix}", size=8, weight="bold"))
+        labels.append(_MapLabel(mid, f"{feature.name}{suffix}", 114, weight="bold"))
 
     for feature in cassettes:
         parts.append(_flat_feature_block(feature, seq_len, CASSETTE_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
         suffix = "#" if feature.element_type == "cassette_remnant" or feature.attributes.get("fragment") else ""
-        parts.append(_text(mid, 116, f"{feature.name}{suffix}", size=8, weight="bold"))
+        labels.append(_MapLabel(mid, f"{feature.name}{suffix}", 114, weight="bold"))
 
     for feature in attc_sites:
         parts.append(_attc_marker(feature, seq_len))
@@ -646,54 +686,54 @@ def to_locus_map_svg(
     for feature in atti_sites:
         parts.append(_site_marker(feature, seq_len, INTEGRON_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 103, feature.name, size=7, weight="bold"))
+        labels.append(_MapLabel(mid, feature.name, 102, size=7, weight="bold"))
 
     for feature in promoters:
         parts.append(_promoter_flag(feature, seq_len))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 116, feature.name, size=7, weight="bold"))
+        labels.append(_MapLabel(mid, feature.name, 114, size=7, weight="bold"))
 
     for feature in insertion_sequences:
         parts.append(_block_arrow(feature, seq_len, "#ffffff"))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
         suffix = "#" if feature.attributes.get("fragment") or feature.attributes.get("type") == "p" else ""
-        parts.append(_text(mid, 103, f"{feature.name}{suffix}", size=8, weight="bold"))
+        labels.append(_MapLabel(mid, f"{feature.name}{suffix}", 102, weight="bold"))
 
     for feature in iscrs:
         parts.append(_block_arrow(feature, seq_len, ISCR_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 103, feature.name, size=8, weight="bold"))
+        labels.append(_MapLabel(mid, feature.name, 102, weight="bold"))
 
     for feature in introns:
         parts.append(_block_arrow(feature, seq_len, INTRON_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 103, feature.name, size=8, weight="bold"))
+        labels.append(_MapLabel(mid, feature.name, 102, weight="bold"))
 
     for feature in captured_segments:
         parts.append(_flat_feature_block(feature, seq_len, CAPTURE_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 116, feature.name, size=8))
+        labels.append(_MapLabel(mid, feature.name, 114))
 
     for feature in unknown_fragments:
         parts.append(_insertion_block(feature, seq_len, UNRESOLVED_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 116, f"{feature.name}#", size=8))
+        labels.append(_MapLabel(mid, f"{feature.name}#", 114))
 
     for feature in replicons:
         parts.append(_block_arrow(feature, seq_len, REPLICON_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 103, feature.name, size=8, weight="bold"))
+        labels.append(_MapLabel(mid, feature.name, 102, weight="bold"))
 
     for feature in ncrnas:
         parts.append(_flat_feature_block(feature, seq_len, NCRNA_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 116, feature.name, size=8, style="italic"))
+        labels.append(_MapLabel(mid, feature.name, 114, style="italic"))
 
     for feature in other_sites:
         colour = ISCR_COLOUR if feature.element_type in {"oriIS", "terIS"} else REPLICON_COLOUR
         parts.append(_site_marker(feature, seq_len, colour))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 103, feature.name, size=7, weight="bold"))
+        labels.append(_MapLabel(mid, feature.name, 102, size=7, weight="bold"))
 
     for feature in res_sites:
         parts.append(_res_marker(feature, seq_len))
@@ -702,16 +742,18 @@ def to_locus_map_svg(
         parts.append(_insertion_block(feature, seq_len, INSERTION_COLOUR))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
         inserted = int(feature.attributes.get("inserted_bases", 0) or 0)
-        parts.append(_text(mid, 105, f"insertion ≈{inserted} bp", size=8))
+        labels.append(_MapLabel(mid, f"insertion ≈{inserted} bp", 102))
 
     for feature in sorted(genes, key=lambda item: item.start):
         parts.append(_gene_arrow(feature, seq_len))
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 105, feature.name, size=9, weight="bold", style="italic"))
+        labels.append(_MapLabel(
+            mid, feature.name, 102, size=9, weight="bold", style="italic"
+        ))
 
     for feature in res_sites:
         mid = (_x(feature.start, seq_len) + _x(feature.end, seq_len)) / 2
-        parts.append(_text(mid, 105, "res", size=8, style="italic"))
+        labels.append(_MapLabel(mid, "res", 102, style="italic"))
 
     for feature in irs:
         parts.append(_ir_flag(feature, seq_len))
@@ -788,6 +830,8 @@ def to_locus_map_svg(
                 _x(feature.end, seq_len), None, feature.tsd_length,
                 evidence=evidence,
             ))
+
+    parts.extend(_render_feature_labels(labels))
 
     if sample_name:
         parts.append(_text(WIDTH - RIGHT, 151, sample_name, size=9, anchor="end", fill="#555"))

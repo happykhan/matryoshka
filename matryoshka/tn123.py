@@ -625,6 +625,10 @@ def assemble_tn123_components(features: list[MGEFeature]) -> list[MGEFeature]:
         )
 
     emitted: list[MGEFeature] = []
+    emitted_loci: set[tuple[object, int, int]] = set()
+    grammar = tn123_rules()["grammar"]
+    window = int(grammar["candidate_component_window_bp"])
+    maximum_span = int(grammar["candidate_maximum_span_bp"])
     for tnpa in [feature for feature in components if _component_role(feature) == "tnpA"]:
         if any(_overlap_fraction(parent, tnpa) >= 0.8 for parent in parents):
             continue
@@ -634,36 +638,66 @@ def assemble_tn123_components(features: list[MGEFeature]) -> list[MGEFeature]:
             for component in components
             if component.attributes.get("seqid") == seqid
             and component.start >= tnpa.start - int(
-                tn123_rules()["grammar"]["candidate_component_window_bp"]
+                window
             )
             and component.end <= tnpa.end + int(
-                tn123_rules()["grammar"]["candidate_component_window_bp"]
+                window
             )
         ]
         irs = sorted(
             (feature for feature in nearby if _component_role(feature) == "terminal_IR"),
             key=lambda item: item.start,
         )
-        if len(irs) < 2:
+        valid_candidates: list[MGEFeature] = []
+        for left_index, left in enumerate(irs):
+            for right in irs[left_index + 1:]:
+                span = right.end - left.start + 1
+                if span > maximum_span or not (
+                    left.start <= tnpa.start and tnpa.end <= right.end
+                ):
+                    continue
+                contained = [
+                    component
+                    for component in nearby
+                    if left.start <= component.start and component.end <= right.end
+                ]
+                candidate = MGEFeature(
+                    element_type="transposon",
+                    family="Tn3_family",
+                    name="Tn3-family unit",
+                    start=left.start,
+                    end=right.end,
+                    strand=tnpa.strand,
+                    tsd_length=5,
+                    attributes={
+                        "seqid": seqid,
+                        "source": "component_assembly",
+                        "best_match": "unresolved",
+                        "variant_status": "component_assembled",
+                    },
+                )
+                if _record_component_assembly(candidate, contained):
+                    valid_candidates.append(candidate)
+        if valid_candidates:
+            candidate = min(valid_candidates, key=lambda item: item.end - item.start)
+            locus_key = (seqid, candidate.start, candidate.end)
+            if locus_key not in emitted_loci:
+                emitted.append(candidate)
+                emitted_loci.add(locus_key)
+    # Repeated homologous IRs can create a valid larger pair around a complete
+    # shorter locus. Prefer the tightest component-complete boundary while
+    # retaining genuinely separate loci on the same record.
+    selected: list[MGEFeature] = []
+    for candidate in sorted(emitted, key=lambda item: item.end - item.start):
+        if any(
+            inner.attributes.get("seqid") == candidate.attributes.get("seqid")
+            and candidate.start <= inner.start
+            and inner.end <= candidate.end
+            for inner in selected
+        ):
             continue
-        candidate = MGEFeature(
-            element_type="transposon",
-            family="Tn3_family",
-            name="Tn3-family unit",
-            start=irs[0].start,
-            end=irs[-1].end,
-            strand=tnpa.strand,
-            tsd_length=5,
-            attributes={
-                "seqid": seqid,
-                "source": "component_assembly",
-                "best_match": "unresolved",
-                "variant_status": "component_assembled",
-            },
-        )
-        if _record_component_assembly(candidate, nearby):
-            emitted.append(candidate)
-    return emitted
+        selected.append(candidate)
+    return selected
 
 
 def annotate_tn123(features: list[MGEFeature]) -> list[MGEFeature]:

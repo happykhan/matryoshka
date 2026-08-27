@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Reviewable component grammars for Tn21, Tn1721 and Tn1722, with independent
+  component scans and `*-like` assembly under the whole-locus-free
+  `component-rules` profile.
+- GenBank (`annotation.gbk`) in every standard result bundle, alongside GFF3.
+- A reproducible 16-record NCBI Tn1 accession panel and conservative result
+  ledger covering complete loci, large insertions, fragments and mosaics.
 - A self-contained Word/PDF Tn1/Tn2/Tn3 evidence report with embedded locus
   maps, locus tables, hierarchy views and component ledgers for every reviewed
   accession, plus natural pEK499 fragments and the arbitrary-contig test.
@@ -98,6 +104,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CHANGELOG, LICENSE, CITATION.cff, CONTRIBUTING.md, references manifest.
 
 ### Fixed
+- Locus-map labels now use collision-aware lanes instead of overlapping at
+  dense sites; gene arrows use the grey evidence palette and unresolved or
+  inserted sequence remains visibly distinct.
+- Tn1-family assembly now evaluates compatible terminal-IR pairs across a
+  declared maximum span, recovering the large Tn1Mer insertion while rejecting
+  redundant larger boundaries around a tighter complete locus.
+- GFF3 output now uses one stable writer for both `run` and `annotate`, avoiding
+  divergent escaping and duplicate feature IDs; GenBank gene/IR types are
+  emitted as CDS/repeat features rather than generic miscellaneous features.
 - Non-canonical subtype insertions can no longer create stray Tn1/Tn2/Tn3
   fragment calls. Partial-family evidence is assessed against canonical
   references, while subtype references require substantially complete loci.

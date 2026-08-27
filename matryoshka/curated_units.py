@@ -1,4 +1,4 @@
-"""Curated internal maps for expert-reviewed unit references."""
+"""Project YAML-defined feature maps into reviewed whole-unit calls."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from .detect import MGEFeature
 from .tn123 import _project_reference_interval, _project_strand, inserted_sequence_features
+from .unit_definitions import load_unit_definitions
 
 
 @dataclass(frozen=True)
@@ -17,78 +18,33 @@ class CuratedPart:
     end: int
     strand: str = "."
     fid: str = ""
+    role: str = ""
     note: str = ""
     fragment: bool = False
 
 
-UNIT_MAPS: dict[str, tuple[CuratedPart, ...]] = {
-    "Tn21": (
-        CuratedPart("IRR", "IR", "Tn21", 1, 38, fid="LOCUS-REF-Tn21-IRR"),
-        CuratedPart("tnp", "transposon_component", "Tn21", 1, 4039,
-                    fid="LOCUS-REF-Tn21-tnp"),
-        CuratedPart("IRi", "IR", "Tn402", 4040, 4064, fid="LOCUS-REF-IRi"),
-        CuratedPart("5'-CS", "integron_segment", "class1_integron", 4040, 5394,
-                    fid="LOCUS-REF-5CS-GGG", note="AF071413 three-G variant"),
-        CuratedPart("aadA1 cassette region", "cassette", "class1_integron", 5395, 6250,
-                    fid="LOCUS-REF-In2-aadA1",
-                    note="curated cassette region between supplied 5'-CS and 3'-CS"),
-        CuratedPart("3'-CS", "integron_segment", "class1_integron", 6251, 8275,
-                    fid="LOCUS-REF-3CS", note="2025 bp present of 2239 bp reference",
-                    fragment=True),
-        CuratedPart("tni", "transposon_component", "Tn402", 12358, 15039,
-                    fid="LOCUS-REF-Tn402-tni",
-                    note="2682 bp terminal fragment of the 4733 bp supplied tni region",
-                    fragment=True),
-        CuratedPart("IRt", "IR", "Tn402", 15015, 15039, strand="-",
-                    fid="LOCUS-REF-IRt"),
-        CuratedPart("mer", "transposon_component", "Tn21", 15040, 19672,
-                    fid="LOCUS-REF-Tn21-mer"),
-        CuratedPart("IRL", "IR", "Tn21", 19635, 19672,
-                    fid="LOCUS-REF-Tn21-IRL"),
-    ),
-    "Tn1721_AB366441": (
-        CuratedPart("IRL", "IR", "Tn1721", 1, 38, fid="LOCUS-REF-Tn1721-IRL"),
-        CuratedPart("Tn1722-like backbone", "transposon_component", "Tn1721", 1, 5640,
-                    fid="LOCUS-REF-Tn1722-backbone"),
-        CuratedPart("IRR", "IR", "Tn1721", 5603, 5640, strand="-",
-                    fid="LOCUS-REF-Tn1721-IRR-internal",
-                    note="internal IRR copy at the partial duplication boundary"),
-        CuratedPart("tet(A)-tnp duplicated region", "transposon_component", "Tn1721",
-                    5641, 11128, fid="LOCUS-REF-Tn1721-tet"),
-        CuratedPart("IRR", "IR", "Tn1721", 11091, 11128, strand="-",
-                    fid="LOCUS-REF-Tn1721-IRR-terminal"),
-    ),
-    "Tn1722_AB366441": (
-        CuratedPart("IRL", "IR", "Tn1722", 1, 38, fid="LOCUS-REF-Tn1721-IRL"),
-        CuratedPart("IRR", "IR", "Tn1722", 5603, 5640, strand="-",
-                    fid="LOCUS-REF-Tn1721-IRR"),
-    ),
-    "Tn4401_GU595196": (
-        CuratedPart("IRL", "IR", "Tn4401", 1, 40, fid="LOCUS-REF-Tn4401-IRL"),
-        CuratedPart("tnp", "transposon_component", "Tn4401", 1, 4927,
-                    fid="LOCUS-REF-Tn4401-tnp"),
-        CuratedPart("ISKpn7", "IS", "IS21", 4928, 6883, "+",
-                    fid="LOCUS-REF-ISKpn7", note="99.387% to supplied GU595196 reference"),
-        CuratedPart("blaKPC region", "transposon_component", "Tn4401", 6884, 8062,
-                    fid="LOCUS-REF-Tn4401-KPC-region"),
-        CuratedPart("ISKpn6", "IS", "IS1182", 8066, 9605, "-",
-                    fid="LOCUS-REF-ISKpn6"),
-        CuratedPart("right end", "transposon_component", "Tn4401", 9608, 9907,
-                    fid="LOCUS-REF-Tn4401-right-end"),
-        CuratedPart("IRR", "IR", "Tn4401", 9868, 9907, strand="-",
-                    fid="LOCUS-REF-Tn4401-IRR"),
-    ),
-    "Tn5393_AF262622": (
-        CuratedPart("IRL", "IR", "Tn5393", 1, 38, fid="LOCUS-REF-Tn5393-IRL"),
-        CuratedPart("IRR", "IR", "Tn5393", 5433, 5470, strand="-",
-                    fid="LOCUS-REF-Tn5393-IRR"),
-    ),
-    "Tn5403_X75779": (
-        CuratedPart("IRL", "IR", "Tn5403", 1, 38, fid="LOCUS-REF-Tn5403-IR"),
-        CuratedPart("IRR", "IR", "Tn5403", 3626, 3663, strand="-",
-                    fid="LOCUS-REF-Tn5403-IR"),
-    ),
-}
+def _unit_maps() -> dict[str, tuple[CuratedPart, ...]]:
+    maps: dict[str, tuple[CuratedPart, ...]] = {}
+    for map_name, parts in load_unit_definitions()["feature_maps"].items():
+        maps[str(map_name)] = tuple(
+            CuratedPart(
+                name=str(part["name"]),
+                element_type=str(part["element_type"]),
+                family=str(part["family"]),
+                start=int(part["start"]),
+                end=int(part["end"]),
+                strand=str(part.get("strand", ".")),
+                fid=str(part["fid"]),
+                role=str(part.get("role", "")),
+                note=str(part.get("note", "")),
+                fragment=bool(part.get("fragment", False)),
+            )
+            for part in parts
+        )
+    return maps
+
+
+UNIT_MAPS = _unit_maps()
 
 
 def _project(parent: MGEFeature, part: CuratedPart) -> MGEFeature | None:
@@ -101,10 +57,13 @@ def _project(parent: MGEFeature, part: CuratedPart) -> MGEFeature | None:
     attrs: dict[str, object] = {
         "seqid": parent.attributes.get("seqid", ""),
         "source": "curated_reference",
+        "evidence_class": "reference_projected",
         "fid": part.fid,
         "source_accession": parent.attributes.get("source_accession", ""),
         "reference_parent": parent.attributes.get("reference_id", parent.name),
     }
+    if part.role:
+        attrs["component_role"] = part.role
     if part.note:
         attrs["note"] = part.note
     if part.fragment:
@@ -123,12 +82,24 @@ def _project(parent: MGEFeature, part: CuratedPart) -> MGEFeature | None:
     )
 
 
+def _detected_roles(parent: MGEFeature, features: list[MGEFeature]) -> set[str]:
+    return {
+        str(feature.attributes.get("component_role"))
+        for feature in features
+        if feature.attributes.get("source") == "reviewed_unit_component_scan"
+        and feature.attributes.get("seqid") == parent.attributes.get("seqid")
+        and parent.start <= feature.start
+        and feature.end <= parent.end
+        and feature.attributes.get("component_role")
+    }
+
+
 def annotate_curated_units(features: list[MGEFeature]) -> list[MGEFeature]:
-    """Project curated components into complete expert-reviewed unit calls."""
+    """Project only map parts not already supported by component detection."""
     children: list[MGEFeature] = []
-    for parent in features:
-        if parent.element_type != "transposon":
-            continue
+    parents = [feature for feature in features if feature.element_type == "transposon"]
+    definition_version = str(load_unit_definitions()["definition_version"])
+    for parent in parents:
         reference_id = str(parent.attributes.get("reference_id", ""))
         map_key = reference_id if reference_id in UNIT_MAPS else parent.family
         parts = UNIT_MAPS.get(map_key)
@@ -141,11 +112,20 @@ def annotate_curated_units(features: list[MGEFeature]) -> list[MGEFeature]:
         )
         if coverage < 95.0:
             continue
-        parent.attributes["curated_internal_features"] = True
-        parent.attributes["feature_db_version"] = "2026-08-26"
-        for part in parts:
-            projected = _project(parent, part)
-            if projected is not None:
-                children.append(projected)
+        detected_roles = _detected_roles(parent, features)
+        projected = [
+            part
+            for part in parts
+            if not part.role or part.role not in detected_roles
+        ]
+        parent.attributes["curated_internal_features"] = bool(projected)
+        parent.attributes["independently_detected_internal_features"] = bool(
+            detected_roles
+        )
+        parent.attributes["feature_db_version"] = definition_version
+        for part in projected:
+            child = _project(parent, part)
+            if child is not None:
+                children.append(child)
         children.extend(inserted_sequence_features(parent))
     return children

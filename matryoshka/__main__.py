@@ -50,6 +50,12 @@ from .reference_scan import REFERENCE_PROFILES, blast_available, scan_all
 from .report import annotation_document, annotation_gff3, count_features
 from .tn123 import annotate_tn123, assemble_tn123_components
 from .transposon import annotate_res_sites, infer_transposons
+from .unit_components import assemble_reviewed_unit_components
+from .unit_definitions import (
+    unit_definitions_as_json,
+    unit_definitions_as_markdown,
+    unit_definitions_as_yaml,
+)
 from .viz import to_linear_svg
 
 try:
@@ -82,6 +88,14 @@ def catalog(fmt: str, out: str) -> None:
 
 @cli.command("definitions")
 @click.option(
+    "--set",
+    "definition_set",
+    type=click.Choice(["tn123", "reviewed-units"]),
+    default="tn123",
+    show_default=True,
+    help="Definition collection to export for expert review.",
+)
+@click.option(
     "--format",
     "fmt",
     type=click.Choice(["yaml", "json", "markdown"]),
@@ -90,14 +104,21 @@ def catalog(fmt: str, out: str) -> None:
     help="Expert-definition output format.",
 )
 @click.option("--out", "-o", default="-", help="Output file (default: stdout).")
-def definitions_command(fmt: str, out: str) -> None:
-    """Show the biological rules used to call Tn1, Tn2 and Tn3."""
+def definitions_command(definition_set: str, fmt: str, out: str) -> None:
+    """Show the biological rules used for component-driven family calls."""
     exporters = {
-        "yaml": definitions_as_yaml,
-        "json": definitions_as_json,
-        "markdown": definitions_as_markdown,
+        "tn123": {
+            "yaml": definitions_as_yaml,
+            "json": definitions_as_json,
+            "markdown": definitions_as_markdown,
+        },
+        "reviewed-units": {
+            "yaml": unit_definitions_as_yaml,
+            "json": unit_definitions_as_json,
+            "markdown": unit_definitions_as_markdown,
+        },
     }
-    _emit(exporters[fmt](), out, False)
+    _emit(exporters[definition_set][fmt](), out, False)
 
 
 def _features_on_contig(
@@ -253,6 +274,7 @@ def _annotate_contig(
     # res and cargo components. Whole-locus homology remains corroborating
     # naming evidence rather than the source of their internal annotation.
     all_feats.extend(assemble_tn123_components(all_feats))
+    all_feats.extend(assemble_reviewed_unit_components(all_feats))
 
     # Projection is now a labelled fallback only for components that the
     # independent scan could not recover.
@@ -304,7 +326,7 @@ def _load_detector_outputs(
     default="validated",
     show_default=True,
     help=(
-        "Validated references, component-only Tn1/Tn2/Tn3 discovery, "
+        "Validated references, component-rule discovery, "
         "or every experimental/legacy reference."
     ),
 )
@@ -397,6 +419,7 @@ def run_workflow(
         raise click.UsageError(f"No FASTA records found in {fasta}")
 
     annotated: list[tuple[str, int, list[MGEFeature]]] = []
+    genbank_records: list[str] = []
     locus_map_dir = out / "locus-map"
     table_dir = out / "locus-table"
     hierarchy_dir = out / "hierarchy"
@@ -411,6 +434,7 @@ def run_workflow(
         contig_features = _features_on_contig(all_features, record.id)
         roots, _ = _annotate_contig(sequence, record.id, contig_features, False)
         annotated.append((record.id, len(sequence), roots))
+        genbank_records.append(to_genbank(roots, sequence, record.id))
         safe_record_id = record.id.replace("/", "_").replace(" ", "_")
         hierarchy_path = hierarchy_dir / f"{safe_record_id}.svg"
         hierarchy_path.write_text(
@@ -444,6 +468,7 @@ def run_workflow(
                 "cell_format": "annotation.cell",
                 "annotation_json": "annotation.json",
                 "annotation_gff3": "annotation.gff3",
+                "annotation_genbank": "annotation.gbk",
             }
             locus_outputs.append({
                 "record": record.id,
@@ -490,6 +515,7 @@ def run_workflow(
         annotation_gff3(annotated),
         encoding="utf-8",
     )
+    (out / "annotation.gbk").write_text("".join(genbank_records), encoding="utf-8")
     (out / "annotation.cell").write_text(
         "\n".join(
             to_wolvercote(roots, [], seqid)
@@ -514,6 +540,7 @@ def run_workflow(
         "outputs": {
             "annotation_json": "annotation.json",
             "annotation_gff3": "annotation.gff3",
+            "annotation_genbank": "annotation.gbk",
             "annotation_cell": "annotation.cell",
             "hierarchy_directory": "hierarchy",
             "locus_map_directory": "locus-map",
@@ -540,7 +567,7 @@ def _render(
     if fmt == "json":
         return to_json(roots)
     if fmt == "gff3":
-        return to_gff3(roots, seqid=sample_name)
+        return to_gff3(roots, seqid=sample_name, sequence_length=len(seq))
     if fmt == "genbank":
         return to_genbank(roots, seq, sample_name)
     if fmt == "wolvercote":
@@ -576,7 +603,7 @@ def _render(
     type=click.Choice(sorted(REFERENCE_PROFILES)),
     default="validated",
     show_default=True,
-    help="Detection profile; tn123-components excludes complete-element lookup.",
+    help="Detection profile; component-rules excludes complete-element lookup.",
 )
 @click.option(
     "--threads",

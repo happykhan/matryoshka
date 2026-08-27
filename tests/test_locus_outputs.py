@@ -16,6 +16,8 @@ from matryoshka.locus_map import (
     PROJECTED_GENE_COLOUR,
     TRANSPOSON_COLOURS,
     UNRESOLVED_COLOUR,
+    _MapLabel,
+    _render_feature_labels,
     to_locus_map_svg,
 )
 from matryoshka.locus_table import to_locus_table_svg
@@ -27,6 +29,19 @@ from matryoshka.reference_scan import (
     blast_available,
     scan,
 )
+
+
+def test_close_locus_labels_are_moved_to_separate_lanes() -> None:
+    rendered = _render_feature_labels([
+        _MapLabel(100, "intI1", 102),
+        _MapLabel(104, "5'-CS", 102),
+        _MapLabel(109, "attI1", 102),
+        _MapLabel(114, "Pc", 102),
+    ])
+    assert len(rendered) == 4
+    assert {fragment.split(' y="', 1)[1].split('"', 1)[0] for fragment in rendered} == {
+        "102.0", "114.0", "126.0", "138.0"
+    }
 
 
 def feature(

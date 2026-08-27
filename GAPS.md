@@ -29,7 +29,7 @@ Legend
 | Tn4401 (blaKPC) | EU176011, CP069050, GU386376 | ✅ | BLAST + IS-flanked rule | Variants **a** and **b** shipped (clean Tn4401 sub-regions extracted from GenBank). Best-variant picker discriminates by subject coverage + HSP count. Variants c/d/e/f/g/h flagged `variant=unknown` with deletion_bp |
 | Tn1999 (blaOXA-48) | — | ✅ | IS4-flanked rule | Composite transposon — no res site |
 | Tn1546 (vanA) | M97297 | ✅ | vanA signature + BLAST | |
-| Tn21 (class 1 integron + mer) | AF071413 | ✅ | BLAST + curated map | tnp, terminal IRs, In2 IRi/IRt, 5'-CS, aadA1 cassette region, partial 3'-CS/tni and mer rendered separately |
+| Tn21 (class 1 integron + mer) | AF071413 | ✅ | Independent component profiles + YAML grammar; optional whole-locus confirmation | terminal IRs and tnpA/tnpR/res/tnpM drive the family-like call; integron and mer components are described separately |
 | Tn1331 (multi-AMR) | AF479774 | ✅ | Gene-signature (aac(6')-Ib + blaOXA-9 + aadA1) + BLAST |
 | Tn5393 (strAB) | AF262622 | ✅ | Exact 5470 bp expert-reviewed reference with curated terminal IRs and collinear variant assembly |
 | Tn1 (blaTEM-2) | NC_008357 | ✅ | Independent IR/blaTEM/tnpR/res/tnpA component scan, grammar assembly and whole-locus naming |
@@ -146,7 +146,8 @@ Legend
 | Tn3 (archetype) | V00613 | ✅ | BLAST (`tn3_family_extras.fasta`) |
 | Tn2 (blaTEM) | AY123253 | ✅ | BLAST |
 | Tn1696 (Tn21 subfamily + mer) | U12338 | ✅ | BLAST |
-| Tn1721 (tet(A)) | X61367 | ✅ | BLAST |
+| Tn1721 (tet(A)) | AB366441 | ✅ | Independent IR/mcp/tnpR/tnpA/tetR/tetA/pecM/junction profiles + YAML grammar |
+| Tn1722 | AB366441 | ✅ | Independent IR/mcp/tnpR/tnpA profiles + YAML grammar |
 | Tn6452 (mcr-5) | KY807920 | ✅ | BLAST |
 | Tn6330 (ISApl1-mcr-1, canonical name) | CP016184 | ✅ | Flanked rule (renamed from Tn_mcr1) |
 | Tn2006 (ISAba1-blaOXA-23) | — | ✅ | Flanked rule (IS4 + blaOXA-23, 9bp TSD) |

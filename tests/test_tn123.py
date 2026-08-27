@@ -202,6 +202,19 @@ def test_components_are_independently_detected_across_canonical_records():
 
 
 @pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
+def test_component_assembly_accepts_large_internal_tn1mer_insertion():
+    components = scan_tn123_components(TN123_REFERENCE)
+    calls = [
+        feature
+        for feature in assemble_tn123_components(components)
+        if feature.attributes.get("seqid") == "Tn1Mer_GQ160960"
+    ]
+    assert len(calls) == 1
+    assert calls[0].name == "Tn1-like"
+    assert calls[0].attributes["component_order_valid"] is True
+
+
+@pytest.mark.skipif(not blast_available(), reason="blastn not on PATH")
 def test_component_grammar_can_emit_parent_without_whole_locus_call():
     components = [
         feature

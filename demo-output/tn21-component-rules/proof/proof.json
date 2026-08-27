@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Audit arbitrary FASTA sequence through independent component detection, expert-rule classification, secondary known-element comparison and generated outputs.",
+  "summary": {
+    "status": "NO_TN123_LOCI",
+    "tn123_loci": 0,
+    "passed": 0,
+    "partial": 0,
+    "failed": 0
+  },
+  "records": [
+    {
+      "id": "Tn21",
+      "length": 19672,
+      "loci": []
+    }
+  ]
+}

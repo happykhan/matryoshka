@@ -8,6 +8,7 @@
 |---|---|
 | `annotation.json` | Full v1 annotation document validated by `schema/annotation-v1.schema.json` |
 | `annotation.gff3` | One GFF3 document with sequence regions, unique stable IDs and `Parent` links |
+| `annotation.gbk` | One multi-record GenBank document with mobile-element, CDS, repeat and nested feature annotations |
 | `annotation.cell` | Nested CellGen/Wolvercote cell-format representation of the same hierarchy |
 | `run.json` | Compact counts and relative output locations |
 | `hierarchy/*.svg` | One whole-record, scale-accurate rendering of the original nested hierarchy |

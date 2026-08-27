@@ -23,10 +23,11 @@ The primary classification path is component-first:
 | Confirm a reviewed name | Optionally compare the assembled complete locus with reviewed whole-element sequences | This can upgrade a compatible call to an exact type/subtype or add closest-reference context; it cannot create or override the component-rule call |
 | Render outputs | Draw the hierarchy, locus maps and locus table from the detected/assembled feature record | Projected context is visually distinguished from independently detected components |
 
-The rules and thresholds are maintained in
-[`matryoshka/tn123_definitions.yaml`](matryoshka/tn123_definitions.yaml), not embedded
-as Tn1/Tn2/Tn3-specific conditionals in the classifier. This makes the biological
-definition reviewable and provides the pattern for adding further families.
+The rules and thresholds are maintained in human-readable definition files, not
+embedded as family-specific conditionals in the classifier. Tn1/Tn2/Tn3 live in
+[`matryoshka/tn123_definitions.yaml`](matryoshka/tn123_definitions.yaml); Tn21,
+Tn1721 and Tn1722 live in
+[`matryoshka/unit_definitions.yaml`](matryoshka/unit_definitions.yaml).
 
 This is still homology-based component detection. The current profiles are intended
 to recover close and moderately varied versions of recognised Tn1/Tn2/Tn3 components,
@@ -85,6 +86,7 @@ The result directory contains:
 
 - `annotation.json` — versioned hierarchy with stable feature IDs and provenance;
 - `annotation.gff3` — one valid multi-record GFF3 document;
+- `annotation.gbk` — the same hierarchy as GenBank feature annotations;
 - `annotation.cell` — nested CellGen/Wolvercote cell-format text;
 - `run.json` — short run summary;
 - `hierarchy/*.svg` — the original scale-accurate nested hierarchy view;
@@ -119,6 +121,10 @@ and exportable in review-friendly or machine-readable form:
 matryoshka definitions --format markdown --out tn123-definitions-review.md
 matryoshka definitions --format yaml --out tn123-definitions.yaml
 matryoshka definitions --format json --out tn123-definitions.json
+
+# Review the Tn21/Tn1721/Tn1722 component grammars and feature profiles
+matryoshka definitions --set reviewed-units --format markdown \
+  --out reviewed-unit-definitions.md
 ```
 
 The current definitions include three expert-reviewed canonical elements plus
@@ -155,18 +161,19 @@ The default `--profile validated` includes the expert-reviewed Tn1/Tn2/Tn3, cura
 transposon, integron and ISEcp1-TPU references. `--profile all` enables broader legacy
 and experimental references and should be treated as exploratory.
 
-To exercise and audit discovery without any complete Tn1/Tn2/Tn3 lookup, use the
-component-only profile:
+To exercise and audit discovery without any complete-element lookup, use the
+component-rule profile:
 
 ```bash
-matryoshka run assembly.fasta --out results --profile tn123-components \
+matryoshka run assembly.fasta --out results --profile component-rules \
   --detectors none
 ```
 
-In that mode, a complete novel candidate can still receive a `Tn1-like`, `Tn2-like`
-or `Tn3-like` call from its detected component composition, order, orientation and
-component-profile scores. Exact reviewed subtype names require the optional secondary
-whole-locus confirmation available in the `validated` profile.
+In that mode, a compatible candidate can still receive a `Tn1-like`, `Tn2-like`,
+`Tn3-like`, `Tn21-like`, `Tn1721-like` or `Tn1722-like` call from its detected
+component composition, order, orientation, spacing and component-profile scores.
+Exact reviewed subtype names require the optional secondary whole-locus confirmation
+available in the `validated` profile.
 
 BLAST-based detection is always run. Extra detector evidence can be supplied without
 rerunning tools:
@@ -197,7 +204,7 @@ users.
 | Category | Implemented support |
 |---|---|
 | Tn1/Tn2/Tn3 | YAML-defined IR/blaTEM/tnpR/res/tnpA grammar, orientation-aware component-profile classification, optional exact reference confirmation, indels, reverse orientation and conservative partial/ambiguous calls |
-| Curated unit transposons | Tn21, Tn1721, Tn1722, Tn4401, Tn5393 and Tn5403 with component-aware maps |
+| Reviewed unit transposons | Component-rule discovery for Tn21, Tn1721 and Tn1722; reference-supported maps for Tn4401, Tn5393 and Tn5403 |
 | ISEcp1 transposition units | Seven complete supplied ISEcp1–blaCMY references and orientation-aware incomplete candidates |
 | Insertion sequences | Exact curated IS calls plus ISEScan calls, including IS26/IS257, ISEcp1, ISApl1 and IS91/ISCR families |
 | Composite/signature elements | Tn4401, Tn1999, Tn6330, Tn2006, Tn125, Tn10, Tn5, Tn4001, Tn1546 and Tn1331 rules |

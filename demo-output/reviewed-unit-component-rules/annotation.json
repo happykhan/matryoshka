@@ -1,0 +1,1039 @@
+{
+  "schema_version": "1.0",
+  "generated_by": {
+    "name": "matryoshka",
+    "version": "0.1.0a1"
+  },
+  "reference_database": {
+    "version": "2026.08.27-alpha.2",
+    "profile": "component-rules"
+  },
+  "run": {
+    "input": "matryoshka/references/reviewed_units.fasta",
+    "input_sha256": "6f889e878b4fcd6e5c19711a5242a5a64f060589f86f8c3314475d5f029fa899",
+    "command": "matryoshka run matryoshka/references/reviewed_units.fasta --profile component-rules --threads 4 --out demo-output/reviewed-unit-component-rules",
+    "python": "3.13.15",
+    "platform": "macOS-14.6.1-arm64-arm-64bit-Mach-O",
+    "detector_outputs": {}
+  },
+  "records": [
+    {
+      "id": "Tn1721_AB366441",
+      "length": 11128,
+      "features": [
+        {
+          "id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+          "parent_id": null,
+          "element_type": "transposon",
+          "family": "Tn1721",
+          "name": "Tn1721-like",
+          "start": 1,
+          "end": 11128,
+          "strand": "+",
+          "tsd_length": 5,
+          "tsd_seq": null,
+          "ir_left": null,
+          "ir_right": null,
+          "score": null,
+          "attributes": {
+            "seqid": "Tn1721_AB366441",
+            "source": "component_assembly",
+            "classification_basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1721",
+            "rule_based_type_call": "Tn1721",
+            "component_assembly_status": "complete",
+            "component_order_valid": true,
+            "detected_component_count": 10,
+            "reference_projected_component_count": 0,
+            "component_roles": [
+              "terminal_IR",
+              "mcp",
+              "tnpR",
+              "tnpA",
+              "terminal_IR",
+              "tetR",
+              "tetA",
+              "pecM",
+              "tet_tnp_junction",
+              "terminal_IR"
+            ],
+            "component_requirements": {
+              "terminal_IR": true,
+              "mcp": true,
+              "tnpR": true,
+              "tnpA": true,
+              "tetR": true,
+              "tetA": true,
+              "pecM": true,
+              "tet_tnp_junction": true
+            },
+            "component_profile_score": 100.0,
+            "expert_rule": "Tn1721 consists of the complete Tn1722-like backbone followed by an internal copy of IRR, the tetR-tetA-pecM region and a partial duplication of the tnp region ending at the terminal IRR. Require all three IR occurrences and the unique tet-to-duplicated-tnp junction; tet genes or a Tn1722-like backbone alone are insufficient. Exact Tn1721 requires secondary whole-element confirmation against the 11128 bp reviewed interval from AB366441.",
+            "definition_version": "2026-08-27",
+            "variant_status": "rule_based_family_candidate",
+            "naming_evidence": [
+              "component_grammar",
+              "component_profiles"
+            ],
+            "curated_internal_features": false,
+            "independently_detected_internal_features": false,
+            "reference_projected_context_feature_count": 0,
+            "tsd_evidence": "untestable_missing_flank",
+            "confidence": 0.7,
+            "confidence_label": "medium"
+          },
+          "children": [
+            {
+              "id": "mge-Tn1721_AB366441-IR-8b65610802",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "IR",
+              "family": "Tn1721",
+              "name": "IRL",
+              "start": 1,
+              "end": 38,
+              "strand": ".",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "terminal_IR",
+                "component_reference": "Tn1721__terminal_IR__1__1_38",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 38,
+                "reference_segments": [
+                  {
+                    "qstart": 1,
+                    "qend": 38,
+                    "sstart": 1,
+                    "send": 38,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__terminal_IR__1__1_38",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__terminal_IR__1__1_38",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-gene-495dafda91",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "gene",
+              "family": "Tn1721",
+              "name": "mcp",
+              "start": 190,
+              "end": 1767,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "mcp",
+                "component_reference": "Tn1721__mcp__2__190_1767",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 1578,
+                "reference_segments": [
+                  {
+                    "qstart": 190,
+                    "qend": 1767,
+                    "sstart": 1,
+                    "send": 1578,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__mcp__2__190_1767",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__mcp__2__190_1767",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-transposition_gene-6966dadfb9",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "transposition_gene",
+              "family": "Tn1721",
+              "name": "tnpR",
+              "start": 2077,
+              "end": 2637,
+              "strand": "+",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tnpR",
+                "component_reference": "Tn1721__tnpR__3__2077_2637",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 561,
+                "reference_segments": [
+                  {
+                    "qstart": 2077,
+                    "qend": 2637,
+                    "sstart": 1,
+                    "send": 561,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__tnpR__3__2077_2637",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__tnpR__3__2077_2637",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-transposition_gene-1ea609b48b",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "transposition_gene",
+              "family": "Tn1721",
+              "name": "tnpA",
+              "start": 2641,
+              "end": 5607,
+              "strand": "+",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tnpA",
+                "component_reference": "Tn1721__tnpA__4__2641_5607",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 2967,
+                "reference_segments": [
+                  {
+                    "qstart": 2641,
+                    "qend": 5607,
+                    "sstart": 1,
+                    "send": 2967,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__tnpA__4__2641_5607",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__tnpA__4__2641_5607",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-IR-9723093f6f",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "IR",
+              "family": "Tn1721",
+              "name": "IRR",
+              "start": 5603,
+              "end": 5640,
+              "strand": ".",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "terminal_IR",
+                "component_reference": "Tn1721__terminal_IR__10__11091_11128",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 38,
+                "reference_segments": [
+                  {
+                    "qstart": 5603,
+                    "qend": 5640,
+                    "sstart": 1,
+                    "send": 38,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__terminal_IR__10__11091_11128",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__terminal_IR__5__5603_5640",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-gene-5e2fadd38a",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "gene",
+              "family": "Tn1721",
+              "name": "tetR",
+              "start": 5939,
+              "end": 6589,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tetR",
+                "component_reference": "Tn1721__tetR__6__5939_6589",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 651,
+                "reference_segments": [
+                  {
+                    "qstart": 5939,
+                    "qend": 6589,
+                    "sstart": 1,
+                    "send": 651,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__tetR__6__5939_6589",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-AMR-88569ca3dd",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "AMR",
+              "family": "Tn1721",
+              "name": "tet(A)",
+              "start": 6695,
+              "end": 7894,
+              "strand": "+",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tetA",
+                "component_reference": "Tn1721__tetA__7__6695_7894",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 1200,
+                "reference_segments": [
+                  {
+                    "qstart": 6695,
+                    "qend": 7894,
+                    "sstart": 1,
+                    "send": 1200,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__tetA__7__6695_7894",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.7,
+                "confidence_label": "medium"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-gene-2171cebef8",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "gene",
+              "family": "Tn1721",
+              "name": "pecM",
+              "start": 7926,
+              "end": 8810,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "pecM",
+                "component_reference": "Tn1721__pecM__8__7926_8810",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 885,
+                "reference_segments": [
+                  {
+                    "qstart": 7926,
+                    "qend": 8810,
+                    "sstart": 1,
+                    "send": 885,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__pecM__8__7926_8810",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-transposon_component-3427226819",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "transposon_component",
+              "family": "Tn1721",
+              "name": "tet-to-tnp duplication junction",
+              "start": 9140,
+              "end": 9540,
+              "strand": "+",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tet_tnp_junction",
+                "component_reference": "Tn1721__tet_tnp_junction__9__9140_9540",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 401,
+                "reference_segments": [
+                  {
+                    "qstart": 9140,
+                    "qend": 9540,
+                    "sstart": 1,
+                    "send": 401,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__tet_tnp_junction__9__9140_9540",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1721_AB366441-IR-9a480bcb96",
+              "parent_id": "mge-Tn1721_AB366441-transposon-0dc653f5ac",
+              "element_type": "IR",
+              "family": "Tn1721",
+              "name": "IRR",
+              "start": 11091,
+              "end": 11128,
+              "strand": ".",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1721_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "terminal_IR",
+                "component_reference": "Tn1721__terminal_IR__10__11091_11128",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 38,
+                "reference_segments": [
+                  {
+                    "qstart": 11091,
+                    "qend": 11128,
+                    "sstart": 1,
+                    "send": 38,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__terminal_IR__10__11091_11128",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__terminal_IR__5__5603_5640",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Tn1722_AB366441",
+      "length": 5640,
+      "features": [
+        {
+          "id": "mge-Tn1722_AB366441-transposon-1f7d9d70cc",
+          "parent_id": null,
+          "element_type": "transposon",
+          "family": "Tn1722",
+          "name": "Tn1722-like",
+          "start": 1,
+          "end": 5640,
+          "strand": "+",
+          "tsd_length": 5,
+          "tsd_seq": null,
+          "ir_left": null,
+          "ir_right": null,
+          "score": null,
+          "attributes": {
+            "seqid": "Tn1722_AB366441",
+            "source": "component_assembly",
+            "classification_basis": "expert_component_rules",
+            "rule_based_family_call": "Tn1722",
+            "rule_based_type_call": "Tn1722",
+            "component_assembly_status": "complete",
+            "component_order_valid": true,
+            "detected_component_count": 5,
+            "reference_projected_component_count": 0,
+            "component_roles": [
+              "terminal_IR",
+              "mcp",
+              "tnpR",
+              "tnpA",
+              "terminal_IR"
+            ],
+            "component_requirements": {
+              "terminal_IR": true,
+              "mcp": true,
+              "tnpR": true,
+              "tnpA": true
+            },
+            "component_profile_score": 100.0,
+            "expert_rule": "Call a complete Tn1722-like unit when two Tn1721-family terminal IRs delimit the mcp-tnpR-tnpA backbone in the declared order. Exact Tn1722 requires secondary whole-element confirmation against the 5640 bp reviewed interval from AB366441.",
+            "definition_version": "2026-08-27",
+            "variant_status": "rule_based_family_candidate",
+            "naming_evidence": [
+              "component_grammar",
+              "component_profiles"
+            ],
+            "curated_internal_features": false,
+            "independently_detected_internal_features": false,
+            "reference_projected_context_feature_count": 0,
+            "tsd_evidence": "untestable_missing_flank",
+            "confidence": 0.7,
+            "confidence_label": "medium"
+          },
+          "children": [
+            {
+              "id": "mge-Tn1722_AB366441-IR-2aa127e5e1",
+              "parent_id": "mge-Tn1722_AB366441-transposon-1f7d9d70cc",
+              "element_type": "IR",
+              "family": "Tn1721",
+              "name": "IRL",
+              "start": 1,
+              "end": 38,
+              "strand": ".",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1722_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "terminal_IR",
+                "component_reference": "Tn1721__terminal_IR__1__1_38",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 38,
+                "reference_segments": [
+                  {
+                    "qstart": 1,
+                    "qend": 38,
+                    "sstart": 1,
+                    "send": 38,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__terminal_IR__1__1_38",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__terminal_IR__1__1_38",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1722_AB366441-gene-b0ae40b5f4",
+              "parent_id": "mge-Tn1722_AB366441-transposon-1f7d9d70cc",
+              "element_type": "gene",
+              "family": "Tn1721",
+              "name": "mcp",
+              "start": 190,
+              "end": 1767,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1722_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "mcp",
+                "component_reference": "Tn1721__mcp__2__190_1767",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 1578,
+                "reference_segments": [
+                  {
+                    "qstart": 190,
+                    "qend": 1767,
+                    "sstart": 1,
+                    "send": 1578,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__mcp__2__190_1767",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__mcp__2__190_1767",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1722_AB366441-transposition_gene-9576faf501",
+              "parent_id": "mge-Tn1722_AB366441-transposon-1f7d9d70cc",
+              "element_type": "transposition_gene",
+              "family": "Tn1721",
+              "name": "tnpR",
+              "start": 2077,
+              "end": 2637,
+              "strand": "+",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1722_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tnpR",
+                "component_reference": "Tn1721__tnpR__3__2077_2637",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 561,
+                "reference_segments": [
+                  {
+                    "qstart": 2077,
+                    "qend": 2637,
+                    "sstart": 1,
+                    "send": 561,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__tnpR__3__2077_2637",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__tnpR__3__2077_2637",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1722_AB366441-transposition_gene-277df26124",
+              "parent_id": "mge-Tn1722_AB366441-transposon-1f7d9d70cc",
+              "element_type": "transposition_gene",
+              "family": "Tn1721",
+              "name": "tnpA",
+              "start": 2641,
+              "end": 5607,
+              "strand": "+",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1722_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tnpA",
+                "component_reference": "Tn1721__tnpA__4__2641_5607",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 2967,
+                "reference_segments": [
+                  {
+                    "qstart": 2641,
+                    "qend": 5607,
+                    "sstart": 1,
+                    "send": 2967,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__tnpA__4__2641_5607",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__tnpA__4__2641_5607",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn1722_AB366441-IR-a4367a0066",
+              "parent_id": "mge-Tn1722_AB366441-transposon-1f7d9d70cc",
+              "element_type": "IR",
+              "family": "Tn1721",
+              "name": "IRR",
+              "start": 5603,
+              "end": 5640,
+              "strand": ".",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn1722_AB366441",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "terminal_IR",
+                "component_reference": "Tn1721__terminal_IR__10__11091_11128",
+                "reference_parent": "Tn1721_AB366441",
+                "reference_family": "Tn1721",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 38,
+                "reference_segments": [
+                  {
+                    "qstart": 5603,
+                    "qend": 5640,
+                    "sstart": 1,
+                    "send": 38,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn1721",
+                    "component_reference": "Tn1721__terminal_IR__10__11091_11128",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  },
+                  {
+                    "family": "Tn1722",
+                    "component_reference": "Tn1722__terminal_IR__5__5603_5640",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Tn4401_GU595196",
+      "length": 9907,
+      "features": []
+    },
+    {
+      "id": "Tn5393_AF262622",
+      "length": 5470,
+      "features": []
+    },
+    {
+      "id": "Tn5403_X75779",
+      "length": 3663,
+      "features": []
+    }
+  ]
+}

@@ -43,7 +43,8 @@ grammar:
   forward_order: [terminal_IR, blaTEM, tnpR, res, tnpA, terminal_IR]
   reverse_order: reverse_of_forward
   candidate_anchor_role: tnpA
-  candidate_component_window_bp: 2500
+  candidate_component_window_bp: 50000
+  candidate_maximum_span_bp: 60000
   expert_rule: >-
     A complete group-level call requires all six component occurrences in the
     stated order. Reverse-complement copies use the reversed order. Missing

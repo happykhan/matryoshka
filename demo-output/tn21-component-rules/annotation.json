@@ -1,0 +1,695 @@
+{
+  "schema_version": "1.0",
+  "generated_by": {
+    "name": "matryoshka",
+    "version": "0.1.0a1"
+  },
+  "reference_database": {
+    "version": "2026.08.27-alpha.2",
+    "profile": "component-rules"
+  },
+  "run": {
+    "input": "matryoshka/references/tn21.fasta",
+    "input_sha256": "53ef21da7367f6c745c7086ee201d99ac48f84ce81a321425c731630f11a6520",
+    "command": "matryoshka run matryoshka/references/tn21.fasta --profile component-rules --threads 4 --out demo-output/tn21-component-rules",
+    "python": "3.13.15",
+    "platform": "macOS-14.6.1-arm64-arm-64bit-Mach-O",
+    "detector_outputs": {}
+  },
+  "records": [
+    {
+      "id": "Tn21",
+      "length": 19672,
+      "features": [
+        {
+          "id": "mge-Tn21-transposon-0c51ad4342",
+          "parent_id": null,
+          "element_type": "transposon",
+          "family": "Tn21",
+          "name": "Tn21-like",
+          "start": 1,
+          "end": 19672,
+          "strand": "+",
+          "tsd_length": 5,
+          "tsd_seq": null,
+          "ir_left": null,
+          "ir_right": null,
+          "score": null,
+          "attributes": {
+            "seqid": "Tn21",
+            "source": "component_assembly",
+            "classification_basis": "expert_component_rules",
+            "rule_based_family_call": "Tn21",
+            "rule_based_type_call": "Tn21",
+            "component_assembly_status": "complete",
+            "component_order_valid": true,
+            "detected_component_count": 6,
+            "reference_projected_component_count": 0,
+            "component_roles": [
+              "terminal_IR",
+              "tnpA",
+              "tnpR",
+              "res",
+              "tnpM",
+              "terminal_IR"
+            ],
+            "component_requirements": {
+              "terminal_IR": true,
+              "tnpA": true,
+              "tnpR": true,
+              "res": true,
+              "tnpM": true
+            },
+            "component_profile_score": 100.0,
+            "expert_rule": "Call a complete Tn21-like unit when two Tn21 terminal IRs delimit a Tn21-specific tnpA-tnpR-res-tnpM transposition region in the declared order. The class 1 integron, partial or complete tni region, internal insertion sequences and mer module are described when present but are not required to discover the Tn21-subgroup backbone. Exact Tn21 requires secondary confirmation against AF071413.",
+            "definition_version": "2026-08-27",
+            "variant_status": "rule_based_family_candidate",
+            "naming_evidence": [
+              "component_grammar",
+              "component_profiles"
+            ],
+            "curated_internal_features": false,
+            "independently_detected_internal_features": false,
+            "reference_projected_context_feature_count": 0,
+            "tsd_evidence": "untestable_missing_flank",
+            "confidence": 0.7,
+            "confidence_label": "medium"
+          },
+          "children": [
+            {
+              "id": "mge-Tn21-IR-9225148de5",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "IR",
+              "family": "Tn21",
+              "name": "IRR",
+              "start": 1,
+              "end": 38,
+              "strand": ".",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "terminal_IR",
+                "component_reference": "Tn21__terminal_IR__1__1_38",
+                "reference_parent": "Tn21",
+                "reference_family": "Tn21",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 38,
+                "reference_segments": [
+                  {
+                    "qstart": 1,
+                    "qend": 38,
+                    "sstart": 1,
+                    "send": 38,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn21",
+                    "component_reference": "Tn21__terminal_IR__1__1_38",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn21-transposition_gene-2fa1f1c4dc",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "transposition_gene",
+              "family": "Tn21",
+              "name": "tnpA",
+              "start": 34,
+              "end": 3000,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tnpA",
+                "component_reference": "Tn21__tnpA__2__34_3000",
+                "reference_parent": "Tn21",
+                "reference_family": "Tn21",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 2967,
+                "reference_segments": [
+                  {
+                    "qstart": 34,
+                    "qend": 3000,
+                    "sstart": 1,
+                    "send": 2967,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn21",
+                    "component_reference": "Tn21__tnpA__2__34_3000",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn21-transposition_gene-cd23ea25e9",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "transposition_gene",
+              "family": "Tn21",
+              "name": "tnpR",
+              "start": 3003,
+              "end": 3563,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tnpR",
+                "component_reference": "Tn21__tnpR__3__3003_3563",
+                "reference_parent": "Tn21",
+                "reference_family": "Tn21",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 561,
+                "reference_segments": [
+                  {
+                    "qstart": 3003,
+                    "qend": 3563,
+                    "sstart": 1,
+                    "send": 561,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn21",
+                    "component_reference": "Tn21__tnpR__3__3003_3563",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn21-res_site-f072b53e17",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "res_site",
+              "family": "Tn21",
+              "name": "res",
+              "start": 3576,
+              "end": 3704,
+              "strand": ".",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "res",
+                "component_reference": "Tn21__res__4__3576_3704",
+                "reference_parent": "Tn21",
+                "reference_family": "Tn21",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 129,
+                "reference_segments": [
+                  {
+                    "qstart": 3576,
+                    "qend": 3704,
+                    "sstart": 1,
+                    "send": 129,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn21",
+                    "component_reference": "Tn21__res__4__3576_3704",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.3,
+                "confidence_label": "speculative"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn21-transposition_gene-c6f36ac6b2",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "transposition_gene",
+              "family": "Tn21",
+              "name": "tnpM",
+              "start": 3689,
+              "end": 4039,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tnpM",
+                "component_reference": "Tn21__tnpM__5__3689_4039",
+                "reference_parent": "Tn21",
+                "reference_family": "Tn21",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 351,
+                "reference_segments": [
+                  {
+                    "qstart": 3689,
+                    "qend": 4039,
+                    "sstart": 1,
+                    "send": 351,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn21",
+                    "component_reference": "Tn21__tnpM__5__3689_4039",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn21-integron-eeaea79ed2",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "integron",
+              "family": "class1_integron",
+              "name": "class 1 integron candidate",
+              "start": 4040,
+              "end": 8275,
+              "strand": "+",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": null,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "inference",
+                "structural_status": "conserved_segment_pair",
+                "iri_status": "not_detected",
+                "irt_status": "not_detected",
+                "note": "assembled from exact locus component references",
+                "confidence": 0.65,
+                "confidence_label": "medium"
+              },
+              "children": [
+                {
+                  "id": "mge-Tn21-integron_segment-fac467a514",
+                  "parent_id": "mge-Tn21-integron-eeaea79ed2",
+                  "element_type": "integron_segment",
+                  "family": "Tn21",
+                  "name": "5'-CS",
+                  "start": 4040,
+                  "end": 5394,
+                  "strand": "+",
+                  "tsd_length": null,
+                  "tsd_seq": null,
+                  "ir_left": null,
+                  "ir_right": null,
+                  "score": 100.0,
+                  "attributes": {
+                    "seqid": "Tn21",
+                    "source": "reviewed_unit_component_scan",
+                    "evidence_class": "sequence_detected",
+                    "component_role": "integron_5cs",
+                    "component_reference": "Tn21__integron_5cs__6__4040_5394",
+                    "reference_parent": "Tn21",
+                    "reference_family": "Tn21",
+                    "component_alignment_strand": "+",
+                    "blast_identity": 100.0,
+                    "blast_coverage": 100.0,
+                    "reference_length": 1355,
+                    "reference_segments": [
+                      {
+                        "qstart": 4040,
+                        "qend": 5394,
+                        "sstart": 1,
+                        "send": 1355,
+                        "identity": 100.0,
+                        "mismatch_bases": 0,
+                        "gap_bases": 0
+                      }
+                    ],
+                    "component_status": "complete",
+                    "structural_status": "intact",
+                    "component_profile_matches": [
+                      {
+                        "family": "Tn21",
+                        "component_reference": "Tn21__integron_5cs__6__4040_5394",
+                        "identity": 100.0,
+                        "coverage": 100.0,
+                        "profile_score": 100.0
+                      }
+                    ],
+                    "confidence": 0.5,
+                    "confidence_label": "low"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "mge-Tn21-cassette-80c0073029",
+                  "parent_id": "mge-Tn21-integron-eeaea79ed2",
+                  "element_type": "cassette",
+                  "family": "Tn21",
+                  "name": "aadA1 cassette region",
+                  "start": 5395,
+                  "end": 6250,
+                  "strand": "+",
+                  "tsd_length": null,
+                  "tsd_seq": null,
+                  "ir_left": null,
+                  "ir_right": null,
+                  "score": 100.0,
+                  "attributes": {
+                    "seqid": "Tn21",
+                    "source": "reviewed_unit_component_scan",
+                    "evidence_class": "sequence_detected",
+                    "component_role": "cassette_region",
+                    "component_reference": "Tn21__cassette_region__7__5395_6250",
+                    "reference_parent": "Tn21",
+                    "reference_family": "Tn21",
+                    "component_alignment_strand": "+",
+                    "blast_identity": 100.0,
+                    "blast_coverage": 100.0,
+                    "reference_length": 856,
+                    "reference_segments": [
+                      {
+                        "qstart": 5395,
+                        "qend": 6250,
+                        "sstart": 1,
+                        "send": 856,
+                        "identity": 100.0,
+                        "mismatch_bases": 0,
+                        "gap_bases": 0
+                      }
+                    ],
+                    "component_status": "complete",
+                    "structural_status": "intact",
+                    "component_profile_matches": [
+                      {
+                        "family": "Tn21",
+                        "component_reference": "Tn21__cassette_region__7__5395_6250",
+                        "identity": 100.0,
+                        "coverage": 100.0,
+                        "profile_score": 100.0
+                      }
+                    ],
+                    "confidence": 0.7,
+                    "confidence_label": "medium"
+                  },
+                  "children": []
+                },
+                {
+                  "id": "mge-Tn21-integron_segment-61442cc9e1",
+                  "parent_id": "mge-Tn21-integron-eeaea79ed2",
+                  "element_type": "integron_segment",
+                  "family": "Tn21",
+                  "name": "3'-CS",
+                  "start": 6251,
+                  "end": 8275,
+                  "strand": "+",
+                  "tsd_length": null,
+                  "tsd_seq": null,
+                  "ir_left": null,
+                  "ir_right": null,
+                  "score": 100.0,
+                  "attributes": {
+                    "seqid": "Tn21",
+                    "source": "reviewed_unit_component_scan",
+                    "evidence_class": "sequence_detected",
+                    "component_role": "integron_3cs",
+                    "component_reference": "Tn21__integron_3cs__8__6251_8275",
+                    "reference_parent": "Tn21",
+                    "reference_family": "Tn21",
+                    "component_alignment_strand": "+",
+                    "blast_identity": 100.0,
+                    "blast_coverage": 100.0,
+                    "reference_length": 2025,
+                    "reference_segments": [
+                      {
+                        "qstart": 6251,
+                        "qend": 8275,
+                        "sstart": 1,
+                        "send": 2025,
+                        "identity": 100.0,
+                        "mismatch_bases": 0,
+                        "gap_bases": 0
+                      }
+                    ],
+                    "component_status": "complete",
+                    "structural_status": "intact",
+                    "component_profile_matches": [
+                      {
+                        "family": "Tn21",
+                        "component_reference": "Tn21__integron_3cs__8__6251_8275",
+                        "identity": 100.0,
+                        "coverage": 100.0,
+                        "profile_score": 100.0
+                      }
+                    ],
+                    "confidence": 0.5,
+                    "confidence_label": "low"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "mge-Tn21-transposon_component-4a7eb691ec",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "transposon_component",
+              "family": "Tn21",
+              "name": "tni",
+              "start": 12358,
+              "end": 15039,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "tni",
+                "component_reference": "Tn21__tni__9__12358_15039",
+                "reference_parent": "Tn21",
+                "reference_family": "Tn21",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 2682,
+                "reference_segments": [
+                  {
+                    "qstart": 12358,
+                    "qend": 15039,
+                    "sstart": 1,
+                    "send": 2682,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn21",
+                    "component_reference": "Tn21__tni__9__12358_15039",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": []
+            },
+            {
+              "id": "mge-Tn21-transposon_component-b8f9cca1a6",
+              "parent_id": "mge-Tn21-transposon-0c51ad4342",
+              "element_type": "transposon_component",
+              "family": "Tn21",
+              "name": "mer",
+              "start": 15040,
+              "end": 19672,
+              "strand": "-",
+              "tsd_length": null,
+              "tsd_seq": null,
+              "ir_left": null,
+              "ir_right": null,
+              "score": 100.0,
+              "attributes": {
+                "seqid": "Tn21",
+                "source": "reviewed_unit_component_scan",
+                "evidence_class": "sequence_detected",
+                "component_role": "mer_region",
+                "component_reference": "Tn21__mer_region__10__15040_19672",
+                "reference_parent": "Tn21",
+                "reference_family": "Tn21",
+                "component_alignment_strand": "+",
+                "blast_identity": 100.0,
+                "blast_coverage": 100.0,
+                "reference_length": 4633,
+                "reference_segments": [
+                  {
+                    "qstart": 15040,
+                    "qend": 19672,
+                    "sstart": 1,
+                    "send": 4633,
+                    "identity": 100.0,
+                    "mismatch_bases": 0,
+                    "gap_bases": 0
+                  }
+                ],
+                "component_status": "complete",
+                "structural_status": "intact",
+                "component_profile_matches": [
+                  {
+                    "family": "Tn21",
+                    "component_reference": "Tn21__mer_region__10__15040_19672",
+                    "identity": 100.0,
+                    "coverage": 100.0,
+                    "profile_score": 100.0
+                  }
+                ],
+                "confidence": 0.5,
+                "confidence_label": "low"
+              },
+              "children": [
+                {
+                  "id": "mge-Tn21-IR-fd97c70552",
+                  "parent_id": "mge-Tn21-transposon_component-b8f9cca1a6",
+                  "element_type": "IR",
+                  "family": "Tn21",
+                  "name": "IRL",
+                  "start": 19635,
+                  "end": 19672,
+                  "strand": ".",
+                  "tsd_length": null,
+                  "tsd_seq": null,
+                  "ir_left": null,
+                  "ir_right": null,
+                  "score": 100.0,
+                  "attributes": {
+                    "seqid": "Tn21",
+                    "source": "reviewed_unit_component_scan",
+                    "evidence_class": "sequence_detected",
+                    "component_role": "terminal_IR",
+                    "component_reference": "Tn21__terminal_IR__11__19635_19672",
+                    "reference_parent": "Tn21",
+                    "reference_family": "Tn21",
+                    "component_alignment_strand": "+",
+                    "blast_identity": 100.0,
+                    "blast_coverage": 100.0,
+                    "reference_length": 38,
+                    "reference_segments": [
+                      {
+                        "qstart": 19635,
+                        "qend": 19672,
+                        "sstart": 1,
+                        "send": 38,
+                        "identity": 100.0,
+                        "mismatch_bases": 0,
+                        "gap_bases": 0
+                      }
+                    ],
+                    "component_status": "complete",
+                    "structural_status": "intact",
+                    "component_profile_matches": [
+                      {
+                        "family": "Tn21",
+                        "component_reference": "Tn21__terminal_IR__11__19635_19672",
+                        "identity": 100.0,
+                        "coverage": 100.0,
+                        "profile_score": 100.0
+                      }
+                    ],
+                    "confidence": 0.5,
+                    "confidence_label": "low"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
