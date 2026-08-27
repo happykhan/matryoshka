@@ -40,6 +40,7 @@ adds experimental and legacy references. The selected profile is embedded in bot
 `annotation.json` and `run.json`.
 
 The diagrams are renderings of the annotation hierarchy, not independent evidence.
-Use the matching table and machine-readable annotation to distinguish directly
-detected parent loci and boundary evidence from components projected from a curated
-reference map.
+For Tn1/Tn2/Tn3, solid component arrows represent independent sequence matches used
+by the assembly grammar; outlined dashed arrows represent components projected from a
+curated map after a supported parent call. Use the matching table and machine-readable
+annotation for identities, coverages, boundary evidence and grammar status.

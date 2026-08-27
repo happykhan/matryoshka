@@ -11,5 +11,7 @@ by `scripts/make_tn123_demo.py`. It contains:
 `calls.json` is the machine-readable hierarchy. `mara/` contains one readable
 diagram per detected locus and `mara-table/` contains the corresponding
 annotation tables using absolute positions on the original contig. Every SVG has
-an on-figure key; the table Notes distinguish detected parent evidence from
-curated reference-projected internal components.
+an on-figure key. In all three loci, both terminal IRs, `blaTEM`, `tnpR`, `res`
+and `tnpA` are independently detected from sequence and then assembled in the
+required orientation. Solid arrows show those detected components; an outlined
+dashed arrow would identify a curated reference projection.

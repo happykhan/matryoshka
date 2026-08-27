@@ -61,10 +61,10 @@ def test_renderer_uses_mara_symbols_for_core_feature_vocabulary():
     assert "5&#x27;-CS" in svg
     assert "aadA1a" in svg
     assert "Kl.pn.I2" in svg
-    assert "confirmed TSD: AATGC" in svg
+    assert "boundary-adjacent sequence-matched TSD: AATGC" in svg
     assert "gene (arrow shows strand)" in svg
     assert "terminal inverted repeat (IR)" in svg
-    assert "confirmed DR/TSD" in svg
+    assert "sequence-matched DR/TSD" in svg
     assert "expected, unconfirmed DR/TSD" in svg
     assert "sequence-detected versus reference-projected evidence" in svg
 
@@ -112,7 +112,7 @@ def test_renderer_draws_the_extended_component_ontology():
         "unresolved feature#",
     ):
         assert label in svg
-    assert "confirmed TSD: TATGA" in svg
+    assert "boundary-adjacent sequence-matched TSD: TATGA" in svg
     assert 'stroke-dasharray="6,3"' in svg
 
 
@@ -127,7 +127,8 @@ def test_table_preserves_mara_feature_types():
     assert ">cassette<" in table
     assert ">intron<" in table
     assert "terminal inverted repeat (IR)" in table
-    assert "Notes distinguish sequence detection from reference-projected components" in table
+    assert "Solid components are sequence-detected" in table
+    assert "dashed/outlined components are reference-projected" in table
 
 
 def test_partial_exact_is_is_marked_but_not_renamed_to_family():

@@ -28,7 +28,7 @@ from pathlib import Path
 from Bio import SeqIO
 
 from .detect import TSD_LENGTHS, MGEFeature
-from .tn123 import REFERENCE_METADATA
+from .tn123 import REFERENCE_METADATA, Tn123ComponentReference, component_references
 
 REFERENCES_DIR = Path(__file__).parent / "references"
 
@@ -926,6 +926,158 @@ def scan(
     return [_hit_to_feature(h, meta.get(h.sseqid, {"_id": h.sseqid})) for h in hits]
 
 
+def _component_strand(reference_strand: str, alignment_strand: str) -> str:
+    if reference_strand == ".":
+        return "."
+    if alignment_strand == "+":
+        return reference_strand
+    return "+" if reference_strand == "-" else "-"
+
+
+def _component_feature(
+    assembly: Tn123Assembly,
+    reference: Tn123ComponentReference,
+) -> MGEFeature:
+    complete = assembly.left_end_covered and assembly.right_end_covered
+    attributes: dict[str, object] = {
+        "seqid": assembly.qseqid,
+        "source": "tn123_component_scan",
+        "evidence_class": "sequence_detected",
+        "component_role": reference.role,
+        "component_reference": reference.reference_id,
+        "reference_parent": reference.parent_reference,
+        "reference_family": reference.parent_family,
+        "blast_identity": round(assembly.identity, 2),
+        "blast_coverage": round(assembly.reference_coverage, 2),
+        "reference_length": assembly.slen,
+        "reference_segments": _reference_segments(assembly),
+        "component_status": "complete" if complete else "partial",
+        "structural_status": assembly.structural_status,
+    }
+    if assembly.inserted_bases:
+        attributes["interrupted"] = True
+        attributes["inserted_bases"] = assembly.inserted_bases
+    if not complete:
+        attributes["fragment"] = True
+    name = "Tn3-family IR" if reference.role == "terminal_IR" else reference.name
+    return MGEFeature(
+        element_type=reference.element_type,
+        family="Tn3_family",
+        name=name,
+        start=assembly.qstart,
+        end=assembly.qend,
+        strand=_component_strand(reference.strand, assembly.strand),
+        score=assembly.identity,
+        attributes=attributes,
+    )
+
+
+def _same_component_locus(left: MGEFeature, right: MGEFeature) -> bool:
+    if left.attributes.get("seqid") != right.attributes.get("seqid"):
+        return False
+    if left.attributes.get("component_role") != right.attributes.get("component_role"):
+        return False
+    overlap = max(0, min(left.end, right.end) - max(left.start, right.start) + 1)
+    shorter = min(left.end - left.start + 1, right.end - right.start + 1)
+    return bool(shorter and overlap / shorter >= 0.7)
+
+
+def _dedupe_component_features(features: list[MGEFeature]) -> list[MGEFeature]:
+    groups: list[list[MGEFeature]] = []
+    for feature in sorted(features, key=lambda item: (item.start, item.end, item.name)):
+        for group in groups:
+            if _same_component_locus(feature, group[0]):
+                group.append(feature)
+                break
+        else:
+            groups.append([feature])
+
+    def rank(feature: MGEFeature) -> tuple[float, float, int]:
+        return (
+            float(feature.attributes.get("blast_identity", 0)),
+            float(feature.attributes.get("blast_coverage", 0)),
+            feature.end - feature.start,
+        )
+
+    return [max(group, key=rank) for group in groups]
+
+
+def scan_tn123_components(
+    query_fasta: Path | str,
+    *,
+    blast_threads: int = 1,
+) -> list[MGEFeature]:
+    """Detect canonical Tn1/Tn2/Tn3 components independently genome-wide."""
+    canonical = REFERENCES_DIR / "tn1_tn2_tn3.fasta"
+    references: list[Tn123ComponentReference] = []
+    for record in SeqIO.parse(canonical, "fasta"):
+        references.extend(component_references(record.id, str(record.seq)))
+    by_id = {reference.reference_id: reference for reference in references}
+
+    categories = {
+        "long": [reference for reference in references if len(reference.sequence) >= 200],
+        "res": [reference for reference in references if reference.role == "res"],
+        "ir": [reference for reference in references if reference.role == "terminal_IR"],
+    }
+    parameters = {
+        # Keep partial HSPs here so interrupted components can be reassembled
+        # before the component-level coverage threshold is applied.
+        "long": dict(min_identity=90.0, min_length=100, min_subject_coverage=0.0),
+        "res": dict(min_identity=85.0, min_length=80, min_subject_coverage=70.0),
+        "ir": dict(
+            min_identity=89.0,
+            min_length=34,
+            min_subject_coverage=89.0,
+            evalue=10.0,
+        ),
+    }
+    hits: list[BlastHit] = []
+    with tempfile.TemporaryDirectory() as tmp:
+        for category, category_references in categories.items():
+            reference_path = Path(tmp) / f"tn123_{category}.fasta"
+            reference_path.write_text("".join(
+                f">{reference.reference_id}\n{reference.sequence}\n"
+                for reference in category_references
+            ))
+            category_parameters = parameters[category]
+            hits.extend(blastn_hits(
+                query_fasta,
+                reference_path,
+                min_identity=float(category_parameters["min_identity"]),
+                min_length=int(category_parameters["min_length"]),
+                min_subject_coverage=float(
+                    category_parameters["min_subject_coverage"]
+                ),
+                evalue=float(category_parameters.get("evalue", 1e-10)),
+                num_threads=blast_threads,
+            ))
+
+    short_hits = [
+        hit
+        for hit in hits
+        if by_id[hit.sseqid].role in {"terminal_IR", "res"}
+    ]
+    long_hits = [
+        hit
+        for hit in hits
+        if by_id[hit.sseqid].role not in {"terminal_IR", "res"}
+    ]
+    chains = [[hit] for hit in short_hits]
+    chains.extend(_chain_tn123_subject_hits(long_hits, max_reference_gap=100))
+
+    features: list[MGEFeature] = []
+    for chain in chains:
+        assembly = _assemble_tn123_chain(chain)
+        reference = by_id[assembly.sseqid]
+        # Short components must be near-complete; longer coding components may
+        # remain useful as explicit partial or interrupted evidence.
+        minimum_coverage = 85.0 if len(reference.sequence) < 200 else 70.0
+        if assembly.reference_coverage < minimum_coverage:
+            continue
+        features.append(_component_feature(assembly, reference))
+    return _dedupe_component_features(features)
+
+
 # Per-reference-file search parameters. Short motifs (res site) need low
 # min_length; whole-plasmid exemplars use moderate length thresholds.
 REFERENCE_PARAMS: dict[str, dict] = {
@@ -1121,6 +1273,8 @@ def scan_all(
     out: list[MGEFeature] = []
     for ref in refs:
         out.extend(by_name[ref.name])
+    if selected is None or "tn1_tn2_tn3.fasta" in selected:
+        out.extend(scan_tn123_components(query_fasta, blast_threads=1))
     # Compound-island detection (runs only over the hit set we just made)
     out.extend(_infer_acinetobacter_islands(out))
     return out

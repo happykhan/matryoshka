@@ -112,7 +112,9 @@ The catalogue is complete enough to define and draw all raw classes above, but
 definition/rendering and sequence detection are deliberately reported
 separately.
 
-- **Working detection:** canonical/minor/indel/partial Tn1/Tn2/Tn3;
+- **Working detection:** canonical/minor/indel/partial Tn1/Tn2/Tn3, with
+  independent terminal-IR, blaTEM, tnpR, res and tnpA calls assembled by an
+  orientation-aware grammar before exact naming;
   supplied Tn21, Tn1721/Tn1722, Tn4401, Tn5393 and Tn5403 references;
   exact ISKpn6/ISKpn7/IS1999; supplied complete ISEcp1-CMY TPUs; 5'-CS,
   3'-CS, IRi, IRt and Tn402 tni references; IntegronFinder cassette/attC;

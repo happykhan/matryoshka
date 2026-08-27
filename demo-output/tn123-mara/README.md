@@ -1,9 +1,10 @@
 # Tn1/Tn2/Tn3 MARA demonstration
 
 This demonstration uses Sally Partridge's `Tn1-Tn2-Tn3.fasta` without ISEScan,
-AMRFinder+ or IntegronFinder placeholder files. Matryoshka's bundled reference scan
-detects the three complete canonical elements and projects their curated internal
-maps into the new MARA-style SVG output.
+AMRFinder+ or IntegronFinder placeholder files. Matryoshka independently detects
+both terminal IRs, `blaTEM`, `tnpR`, `res` and `tnpA`, assembles the components in
+their required order and orientation, and uses whole-locus evidence to name the
+three complete canonical elements.
 
 | Input | Call | Reference | Identity | Covered reference |
 | --- | --- | --- | ---: | ---: |
@@ -19,8 +20,8 @@ expected 5-bp TSD for these elements when flanking sequence is unavailable; fill
 labelled pairs are reserved for sequence-confirmed TSDs.
 
 Every map includes a self-contained key. The companion table makes the evidence
-split explicit: the parent is a measured sequence match, while internal features
-labelled as curated are projected from the recognised reference structure.
+split explicit: solid arrows are independent sequence detections used by the
+component grammar; outlined dashed arrows would be reference-projected features.
 
 Short homologous segments below 98% reference coverage are reported as
 `Tn1/2/3` fragments, with a jagged outline, rather than being forced into an exact

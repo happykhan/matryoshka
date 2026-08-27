@@ -26,6 +26,8 @@
       "provenance": "Sally_Partridge",
       "feature_db_version": "2026-08-26",
       "curated_internal_features": true,
+      "independently_detected_internal_features": false,
+      "reference_projected_component_count": 0,
       "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
@@ -352,6 +354,8 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "independently_detected_internal_features": false,
+      "reference_projected_component_count": 0,
       "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
@@ -523,6 +527,8 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "independently_detected_internal_features": false,
+      "reference_projected_component_count": 0,
       "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
@@ -622,6 +628,8 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "independently_detected_internal_features": false,
+      "reference_projected_component_count": 0,
       "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
@@ -841,6 +849,9 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "independently_detected_internal_features": false,
+      "reference_projected_component_count": 0,
+      "ir_evidence": "sequence_matched",
       "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"
@@ -940,6 +951,9 @@
       "feature_db_version": "2026-08-26",
       "requires_complete": "true",
       "curated_internal_features": true,
+      "independently_detected_internal_features": false,
+      "reference_projected_component_count": 0,
+      "ir_evidence": "sequence_matched",
       "tsd_evidence": "untestable_missing_flank",
       "confidence": 1.0,
       "confidence_label": "high"

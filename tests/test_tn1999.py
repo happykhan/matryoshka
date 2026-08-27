@@ -62,3 +62,14 @@ class TestTn1999TSD:
         seq = str(SeqIO.read(FASTA, "fasta").seq)
         confirm_boundaries(seq, tn)
         assert tn[0].tsd_seq == "TGCTG"
+
+    def test_tsd_refines_terminal_is_coordinate(self):
+        feats = parse_isescan(ISESCAN_TSV) + parse_amrfinder(AMRFINDER_TSV)
+        tn = infer_tn1999(feats)
+        seq = str(SeqIO.read(FASTA, "fasta").seq)
+        confirm_boundaries(seq, tn)
+        assert (tn[0].start, tn[0].end) == (2700, 7596)
+        assert tn[0].attributes["predicted_start"] == 2704
+        assert tn[0].attributes["tsd_left_start"] == 2695
+        assert tn[0].attributes["tsd_right_start"] == 7597
+        assert tn[0].attributes["boundary_refinement"] == "sequence_matched_TSD"

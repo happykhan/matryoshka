@@ -11,7 +11,7 @@ import html
 from .detect import MGEFeature
 
 WIDTH = 1280
-HEIGHT = 272
+HEIGHT = 304
 LEFT = 72
 RIGHT = 72
 TRACK_Y = 66
@@ -71,7 +71,7 @@ def _walk(features: list[MGEFeature]) -> list[MGEFeature]:
     return out
 
 
-def _x(position: int, seq_len: int) -> float:
+def _x(position: int | float, seq_len: int) -> float:
     drawing_width = WIDTH - LEFT - RIGHT
     return LEFT + drawing_width * (max(1, position) - 1) / max(seq_len - 1, 1)
 
@@ -249,7 +249,13 @@ def _gene_arrow(feature: MGEFeature, seq_len: int) -> str:
         points = (
             f"{x1:.1f},{top} {x2:.1f},{top} {x2:.1f},{bottom} {x1:.1f},{bottom}"
         )
-    return f'<polygon points="{points}" fill="#000" stroke="#000" stroke-width="1"/>'
+    projected = feature.attributes.get("evidence_class") == "reference_projected"
+    fill = "#ffffff" if projected else "#000000"
+    dash = ' stroke-dasharray="4,2"' if projected else ""
+    return (
+        f'<polygon points="{points}" fill="{fill}" stroke="#000" '
+        f'stroke-width="1"{dash}/>'
+    )
 
 
 def _res_marker(feature: MGEFeature, seq_len: int) -> str:
@@ -311,7 +317,12 @@ def _lollipop(
     fill = colour if confirmed else "#ffffff"
     stroke = OUTLINE if confirmed else "#737b83"
     if confirmed:
-        title = f"confirmed TSD: {sequence}"
+        title = f"boundary-adjacent sequence-matched TSD: {sequence}"
+    elif evidence == "short_repeat_candidate":
+        title = (
+            f"expected {expected_length or '?'} bp TSD; exact short-repeat "
+            "candidate is weak evidence"
+        )
     elif evidence == "searched_not_found":
         title = f"expected {expected_length or '?'} bp TSD; searched but not found"
     elif evidence == "untestable_missing_flank":
@@ -333,6 +344,7 @@ def _legend() -> str:
     top = 164
     row1 = 194
     row2 = 222
+    row3 = 250
     parts = [
         f'<line x1="{LEFT}" y1="{top}" x2="{WIDTH - RIGHT}" y2="{top}" '
         'stroke="#d4d4d4" stroke-width="1"/>',
@@ -348,7 +360,7 @@ def _legend() -> str:
         # Confirmed and expected/unconfirmed target-site duplications.
         f'<line x1="590" y1="{row1 + 7}" x2="590" y2="{row1 - 7}" stroke="#111"/>',
         f'<circle cx="590" cy="{row1 - 8}" r="5" fill="#9ca3aa" stroke="#111"/>',
-        _text(603, row1 + 3, "confirmed DR/TSD", size=9, anchor="start"),
+        _text(603, row1 + 3, "sequence-matched DR/TSD", size=9, anchor="start"),
         f'<line x1="744" y1="{row1 + 7}" x2="744" y2="{row1 - 7}" stroke="#737b83"/>',
         f'<circle cx="744" cy="{row1 - 8}" r="5" fill="#fff" stroke="#737b83"/>',
         _text(757, row1 + 3, "expected, unconfirmed DR/TSD", size=9, anchor="start"),
@@ -365,9 +377,14 @@ def _legend() -> str:
         _text(815, row2 + 3, "inserted / unresolved sequence", size=9, anchor="start"),
         f'<line x1="1045" y1="{row2}" x2="1085" y2="{row2}" stroke="{GAP_COLOUR}" stroke-width="2" stroke-dasharray="6,4"/>',
         _text(1094, row2 + 3, "unannotated flank", size=9, anchor="start"),
+        f'<line x1="115" y1="{row3}" x2="145" y2="{row3}" stroke="#000" stroke-width="6"/>',
+        f'<polygon points="145,{row3} 137,{row3 - 5} 137,{row3 + 5}" fill="#000"/>',
+        _text(154, row3 + 3, "independently sequence-detected component", size=9, anchor="start"),
+        f'<polygon points="350,{row3 - 7} 380,{row3 - 7} 390,{row3} 380,{row3 + 7} 350,{row3 + 7}" fill="#fff" stroke="#111" stroke-dasharray="4,2"/>',
+        _text(400, row3 + 3, "reference-projected component", size=9, anchor="start"),
         _text(
             WIDTH / 2,
-            252,
+            282,
             "Symbols are annotation calls; see the matching table Notes for sequence-detected versus reference-projected evidence.",
             size=9,
             fill="#555555",
@@ -720,11 +737,19 @@ def to_mara_svg(
 
     for feature in major_units + insertion_sequences + integrons:
         if feature.tsd_seq:
+            left_position = (
+                int(feature.attributes.get("tsd_left_start", feature.start))
+                + int(feature.attributes.get("tsd_left_end", feature.start))
+            ) / 2
+            right_position = (
+                int(feature.attributes.get("tsd_right_start", feature.end))
+                + int(feature.attributes.get("tsd_right_end", feature.end))
+            ) / 2
             parts.append(_lollipop(
-                _x(feature.start, seq_len), feature.tsd_seq, feature.tsd_length,
+                _x(left_position, seq_len), feature.tsd_seq, feature.tsd_length,
             ))
             parts.append(_lollipop(
-                _x(feature.end, seq_len), feature.tsd_seq, feature.tsd_length,
+                _x(right_position, seq_len), feature.tsd_seq, feature.tsd_length,
             ))
         elif feature.tsd_length:
             evidence = str(feature.attributes.get("tsd_evidence", ""))
