@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- A self-contained Word/PDF Tn1/Tn2/Tn3 evidence report with embedded MARA
+  maps, MARA tables, hierarchy views and component ledgers for every reviewed
+  accession, plus natural pEK499 fragments and the arbitrary-contig test.
+- A reproducible pEK499 output bundle retaining Sally's two natural
+  Tn2-related regions as partial fragments.
 - Reviewable, versioned YAML expert definitions for Tn1/Tn2/Tn3 type,
   subtype, variant and fragment rules, with JSON/Markdown export, a public
   JSON Schema and a generic definition loader.

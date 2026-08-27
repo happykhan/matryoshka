@@ -1,0 +1,5 @@
+record	locus_call	locus_start	locus_end	locus_strand	role	component	start	end	strand	identity	coverage	status	component_status	evidence_class	inserted_bases	reference
+EU935739.1	Tn1/2/3 fragment	38747	40671	-	res	res	39005	39118	.	100.0	100.0	intact	complete	sequence_detected	0	Tn2c_HM749967__res__1754_1867
+EU935739.1	Tn1/2/3 fragment	38747	40671	-	tnpR	tnpR	39124	39681	+	100.0	100.0	intact	complete	sequence_detected	0	Tn2_AY123253__tnpR__1191_1748
+EU935739.1	Tn1/2/3 fragment	38747	40671	-	blaTEM	blaTEM-1b	39864	40671	+	100.0	93.84	left_partial	partial	sequence_detected	0	Tn2_AY123253__blaTEM_1b__148_1008
+EU935739.1	Tn1/2/3 fragment	60316	62561	-	tnpA	tnpA	60316	62561	-	100.0	74.69	internal_fragment	partial	sequence_detected	0	Tn2c_HM749967__tnpA__1911_4917

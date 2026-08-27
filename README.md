@@ -82,6 +82,10 @@ sequence. See the [definition and validation report](docs/tn123-definition-and-v
 and its [real-accession ledger](docs/validation/tn123-real-accession-results.tsv).
 The [reviewed-definition demonstration](demo-output/tn123-reviewed-definitions/README.md)
 includes the complete result bundle and every generated MARA locus map/table.
+The self-contained Word/PDF evidence report in `reports/` embeds those figures,
+the original hierarchy views, component ledgers, the natural pEK499 partial
+fragments and the arbitrary-contig demonstration. The complete pEK499 bundle is
+in `demo-output/tn123-pEK499/proof-bundle/`.
 
 ### Pixi alternative
 
